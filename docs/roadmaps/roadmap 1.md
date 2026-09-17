@@ -17,14 +17,52 @@ Para mantener consistencia entre las 4 personas, se recomienda usar un stack uni
 - Backend: Java 21 + Spring Boot 3.
 - API REST: Spring Web, DTOs, controladores por modulo y documentacion con OpenAPI/Swagger.
 - Seguridad: Spring Security + JWT + refresh token.
-- Persistencia: PostgreSQL + Spring Data JPA/Hibernate.
-- Migraciones BD: Flyway.
+- Persistencia: SQL Server + Spring Data JPA/Hibernate + controlador JDBC de Microsoft (`mssql-jdbc`).
+- Administracion BD: SQL Server Management Studio (SSMS).
+- Conexion remota: Tailscale mediante la tailnet del equipo.
+- Migraciones BD: scripts T-SQL versionados; Flyway si se confirma compatibilidad y licencia con la version elegida.
 - Validaciones: Bean Validation/Jakarta Validation.
 - Pruebas: JUnit 5, Mockito, Spring Boot Test y Postman/Insomnia para evidencia.
-- DevOps local: Docker Compose para PostgreSQL y servicios.
+- DevOps local: Docker Compose para los servicios que lo requieran; SQL Server compartido en la maquina ya configurada.
 - Control de codigo: Git con ramas por historia o feature, pull request hacia rama principal.
 
-Alternativa aceptable: .NET 8 Web API + Entity Framework Core + PostgreSQL. Sin embargo, para el equipo se recomienda escoger una sola tecnologia para evitar diferencias en estructura, seguridad, pruebas y despliegue.
+Alternativa aceptable: .NET 8 Web API + Entity Framework Core + SQL Server. Sin embargo, para el equipo se recomienda escoger una sola tecnologia para evitar diferencias en estructura, seguridad, pruebas y despliegue. Usar SQL Server no obliga a cambiar el backend Java recomendado.
+
+## Base de datos compartida y uso correcto
+
+Se utilizara la instancia de SQL Server ya configurada en otra maquina, con usuarios remotos y acceso mediante Tailscale. El documento oficial permite elegir el motor de base de datos. Esta infraestructura sera el entorno compartido de integracion del equipo.
+
+| Componente | Funcion |
+|---|---|
+| SQL Server | Almacenar datos, relaciones y restricciones del proyecto. |
+| SSMS | Administrar la base y ejecutar consultas o scripts autorizados. No es necesario para ejecutar el backend. |
+| Tailscale | Conectar las maquinas del equipo con el servidor a traves de la tailnet. |
+| Backend | Conectarse directamente a SQL Server usando el controlador JDBC y su propia configuracion. |
+
+### Configuracion inicial
+
+- Crear una base exclusiva del proyecto, por ejemplo `NuevoAvatar_Integracion`, separada de otras bases del servidor.
+- Confirmar version/edicion de SQL Server, nombre de la base, nombre DNS o IP de Tailscale y puerto TCP real de la instancia. No asumir que el puerto es `1433`.
+- Usar cuentas individuales para los integrantes y cuentas propias para los servicios. Las cuentas del backend deben tener solo los permisos necesarios; la ejecucion de cambios de estructura requiere una cuenta separada.
+- Restringir el acceso en Tailscale y en el firewall a los participantes y al puerto configurado de SQL Server. No se necesita publicar ese puerto en Internet.
+- Configurar credenciales mediante variables de entorno, nunca en Git. Mantener TLS en la conexion SQL y configurar la confianza en el certificado del servidor.
+
+### Flujo diario del equipo
+
+1. Conectarse a Tailscale y comprobar acceso al servidor.
+2. Configurar el backend con `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` y `DB_PASSWORD`. Estas variables deben enlazarse a la configuracion de Spring Boot; no se aplican automaticamente.
+3. Usar la base compartida para validar integracion entre historias y datos semilla acordados por el equipo.
+4. Ejecutar pruebas que borren datos o modifiquen la estructura en una base aislada por persona o entorno, con acceso restringido a esa base.
+5. Proponer cambios de tablas, indices o restricciones mediante scripts T-SQL incluidos en el pull request. Evitar cambios manuales desde el disenador de SSMS que no queden registrados.
+6. Aplicar los scripts aprobados en orden, mediante un unico proceso coordinado de migracion. Desactivar la creacion/actualizacion automatica de tablas por Hibernate en la base compartida y usar `spring.jpa.hibernate.ddl-auto=validate`.
+
+### Responsabilidades y disponibilidad
+
+Persona 1 coordina la configuracion comun de conexion y el registro/orden de migraciones. Cada participante entrega los scripts y datos semilla de sus historias. El responsable de la maquina servidora administra cuentas, respaldos y disponibilidad, coordinando los cambios con Persona 1.
+
+La maquina servidora debe permanecer encendida, sin suspension y conectada durante el trabajo y la presentacion. Acordar respaldos y comprobar su restauracion antes de cambios importantes. Los scripts de estructura y datos semilla deben permitir recrear la base en otra instancia SQL Server para la entrega o si el servidor no esta disponible.
+
+Referencias tecnicas: [control de acceso de Tailscale](https://tailscale.com/docs/features/access-control/grants) y [TLS en el controlador JDBC de Microsoft](https://learn.microsoft.com/en-us/sql/connect/jdbc/understanding-ssl-support?view=sql-server-ver17).
 
 ## Acuerdos tecnicos comunes
 
@@ -206,7 +244,7 @@ Entregables:
 
 Responsable principal: Persona 1.
 
-- Crear estructura del proyecto, conexion BD, migraciones, manejo de errores, Swagger y pruebas base.
+- Crear estructura del proyecto, conexion a SQL Server por Tailscale, migraciones T-SQL, manejo de errores, Swagger y pruebas base.
 - Implementar `USR5`, `GEN1`, `USR2` y `USR3`.
 - Acordar modelo de base de datos completo con el equipo.
 
@@ -247,7 +285,7 @@ Cada persona debe entregar por historia:
 - Registro de bitacora para crear, modificar, eliminar, consultar y errores tecnicos.
 - Pruebas unitarias o de integracion.
 - Evidencia de prueba tecnica por criterio de aceptacion.
-- Script Flyway o SQL correspondiente.
+- Script T-SQL correspondiente, versionado y compatible con SQL Server; migracion Flyway si se adopta esa herramienta.
 
 ## Riesgos y recomendaciones
 
