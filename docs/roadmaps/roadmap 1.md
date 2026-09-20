@@ -1,8 +1,6 @@
 # Roadmap 1 - Proyecto Nuevo Avatar V1
 
-Documento actualizado a partir del PDF oficial `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`.
-
-Este roadmap reorganiza el trabajo para **5 personas** y **3 fases**, tomando como base exclusiva las historias de usuario del PDF. No se agregan historias nuevas ni se eliminan historias existentes.
+Este roadmap organiza el trabajo de **5 personas** para completar el **primer avance**. El avance se divide en tres etapas internas de trabajo, tomando como base exclusiva las historias de usuario del PDF. No se agregan historias nuevas ni se eliminan historias existentes.
 
 ## Principio de alcance
 
@@ -17,15 +15,18 @@ Las historias de usuario son la base del proyecto. Cada tarea tecnica debe poder
 
 Total: **24 historias de usuario**.
 
-## Enfoque de la Fase 1
+## Alcance del primer avance
 
-La primera fase corresponde al primer alcance indicado por el profesor. Se entrega y se prueba como backend/API, sin interfaz grafica.
+El primer avance corresponde al alcance indicado por el profesor. Se entrega y se prueba como base de datos y backend/API, sin interfaz grafica ni aplicacion cliente.
 
-El entregable de fase 1 debe incluir:
+El primer avance debe incluir:
 
 - Base de datos completa del sistema, modelada desde las HU.
+- Diagrama completo del modelo de base de datos y sus relaciones.
 - Script de base de datos versionado y ejecutable.
+- Conexion documentada entre los servicios y SQL Server por medio de Tailscale.
 - Microservicios REST para las HU asignadas.
+- Consumos entre servicios requeridos por las HU, especialmente `/validate` y `/bitacora`.
 - Endpoints protegidos con token cuando la HU lo pide.
 - Contratos JSON de request/response.
 - Validaciones de criterios de aceptacion.
@@ -33,7 +34,16 @@ El entregable de fase 1 debe incluir:
 - Coleccion Postman o evidencia equivalente para probar cada endpoint.
 - Documentacion de pruebas tecnicas: cada criterio de aceptacion debe tener evidencia.
 
-No se debe entregar frontend, UI, pantallas web ni interfaz grafica en fase 1. Las pruebas se hacen desde Postman.
+### Fuera del alcance
+
+En este avance no se desarrolla ni se entrega:
+
+- Frontend o interfaz grafica.
+- Aplicacion web, movil o de escritorio para consumir los servicios.
+- Pantallas, formularios o navegacion visual.
+- Pruebas ejecutadas desde una UI.
+
+Toda interaccion funcional se realiza directamente contra los endpoints REST mediante Postman.
 
 ## Base de datos y ambiente remoto
 
@@ -80,8 +90,10 @@ Para mantener consistencia, se recomienda:
 ## Acuerdos comunes de servicios
 
 - Todos los servicios deben exponer REST y consumir/producir JSON.
+- La conexion a SQL Server debe configurarse mediante variables de ambiente o perfiles locales; no se deben versionar usuarios, contrasenas ni secretos.
 - Los endpoints deben usar codigos HTTP correctos.
 - Todas las operaciones protegidas deben validar el token contra `/validate`, segun `USR5`.
+- Los consumos entre servicios deben usar URLs configurables y documentar sus dependencias; no deben quedar direcciones IP o puertos quemados en el codigo.
 - Cada historia debe documentar request, response, errores esperados y casos de prueba Postman.
 - Cada accion importante debe registrar bitacora usando `GEN1`.
 - Las consultas tambien registran bitacora segun el PDF: "El usuario consulta <elemento>".
@@ -121,7 +133,7 @@ Para mantener consistencia, se recomienda:
 
 La division busca balancear carga, dependencias y responsabilidad individual. Cada persona es responsable de sus HU completas: tablas, scripts, contratos JSON, endpoints, validaciones, bitacoras y pruebas Postman.
 
-### Persona 1 - Seguridad, parametros, roles y bitacora
+### Persona 1 (Hector) - Seguridad, parametros, roles y bitacora
 
 Carga estimada: alta, porque desbloquea al resto del equipo.
 
@@ -140,7 +152,7 @@ Responsabilidades adicionales:
 - Definir formato comun de errores y estructura base de respuestas.
 - Coordinar que los demas servicios puedan validar token y registrar bitacoras.
 
-### Persona 2 - Usuarios, profesores, instituciones y carreras
+### Persona 2 (Ramses) - Usuarios, profesores, instituciones y carreras
 
 Carga estimada: media-alta, con relaciones importantes entre usuarios y oferta academica.
 
@@ -154,10 +166,10 @@ Carga estimada: media-alta, con relaciones importantes entre usuarios y oferta a
 Responsabilidades adicionales:
 
 - Alinear roles de usuario con dominios `cuc.cr` y `cuc.ac.cr`.
-- Coordinar con Persona 3 para que cursos tengan carreras disponibles.
+- Coordinar con Persona 3 (Alejandro) para que cursos tengan carreras disponibles.
 - Entregar datos semilla de instituciones, profesores y carreras.
 
-### Persona 3 - Cursos, periodos, grupos y direcciones
+### Persona 3 (Alejandro) - Cursos, periodos, grupos y direcciones
 
 Carga estimada: media-alta, porque cierra la oferta academica y deja bases para matricula.
 
@@ -171,10 +183,10 @@ Carga estimada: media-alta, porque cierra la oferta academica y deja bases para 
 Responsabilidades adicionales:
 
 - Entregar datos semilla de cursos, periodos, grupos y division territorial.
-- Coordinar con Persona 4 para que expediente use direcciones.
-- Coordinar con Persona 5 para que matricula tenga cursos, grupos y periodos listos.
+- Coordinar con Persona 4 (Fabian) para que expediente use direcciones.
+- Coordinar con Persona 5 (Jose) para que matricula tenga cursos, grupos y periodos listos.
 
-### Persona 4 - Expedientes, prematricula y consultas academicas
+### Persona 4 (Fabian) - Expedientes, prematricula y consultas academicas
 
 Carga estimada: alta, porque toca datos de estudiantes y consultas academicas.
 
@@ -187,11 +199,11 @@ Carga estimada: alta, porque toca datos de estudiantes y consultas academicas.
 
 Responsabilidades adicionales:
 
-- Coordinar con Persona 3 para validar provincia/canton/distrito.
-- Coordinar con Persona 5 para que `ACA1` consuma notas y `ACA2` consuma matricula.
+- Coordinar con Persona 3 (Alejandro) para validar provincia/canton/distrito.
+- Coordinar con Persona 5 (Jose) para que `ACA1` consuma notas y `ACA2` consuma matricula.
 - Entregar datos semilla de estudiantes y prematriculas.
 
-### Persona 5 - Matricula, notas, facturacion, pagos y notificaciones
+### Persona 5 (Jose) - Matricula, notas, facturacion, pagos y notificaciones
 
 Carga estimada: alta, porque contiene los procesos mas transaccionales.
 
@@ -205,13 +217,15 @@ Carga estimada: alta, porque contiene los procesos mas transaccionales.
 
 Responsabilidades adicionales:
 
-- Coordinar con Persona 4 para estudiantes y prematricula.
-- Coordinar con Persona 3 para grupos, cursos y periodos.
+- Coordinar con Persona 4 (Fabian) para estudiantes y prematricula.
+- Coordinar con Persona 3 (Alejandro) para grupos, cursos y periodos.
 - Entregar datos semilla para matriculas, desglose de rubros, facturas y pagos.
 
-## Fases del proyecto
+## Etapas del primer avance
 
-### Fase 1 - Base de datos, contratos y microservicios REST
+Estas etapas son parte del mismo primer entregable. No representan una aplicacion con UI ni entregas funcionales independientes.
+
+### Etapa 1 - Base de datos, conexiones y servicios REST
 
 Objetivo: entregar al profesor la base de datos completa y los servicios REST de las HU, probados desde Postman, sin frontend.
 
@@ -221,39 +235,38 @@ Trabajo comun:
 - Definir si se usara una BD o varias BD.
 - Crear modelo completo de datos basado en las 24 HU.
 - Crear scripts SQL de estructura, restricciones, indices y datos semilla.
+- Configurar y comprobar la conexion de cada servicio con la BD remota sin publicar credenciales en Git.
 - Definir contratos JSON por endpoint.
 - Implementar servicios REST por HU asignada.
 - Validar token con `USR5` en todas las operaciones protegidas.
 - Registrar bitacoras con `GEN1`.
+- Probar los consumos servicio-a-servicio requeridos por las HU.
 - Crear coleccion Postman por persona y una coleccion integrada del equipo.
 - Documentar evidencia por criterio de aceptacion.
 
-Orden sugerido dentro de la fase:
+Orden sugerido dentro de la etapa:
 
-1. Persona 1 implementa `USR5`, `USR2`, `USR3` y base de `GEN1`.
-2. Persona 2 implementa `USR1`, `ACD1` y `ACD6`.
-3. Persona 3 implementa `ACD5`, `MAT4`, `ACD3` y luego `ACD4`.
-4. Persona 2 completa `ACD2` cuando existan instituciones y profesores.
-5. Persona 4 implementa `MAT3` y `MAT1`.
-6. Persona 5 implementa `MAT2`, `MAT5`, `IPN1`, `IPN2` e `IPN3`.
-7. Persona 4 completa `ACA1` y `ACA2` cuando existan matriculas y notas.
+1. Persona 1 (Hector) implementa `USR5`, `USR2`, `USR3` y base de `GEN1`.
+2. Persona 2 (Ramses) implementa `USR1`, `ACD1` y `ACD6`.
+3. Persona 3 (Alejandro) implementa `ACD5`, `MAT4`, `ACD3` y luego `ACD4`.
+4. Persona 2 (Ramses) completa `ACD2` cuando existan instituciones y profesores.
+5. Persona 4 (Fabian) implementa `MAT3` y `MAT1`.
+6. Persona 5 (Jose) implementa `MAT2`, `MAT5`, `IPN1`, `IPN2` e `IPN3`.
+7. Persona 4 (Fabian) completa `ACA1` y `ACA2` cuando existan matriculas y notas.
 8. Todo el equipo ejecuta pruebas integradas desde Postman.
 
-Entregables de fase 1:
+Resultados de la etapa 1:
 
 - Diagrama de base de datos completo.
 - Script de base de datos completo.
 - Codigo fuente de servicios REST.
 - Colecciones Postman.
-- Evidencia de pruebas tecnicas por criterio de aceptacion.
-- Historias de usuario actualizadas en la herramienta elegida.
-- Pull request hacia la rama principal.
+- Conexion funcional de los servicios con SQL Server.
+- Consumos funcionales de autenticacion y bitacora.
 
-Fecha indicada por el PDF para el primer alcance: **8 de octubre de 2026**.
+### Etapa 2 - Integracion, consistencia y pruebas tecnicas
 
-### Fase 2 - Integracion, consistencia y endurecimiento tecnico
-
-Objetivo: estabilizar lo construido en fase 1 sin agregar historias nuevas.
+Objetivo: integrar y estabilizar lo construido en la etapa 1, sin agregar historias nuevas ni interfaces graficas.
 
 Trabajo comun:
 
@@ -270,7 +283,7 @@ Trabajo comun:
 - Probar casos negativos: datos vacios, dominios invalidos, token invalido, relaciones inexistentes, rangos invalidos.
 - Ajustar indices o consultas cuando una HU lo necesite.
 
-Entregables de fase 2:
+Resultados de la etapa 2:
 
 - Coleccion Postman integrada y ordenada por flujos.
 - Matriz de dependencias HU vs endpoints.
@@ -278,7 +291,7 @@ Entregables de fase 2:
 - Scripts correctivos de BD si fueron necesarios.
 - Version estabilizada de servicios.
 
-### Fase 3 - Cierre documental y entrega final
+### Etapa 3 - Documentacion y cierre del primer avance
 
 Objetivo: cerrar la entrega con trazabilidad entre PDF, HU, BD, servicios y pruebas.
 
@@ -292,14 +305,17 @@ Trabajo comun:
 - Preparar guia de ejecucion local/remota y variables de ambiente.
 - Validar que el profesor pueda probar todo desde Postman contra los servicios.
 
-Entregables de fase 3:
+Entregables consolidados del primer avance:
 
-- Documento final.
-- Script final de BD.
-- Codigo fuente final.
-- Coleccion Postman final.
-- Evidencias finales por criterio de aceptacion.
-- Pull request final o merge aprobado hacia rama principal.
+- Documento de analisis y diseno con portada, introduccion, diagrama completo de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
+- Script versionado para crear la base de datos, sus restricciones y datos semilla.
+- Codigo fuente de los servicios REST y configuracion documentada de conexion.
+- Coleccion Postman integrada, con variables de ambiente y orden de ejecucion.
+- Evidencia de una prueba exitosa por cada criterio de aceptacion del PDF.
+- Historias de usuario actualizadas en la herramienta elegida.
+- Pull request hacia la rama principal o rama final acordada.
+
+Fecha indicada por el PDF para el primer alcance: **8 de octubre de 2026**.
 
 ## Checklist por historia
 
@@ -321,17 +337,17 @@ Cada HU debe quedar cerrada solo cuando tenga:
 
 | Persona | Historias | Total |
 |---|---|---:|
-| Persona 1 | `USR5`, `GEN1`, `USR2`, `USR3`, `USR4` | 5 |
-| Persona 2 | `USR1`, `ACD1`, `ACD6`, `ACD2` | 4 |
-| Persona 3 | `ACD3`, `ACD5`, `ACD4`, `MAT4` | 4 |
-| Persona 4 | `MAT3`, `MAT1`, `ACA1`, `ACA2` | 4 |
-| Persona 5 | `MAT2`, `MAT5`, `IPN1`, `IPN2`, `IPN3` | 5 |
+| Persona 1 (Hector) | `USR5`, `GEN1`, `USR2`, `USR3`, `USR4` | 5 |
+| Persona 2 (Ramses) | `USR1`, `ACD1`, `ACD6`, `ACD2` | 4 |
+| Persona 3 (Alejandro) | `ACD3`, `ACD5`, `ACD4`, `MAT4` | 4 |
+| Persona 4 (Fabian) | `MAT3`, `MAT1`, `ACA1`, `ACA2` | 4 |
+| Persona 5 (Jose) | `MAT2`, `MAT5`, `IPN1`, `IPN2`, `IPN3` | 5 |
 
 ## Riesgos y controles
 
 | Riesgo | Control |
 |---|---|
-| `USR5` y `GEN1` bloquean al resto | Persona 1 debe priorizarlas al inicio de fase 1. |
+| `USR5` y `GEN1` bloquean al resto | Persona 1 (Hector) debe priorizarlas al inicio de la etapa 1. |
 | Modelo de BD incompleto | No iniciar implementacion profunda sin diagrama y script base acordados. |
 | Cambios manuales en BD remota | Todo cambio debe pasar por script versionado. |
 | Historias implementadas sin evidencia | Cada criterio del PDF debe tener prueba Postman documentada. |
@@ -342,4 +358,4 @@ Cada HU debe quedar cerrada solo cuando tenga:
 
 ## Nota final
 
-Este roadmap no cambia el alcance funcional del PDF. Solo reorganiza la ejecucion para 5 personas, 3 fases y una primera entrega orientada a base de datos, microservicios, contratos JSON, endpoints y pruebas desde Postman.
+Este roadmap no cambia el alcance funcional del PDF. Organiza el primer avance para 5 personas y tres etapas internas, con una entrega centrada en base de datos, conexiones, servicios REST, consumos entre servicios y pruebas directas desde Postman. No contempla UI ni aplicacion cliente.
