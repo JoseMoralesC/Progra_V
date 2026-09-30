@@ -1,0 +1,41 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+
+# User-specific files
+*.userprefs
+
+# Test results
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+
+# User-specific files
+*.userprefs
+
+# Test results
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db

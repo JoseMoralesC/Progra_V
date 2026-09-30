@@ -1,0 +1,6 @@
+@NuevoAvatar.Curso_HostAddress = http://localhost:5255
+
+GET {{NuevoAvatar.Curso_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
