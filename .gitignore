@@ -1,3 +1,8 @@
+# Environment variables and local secrets
+.env
+.env.*
+!.env.example
+
 # Visual Studio
 .vs/
 *.user
@@ -16,26 +21,22 @@ obj/
 # Test results
 TestResults/
 
-# OS files
-.DS_Store
-Thumbs.db# Visual Studio
-.vs/
-*.user
-*.suo
+# IDE files
+.vscode/
 
-# Build
-bin/
-obj/
+# Logs and temporary files
+*.log
+logs/
+tmp/
+*.tmp
+*.bak
 
-# Rider
-.idea/
-
-# User-specific files
-*.userprefs
-
-# Test results
-TestResults/
+# SQL Server local data and backup files
+*.mdf
+*.ndf
+*.ldf
 
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
