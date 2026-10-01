@@ -1,11 +1,27 @@
+using System.Data;
 using Microsoft.Data.SqlClient;
 
-namespace NuevoAvatar.Grupo.Repository;
+namespace NuevoAvatar.Grupo.Nuevo.Repository;
 
-public sealed class DbConnectionFactory(IConfiguration configuration) : IDbConnectionFactory
+public class DbConnectionFactory : IDbConnectionFactory
 {
-    private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException("No se configurÃ³ ConnectionStrings:DefaultConnection.");
+    private readonly IConfiguration _configuration;
 
-    public SqlConnection CreateConnection() => new(_connectionString);
+    public DbConnectionFactory(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public IDbConnection CreateConnection()
+    {
+        var connectionString = _configuration.GetConnectionString("DefaultConnection");
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException(
+                "No se encontró la cadena de conexión 'DefaultConnection'.");
+        }
+
+        return new SqlConnection(connectionString);
+    }
 }
