@@ -1,43 +1,28 @@
+using NuevoAvatar.Grupo.Nuevo;
+using NuevoAvatar.Grupo.Nuevo.Repository;
+using NuevoAvatar.Grupo.Nuevo.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<NuevoAvatar.Grupo.Repository.IDbConnectionFactory,
-    NuevoAvatar.Grupo.Repository.DbConnectionFactory>();
+builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+
+builder.Services.AddScoped<IGrupoRepository, GrupoRepository>();
+
+builder.Services.AddScoped<IGrupoService, GrupoService>();
+
+builder.Services.AddHttpClient<ISeguridadService, SeguridadService>(client =>
+{
+    var baseUrl = builder.Configuration["Seguridad:BaseUrl"]
+        ?? throw new InvalidOperationException(
+            "Falta la configuración 'Seguridad:BaseUrl'.");
+
+    client.BaseAddress = new Uri(baseUrl);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseMiddleware<GrupoAuthorizationMiddleware>();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapGrupoEndpoints();
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

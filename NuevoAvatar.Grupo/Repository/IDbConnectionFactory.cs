@@ -1,8 +1,8 @@
-using Microsoft.Data.SqlClient;
+using System.Data;
 
-namespace NuevoAvatar.Grupo.Repository;
+namespace NuevoAvatar.Grupo.Nuevo.Repository;
 
 public interface IDbConnectionFactory
 {
-    SqlConnection CreateConnection();
+    IDbConnection CreateConnection();
 }
