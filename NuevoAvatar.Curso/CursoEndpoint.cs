@@ -9,7 +9,8 @@ public static class CursoEndpoint
         this IEndpointRouteBuilder endpoints)
     {
         var group = endpoints.MapGroup("/curso")
-            .WithTags("Curso");
+            .WithTags("Curso")
+            .AddEndpointFilter<CursoAuthorizationFilter>();
 
         group.MapGet(
             "",
