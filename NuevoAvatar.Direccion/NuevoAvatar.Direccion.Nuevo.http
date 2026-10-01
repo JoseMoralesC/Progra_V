@@ -1,0 +1,6 @@
+@NuevoAvatar.Direccion.Nuevo_HostAddress = http://localhost:5227
+
+GET {{NuevoAvatar.Direccion.Nuevo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
