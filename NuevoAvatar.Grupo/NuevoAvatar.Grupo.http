@@ -1,6 +1,0 @@
-@NuevoAvatar.Grupo_HostAddress = http://localhost:5288
-
-GET {{NuevoAvatar.Grupo_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
