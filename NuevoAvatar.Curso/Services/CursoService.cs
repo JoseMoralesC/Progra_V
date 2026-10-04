@@ -26,13 +26,13 @@ public sealed class CursoService(
         return repository.GetByCarreraIdAsync(carreraId);
     }
 
-    public async Task<int> CreateAsync(CursoRequest curso)
+    public async Task<int> CreateAsync(CursoRequest? curso)
     {
         Validate(curso);
 
         try
         {
-            return await repository.CreateAsync(curso);
+            return await repository.CreateAsync(curso!);
         }
         catch (CursoRepositoryException exception)
         {
@@ -42,14 +42,14 @@ public sealed class CursoService(
 
     public async Task<bool> UpdateAsync(
         int id,
-        CursoRequest curso)
+        CursoRequest? curso)
     {
         ValidateId(id, "Id");
         Validate(curso);
 
         try
         {
-            return await repository.UpdateAsync(id, curso);
+            return await repository.UpdateAsync(id, curso!);
         }
         catch (CursoRepositoryException exception)
         {
@@ -71,8 +71,14 @@ public sealed class CursoService(
         }
     }
 
-    private void Validate(CursoRequest curso)
+    private void Validate(CursoRequest? curso)
     {
+        if (curso is null)
+        {
+            throw new CursoValidationException(
+                ["El curso es requerido."]);
+        }
+
         var errors = validator.Validate(curso);
 
         if (errors.Count > 0)

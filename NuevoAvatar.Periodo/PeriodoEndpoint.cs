@@ -135,6 +135,8 @@ public static class PeriodoEndpoint
             return Results.BadRequest(
                 "El identificador del periodo debe ser mayor que cero.");
         }
+       
+
 
         try
         {

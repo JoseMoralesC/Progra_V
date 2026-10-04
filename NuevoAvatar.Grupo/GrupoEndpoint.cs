@@ -143,6 +143,7 @@ public static class GrupoEndpoint
         ISeguridadService seguridadService,
         HttpContext context,
         string descripcion)
+
     {
         var token = context.Items["token"]?.ToString();
         var usuario = context.Items["usuario"]?.ToString()
