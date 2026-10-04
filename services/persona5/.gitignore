@@ -1,0 +1,13 @@
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+### IDEs ###
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+### Local config ###
+application-local.properties

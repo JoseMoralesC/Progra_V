@@ -1,258 +1,361 @@
 # Roadmap 1 - Proyecto Nuevo Avatar V1
 
-Documento basado en el PDF oficial `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`.
+Este roadmap organiza el trabajo de **5 personas** para completar el **primer avance**. El avance se divide en tres etapas internas de trabajo, tomando como base exclusiva las historias de usuario del PDF. No se agregan historias nuevas ni se eliminan historias existentes.
 
-## Resumen del proyecto
+## Principio de alcance
 
-El sistema corresponde a una administracion de academia compuesta por servicios REST para gestionar usuarios, roles, oferta academica, matricula, expediente estudiantil, notas, historial academico, facturacion, pagos, notificaciones y bitacoras.
+Las historias de usuario son la base del proyecto. Cada tarea tecnica debe poder rastrearse a una HU del PDF:
 
-Todas las historias, excepto el login inicial, dependen de autenticacion por token mediante `USR5` y deben registrar acciones importantes y errores tecnicos mediante el servicio de bitacora `GEN1`.
+- Usuarios y roles: `USR1`, `USR2`, `USR3`, `USR4`, `USR5`.
+- Oferta academica: `ACD1`, `ACD2`, `ACD3`, `ACD4`, `ACD5`, `ACD6`.
+- Matricula: `MAT1`, `MAT2`, `MAT3`, `MAT4`, `MAT5`.
+- Academico: `ACA1`, `ACA2`.
+- Integracion de pagos y notificaciones: `IPN1`, `IPN2`, `IPN3`.
+- General: `GEN1`.
 
-Fecha de entrega indicada en el documento oficial: **8 de octubre de 2026**.
+Total: **24 historias de usuario**.
+
+## Alcance del primer avance
+
+El primer avance corresponde al alcance indicado por el profesor. Se entrega y se prueba como base de datos y backend/API, sin interfaz grafica ni aplicacion cliente.
+
+El primer avance debe incluir:
+
+- Base de datos completa del sistema, modelada desde las HU.
+- Diagrama completo del modelo de base de datos y sus relaciones.
+- Script de base de datos versionado y ejecutable.
+- Conexion documentada entre los servicios y SQL Server por medio de Tailscale.
+- Microservicios REST para las HU asignadas.
+- Consumos entre servicios requeridos por las HU, especialmente `/validate` y `/bitacora`.
+- Endpoints protegidos con token cuando la HU lo pide.
+- Contratos JSON de request/response.
+- Validaciones de criterios de aceptacion.
+- Bitacoras por acciones CRUD, consultas relevantes y errores tecnicos, usando `GEN1`.
+- Coleccion Postman o evidencia equivalente para probar cada endpoint.
+- Documentacion de pruebas tecnicas: cada criterio de aceptacion debe tener evidencia.
+
+### Fuera del alcance
+
+En este avance no se desarrolla ni se entrega:
+
+- Frontend o interfaz grafica.
+- Aplicacion web, movil o de escritorio para consumir los servicios.
+- Pantallas, formularios o navegacion visual.
+- Pruebas ejecutadas desde una UI.
+
+Toda interaccion funcional se realiza directamente contra los endpoints REST mediante Postman.
+
+## Base de datos y ambiente remoto
+
+La base de datos ya existe como infraestructura remota y se accede mediante Tailscale. Sobre esa infraestructura se debe crear la BD completa del sistema o, si el equipo lo justifica, varias BD separadas por dominio.
+
+Recomendacion principal: usar una sola base de datos de integracion, por ejemplo `NuevoAvatar_Integracion`, con esquemas por dominio:
+
+- `seguridad`: usuarios, roles, parametros, modulos, tokens.
+- `general`: bitacoras.
+- `academico`: instituciones, carreras, cursos, grupos, periodos, profesores.
+- `matricula`: estudiantes, direcciones, prematriculas, matriculas, notas.
+- `finanzas`: facturas, detalles y pagos.
+- `notificaciones`: configuracion/logs de notificacion si aplica.
+
+Si se usan varias bases de datos, debe quedar claro como se mantienen las relaciones entre dominios y como se prueban los flujos desde Postman. No se deben partir datos que necesitan integridad referencial fuerte sin una razon tecnica.
+
+### Reglas de BD
+
+- Todo cambio estructural debe quedar en scripts SQL versionados.
+- No hacer cambios manuales en SSMS que no queden documentados en script.
+- Mantener llaves primarias, llaves foraneas, restricciones `NOT NULL`, unicidad e indices necesarios.
+- Los datos requeridos por el PDF no deben permitir `NULL`, vacio ni solo espacios.
+- Las contrasenas deben almacenarse encriptadas o hasheadas, nunca en texto plano.
+- Los dominios de correo, expiracion de JWT, expiracion de refresh token y datos de correo deben ser parametrizables.
+- La BD de integracion no debe depender de creacion automatica por ORM; el backend debe validar contra el modelo aprobado.
 
 ## Stack recomendado
 
-Para mantener consistencia entre las 4 personas, se recomienda usar un stack unico:
+El PDF permite escoger tecnologia siempre que se respeten principios de microservicios y se mantenga la integridad de la informacion.
+
+Para mantener consistencia, se recomienda:
 
 - Backend: Java 21 + Spring Boot 3.
-- API REST: Spring Web, DTOs, controladores por modulo y documentacion con OpenAPI/Swagger.
+- API REST: Spring Web, DTOs, controladores por modulo y OpenAPI/Swagger.
 - Seguridad: Spring Security + JWT + refresh token.
-- Persistencia: PostgreSQL + Spring Data JPA/Hibernate.
-- Migraciones BD: Flyway.
-- Validaciones: Bean Validation/Jakarta Validation.
-- Pruebas: JUnit 5, Mockito, Spring Boot Test y Postman/Insomnia para evidencia.
-- DevOps local: Docker Compose para PostgreSQL y servicios.
-- Control de codigo: Git con ramas por historia o feature, pull request hacia rama principal.
+- Persistencia: SQL Server + Spring Data JPA/Hibernate + `mssql-jdbc`.
+- BD remota: SQL Server accesible por Tailscale.
+- Administracion BD: SSMS.
+- Migraciones: scripts SQL versionados; Flyway solo si el equipo lo confirma.
+- Pruebas tecnicas: Postman.
+- Pruebas automatizadas: JUnit 5, Mockito y Spring Boot Test cuando aplique.
+- Control de codigo: Git con ramas por HU o feature y pull request hacia la rama principal.
 
-Alternativa aceptable: .NET 8 Web API + Entity Framework Core + PostgreSQL. Sin embargo, para el equipo se recomienda escoger una sola tecnologia para evitar diferencias en estructura, seguridad, pruebas y despliegue.
+## Acuerdos comunes de servicios
 
-## Acuerdos tecnicos comunes
+- Todos los servicios deben exponer REST y consumir/producir JSON.
+- La conexion a SQL Server debe configurarse mediante variables de ambiente o perfiles locales; no se deben versionar usuarios, contrasenas ni secretos.
+- Los endpoints deben usar codigos HTTP correctos.
+- Todas las operaciones protegidas deben validar el token contra `/validate`, segun `USR5`.
+- Los consumos entre servicios deben usar URLs configurables y documentar sus dependencias; no deben quedar direcciones IP o puertos quemados en el codigo.
+- Cada historia debe documentar request, response, errores esperados y casos de prueba Postman.
+- Cada accion importante debe registrar bitacora usando `GEN1`.
+- Las consultas tambien registran bitacora segun el PDF: "El usuario consulta <elemento>".
+- En creaciones, la descripcion de bitacora incluye JSON del nuevo registro.
+- En actualizaciones, la descripcion de bitacora incluye JSON anterior y JSON actual.
+- En eliminaciones, la descripcion de bitacora incluye JSON eliminado.
+- Los errores tecnicos tambien deben registrarse.
 
-- Cada servicio debe cumplir estilo REST, usar JSON y responder con codigos HTTP correctos.
-- Todos los endpoints protegidos deben validar token contra `/validate`.
-- Las contrasenas se deben almacenar cifradas o hasheadas, nunca en texto plano.
-- Los errores tecnicos y operaciones CRUD deben registrarse en bitacora.
-- Los nombres que indiquen "solo letras y espacios" deben validarse desde DTO y servicio.
-- Los campos requeridos no pueden aceptar `null`, vacio ni solo espacios.
-- Cada historia debe incluir pruebas por criterio de aceptacion.
-- Antes de iniciar implementacion completa, el equipo debe acordar el modelo de base de datos completo.
+## Dependencias principales entre HU
 
-## Dependencias principales
-
-| Historia | Depende de | Motivo |
+| HU | Depende de | Motivo |
 |---|---|---|
-| `GEN1` | `USR5` parcialmente | La bitacora requiere token, pero debe quedar disponible temprano para el resto. |
+| `USR5` | `USR1` para usuarios reales | Autentica usuarios y emite/valida tokens. |
+| `GEN1` | `USR5` parcialmente | La HU pide token, pero el resto necesita bitacora desde temprano. |
 | `USR1` | `USR2`, `USR5`, `GEN1` | Usuario necesita rol, autenticacion y bitacora. |
 | `USR2` | `USR5`, `GEN1` | Roles requiere autorizacion y bitacora. |
-| `USR3` | `USR5`, `GEN1` | Parametros alimentan configuraciones como expiracion y dominios. |
+| `USR3` | `USR5`, `GEN1` | Parametros alimentan expiraciones, dominios y correo. |
 | `USR4` | `USR5`, `GEN1` | Modulos requiere autorizacion y bitacora. |
 | `ACD1` | `USR5`, `GEN1` | Instituciones requiere autorizacion y bitacora. |
-| `ACD6` | `USR5`, `GEN1`, `USR3` | Profesores usa dominio de correo parametrizable. |
+| `ACD6` | `USR3`, `USR5`, `GEN1` | Profesores usa dominio `cuc.ac.cr` parametrizable. |
 | `ACD2` | `ACD1`, `ACD6`, `USR5`, `GEN1` | Carrera pertenece a institucion y director debe ser profesor. |
 | `ACD3` | `ACD2`, `USR5`, `GEN1` | Curso pertenece a carrera. |
 | `ACD5` | `USR5`, `GEN1` | Periodos se usan en grupos, prematricula y matricula. |
 | `ACD4` | `ACD3`, `ACD5`, `ACD6`, `USR5`, `GEN1` | Grupo requiere curso, periodo y profesor. |
 | `MAT4` | `USR5`, `GEN1` | Direcciones se consumen desde expediente. |
-| `MAT3` | `MAT4`, `USR3`, `USR5`, `GEN1` | Expediente necesita direcciones y dominio de correo estudiantil. |
+| `MAT3` | `MAT4`, `USR3`, `USR5`, `GEN1` | Expediente necesita direcciones y dominio `cuc.cr` parametrizable. |
 | `MAT1` | `MAT3`, `ACD2`, `ACD3`, `ACD5`, `USR5`, `GEN1` | Prematricula requiere estudiante, carrera, cursos de primer nivel y periodo futuro. |
 | `MAT2` | `MAT3`, `ACD3`, `ACD4`, `ACD5`, `USR5`, `GEN1` | Matricula requiere estudiante, curso, grupo y periodo activo. |
 | `MAT5` | `MAT2`, `ACD4`, `USR5`, `GEN1` | Notas se cargan para estudiantes matriculados en grupos. |
 | `ACA1` | `MAT5`, `MAT3`, `ACD3`, `USR5`, `GEN1` | Historial academico usa notas, estudiante y cursos. |
 | `ACA2` | `MAT2`, `MAT3`, `ACD2`, `ACD3`, `ACD4`, `USR5`, `GEN1` | Listado depende de matricula y datos academicos. |
-| `IPN1` | `MAT2`, `USR5`, `GEN1` | Factura nace a partir de la matricula. |
+| `IPN1` | `MAT2`, `USR5`, `GEN1` | Factura nace a partir de matricula. |
 | `IPN2` | `IPN1`, `USR5`, `GEN1` | Pago cancela o revierte facturas. |
-| `IPN3` | `USR3`, `USR5`, `GEN1` | Notificaciones usan parametros del servidor/cuenta de correo. |
+| `IPN3` | `USR3`, `USR5`, `GEN1` | Notificaciones usan parametros SMTP/correo. |
 
-## Distribucion por participante
+## Distribucion por persona
 
-### Persona 1 - Fundacion, seguridad, usuarios y bitacoras
+La division busca balancear carga, dependencias y responsabilidad individual. Cada persona es responsable de sus HU completas: tablas, scripts, contratos JSON, endpoints, validaciones, bitacoras y pruebas Postman.
 
-Carga estimada: **alta**. Esta persona construye la base transversal del sistema, por lo que debe iniciar primero.
+### Persona 1 (Hector) - Seguridad, parametros, roles y bitacora
 
-Historias asignadas:
+Carga estimada: alta, porque desbloquea al resto del equipo.
 
-| HU | Endpoint principal | Trabajo esperado |
+| HU | Endpoint principal | Alcance |
 |---|---|---|
 | `USR5` | `/login`, `/refresh`, `/validate` | Login, JWT, refresh token, expiraciones parametrizables, respuestas `201`, `200` y `401`. |
-| `GEN1` | `/bitacora` | Registro y consulta de bitacoras con fecha/hora actual, usuario y descripcion. |
-| `USR2` | `/rol` | CRUD de roles, validacion de nombre con letras y espacios. |
-| `USR1` | `/usuario` | CRUD y filtros por identificacion, nombre y tipo; validacion de email, dominio, rol y contrasena cifrada. |
+| `GEN1` | `/bitacora` | Registro y consulta de bitacoras con usuario, descripcion y fecha/hora actual. |
+| `USR2` | `/rol` | CRUD de roles, datos requeridos y nombre solo con letras y espacios. |
 | `USR3` | `/parametro` | CRUD de parametros, identificador maximo 10 caracteres en mayusculas y valor maximo 500 caracteres. |
-| `USR4` | `/modulo` | CRUD de modulos, validacion de nombre. |
+| `USR4` | `/modulo` | CRUD de modulos, datos requeridos y nombre solo con letras y espacios. |
 
-Requisitos clave:
+Responsabilidades adicionales:
 
-- Definir estructura comun de respuesta y manejo de errores.
-- Crear middleware/filtro de autenticacion reutilizable para endpoints protegidos.
-- Publicar documentacion Swagger inicial.
-- Dejar ejemplos de pruebas para que las otras personas copien el patron.
-- Coordinar con todo el equipo los parametros necesarios: dominios de correo, expiracion JWT, expiracion refresh token y datos SMTP.
+- Definir el contrato comun de autenticacion.
+- Entregar datos semilla minimos para roles, parametros y usuario administrador.
+- Definir formato comun de errores y estructura base de respuestas.
+- Coordinar que los demas servicios puedan validar token y registrar bitacoras.
 
-Entregables:
+### Persona 2 (Ramses) - Usuarios, profesores, instituciones y carreras
 
-- Modelo BD inicial de usuarios, roles, parametros, modulos y bitacoras.
-- Servicios REST protegidos.
-- Pruebas unitarias e integracion basicas.
-- Documentacion tecnica de seguridad y bitacora.
+Carga estimada: media-alta, con relaciones importantes entre usuarios y oferta academica.
 
-### Persona 2 - Oferta academica
-
-Carga estimada: **media-alta**. Tiene muchas historias CRUD, pero con reglas relativamente claras.
-
-Historias asignadas:
-
-| HU | Endpoint principal | Trabajo esperado |
+| HU | Endpoint principal | Alcance |
 |---|---|---|
-| `ACD1` | `/institucion` | CRUD de instituciones, validacion de nombre. |
-| `ACD6` | `/profesor` | CRUD de profesores, mayoria de edad, email `cuc.ac.cr` parametrizable, telefonos. |
-| `ACD2` | `/carrera` | CRUD de carreras, filtro por institucion, director registrado como profesor. |
-| `ACD3` | `/curso` | CRUD de cursos, filtro por carrera, nivel entre 1 y 12. |
-| `ACD5` | `/periodo` | CRUD de periodos con ano, numero, fecha inicio y fecha fin. |
-| `ACD4` | `/grupo` | CRUD de grupos con numero, curso, profesor, horario, cupo y periodo. |
+| `USR1` | `/usuario` | CRUD de usuarios, filtros por identificacion/nombre/tipo, email, rol y contrasena encriptada. |
+| `ACD1` | `/institucion` | CRUD de instituciones, nombre requerido y solo letras/espacios. |
+| `ACD6` | `/profesor` | CRUD de profesores, mayoria de edad, telefonos y email `cuc.ac.cr` parametrizable. |
+| `ACD2` | `/carrera` | CRUD de carreras, consulta por institucion y director registrado como profesor. |
 
-Requisitos clave:
+Responsabilidades adicionales:
 
-- Implementar relaciones consistentes entre institucion, carrera, curso, profesor, periodo y grupo.
-- Validar integridad referencial desde servicio y base de datos.
-- Usar `GEN1` para registrar CRUD y errores tecnicos.
-- Consumir/validar token con `USR5`.
+- Alinear roles de usuario con dominios `cuc.cr` y `cuc.ac.cr`.
+- Coordinar con Persona 3 (Alejandro) para que cursos tengan carreras disponibles.
+- Entregar datos semilla de instituciones, profesores y carreras.
 
-Dependencias internas:
+### Persona 3 (Alejandro) - Cursos, periodos, grupos y direcciones
 
-- `ACD1` y `ACD6` deben ir antes que `ACD2`.
-- `ACD2` debe ir antes que `ACD3`.
-- `ACD3`, `ACD5` y `ACD6` deben estar listos antes que `ACD4`.
+Carga estimada: media-alta, porque cierra la oferta academica y deja bases para matricula.
 
-Entregables:
-
-- Modelo BD de oferta academica.
-- Endpoints CRUD y consultas adicionales.
-- Pruebas por validaciones de nombres, nivel, relaciones y autorizacion.
-- Datos semilla recomendados para instituciones, carreras, profesores, cursos, periodos y grupos.
-
-### Persona 3 - Matricula, expediente, direcciones y notas
-
-Carga estimada: **alta**. Esta persona maneja procesos con mas reglas de negocio y dependencias.
-
-Historias asignadas:
-
-| HU | Endpoint principal | Trabajo esperado |
+| HU | Endpoint principal | Alcance |
 |---|---|---|
-| `MAT4` | `/provincias`, `/cantones`, `/distritos` | Consulta de division territorial y validacion provincia-canton-distrito. |
-| `MAT3` | `/expediente` | CRUD de estudiantes, direccion, telefonos, email `cuc.cr` parametrizable. |
+| `ACD3` | `/curso` | CRUD de cursos, consulta por carrera, nivel entre 1 y 12. |
+| `ACD5` | `/periodo` | CRUD de periodos con anio, numero, fecha inicio y fecha fin. |
+| `ACD4` | `/grupo` | CRUD de grupos con curso, profesor, horario, cupo y periodo. |
+| `MAT4` | `/provincias`, `/cantones`, `/distritos` | Consultas territoriales y validacion provincia-canton-distrito. |
+
+Responsabilidades adicionales:
+
+- Entregar datos semilla de cursos, periodos, grupos y division territorial.
+- Coordinar con Persona 4 (Fabian) para que expediente use direcciones.
+- Coordinar con Persona 5 (Jose) para que matricula tenga cursos, grupos y periodos listos.
+
+### Persona 4 (Fabian) - Expedientes, prematricula y consultas academicas
+
+Carga estimada: alta, porque toca datos de estudiantes y consultas academicas.
+
+| HU | Endpoint principal | Alcance |
+|---|---|---|
+| `MAT3` | `/expediente` | CRUD de estudiantes, direccion, telefonos y email `cuc.cr` parametrizable. |
 | `MAT1` | `/prematricula` | Prematricular, modificar, eliminar y consultar; cursos de primer nivel y periodos futuros. |
-| `MAT2` | `/matricula` | Matricular, modificar, eliminar y consultar estudiantes por curso/grupo. |
-| `MAT5` | `/cargardesglose`, `/asignarnotarubro`, `/obtenerdesglose`, `/obtenernotas` | Gestion de rubros y notas; rubros suman 100, notas entre 1 y 100, bloqueo de rubros si ya hay notas. |
+| `ACA1` | `/historialacademico` | Promedios de notas obtenidos por estudiante. |
+| `ACA2` | `/listadoestudiantes` | Estudiantes matriculados en un periodo con carrera, curso y grupo. |
 
-Requisitos clave:
+Responsabilidades adicionales:
 
-- Definir bien entidades de estudiante, direccion, telefono, prematricula, matricula, desglose, rubro y nota.
-- Validar fechas de periodos segun reglas del documento.
-- Coordinar con Persona 2 para consumir cursos, grupos y periodos.
-- Coordinar con Persona 4 porque facturacion, reportes e historial dependen de matricula/notas.
+- Coordinar con Persona 3 (Alejandro) para validar provincia/canton/distrito.
+- Coordinar con Persona 5 (Jose) para que `ACA1` consuma notas y `ACA2` consuma matricula.
+- Entregar datos semilla de estudiantes y prematriculas.
 
-Dependencias internas:
+### Persona 5 (Jose) - Matricula, notas, facturacion, pagos y notificaciones
 
-- `MAT4` debe completarse antes de `MAT3`.
-- `MAT3` y datos de Persona 2 deben existir antes de `MAT1` y `MAT2`.
-- `MAT2` debe estar listo antes de `MAT5`.
+Carga estimada: alta, porque contiene los procesos mas transaccionales.
 
-Entregables:
-
-- Modelo BD de estudiantes, direcciones, matriculas y notas.
-- Endpoints de consulta territorial.
-- Flujo probado de expediente -> prematricula -> matricula -> notas.
-- Pruebas de reglas de negocio: periodo futuro/activo, curso primer nivel, sumatoria 100, bloqueo de rubros y rangos de nota.
-
-### Persona 4 - Facturacion, pagos, notificaciones y consultas academicas
-
-Carga estimada: **media-alta**. Trabaja integraciones funcionales y consultas transversales.
-
-Historias asignadas:
-
-| HU | Endpoint principal | Trabajo esperado |
+| HU | Endpoint principal | Alcance |
 |---|---|---|
+| `MAT2` | `/matricula` | Matricular, modificar, eliminar y consultar estudiantes por curso/grupo. |
+| `MAT5` | `/cargardesglose`, `/asignarnotarubro`, `/obtenerdesglose`, `/obtenernotas` | Rubros, notas, sumatoria 100, notas entre 1 y 100 y bloqueo si ya hay notas. |
 | `IPN1` | `/factura` | Crear, reversar, consultar factura y listar facturacion por periodo; encabezado-detalle, impuesto 2%, estado pendiente. |
 | `IPN2` | `/pago` | Crear pago, reversar pago, consultar pago y listar pagos por periodo; actualiza estado de factura. |
-| `IPN3` | `/notificar` | Envio de correo con email, asunto y cuerpo HTML; configuracion SMTP parametrizable. |
-| `ACA1` | `/historialacademico` | Consulta de cursos y promedios obtenidos por estudiante. |
-| `ACA2` | `/listadoestudiantes` | Consulta de estudiantes matriculados por periodo con carrera, curso y grupo. |
+| `IPN3` | `/notificar` | Envio de correo con email, asunto y cuerpo HTML; datos SMTP parametrizables. |
 
-Requisitos clave:
+Responsabilidades adicionales:
 
-- Implementar patron encabezado-detalle en facturas.
-- Mantener estados de factura: pendiente, pagada y anulada.
-- Reversar pagos debe devolver la factura a pendiente.
-- Para notificaciones, usar parametros configurables y permitir pruebas con proveedor SMTP de desarrollo.
-- Las consultas academicas deben ser eficientes y no duplicar logica de matricula/notas.
+- Coordinar con Persona 4 (Fabian) para estudiantes y prematricula.
+- Coordinar con Persona 3 (Alejandro) para grupos, cursos y periodos.
+- Entregar datos semilla para matriculas, desglose de rubros, facturas y pagos.
 
-Dependencias internas:
+## Etapas del primer avance
 
-- `IPN1` debe completarse antes de `IPN2`.
-- `ACA1` depende de notas cargadas por `MAT5`.
-- `ACA2` depende de matriculas creadas por `MAT2`.
-- `IPN3` puede desarrollarse en paralelo cuando `USR3` este listo.
+Estas etapas son parte del mismo primer entregable. No representan una aplicacion con UI ni entregas funcionales independientes.
 
-Entregables:
+### Etapa 1 - Base de datos, conexiones y servicios REST
 
-- Modelo BD de facturas, detalle de factura y pagos.
-- Servicios de consulta academica.
-- Servicio de notificaciones configurable.
-- Pruebas de estados de factura, pagos, reversos, impuesto y consultas por periodo.
+Objetivo: entregar al profesor la base de datos completa y los servicios REST de las HU, probados desde Postman, sin frontend.
 
-## Orden sugerido de desarrollo
+Trabajo comun:
 
-### Fase 1 - Base comun
+- Confirmar conexion remota por Tailscale a SQL Server.
+- Definir si se usara una BD o varias BD.
+- Crear modelo completo de datos basado en las 24 HU.
+- Crear scripts SQL de estructura, restricciones, indices y datos semilla.
+- Configurar y comprobar la conexion de cada servicio con la BD remota sin publicar credenciales en Git.
+- Definir contratos JSON por endpoint.
+- Implementar servicios REST por HU asignada.
+- Validar token con `USR5` en todas las operaciones protegidas.
+- Registrar bitacoras con `GEN1`.
+- Probar los consumos servicio-a-servicio requeridos por las HU.
+- Crear coleccion Postman por persona y una coleccion integrada del equipo.
+- Documentar evidencia por criterio de aceptacion.
 
-Responsable principal: Persona 1.
+Orden sugerido dentro de la etapa:
 
-- Crear estructura del proyecto, conexion BD, migraciones, manejo de errores, Swagger y pruebas base.
-- Implementar `USR5`, `GEN1`, `USR2` y `USR3`.
-- Acordar modelo de base de datos completo con el equipo.
+1. Persona 1 (Hector) implementa `USR5`, `USR2`, `USR3` y base de `GEN1`.
+2. Persona 2 (Ramses) implementa `USR1`, `ACD1` y `ACD6`.
+3. Persona 3 (Alejandro) implementa `ACD5`, `MAT4`, `ACD3` y luego `ACD4`.
+4. Persona 2 (Ramses) completa `ACD2` cuando existan instituciones y profesores.
+5. Persona 4 (Fabian) implementa `MAT3` y `MAT1`.
+6. Persona 5 (Jose) implementa `MAT2`, `MAT5`, `IPN1`, `IPN2` e `IPN3`.
+7. Persona 4 (Fabian) completa `ACA1` y `ACA2` cuando existan matriculas y notas.
+8. Todo el equipo ejecuta pruebas integradas desde Postman.
 
-### Fase 2 - Catalogos base
+Resultados de la etapa 1:
 
-Responsables: Personas 1 y 2.
+- Diagrama de base de datos completo.
+- Script de base de datos completo.
+- Codigo fuente de servicios REST.
+- Colecciones Postman.
+- Conexion funcional de los servicios con SQL Server.
+- Consumos funcionales de autenticacion y bitacora.
 
-- Persona 1 completa `USR1` y `USR4`.
-- Persona 2 implementa `ACD1`, `ACD6`, `ACD2`, `ACD3` y `ACD5`.
-- Persona 3 puede iniciar `MAT4`.
-- Persona 4 puede preparar estructura de facturas, pagos y notificaciones.
+### Etapa 2 - Integracion, consistencia y pruebas tecnicas
 
-### Fase 3 - Procesos academicos y matricula
+Objetivo: integrar y estabilizar lo construido en la etapa 1, sin agregar historias nuevas ni interfaces graficas.
 
-Responsables: Personas 2 y 3.
+Trabajo comun:
 
-- Persona 2 completa `ACD4`.
-- Persona 3 implementa `MAT3`, `MAT1`, `MAT2` y luego `MAT5`.
-- Persona 4 inicia `IPN3` y prepara consultas `ACA1`/`ACA2`.
+- Ejecutar flujos completos entre HU:
+  - Login -> rol/usuario -> bitacora.
+  - Institucion -> profesor -> carrera -> curso -> periodo -> grupo.
+  - Direcciones -> expediente -> prematricula -> matricula -> notas.
+  - Matricula -> factura -> pago/reverso.
+  - Matricula/notas -> historial academico/listado de estudiantes.
+- Revisar que todas las operaciones protegidas validen token.
+- Revisar que todas las acciones importantes y errores tecnicos registren bitacora.
+- Validar integridad referencial en BD y servicios.
+- Normalizar respuestas de error y codigos HTTP.
+- Probar casos negativos: datos vacios, dominios invalidos, token invalido, relaciones inexistentes, rangos invalidos.
+- Ajustar indices o consultas cuando una HU lo necesite.
 
-### Fase 4 - Integracion final
+Resultados de la etapa 2:
 
-Responsables: Personas 3 y 4, con soporte de Persona 1.
+- Coleccion Postman integrada y ordenada por flujos.
+- Matriz de dependencias HU vs endpoints.
+- Evidencia de pruebas positivas y negativas.
+- Scripts correctivos de BD si fueron necesarios.
+- Version estabilizada de servicios.
 
-- Persona 4 implementa `IPN1`, `IPN2`, `ACA1` y `ACA2`.
-- Todo el equipo verifica autorizacion, bitacoras y pruebas tecnicas por criterio de aceptacion.
-- Integrar documentacion final, scripts BD y evidencias.
+### Etapa 3 - Documentacion y cierre del primer avance
 
-## Checklist de calidad por historia
+Objetivo: cerrar la entrega con trazabilidad entre PDF, HU, BD, servicios y pruebas.
 
-Cada persona debe entregar por historia:
+Trabajo comun:
 
-- Endpoint documentado en Swagger.
-- DTOs de entrada/salida.
+- Completar documentacion de analisis y diseno enfocada en las HU.
+- Incluir portada, introduccion, diagrama de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
+- Revisar que cada HU tenga endpoints, contratos JSON, pruebas y evidencia.
+- Revisar que no existan historias inventadas ni historias omitidas.
+- Preparar scripts finales para recrear la BD.
+- Preparar guia de ejecucion local/remota y variables de ambiente.
+- Validar que el profesor pueda probar todo desde Postman contra los servicios.
+
+Entregables consolidados del primer avance:
+
+- Documento de analisis y diseno con portada, introduccion, diagrama completo de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
+- Script versionado para crear la base de datos, sus restricciones y datos semilla.
+- Codigo fuente de los servicios REST y configuracion documentada de conexion.
+- Coleccion Postman integrada, con variables de ambiente y orden de ejecucion.
+- Evidencia de una prueba exitosa por cada criterio de aceptacion del PDF.
+- Historias de usuario actualizadas en la herramienta elegida.
+- Pull request hacia la rama principal o rama final acordada.
+
+Fecha indicada por el PDF para el primer alcance: **8 de octubre de 2026**.
+
+## Checklist por historia
+
+Cada HU debe quedar cerrada solo cuando tenga:
+
+- Tabla(s) o estructura de BD correspondiente.
+- Script SQL versionado.
+- Endpoint(s) REST segun el PDF.
+- Request JSON documentado, cuando aplique.
+- Response JSON documentado.
 - Validaciones de campos requeridos.
 - Validaciones de reglas de negocio.
-- Validacion de token.
-- Registro de bitacora para crear, modificar, eliminar, consultar y errores tecnicos.
-- Pruebas unitarias o de integracion.
-- Evidencia de prueba tecnica por criterio de aceptacion.
-- Script Flyway o SQL correspondiente.
+- Validacion de token contra `/validate`, cuando aplique.
+- Registro de bitacora por CRUD, consultas y errores tecnicos.
+- Prueba Postman por cada criterio de aceptacion.
+- Evidencia documentada de ejecucion exitosa.
 
-## Riesgos y recomendaciones
+## Historias por persona
 
-- `USR5` y `GEN1` son bloqueantes para casi todo el proyecto; deben priorizarse.
-- El modelo de base de datos debe acordarse antes de programar relaciones complejas.
-- `MAT5`, `ACA1`, `ACA2`, `IPN1` e `IPN2` dependen de datos reales de matricula, grupos y periodos.
-- Los dominios de correo y expiraciones no deben quedar quemados en codigo; deben salir de parametros o configuracion.
-- La evidencia de pruebas debe mapearse contra cada criterio de aceptacion del PDF, no solo contra cada endpoint.
+| Persona | Historias | Total |
+|---|---|---:|
+| Persona 1 (Hector) | `USR5`, `GEN1`, `USR2`, `USR3`, `USR4` | 5 |
+| Persona 2 (Ramses) | `USR1`, `ACD1`, `ACD6`, `ACD2` | 4 |
+| Persona 3 (Alejandro) | `ACD3`, `ACD5`, `ACD4`, `MAT4` | 4 |
+| Persona 4 (Fabian) | `MAT3`, `MAT1`, `ACA1`, `ACA2` | 4 |
+| Persona 5 (Jose) | `MAT2`, `MAT5`, `IPN1`, `IPN2`, `IPN3` | 5 |
+
+## Riesgos y controles
+
+| Riesgo | Control |
+|---|---|
+| `USR5` y `GEN1` bloquean al resto | Persona 1 (Hector) debe priorizarlas al inicio de la etapa 1. |
+| Modelo de BD incompleto | No iniciar implementacion profunda sin diagrama y script base acordados. |
+| Cambios manuales en BD remota | Todo cambio debe pasar por script versionado. |
+| Historias implementadas sin evidencia | Cada criterio del PDF debe tener prueba Postman documentada. |
+| Diferencias de formato entre servicios | Usar contratos JSON comunes y ejemplos compartidos. |
+| Dependencias cruzadas entre personas | Trabajar con datos semilla tempranos y endpoints mockeados solo de forma temporal. |
+| Errores no auditados | Centralizar manejo de excepciones y registrar errores tecnicos en `GEN1`. |
+| Parametros quemados en codigo | Usar `USR3` o variables de ambiente para dominios, expiraciones y correo. |
+
+## Nota final
+
+Este roadmap no cambia el alcance funcional del PDF. Organiza el primer avance para 5 personas y tres etapas internas, con una entrega centrada en base de datos, conexiones, servicios REST, consumos entre servicios y pruebas directas desde Postman. No contempla UI ni aplicacion cliente.
