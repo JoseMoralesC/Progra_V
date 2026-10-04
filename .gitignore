@@ -3,31 +3,26 @@
 .env.*
 !.env.example
 
-# Local Spring Boot configuration
-application-local.properties
-application-local.yml
-application-local.yaml
-**/application-local.properties
-**/application-local.yml
-**/application-local.yaml
+# Visual Studio
+.vs/
+*.user
+*.suo
 
-# Java build output
-target/
-build/
-out/
-*.class
-*.jar
-*.war
+# Build
+bin/
+obj/
+
+# Rider
+.idea/
+
+# User-specific files
+*.userprefs
+
+# Test results
+TestResults/
 
 # IDE files
-.idea/
 .vscode/
-*.iml
-*.ipr
-*.iws
-.classpath
-.project
-.settings/
 
 # Logs and temporary files
 *.log
@@ -40,9 +35,8 @@ tmp/
 *.mdf
 *.ndf
 *.ldf
-*.bak
 
-# Operating system files
+# OS files
 .DS_Store
 Thumbs.db
 Desktop.ini
