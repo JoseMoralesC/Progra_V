@@ -1,0 +1,786 @@
+[
+  {
+    "prueba": "MAT3 sin token",
+    "metodo": "GET",
+    "ruta": "/expediente",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 401,
+    "recibido": 401,
+    "respuesta": {
+      "status": 401,
+      "error": "No autorizado"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 lista inicialmente vacia",
+    "metodo": "GET",
+    "ruta": "/expediente",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": [],
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 crear expediente",
+    "metodo": "POST",
+    "ruta": "/expediente",
+    "cuerpo": {
+      "identificacion": "000HTTP002",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 201,
+    "recibido": 201,
+    "respuesta": {
+      "tipoIdentificacion": "Cedula",
+      "identificacion": "000HTTP001",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "2222-3333",
+        "8888-9999"
+      ]
+    },
+    "location": "http://127.0.0.1:18084/expediente/000HTTP001",
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 rechazar duplicado",
+    "metodo": "POST",
+    "ruta": "/expediente",
+    "cuerpo": {
+      "identificacion": "000HTTP002",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 409,
+    "recibido": 409,
+    "respuesta": {
+      "status": 409,
+      "error": "Ya existe un expediente con esa identificacion"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 consultar expediente",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTP001",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "tipoIdentificacion": "Cedula",
+      "identificacion": "000HTTP001",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "2222-3333",
+        "8888-9999"
+      ]
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 dominio invalido",
+    "metodo": "POST",
+    "ruta": "/expediente",
+    "cuerpo": {
+      "identificacion": "000HTTPINVALID",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@example.com",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "2222-3333",
+        "8888-9999"
+      ]
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 400,
+    "recibido": 400,
+    "respuesta": {
+      "status": 400,
+      "error": "El email no pertenece al dominio permitido para estudiantes"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 crear prematricula e identidad SQL",
+    "metodo": "POST",
+    "ruta": "/prematricula",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 201,
+    "recibido": 201,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP001",
+      "carreraId": 1,
+      "cursos": [
+        10,
+        11
+      ],
+      "observaciones": null,
+      "periodoId": 20
+    },
+    "location": "http://127.0.0.1:18084/prematricula/1",
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 consultar prematricula",
+    "metodo": "GET",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP001",
+      "carreraId": 1,
+      "cursos": [
+        10,
+        11
+      ],
+      "observaciones": null,
+      "periodoId": 20
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 listar prematriculas",
+    "metodo": "GET",
+    "ruta": "/prematricula",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": [
+      {
+        "id": 1,
+        "identificacionEstudiante": "000HTTP001",
+        "carreraId": 1,
+        "cursos": [
+          10,
+          11
+        ],
+        "observaciones": null,
+        "periodoId": 20
+      }
+    ],
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 curso de otro nivel",
+    "metodo": "POST",
+    "ruta": "/prematricula",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP001",
+      "carreraId": 1,
+      "cursos": [
+        12
+      ],
+      "observaciones": null,
+      "periodoId": 20
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 400,
+    "recibido": 400,
+    "respuesta": {
+      "status": 400,
+      "error": "Solo se pueden prematricular cursos de primer nivel"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 periodo pasado",
+    "metodo": "POST",
+    "ruta": "/prematricula",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP001",
+      "carreraId": 1,
+      "cursos": [
+        10,
+        11
+      ],
+      "observaciones": null,
+      "periodoId": 21
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 400,
+    "recibido": 400,
+    "respuesta": {
+      "status": 400,
+      "error": "La fecha de inicio del periodo debe ser posterior a la fecha actual"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 modificar detalle",
+    "metodo": "PUT",
+    "ruta": "/prematricula/1",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP001",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 corregir identificacion y telefonos",
+    "metodo": "PUT",
+    "ruta": "/expediente/000HTTP001",
+    "cuerpo": {
+      "identificacion": "000HTTP002",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "tipoIdentificacion": "Cedula",
+      "identificacion": "000HTTP002",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 llave anterior ya no existe",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTP001",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 404,
+    "recibido": 404,
+    "respuesta": {
+      "status": 404,
+      "error": "Expediente no encontrado"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 referencia propagada por SQL",
+    "metodo": "GET",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "ACA2 datos de SQL y matricula simulada",
+    "metodo": "GET",
+    "ruta": "/listadoestudiantes?periodoId=20",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": [
+      {
+        "tipoIdentificacion": "Cedula",
+        "identificacion": "000HTTP002",
+        "nombreCompleto": "Ana Maria",
+        "carrera": "Carrera ficticia",
+        "curso": "Curso inicial",
+        "grupo": 7
+      }
+    ],
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "ACA2 periodo sin grupos",
+    "metodo": "GET",
+    "ruta": "/listadoestudiantes?periodoId=21",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": [],
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "ACA2 periodo requerido",
+    "metodo": "GET",
+    "ruta": "/listadoestudiantes",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 400,
+    "recibido": 400,
+    "respuesta": {
+      "status": 400,
+      "error": "La solicitud no corresponde a una operacion valida"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "ACA2 periodo invalido",
+    "metodo": "GET",
+    "ruta": "/listadoestudiantes?periodoId=abc",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 400,
+    "recibido": 400,
+    "respuesta": {
+      "status": 400,
+      "error": "Los datos de la solicitud estan incompletos o tienen un formato invalido"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "ACA2 sin token",
+    "metodo": "GET",
+    "ruta": "/listadoestudiantes?periodoId=20",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 401,
+    "recibido": 401,
+    "respuesta": {
+      "status": 401,
+      "error": "No autorizado"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 revertir creacion al fallar GEN1",
+    "metodo": "POST",
+    "ruta": "/expediente",
+    "cuerpo": {
+      "identificacion": "000HTTPROLLBACK",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 creacion revertida",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTPROLLBACK",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 404,
+    "recibido": 404,
+    "respuesta": {
+      "status": 404,
+      "error": "Expediente no encontrado"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 revertir modificacion al fallar GEN1",
+    "metodo": "PUT",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": {
+      "identificacion": "000HTTP002",
+      "tipoIdentificacion": "Cedula",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Nombre Cambiado",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "0000-1111"
+      ]
+    },
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 datos conservados tras rollback",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "tipoIdentificacion": "Cedula",
+      "identificacion": "000HTTP002",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 revertir creacion al fallar GEN1",
+    "metodo": "POST",
+    "ruta": "/prematricula",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 sin creacion residual",
+    "metodo": "GET",
+    "ruta": "/prematricula",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": [
+      {
+        "id": 1,
+        "identificacionEstudiante": "000HTTP002",
+        "carreraId": 1,
+        "cursos": [
+          11
+        ],
+        "observaciones": "Modificacion local",
+        "periodoId": 20
+      }
+    ],
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 revertir modificacion al fallar GEN1",
+    "metodo": "PUT",
+    "ruta": "/prematricula/1",
+    "cuerpo": {
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        10
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 detalle conservado tras rollback",
+    "metodo": "GET",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 no borrar estudiante referenciado",
+    "metodo": "DELETE",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 409,
+    "recibido": 409,
+    "respuesta": {
+      "status": 409,
+      "error": "La operacion entra en conflicto con datos relacionados o restricciones de la base"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 revertir borrado al fallar GEN1",
+    "metodo": "DELETE",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 cabecera y detalle conservados",
+    "metodo": "GET",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "id": 1,
+      "identificacionEstudiante": "000HTTP002",
+      "carreraId": 1,
+      "cursos": [
+        11
+      ],
+      "observaciones": "Modificacion local",
+      "periodoId": 20
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 borrar prematricula",
+    "metodo": "DELETE",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 204,
+    "recibido": 204,
+    "respuesta": null,
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT1 confirmar borrado",
+    "metodo": "GET",
+    "ruta": "/prematricula/1",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 404,
+    "recibido": 404,
+    "respuesta": {
+      "status": 404,
+      "error": "Prematricula no encontrada"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 revertir borrado al fallar GEN1",
+    "metodo": "DELETE",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": true,
+    "esperado": 503,
+    "recibido": 503,
+    "respuesta": {
+      "status": 503,
+      "error": "No fue posible registrar la bitacora con el servicio de seguridad"
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 expediente y telefonos conservados",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 200,
+    "recibido": 200,
+    "respuesta": {
+      "tipoIdentificacion": "Cedula",
+      "identificacion": "000HTTP002",
+      "email": "prueba@cuc.cr",
+      "nombreCompleto": "Ana Maria",
+      "fechaNacimiento": "2012-05-10",
+      "provinciaId": 1,
+      "cantonId": 2,
+      "distritoId": 3,
+      "otrasSenas": "Datos ficticios HTTP",
+      "telefonos": [
+        "5555-0000"
+      ]
+    },
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 borrar expediente",
+    "metodo": "DELETE",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 204,
+    "recibido": 204,
+    "respuesta": null,
+    "location": null,
+    "estado_correcto": true
+  },
+  {
+    "prueba": "MAT3 confirmar borrado",
+    "metodo": "GET",
+    "ruta": "/expediente/000HTTP002",
+    "cuerpo": null,
+    "bitacora_simulada_falla": false,
+    "esperado": 404,
+    "recibido": 404,
+    "respuesta": {
+      "status": 404,
+      "error": "Expediente no encontrado"
+    },
+    "location": null,
+    "estado_correcto": true
+  }
+]

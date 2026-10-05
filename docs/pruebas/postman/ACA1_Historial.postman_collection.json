@@ -1,0 +1,171 @@
+{
+  "info": {
+    "name": "ACA1 - Historial academico",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Preparada, no ejecutada contra servicios reales. Configurar token y estudiante existente. Promedio acumulado = suma(nota * porcentaje / 100), sin normalizar rubros pendientes. Una fila por intento activo; solo codigoCurso, nombreCurso y promedio. Las consultas registran GEN1."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8084"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "tipoIdentificacion",
+      "value": "Cedula"
+    },
+    {
+      "key": "identificacion",
+      "value": ""
+    },
+    {
+      "key": "identificacionInexistente",
+      "value": "INEXISTENTE_ACA1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Consultar historial",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Campos del historial\", function () { const filas = pm.response.json(); pm.expect(filas).to.be.an(\"array\"); filas.forEach(function (fila) { pm.expect(Object.keys(fila).sort()).to.eql([\"codigoCurso\", \"nombreCurso\", \"promedio\"]); pm.expect(fila.promedio).to.be.a(\"number\"); }); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Falta tipo",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/historialacademico?identificacion={{identificacion}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Falta identificacion",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Identificacion vacia",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion=%20"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estudiante inexistente",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacionInexistente}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 404\", function () { pm.response.to.have.status(404); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sin token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Estado 401\", function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

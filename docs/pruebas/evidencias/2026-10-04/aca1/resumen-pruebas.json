@@ -1,0 +1,97 @@
+{
+  "fecha": "2026-10-04",
+  "ambiente": "H2 y servicios externos simulados",
+  "origen": "Reportes JUnit de la ejecucion aca1-build-v2, sin una nueva ejecucion en esta revision",
+  "totales": {
+    "tests": 251,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "clases": [
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.academico.HistorialAcademicoApiTest",
+      "tests": 21,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.academico.ListadoEstudiantesApiTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.academico.MatriculaNotasClientTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest",
+      "tests": 40,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest",
+      "tests": 48,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest",
+      "tests": 41,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest",
+      "tests": 31,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.seguridad.BitacoraServiceTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona4.SeguridadRutasTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ]
+}
