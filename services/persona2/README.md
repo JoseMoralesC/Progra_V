@@ -6,17 +6,20 @@ Servicio REST de oferta académica y administración de usuarios. Implementa los
 
 - Java 21.
 - Persona 1/Seguridad en `http://localhost:5158`.
-- Variable de entorno `DB_PASSWORD` con la contraseña de SQL Server.
-- Base `db70273` con los esquemas `academico` y `seguridad`.
+- Variables de entorno `DB_URL`, `DB_USER` y `DB_PASSWORD` para SQL Server.
+- Base de integración `PrograV`, accesible por Tailscale, con los esquemas `academico` y `seguridad`.
 
 ## Ejecución
 
 En Windows PowerShell:
 
 ```powershell
-$env:DB_PASSWORD = '<contraseña>'
-.\mvnw.cmd spring-boot:run
+.\run-prograv.ps1
 ```
+
+El script toma la conexión `SeguridadDb` del archivo local de Seguridad `appsettings.Development.json`, verifica que use `PrograV` y configura las variables solo durante la ejecución. Ese archivo contiene credenciales locales y debe permanecer ignorado por Git.
+
+También puede ejecutarse directamente configurando `DB_URL` (URL JDBC), `DB_USER` y `DB_PASSWORD` en la terminal y luego `mvnw.cmd spring-boot:run`.
 
 El servicio escucha en `http://localhost:8082`. Swagger queda disponible en `http://localhost:8082/swagger-ui.html` y el documento OpenAPI en `/v3/api-docs`.
 
@@ -41,7 +44,7 @@ Cada recurso ofrece `GET`, `GET /{id}`, `POST`, `PUT /{id}` y `DELETE /{id}`. La
 ## Pruebas
 
 ```powershell
-$env:DB_PASSWORD = '<contraseña>'
+# Configurar DB_URL, DB_USER y DB_PASSWORD localmente antes de ejecutar.
 .\mvnw.cmd test
 ```
 
