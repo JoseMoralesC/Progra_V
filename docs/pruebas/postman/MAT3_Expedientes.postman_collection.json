@@ -1,0 +1,1380 @@
+{
+  "info": {
+    "name": "Fabian - MAT3 Expedientes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Coleccion preparada; no ejecutada contra servicios reales. Requiere migraciones, token valido, DOMESTUD e IDs territoriales existentes. El flujo crea, modifica y elimina el expediente ficticio. Su ejecucion en PrograV requiere autorizacion de Fabian."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8084"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "identificacionPrueba",
+      "value": "PRUEBA-MAT3-FABIAN"
+    }
+  ],
+  "item": [
+    {
+      "name": "Crear, consultar y modificar",
+      "item": [
+        {
+          "name": "P01 Crear expediente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P04 Consultar todos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P05 Consultar por identificacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar numero duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Pasaporte\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P02 Modificar expediente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Mora\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"333\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar cambio guardado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Campos obligatorios",
+      "item": [
+        {
+          "name": "P06 Crear sin identificacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin identificacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin tipoIdentificacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin tipoIdentificacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin email",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin nombreCompleto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin nombreCompleto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin fechaNacimiento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin fechaNacimiento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin provinciaId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin provinciaId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin cantonId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin cantonId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin distritoId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin distritoId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin otrasSenas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin otrasSenas",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P06 Crear sin telefonos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P08 Modificar sin telefonos",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Datos invalidos",
+      "item": [
+        {
+          "name": "P10 Nombre con numero (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P10 Nombre con numero (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P11 Email sin formato (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P11 Email sin formato (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P13 Dominio no permitido (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P13 Dominio no permitido (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P07 Telefonos vacios (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P07 Telefonos vacios (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P07 Otras senas en blanco (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P07 Otras senas en blanco (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Autorizacion requerida",
+      "item": [
+        {
+          "name": "P16 Sin token: POST /expediente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P16 Sin token: PUT /expediente/{{identificacionPrueba}}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": 1,\n  \"cantonId\": 2,\n  \"distritoId\": 3,\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P16 Sin token: DELETE /expediente/{{identificacionPrueba}}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P16 Sin token: GET /expediente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P16 Sin token: GET /expediente/{{identificacionPrueba}}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Eliminar expediente de prueba",
+      "item": [
+        {
+          "name": "P03 Eliminar expediente de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
