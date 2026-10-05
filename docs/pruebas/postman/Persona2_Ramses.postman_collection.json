@@ -2,7 +2,7 @@
   "info": {
     "name": "Persona 2 - Ramses (USR1, ACD1, ACD6, ACD2)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Preparada según los controladores del repositorio. Pendiente de ejecución en Postman. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
+    "description": "Verificada en Postman Runner local el 5 de octubre de 2026 contra PrograV: 56 solicitudes, 72 comprobaciones aprobadas, cero fallos, errores y omisiones. Evidencias en docs/pruebas/RESUMEN_PERSONA2.md. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
   },
   "auth": {
     "type": "bearer",
