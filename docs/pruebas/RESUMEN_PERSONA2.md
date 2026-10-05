@@ -13,6 +13,10 @@ Verificación del 5 de octubre de 2026 sobre SQL Server del equipo, conectado po
 
 ## Evidencia
 
+- [Runner Postman Persona 1: 56 aprobadas](evidencias/postman_persona1_runner.png).
+- [Runner Postman Persona 2: 72 aprobadas](evidencias/postman_persona2_runner.png).
+- [Consulta, actualización y validaciones de usuario](evidencias/postman_persona2_usuario.png).
+- [Eliminaciones y confirmaciones 404](evidencias/postman_persona2_limpieza.png).
 - [Resultados de las 99 peticiones](evidencias/2026-10-05/persona1-persona2-crud/resultados-http.json): método, ruta de plantilla, código HTTP y resultado de cada aserción.
 - [Resultados de la suite Java](evidencias/2026-10-05/persona1-persona2-crud/suite-persona2.json).
 - [Verificación de transacciones](evidencias/2026-10-05/persona1-persona2-crud/transacciones.json).
@@ -27,6 +31,6 @@ DOMPROF faltaba en PrograV y se creó mediante la API de parámetros con valor c
 
 Se corrigió la bitácora de Persona 2 para sustituir los valores JSON de contraseña/hash por `[OCULTA]` antes de guardarlos. Las pruebas cubren campos de contraseña, comillas escapadas y conservación de datos no sensibles.
 
-Las colecciones se ejecutaron mediante `ejecutar-http.cjs`, un ejecutor local que usa Node y sus bibliotecas integradas para enviar las peticiones y evaluar las aserciones. No se ejecutaron en la aplicación Postman ni en Newman. El reporte omite cuerpos completos porque podrían incluir información personal de la base compartida, contraseñas o tokens.
+Las colecciones se ejecutaron inicialmente mediante `ejecutar-http.cjs`. Posteriormente, el 5 de octubre de 2026, se ejecutaron en la aplicación Postman 12.30.5, Runner local, una iteración y entorno `Persona1_Persona2.local`: Persona 1 aprobó 56 comprobaciones en 11,104 segundos y Persona 2 aprobó 72 en 16,476 segundos. Ambos resultados muestran cero fallos, errores y omisiones. Las capturas no incluyen contraseñas, tokens ni cuerpos con datos personales reales. Las credenciales se configuraron como valores locales, sin compartirlas.
 
-Quedan pendientes las capturas del Runner de Postman que requiera la entrega y la revisión completa de los textos de GEN1 contra cada criterio del PDF. Esta evidencia acredita los casos enumerados; no certifica todos los criterios del proyecto ni los servicios de otras personas.
+Las capturas del Runner están incluidas. Queda pendiente la revisión completa de los textos de GEN1 contra cada criterio del PDF. Esta evidencia acredita los casos enumerados; no certifica todos los criterios del proyecto ni los servicios de otras personas.
