@@ -1,0 +1,23 @@
+{
+  "fecha": "2026-10-05",
+  "base": "PrograV",
+  "accesoSql": "Tailscale",
+  "herramienta": "Peticiones HTTP desde terminal; no Postman",
+  "arranquePersona2": {
+    "puerto": 8082,
+    "hibernateDdlAuto": "validate",
+    "resultado": "Arranque correcto y esquema validado",
+    "catalogoHibernate": "PrograV"
+  },
+  "peticiones": [
+    { "metodo": "POST", "servicio": "Seguridad", "ruta": "/login", "estado": 201, "jwtEmitido": true },
+    { "metodo": "GET", "servicio": "Persona2", "ruta": "/usuario/{correoCuentaIntegracion}", "estado": 200, "cuentaEsperada": true },
+    { "metodo": "GET", "servicio": "Persona2", "ruta": "/institucion", "estado": 200 },
+    { "metodo": "GET", "servicio": "Persona2", "ruta": "/profesor", "estado": 200 },
+    { "metodo": "GET", "servicio": "Persona2", "ruta": "/carrera", "estado": 200 },
+    { "metodo": "GET", "servicio": "Seguridad", "ruta": "/parametro/DOMPROF", "estado": 404 }
+  ],
+  "alcance": "Conectividad, validacion del esquema y consultas autenticadas. CRUD completo y colecciones Postman pendientes.",
+  "pendiente": "DOMPROF no existe en PrograV. Debe configurarse antes de probar altas de profesores.",
+  "datosSensibles": "Credenciales, tokens y correo real omitidos."
+}
