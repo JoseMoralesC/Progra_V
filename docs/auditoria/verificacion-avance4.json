@@ -1,0 +1,75 @@
+{
+  "fecha": "2026-10-08",
+  "commit_auditado": "143f92fbefed2d0fd228d9c4a6ec07d2cc78aa58",
+  "alcance": "Revision documental y de codigo, pruebas automatizadas actuales, compilacion, dos intentos de arranque y consultas SQL de solo lectura. No certifico una ejecucion integrada completa de Postman.",
+  "historias_pdf": 22,
+  "historias_con_implementacion_visible": 22,
+  "pruebas_actuales": [
+    { "servicio": "seguridad", "pruebas": 5, "fallos": 0, "errores": 0, "omitidas": 0, "salida": 0, "alcance": "AuthControllerTests" },
+    { "servicio": "persona2", "pruebas": 12, "fallos": 0, "errores": 0, "omitidas": 0, "salida": 0, "alcance": "Incluye contextLoads contra PrograV con propiedades locales de datasource y ddl-auto=validate" },
+    { "servicio": "persona4", "pruebas": 251, "fallos": 0, "errores": 0, "omitidas": 0, "salida": 0, "alcance": "H2 y servicios HTTP simulados" },
+    { "servicio": "persona5", "pruebas": 16, "fallos": 0, "errores": 0, "omitidas": 0, "salida": 0, "alcance": "Repositorios/correo simulados y configuracion local" }
+  ],
+  "total_pruebas_actuales": 284,
+  "builds_actuales": [
+    { "proyecto": "NuevoAvatar.Curso", "salida": 0, "advertencias": 0, "errores": 0 },
+    { "proyecto": "NuevoAvatar.Grupo", "salida": 0, "advertencias": 0, "errores": 0 },
+    { "proyecto": "NuevoAvatar.Periodo", "salida": 0, "advertencias": 0, "errores": 0 },
+    { "proyecto": "NuevoAvatar.Direccion", "salida": 0, "advertencias": 0, "errores": 0 }
+  ],
+  "restauracion_dotnet": "dotnet restore <proyecto> --source https://api.nuget.org/v3/index.json; builds finales con --no-restore. No modifico configuracion NuGet versionada.",
+  "arranques_actuales": [
+    { "proyecto": "NuevoAvatar.Periodo", "puerto": 18083, "salida": 1, "error": "No public 'Invoke' or 'InvokeAsync' method found for middleware", "referencia": "NuevoAvatar.Periodo/Program.cs:51" },
+    { "proyecto": "NuevoAvatar.Direccion", "puerto": 18084, "salida": 1, "error": "No public 'Invoke' or 'InvokeAsync' method found for middleware", "referencia": "NuevoAvatar.Direccion/Program.cs:49" }
+  ],
+  "prograv_solo_lectura": {
+    "tablas_dominio": 26,
+    "relaciones": 31,
+    "relaciones_deshabilitadas_o_no_verificadas": 0,
+    "diagramas_guardados": 0,
+    "fk_matricula_estudiante_presente": true,
+    "catalogos": { "provincias": 1, "cantones": 1, "distritos": 1 },
+    "parametros_observados": { "DOMESTUD": "cuc.cr", "DOMPROF": "cuc.ac.cr" },
+    "parametros_no_encontrados_en_consulta": ["EXPJWT", "EXPREFRESH"]
+  },
+  "documentacion": {
+    "doc_master": "docs/doc_master/Doc Master.docx",
+    "dibujos_doc_master": 0,
+    "doc_master_doc_encontrado": false,
+    "scripts_sql_bajo_db": 23,
+    "alcance_doc_master": "Propuesta de analisis/diseno, no documento final de resultados"
+  },
+  "capturas_inventariadas": { "alejandro": 20, "fabian": 10, "persona5": 61 },
+  "capturas_revisadas_visualmente": [
+    "docs/evidencia/alejandro/P3-DIR-01.png",
+    "docs/evidencia/alejandro/P3-PER-01.png",
+    "docs/evidencia/persona5/GEN1_01_BitacoraMatricula_200.PNG",
+    "docs/evidencia/persona5/IPN1_01_CrearFactura_201.PNG",
+    "docs/evidencia/persona5/IPN3_04_CorreoRecibido.PNG"
+  ],
+  "evidencia_http_historica": {
+    "fecha": "2026-10-05",
+    "fuente": "docs/pruebas/evidencias/2026-10-05/persona1-persona2-crud/resultados-http.json",
+    "herramienta": "Ejecutor HTTP Node; complementado por capturas historicas de Runner Postman",
+    "persona1": { "solicitudes": 43, "aserciones": 56, "fallos_aserciones": 0 },
+    "persona2": { "solicitudes": 56, "aserciones": 72, "fallos_aserciones": 0 },
+    "reejecutada_en_esta_auditoria": false
+  },
+  "colecciones_solicitudes_preparadas": {
+    "Persona1_Seguridad": 43,
+    "Persona2_Ramses": 56,
+    "Persona4_Fabian_Recorrido": 85,
+    "Persona5_Jose": 79,
+    "MAT3_Expedientes": 43,
+    "MAT1_Prematricula": 30,
+    "ACA1_Historial": 6,
+    "ACA2_Listado": 4
+  },
+  "limites": [
+    "No reejecuto las colecciones de Postman ni envio correos en esta auditoria.",
+    "No recreo la base de datos ni ejecuto migraciones o fixtures.",
+    "No certifico individualmente todas las capturas ni todos los criterios de aceptacion.",
+    "No verifico el tablero remoto de HU ni el PR final.",
+    "No considero las pruebas H2 o simuladas como certificacion de integracion real completa."
+  ]
+}
