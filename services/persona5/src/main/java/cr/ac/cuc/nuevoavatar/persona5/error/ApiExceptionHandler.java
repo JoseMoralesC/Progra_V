@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> validacion(
@@ -38,6 +42,7 @@ public class ApiExceptionHandler {
     public ResponseEntity<ApiError> inesperado(
             Exception ex,
             HttpServletRequest request) {
+        LOG.error("Error en {} {}", request.getMethod(), request.getRequestURI(), ex);
         return respuesta(
             HttpStatus.INTERNAL_SERVER_ERROR,
             "Error interno del servidor",

@@ -2,7 +2,7 @@
   "info": {
     "name": "Fabian - MAT1 Prematricula",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Preparada, no ejecutada contra servicios reales. Requiere estudiante y oferta academica existentes, token y periodos acordes a la fecha de ejecucion. El flujo crea y elimina su prematricula de prueba. No crea ni borra estudiantes o cursos. Su ejecucion en PrograV requiere autorizacion de Fabian."
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla contra servicios reales. Utilizo estudiante y oferta academica existentes, token y periodos acordes a la fecha de ejecucion. El flujo que preparo crea y elimina la prematricula de prueba, sin crear ni borrar estudiantes o cursos. Para ejecutarla en PrograV necesito la autorizacion de Fabian."
   },
   "auth": {
     "type": "bearer",

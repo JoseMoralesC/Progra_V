@@ -1,8 +1,8 @@
 # Nuevo Avatar - Persona 2
 
-Servicio REST de oferta académica y administración de usuarios. Implementa los criterios de Persona 2 (`ACD1` a `ACD6`) y el endpoint de usuarios de Persona 1 (`USR1`).
+En este README documento el servicio REST de oferta académica y administración de usuarios, que implementa los criterios de Persona 2 (`ACD1` a `ACD6`) y el endpoint de usuarios de Persona 1 (`USR1`).
 
-## Requisitos
+## Requisitos que utilizo
 
 - Java 21.
 - Persona 1/Seguridad en `http://localhost:5158`.
@@ -11,18 +11,18 @@ Servicio REST de oferta académica y administración de usuarios. Implementa los
 
 ## Ejecución
 
-En Windows PowerShell:
+Inicio el servicio desde Windows PowerShell:
 
 ```powershell
 $env:DB_PASSWORD = '<contraseña>'
 .\mvnw.cmd spring-boot:run
 ```
 
-El servicio escucha en `http://localhost:8082`. Swagger queda disponible en `http://localhost:8082/swagger-ui.html` y el documento OpenAPI en `/v3/api-docs`.
+Accedo al servicio en `http://localhost:8082`. Consulto Swagger en `http://localhost:8082/swagger-ui.html` y reviso el documento OpenAPI en `/v3/api-docs`.
 
 ## Autenticación y bitácora
 
-Todos los endpoints de negocio exigen `Authorization: Bearer <jwt>`. El JWT se valida llamando a `GET http://localhost:5158/validate`. Cada consulta y operación se registra mediante `POST http://localhost:5158/bitacora`.
+Para los endpoints de negocio utilizo `Authorization: Bearer <jwt>`. Valido el JWT mediante `GET http://localhost:5158/validate`. Registro cada consulta y operación mediante `POST http://localhost:5158/bitacora`.
 
 ## Recursos
 
@@ -36,7 +36,7 @@ Todos los endpoints de negocio exigen `Authorization: Bearer <jwt>`. El JWT se v
 | Periodo | `/periodo` | ACD5 |
 | Profesor | `/profesor` | ACD6 |
 
-Cada recurso ofrece `GET`, `GET /{id}`, `POST`, `PUT /{id}` y `DELETE /{id}`. Las altas responden `201`, las eliminaciones exitosas `204`, las validaciones incorrectas `400`, los recursos inexistentes `404`, conflictos referenciales `409` y peticiones sin token válido `401`.
+En cada recurso dispongo de `GET`, `GET /{id}`, `POST`, `PUT /{id}` y `DELETE /{id}`. Las altas responden `201`, las eliminaciones exitosas `204`, las validaciones incorrectas `400`, los recursos inexistentes `404`, conflictos referenciales `409` y peticiones sin token válido `401`.
 
 ## Pruebas
 
@@ -45,8 +45,8 @@ $env:DB_PASSWORD = '<contraseña>'
 .\mvnw.cmd test
 ```
 
-Las pruebas cubren validaciones de DTO, fechas de periodo, relaciones de grupo y autorización. El contexto de Spring también ejecuta la validación Hibernate del esquema real porque `spring.jpa.hibernate.ddl-auto=validate`.
+Con estas pruebas verifico validaciones de DTO, fechas de periodo, relaciones de grupo y autorización. También valido el esquema real mediante el contexto de Spring y Hibernate, porque `spring.jpa.hibernate.ddl-auto=validate`.
 
 ## Transacciones
 
-Las lecturas usan `@Transactional(readOnly = true)` y las escrituras transacciones acotadas. `spring.jpa.open-in-view=false`, el timeout es de 30 segundos y HikariCP mantiene un pool pequeño con detección de conexiones retenidas, para evitar transacciones abiertas después de responder.
+Utilizo `@Transactional(readOnly = true)` para las lecturas y transacciones acotadas para las escrituras. Configuro `spring.jpa.open-in-view=false`, un timeout de 30 segundos y un pool pequeño de HikariCP con detección de conexiones retenidas, para evitar transacciones abiertas después de responder.

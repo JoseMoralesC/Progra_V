@@ -1,8 +1,8 @@
 # Propuesta - Proyecto Nuevo Avatar V1
 
-Esta propuesta presenta la estimación y asignación de las historias de usuario del proyecto Nuevo Avatar V1. Para cada historia se definió un responsable y una cantidad de puntos de historia de acuerdo con su nivel de complejidad.
+En esta propuesta presento la estimación y asignación de las historias de usuario del proyecto Nuevo Avatar V1. Documento el responsable y los puntos de historia definidos para cada una según su complejidad.
 
-La propuesta permite identificar:
+En mi propuesta identifico:
 
 - Qué historia de usuario se va a desarrollar.
 - Quién será responsable.
@@ -11,7 +11,7 @@ La propuesta permite identificar:
 
 ## Criterio usado para los history points
 
-Se usa una escala tipo Fibonacci, como la vista en clase:
+Utilizo una escala tipo Fibonacci, como la vista en clase:
 
 | Puntos | Complejidad | Criterio usado |
 |---:|---|---|
@@ -20,7 +20,7 @@ Se usa una escala tipo Fibonacci, como la vista en clase:
 | 5 | Media | CRUD con relaciones, validaciones importantes o dependencia de otra HU. |
 | 8 | Alta | Seguridad, tokens, procesos transaccionales o varias reglas de negocio. |
 
-Para la estimación se toma en cuenta:
+Para la estimación tomo en cuenta:
 
 - Cantidad de operaciones solicitadas.
 - Validaciones indicadas en los criterios de aceptación.
@@ -64,10 +64,10 @@ Para la estimación se toma en cuenta:
 | Fabián | MAT3, MAT1, ACD6, ACA1 | 18 |
 | José | MAT2, MAT5, IPN1, IPN2 | 23 |
 
-Total estimado del proyecto: **99 puntos de historia**.
+Estimo el total del proyecto en **99 puntos de historia**.
 
 ## Nota final
 
-El pasado viernes por la noche, el Grupo 7 se reunió en una sesión de trabajo para realizar el ejercicio de estimación de las historias de usuario mediante la escala Fibonacci. Durante la sesión se analizaron los criterios de aceptación, la cantidad de operaciones, las validaciones y las relaciones existentes entre las historias, con el fin de asignar una puntuación basada en su nivel de complejidad.
+El pasado viernes por la noche nos reunimos como Grupo 7 para estimar las historias de usuario mediante la escala Fibonacci. Durante la sesión analizamos los criterios de aceptación, las operaciones, las validaciones y las relaciones entre las historias para asignar una puntuación según su complejidad.
 
-Una vez finalizada la estimación, las historias se organizaron considerando tanto su puntuación como las dependencias entre ellas. Con base en este análisis se realizó la asignación por integrante que se presenta en la tabla anterior, procurando distribuir el trabajo de manera organizada y de acuerdo con la complejidad estimada de cada historia.
+Una vez finalizada la estimación, organizamos las historias según su puntuación y sus dependencias. Con ese análisis realizamos la asignación por integrante que presento en la tabla anterior, procurando distribuir el trabajo de acuerdo con la complejidad estimada.

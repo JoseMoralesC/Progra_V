@@ -1,6 +1,6 @@
 # Migraciones - Persona 5
 
-Scripts incrementales para las HU de Jose:
+Organizo mis scripts incrementales para estas historias:
 
 - `MAT2`: matricula.
 - `MAT5`: desglose de rubros y notas.
@@ -8,10 +8,11 @@ Scripts incrementales para las HU de Jose:
 - `IPN2`: pagos.
 - `IPN3`: notificaciones por correo.
 
-Ejecutar sobre la base de integracion ya creada. No incluyen `CREATE DATABASE`,
-credenciales, datos de prueba ni configuracion SMTP.
+Ejecuto estas migraciones sobre la base de integracion ya creada.
+No incluyo `CREATE DATABASE`, credenciales, datos de prueba ni
+configuracion SMTP en estos scripts.
 
-## Orden
+## Mi orden de ejecucion
 
 1. `001_crear_matricula.sql`
 2. `002_crear_desglose_rubro.sql`
@@ -20,13 +21,15 @@ credenciales, datos de prueba ni configuracion SMTP.
 5. `005_crear_factura_detalle.sql`
 6. `006_crear_pago.sql`
 
-`IPN3` no crea tabla por ahora. El envio de correo debe usar parametros o
-variables de ambiente, y cada envio debe quedar auditado mediante `GEN1`.
+Para `IPN3` no creo una tabla en estas migraciones. Configuro el envio
+mediante parametros o variables de ambiente y registro cada envio con
+`GEN1`.
 
-## Notas de integracion
+## Mis notas de integracion
 
-- `IdentificacionEstudiante` queda como texto hasta que Persona 4 integre la
-  tabla de expedientes/estudiantes.
-- Las referencias a curso, grupo y periodo apuntan a `academico`.
-- La sumatoria de rubros igual a 100 se valida en el servicio, porque depende
+- En estas migraciones mantengo `IdentificacionEstudiante` como texto.
+  En PrograV tambien considero la relacion con el expediente incorporada
+  por las migraciones de Persona 4.
+- Referencio cursos, grupos y periodos del esquema `academico`.
+- Valido en el servicio que los rubros sumen 100, porque la suma depende
   de varias filas.
