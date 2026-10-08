@@ -65,7 +65,7 @@ public class ProfesorService {
         Profesor profesor = buscarO404(id);
         asignarDatos(profesor, request);
 
-        // Eliminar primero los teléfonos anteriores evita conflictos
+        // Elimino primero los teléfonos anteriores para evitar conflictos
         // con la restricción UNIQUE (ProfesorId, Telefono).
         profesor.getTelefonos().clear();
         repositorio.flush();

@@ -44,7 +44,7 @@ Cada recurso ofrece `GET`, `GET /{id}`, `POST`, `PUT /{id}` y `DELETE /{id}`. La
 ## Pruebas
 
 ```powershell
-# Configurar DB_URL, DB_USER y DB_PASSWORD localmente antes de ejecutar.
+# Configuro DB_URL, DB_USER y DB_PASSWORD localmente antes de ejecutar.
 .\mvnw.cmd test
 ```
 
