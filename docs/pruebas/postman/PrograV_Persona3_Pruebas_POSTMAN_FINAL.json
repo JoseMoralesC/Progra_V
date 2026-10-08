@@ -1,0 +1,723 @@
+{
+  "info": {
+    "_postman_id": "p3-persona3-pruebas",
+    "name": "Progra V - Persona 3 - Pruebas",
+    "description": "Coleccion de pruebas de Persona 3 para Cursos, Periodos, Grupos y Direcciones, incluyendo autenticacion y bitacora. Antes de ejecutar: 1) Tailscale debe estar conectado para que los microservicios alcancen la base de datos remota; 2) cada microservicio debe tener su .env local con las credenciales de SQL Server; 3) completar loginUsuario y loginContrasena en esta coleccion. No se guardan credenciales de SQL Server aqui. El Login guarda automaticamente access_token en la variable de coleccion token y las solicitudes protegidas heredan ese Bearer.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cursoBaseUrl",
+      "value": "https://localhost:7082",
+      "type": "string"
+    },
+    {
+      "key": "periodoBaseUrl",
+      "value": "https://localhost:7253",
+      "type": "string"
+    },
+    {
+      "key": "grupoBaseUrl",
+      "value": "https://localhost:7257",
+      "type": "string"
+    },
+    {
+      "key": "direccionBaseUrl",
+      "value": "https://localhost:7264",
+      "type": "string"
+    },
+    {
+      "key": "cursoId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "cursoPruebaId",
+      "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "carreraId",
+      "value": "3",
+      "type": "string"
+    },
+    {
+      "key": "periodoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "periodoPruebaId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "grupoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "grupoPruebaId",
+      "value": "2",
+      "type": "string"
+    },
+    {
+      "key": "provinciaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "cantonId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "seguridadBaseUrl",
+      "value": "http://localhost:5158",
+      "type": "string"
+    },
+    {
+      "key": "loginUsuario",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "loginContrasena",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Seguridad",
+      "item": [
+        {
+          "name": "P3-AUTH-01 - Login y guardar access token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{loginUsuario}}",
+                "type": "text"
+              },
+              {
+                "key": "contrasena",
+                "value": "{{loginContrasena}}",
+                "type": "text"
+              }
+            ],
+            "url": "{{seguridadBaseUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Login responde 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.access_token, 'access_token').to.be.a('string').and.not.empty;",
+                  "pm.collectionVariables.set('token', data.access_token);",
+                  "if (data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
+                  "if (data.expires_in) pm.collectionVariables.set('tokenExpiresIn', data.expires_in);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-AUTH-02 - Validar token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadBaseUrl}}/validate",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Token valido', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.expect(pm.response.json()).to.eql(true);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-AUTH-03 - Registrar bitacora",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"{{loginUsuario}}\",\n  \"descripcion\": \"Prueba Postman Persona 3 - validacion de bitacora\"\n}"
+            },
+            "url": "{{seguridadBaseUrl}}/bitacora"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Bitacora responde 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Cursos",
+      "item": [
+        {
+          "name": "P3-CUR-01 - GET todos los cursos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{cursoBaseUrl}}/curso"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-02 - GET curso por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{cursoBaseUrl}}/curso/{{cursoId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-03 - POST crear curso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carreraId\": 3,\n  \"nivel\": 1,\n  \"nombre\": \"Curso Prueba Persona 3\"\n}"
+            },
+            "url": "{{cursoBaseUrl}}/curso"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data.cursoId != null) pm.collectionVariables.set('cursoPruebaId', String(data.cursoId));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-04 - PUT modificar curso",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carreraId\": 3,\n  \"nivel\": 3,\n  \"nombre\": \"Curso Prueba QA Modificado\"\n}"
+            },
+            "url": "{{cursoBaseUrl}}/curso/{{cursoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-05 - GET cursos por carrera",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{cursoBaseUrl}}/curso/carrera/{{carreraId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-06 - DELETE curso",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{cursoBaseUrl}}/curso/{{cursoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-CUR-07 - GET verificar eliminacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{cursoBaseUrl}}/curso/{{cursoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Periodos",
+      "item": [
+        {
+          "name": "P3-PER-01 - GET todos los periodos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{periodoBaseUrl}}/periodo"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-PER-02 - GET periodo por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{periodoBaseUrl}}/periodo/{{periodoId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-PER-03 - POST crear periodo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"anio\": 2027,\n  \"numeroPeriodo\": 2,\n  \"fechaInicio\": \"2027-07-01\",\n  \"fechaFin\": \"2027-12-31\"\n}"
+            },
+            "url": "{{periodoBaseUrl}}/periodo"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data.periodoId != null) pm.collectionVariables.set('periodoPruebaId', String(data.periodoId));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-PER-04 - PUT modificar periodo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"anio\": 2027,\n  \"numeroPeriodo\": 2,\n  \"fechaInicio\": \"2027-07-01\",\n  \"fechaFin\": \"2027-12-31\"\n}"
+            },
+            "url": "{{periodoBaseUrl}}/periodo/{{periodoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-PER-05 - DELETE periodo",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{periodoBaseUrl}}/periodo/{{periodoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Grupos",
+      "item": [
+        {
+          "name": "P3-GRU-01 - GET todos los grupos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{grupoBaseUrl}}/grupo"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-GRU-02 - GET grupo por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{grupoBaseUrl}}/grupo/{{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-GRU-03 - POST crear grupo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroGrupo\": 2,\n  \"cursoId\": 2,\n  \"profesorId\": 5,\n  \"horario\": \"Martes 18:00 a 20:00\",\n  \"cupo\": 25,\n  \"periodoId\": 1\n}"
+            },
+            "url": "{{grupoBaseUrl}}/grupo"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const data = pm.response.json();",
+                  "if (data.grupoId != null) pm.collectionVariables.set('grupoPruebaId', String(data.grupoId));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-GRU-04 - PUT modificar grupo",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroGrupo\": 2,\n  \"cursoId\": 2,\n  \"profesorId\": 5,\n  \"horario\": \"Miercoles 18:00 a 20:00\",\n  \"cupo\": 30,\n  \"periodoId\": 1\n}"
+            },
+            "url": "{{grupoBaseUrl}}/grupo/{{grupoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-GRU-05 - DELETE grupo",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{grupoBaseUrl}}/grupo/{{grupoPruebaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 204', function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Direcciones",
+      "item": [
+        {
+          "name": "P3-DIR-01 - GET provincias",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{direccionBaseUrl}}/provincias"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-DIR-02 - GET cantones por provincia",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{direccionBaseUrl}}/cantones/{{provinciaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "P3-DIR-03 - GET distritos por provincia y canton",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{direccionBaseUrl}}/distritos/{{provinciaId}}/{{cantonId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
