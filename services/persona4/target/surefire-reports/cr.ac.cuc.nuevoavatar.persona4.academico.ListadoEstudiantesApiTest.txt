@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cr.ac.cuc.nuevoavatar.persona4.academico.ListadoEstudiantesApiTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.973 s -- in cr.ac.cuc.nuevoavatar.persona4.academico.ListadoEstudiantesApiTest
