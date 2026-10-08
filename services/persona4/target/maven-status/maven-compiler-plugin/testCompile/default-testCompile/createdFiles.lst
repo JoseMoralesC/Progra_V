@@ -1,0 +1,12 @@
+cr\ac\cuc\nuevoavatar\persona4\academico\HistorialAcademicoApiTest.class
+cr\ac\cuc\nuevoavatar\persona4\seguridad\AutorizacionInterceptorTest.class
+cr\ac\cuc\nuevoavatar\persona4\academico\ListadoEstudiantesApiTest.class
+cr\ac\cuc\nuevoavatar\persona4\seguridad\BitacoraServiceTest.class
+cr\ac\cuc\nuevoavatar\persona4\seguridad\SeguridadClientTest.class
+cr\ac\cuc\nuevoavatar\persona4\SeguridadRutasTest.class
+cr\ac\cuc\nuevoavatar\persona4\expediente\DireccionClientTest.class
+cr\ac\cuc\nuevoavatar\persona4\academico\MatriculaNotasClientTest.class
+cr\ac\cuc\nuevoavatar\persona4\expediente\ExpedienteApiTest.class
+cr\ac\cuc\nuevoavatar\persona4\prematricula\PrematriculaApiTest.class
+cr\ac\cuc\nuevoavatar\persona4\expediente\ExpedienteValidadorTest.class
+cr\ac\cuc\nuevoavatar\persona4\prematricula\PrematriculaValidadorTest.class

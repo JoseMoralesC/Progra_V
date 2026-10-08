@@ -1,0 +1,49 @@
+{
+  "fecha": "2026-10-05",
+  "base": "PrograV",
+  "herramienta": "Maven Surefire",
+  "clases": [
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.grupo.GrupoServiceTest",
+      "pruebas": 1,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.NuevoAvatarPersona2ApplicationTests",
+      "pruebas": 1,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.periodo.PeriodoServiceTest",
+      "pruebas": 1,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptorTest",
+      "pruebas": 2,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest",
+      "pruebas": 3,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "clase": "cr.ac.cuc.nuevoavatar.persona2.ValidacionesRequestTest",
+      "pruebas": 4,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    }
+  ]
+}

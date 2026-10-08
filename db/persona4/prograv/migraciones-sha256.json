@@ -1,0 +1,14 @@
+[
+  {
+    "archivo": "001_crear_expedientes.sql",
+    "sha256": "8c796d16e8a5383d9c9fda6c8f9170b6587ff28ac4b1c51a3f356abe69a00c71"
+  },
+  {
+    "archivo": "002_relacionar_expedientes.sql",
+    "sha256": "ec9fc46b135e32fae00c62cbeedcff0716de011826aeffdff2abaa76b1609794"
+  },
+  {
+    "archivo": "003_crear_prematriculas.sql",
+    "sha256": "f045011cac8c61738f776cf53730ed252e4212ffaa5c9b0bf143c926a669569c"
+  }
+]

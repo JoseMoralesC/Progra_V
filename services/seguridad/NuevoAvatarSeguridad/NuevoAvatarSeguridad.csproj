@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>fe5ccb60-604d-4b55-8bec-9c1f131c4480</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NuevoAvatar.Seguridad.Abstract\NuevoAvatar.Seguridad.Abstract.csproj" />
+    <ProjectReference Include="..\NuevoAvatar.Seguridad.DataAccess\NuevoAvatar.Seguridad.DataAccess.csproj" />
+    <ProjectReference Include="..\NuevoAvatar.Seguridad.Models\NuevoAvatar.Seguridad.Models.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,9 @@
+{
+  "fecha": "2026-10-05",
+  "base": "PrograV",
+  "herramienta": "sqlcmd",
+  "consulta": "DBCC OPENTRAN('PrograV');",
+  "resultado": "No active open transactions.",
+  "codigoSalida": 0,
+  "momento": "Después de las pruebas CRUD y la suite de Persona 2"
+}

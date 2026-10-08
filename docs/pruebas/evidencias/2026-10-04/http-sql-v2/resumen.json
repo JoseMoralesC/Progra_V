@@ -1,0 +1,7 @@
+{
+  "completada": true,
+  "peticiones": 37,
+  "estados_correctos": 37,
+  "acceso_temporal_retirado": true,
+  "validaciones_semanticas_y_sql": true
+}

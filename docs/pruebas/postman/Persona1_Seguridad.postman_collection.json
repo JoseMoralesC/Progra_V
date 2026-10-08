@@ -1,0 +1,1279 @@
+{
+  "info": {
+    "name": "Persona 1 - Seguridad (USR2, USR3, USR4, USR5, GEN1)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Verificada en Postman Runner local el 5 de octubre de 2026 contra PrograV: 43 solicitudes, 56 comprobaciones aprobadas, cero fallos, errores y omisiones. Evidencias en docs/pruebas/RESUMEN_PERSONA2.md. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "p1Run",
+      "value": ""
+    },
+    {
+      "key": "parametroPrueba",
+      "value": ""
+    },
+    {
+      "key": "bitacoraId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 · USR5 - Autenticación",
+      "item": [
+        {
+          "name": "Login válido y guardar tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "{{password}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"usuario\") || !pm.environment.get(\"password\")) { pm.execution.skipRequest(); throw new Error(\"Complete usuario y password en el entorno local\"); }",
+                  "pm.collectionVariables.set(\"p1Run\", String(Date.now()));",
+                  "const letters = Array.from({length:8}, () => String.fromCharCode(65 + Math.floor(Math.random()*26))).join(\"\"); pm.collectionVariables.set(\"parametroPrueba\", \"PM\"+letters);",
+                  "pm.environment.unset(\"token\"); pm.environment.unset(\"refresh_token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { const j = pm.response.json(); pm.environment.set(\"token\", j.access_token); pm.environment.set(\"refresh_token\", j.refresh_token); }",
+                  "pm.test(\"JWT y refresh emitidos\", () => { const j = pm.response.json(); pm.expect(j.access_token).to.be.a(\"string\").and.not.empty; pm.expect(j.refresh_token).to.be.a(\"string\").and.not.empty; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar JWT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Token válido\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con contraseña incorrecta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "INCORRECTA_{{$guid}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login sin datos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar token inválido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{$randomUUID}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/validate",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Renovar y guardar tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.environment.set(\"refreshAnterior\", pm.environment.get(\"refresh_token\")); const j=pm.response.json(); pm.environment.set(\"token\",j.access_token); pm.environment.set(\"refresh_token\",j.refresh_token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh anterior revocado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshAnterior}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar JWT renovado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Token válido\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "USR2 - rol",
+      "item": [
+        {
+          "name": "Sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear dato de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/rol",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRol\": \"PM{{p1Run}}\",\n  \"nombreRol\": \"Prueba Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"rolCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"rolCreado\", true);",
+                  "pm.test(\"Dato creado\", () => pm.expect(pm.response.json().nombreRol).to.eql(\"Prueba Postman\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar identificador duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/rol",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRol\": \"PM{{p1Run}}\",\n  \"nombreRol\": \"Prueba Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar por identificador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/rol/PM{{p1Run}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRol\": \"PM{{p1Run}}\",\n  \"nombreRol\": \"Prueba Actualizada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Dato actualizado\", () => pm.expect(pm.response.json().nombreRol).to.eql(\"Prueba Actualizada\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar campos vacíos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/rol",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRol\": \"\",\n  \"nombreRol\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar nombre numérico",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/rol",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idRol\": \"PM{{p1Run}}\",\n  \"nombreRol\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar dato creado",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get(\"rolCreado\")) pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code===200) pm.collectionVariables.unset(\"rolCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "USR3 - parametro",
+      "item": [
+        {
+          "name": "Sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear dato de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/parametro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idParametro\": \"{{parametroPrueba}}\",\n  \"valor\": \"valor de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"parametroCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"parametroCreado\", true);",
+                  "pm.test(\"Dato creado\", () => pm.expect(pm.response.json().valor).to.eql(\"valor de prueba\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar identificador duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/parametro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idParametro\": \"{{parametroPrueba}}\",\n  \"valor\": \"valor de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar por identificador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/parametro/{{parametroPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idParametro\": \"{{parametroPrueba}}\",\n  \"valor\": \"valor actualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Dato actualizado\", () => pm.expect(pm.response.json().valor).to.eql(\"valor actualizado\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar campos vacíos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/parametro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idParametro\": \"\",\n  \"valor\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar identificador minúsculo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/parametro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idParametro\": \"minuscula\",\n  \"valor\": \"prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar dato creado",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get(\"parametroCreado\")) pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code===200) pm.collectionVariables.unset(\"parametroCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "USR4 - modulo",
+      "item": [
+        {
+          "name": "Sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/modulo",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear dato de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/modulo",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idModulo\": \"PM{{p1Run}}\",\n  \"nombreModulo\": \"Prueba Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"moduloCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) pm.collectionVariables.set(\"moduloCreado\", true);",
+                  "pm.test(\"Dato creado\", () => pm.expect(pm.response.json().nombreModulo).to.eql(\"Prueba Postman\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar identificador duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/modulo",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idModulo\": \"PM{{p1Run}}\",\n  \"nombreModulo\": \"Prueba Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/modulo"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar por identificador",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/modulo/PM{{p1Run}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idModulo\": \"PM{{p1Run}}\",\n  \"nombreModulo\": \"Prueba Actualizada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Dato actualizado\", () => pm.expect(pm.response.json().nombreModulo).to.eql(\"Prueba Actualizada\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar campos vacíos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/modulo",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idModulo\": \"\",\n  \"nombreModulo\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar nombre numérico",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/modulo",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idModulo\": \"PM{{p1Run}}\",\n  \"nombreModulo\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar dato creado",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.collectionVariables.get(\"moduloCreado\")) pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "if (pm.response.code===200) pm.collectionVariables.unset(\"moduloCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "GEN1 - Bitácora",
+      "item": [
+        {
+          "name": "Sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/bitacora",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear evidencia ficticia",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/bitacora",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"{{usuario}}\",\n  \"descripcion\": \"Prueba Postman Persona Uno {{p1Run}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if(pm.response.code===201) pm.collectionVariables.set(\"bitacoraId\",pm.response.json().idBitacora);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar evidencia creada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/bitacora/{{bitacoraId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Descripción de prueba\", () => pm.expect(pm.response.json().descripcion).to.include(pm.collectionVariables.get(\"p1Run\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar descripción vacía",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/bitacora",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": \"{{usuario}}\",\n  \"descripcion\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

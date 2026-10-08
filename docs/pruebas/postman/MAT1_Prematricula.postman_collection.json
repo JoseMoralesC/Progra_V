@@ -1,0 +1,993 @@
+{
+  "info": {
+    "name": "Fabian - MAT1 Prematricula",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla contra servicios reales. Utilizo estudiante y oferta academica existentes, token y periodos acordes a la fecha de ejecucion. El flujo que preparo crea y elimina la prematricula de prueba, sin crear ni borrar estudiantes o cursos. Para ejecutarla en PrograV necesito la autorizacion de Fabian."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8084"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "identificacionEstudiante",
+      "value": "PRUEBA-MAT3-FABIAN"
+    },
+    {
+      "key": "carreraId",
+      "value": "1"
+    },
+    {
+      "key": "cursoId",
+      "value": "10"
+    },
+    {
+      "key": "otroCursoId",
+      "value": "11"
+    },
+    {
+      "key": "cursoNivelDosId",
+      "value": "12"
+    },
+    {
+      "key": "periodoFuturoId",
+      "value": "20"
+    },
+    {
+      "key": "periodoHoyId",
+      "value": "21"
+    },
+    {
+      "key": "periodoPasadoId",
+      "value": "22"
+    },
+    {
+      "key": "prematriculaId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Crear, consultar y modificar",
+      "item": [
+        {
+          "name": "Crear prematricula de prueba",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) { pm.collectionVariables.set(\"prematriculaId\", pm.response.json().id); }"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"prematriculaId\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar todas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar por llave",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Modificar y quitar observaciones",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}}\n  ],\n  \"observaciones\": null,\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verificar modificacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Campos requeridos",
+      "item": [
+        {
+          "name": "POST sin identificacionEstudiante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT sin identificacionEstudiante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST sin carreraId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT sin carreraId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST sin cursos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT sin cursos",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST sin periodoId",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT sin periodoId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Reglas MAT1",
+      "item": [
+        {
+          "name": "Identificacion vacia (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Identificacion vacia (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin cursos (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin cursos (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Curso de segundo nivel (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Curso de segundo nivel (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Periodo inicia hoy (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Periodo inicia hoy (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Periodo pasado (POST)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Periodo pasado (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Autorizacion",
+      "item": [
+        {
+          "name": "Sin token: POST /prematricula",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin token: PUT /prematricula/{{prematriculaId}}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin token: DELETE /prematricula/{{prematriculaId}}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin token: GET /prematricula",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin token: GET /prematricula/{{prematriculaId}}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Eliminar prueba",
+      "item": [
+        {
+          "name": "Eliminar prematricula de prueba",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

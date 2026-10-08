@@ -1,0 +1,38 @@
+{
+  "info": {
+    "name": "Fabian - ACA2 Listado de estudiantes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla con servicios reales. Consulto ACA2 y verifico que el backend registre bitacoras mediante GEN1. Utilizo un token y un periodo del ambiente autorizado."
+  },
+  "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8084"},
+    {"key": "token", "value": ""},
+    {"key": "periodoId", "value": "20"}
+  ],
+  "item": [
+    {
+      "name": "Consultar listado por periodo",
+      "request": {"method": "GET", "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"},
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": [
+        "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+        "if (pm.response.code === 200) { pm.test('Campos requeridos del listado', function () { const filas = pm.response.json(); pm.expect(filas).to.be.an('array'); filas.forEach(function (fila) { pm.expect(fila).to.have.all.keys('tipoIdentificacion', 'identificacion', 'nombreCompleto', 'carrera', 'curso', 'grupo'); }); }); }"
+      ]}}]
+    },
+    {
+      "name": "Rechazar periodo ausente",
+      "request": {"method": "GET", "url": "{{baseUrl}}/listadoestudiantes"},
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": ["pm.test('HTTP 400', function () { pm.response.to.have.status(400); });"]}}]
+    },
+    {
+      "name": "Rechazar periodo no numerico",
+      "request": {"method": "GET", "url": "{{baseUrl}}/listadoestudiantes?periodoId=texto"},
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": ["pm.test('HTTP 400', function () { pm.response.to.have.status(400); });"]}}]
+    },
+    {
+      "name": "Rechazar consulta sin token",
+      "request": {"method": "GET", "auth": {"type": "noauth"}, "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"},
+      "event": [{"listen": "test", "script": {"type": "text/javascript", "exec": ["pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"]}}]
+    }
+  ]
+}

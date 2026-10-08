@@ -1,0 +1,3049 @@
+{
+  "info": {
+    "name": "Jose - Persona 5 - Recorrido y evidencia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Prepare esta coleccion a partir del PDF (pp.17-18,20-21,23-25) y del codigo. Documento el recorrido en persona5-recorrido.md y contrasto los resultados esperados con mis capturas. Utilizo un grupo exclusivo de pruebas, las tablas correspondientes y un periodo vigente. Configuro SMTP y los datos adicionales antes de ejecutar las carpetas que los requieren. Creo datos y anulo pago, factura y matricula al finalizar; conservo notas y rubros."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8085",
+      "type": "string"
+    },
+    {
+      "key": "seguridadUrl",
+      "value": "http://localhost:5158",
+      "type": "string"
+    },
+    {
+      "key": "usuario",
+      "value": "jose",
+      "type": "string"
+    },
+    {
+      "key": "contrasena",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "estudiante",
+      "value": "P5-JOSE-ESTUDIANTE",
+      "type": "string"
+    },
+    {
+      "key": "cursoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "grupoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "periodoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "grupoPruebasConfirmado",
+      "value": "false",
+      "type": "string"
+    },
+    {
+      "key": "matriculaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rubroId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rubro2Id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "facturaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "pagoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "idInexistente",
+      "value": "2147483647",
+      "type": "string"
+    },
+    {
+      "key": "emailDestino",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "otroCursoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "periodoInactivoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "grupoInactivoId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rubroOtroGrupoId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Login y validacion",
+      "item": [
+        {
+          "name": "00.1 Login - guarda token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "{{contrasena}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"usuario\") || \"\").trim()) throw new Error(\"Configura usuario antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"contrasena\") || \"\").trim()) throw new Error(\"Configura contrasena antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.access_token).to.be.a(\"string\").and.not.empty;",
+                  "pm.collectionVariables.set(\"token\", data.access_token);",
+                  "if (!pm.collectionVariables.get(\"estudiante\")) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "00.2 Validar token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "pm.expect(pm.response.json()).to.eql(true);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Seguridad transversal - 401",
+      "item": [
+        {
+          "name": "01.1 Sin token POST /matricula",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"1\",\n  \"cursoId\": 1,\n  \"grupoId\": 1,\n  \"periodoId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.2 Sin token PUT /matricula/{{matriculaId}}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula/1",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"1\",\n  \"cursoId\": 1,\n  \"grupoId\": 1,\n  \"periodoId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.3 Sin token DELETE /matricula/{{matriculaId}}",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/matricula/1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.4 Sin token GET /matricula",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/matricula?cursoId=1&grupoId=1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.5 Sin token POST /cargardesglose",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/cargardesglose",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grupoId\": 1,\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.6 Sin token POST /asignarnotarubro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": 1,\n  \"rubroId\": 1,\n  \"nota\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.7 Sin token PUT /asignarnotarubro",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": 1,\n  \"rubroId\": 1,\n  \"nota\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.8 Sin token GET /obtenerdesglose",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenerdesglose?grupoId=1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.9 Sin token GET /obtenernotas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante=1&cursoId=1&grupoId=1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.10 Sin token POST /factura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/factura",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.11 Sin token PUT /factura/{{facturaId}}/reversar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/factura/1/reversar",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.12 Sin token GET /factura/{{facturaId}}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.13 Sin token GET /factura",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura?periodoId=1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.14 Sin token POST /pago",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/pago",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facturaId\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.15 Sin token PUT /pago/{{pagoId}}/reversar",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/pago/1/reversar",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.16 Sin token GET /pago/{{pagoId}}",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/pago/1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.17 Sin token GET /pago",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/pago?periodoId=1",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.18 Sin token POST /notificar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/notificar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"prueba@example.com\",\n  \"asunto\": \"Prueba\",\n  \"cuerpoHtml\": \"<p>Prueba</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "01.19 Token invalido",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenerdesglose?grupoId=1",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "token-invalido",
+                  "type": "string"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - MAT2 Matricula",
+      "item": [
+        {
+          "name": "02.1 Crear matricula",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"matriculaId\", data.id);",
+                  "pm.expect(data.estado).to.eql(\"ACTIVA\");",
+                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.2 Consultar estudiantes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"matriculaId\")) && x.estado === \"ACTIVA\")).to.eql(true);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.3 Rechazar duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.4 Modificar identificacion",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula/{{matriculaId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}-M\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\") + \"-M\");",
+                  "pm.collectionVariables.set(\"estudiante\", data.identificacionEstudiante);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.5 Verificar modificacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.find(x => x.id === Number(pm.variables.get(\"matriculaId\"))).identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.6 Datos requeridos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.7 Curso inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{idInexistente}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.8 Grupo inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{idInexistente}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02.9 Modificar matricula inexistente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula/{{idInexistente}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - MAT5 Rubros y notas",
+      "item": [
+        {
+          "name": "03.1 Cargar desglose 40 y 60",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/cargardesglose",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data).to.have.lengthOf(2);",
+                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
+                  "pm.collectionVariables.set(\"rubroId\", data.find(x => x.nombre === \"Examen\").id);",
+                  "pm.collectionVariables.set(\"rubro2Id\", data.find(x => x.nombre === \"Proyecto\").id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.2 Consultar desglose",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenerdesglose?grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.3 Reemplazar desglose antes de notas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/cargardesglose",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 50\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 50\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data).to.have.lengthOf(2);",
+                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
+                  "pm.collectionVariables.set(\"rubroId\", data.find(x => x.nombre === \"Examen\").id);",
+                  "pm.collectionVariables.set(\"rubro2Id\", data.find(x => x.nombre === \"Proyecto\").id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.4 Rechazar suma 90",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/cargardesglose",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 50\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.5 Verificar desglose sigue en 100",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenerdesglose?grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
+                  "pm.expect(data.find(x => x.id === Number(pm.variables.get(\"rubroId\"))).porcentaje).to.eql(50);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.6 Asignar nota",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(Number(data.nota)).to.eql(85);",
+                  "pm.collectionVariables.set(\"notaId\", data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.7 Modificar nota a 1",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(Number(data.nota)).to.eql(1);",
+                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.8 Modificar nota a 100",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 100\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(Number(data.nota)).to.eql(100);",
+                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.9 Modificar nota a 90",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(Number(data.nota)).to.eql(90);",
+                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.10 Asignar nota Proyecto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubro2Id}},\n  \"nota\": 80\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubro2Id\") || \"\").trim()) throw new Error(\"Configura rubro2Id antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.11 Consultar notas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante={{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data).to.have.lengthOf(2);",
+                  "pm.expect(Number(data.find(x => x.rubroId === Number(pm.variables.get(\"rubroId\"))).nota)).to.eql(90);",
+                  "pm.expect(Number(data.find(x => x.rubroId === Number(pm.variables.get(\"rubro2Id\"))).nota)).to.eql(80);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.12 Rechazar nota 0",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.13 Rechazar nota 101",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 101\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.14 Bloquear rubros con notas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/cargardesglose",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.15 Rubro inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{idInexistente}},\n  \"nota\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03.16 Estudiante sin matricula",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante=SIN-MATRICULA-{{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - IPN1 Facturacion",
+      "item": [
+        {
+          "name": "04.1 Crear factura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/factura",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"facturaId\", data.id);",
+                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
+                  "pm.expect(Number(data.subtotal)).to.eql(30000);",
+                  "pm.expect(Number(data.impuesto)).to.eql(600);",
+                  "pm.expect(Number(data.total)).to.eql(30600);",
+                  "pm.expect(data.detalles).to.have.lengthOf(1);",
+                  "pm.expect(data.detalles[0].descripcion).to.eql(\"Servicios estudiantiles\");",
+                  "pm.expect(Number(data.detalles[0].monto)).to.eql(30000);",
+                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04.2 Consultar factura",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04.3 Listar por periodo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura?periodoId={{periodoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"facturaId\")))).to.eql(true);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04.4 Rechazar factura duplicada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/factura",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04.5 Matricula inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/factura",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{idInexistente}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04.6 Factura inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{idInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - IPN2 Pagos y reversos",
+      "item": [
+        {
+          "name": "05.1 Crear pago",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/pago",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"pagoId\", data.id);",
+                  "pm.expect(data.estado).to.eql(\"APLICADO\");",
+                  "pm.expect(Number(data.monto)).to.eql(30600);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.2 Comprobar factura pagada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"PAGADA\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.3 Consultar pago",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/pago/{{pagoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"APLICADO\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.4 Listar pagos por periodo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/pago?periodoId={{periodoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"pagoId\")))).to.eql(true);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.5 Rechazar pago duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/pago",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.6 Rechazar reverso de factura pagada",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}/reversar"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.7 Reversar pago",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/pago/{{pagoId}}/reversar"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"ANULADO\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.8 Comprobar factura pendiente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.9 Rechazar segundo reverso",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/pago/{{pagoId}}/reversar"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.10 Pago inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/pago/{{idInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.11 Factura inexistente al pagar",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/pago",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facturaId\": {{idInexistente}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.12 Reversar factura pendiente",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}/reversar"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"ANULADA\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.13 Verificar factura anulada",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/factura/{{facturaId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"ANULADA\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05.14 Rechazar pago de factura anulada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/pago",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - IPN3 Correo - ejecutar manualmente",
+      "item": [
+        {
+          "name": "06.1 Email invalido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/notificar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"correo-invalido\",\n  \"asunto\": \"Prueba persona 5\",\n  \"cuerpoHtml\": \"<p>Prueba</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06.2 Campos requeridos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/notificar",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06.3 Enviar correo HTML - requiere SMTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/notificar",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailDestino}}\",\n  \"asunto\": \"Evidencia Persona 5 Jose\",\n  \"cuerpoHtml\": \"<h1>Nuevo Avatar</h1><p>Prueba de notificacion de persona 5.</p>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"emailDestino\") || \"\").trim()) throw new Error(\"Configura emailDestino antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.estado).to.eql(\"ENVIADA\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 - MAT2 Anulacion al final",
+      "item": [
+        {
+          "name": "07.1 Anular matricula",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/matricula/{{matriculaId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07.2 Verificar ausencia en activos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"matriculaId\")))).to.eql(false);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07.3 Eliminar matricula inexistente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/matricula/{{idInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07.4 Rechazar nota en matricula anulada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07.5 Rechazar factura en matricula anulada",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/factura",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 - GEN1 Evidencia de bitacora",
+      "item": [
+        {
+          "name": "08.1 Consultar bitacora - inspeccionar entradas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/bitacora"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) {",
+                  "const data = pm.response.json();",
+                  "pm.expect(data).to.be.an(\"array\");",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "09 - Casos con datos adicionales - ejecutar manualmente",
+      "item": [
+        {
+          "name": "09.1 Grupo de otro curso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{otroCursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"otroCursoId\") || \"\").trim()) throw new Error(\"Configura otroCursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09.2 Periodo distinto al del grupo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoInactivoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) throw new Error(\"Configura periodoInactivoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09.3 Periodo no vigente con grupo correspondiente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/matricula",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoInactivoId}},\n  \"periodoId\": {{periodoInactivoId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"grupoInactivoId\") || \"\").trim()) throw new Error(\"Configura grupoInactivoId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) throw new Error(\"Configura periodoInactivoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09.4 Rubro de otro grupo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{baseUrl}}/asignarnotarubro",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroOtroGrupoId}},\n  \"nota\": 85\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
+                  "if (!String(pm.variables.get(\"rubroOtroGrupoId\") || \"\").trim()) throw new Error(\"Configura rubroOtroGrupoId antes de enviar esta solicitud.\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
