@@ -106,7 +106,7 @@ class SeguridadClientTest {
         servidor.expect(requestTo("http://seguridad.test/bitacora"))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer prueba"))
-                .andExpect(content().json("{\"usuario\":\"ana@cuc.cr\",\"descripcion\":\"El usuario consulta expedientes\"}", true))
+                .andExpect(content().json("{\"usuario\":\"ana@cuc.cr\",\"descripcion\":\"El usuario consulta expedientes\"}"))
                 .andRespond(withStatus(HttpStatus.CREATED));
         cliente.registrarBitacora("Bearer prueba", "ana@cuc.cr", "El usuario consulta expedientes");
         servidor.verify();
