@@ -1,0 +1,59 @@
+{
+  "fecha_preparacion_local": "2026-10-08T14:38:15.968231-06:00",
+  "base": "PrograV",
+  "script": "docs/pruebas/persona5-demo-20261008.sql",
+  "variables_fixture": {
+    "estudiante": "P5-JOSE-DEMO-20261008",
+    "estudianteModificado": "P5-JOSE-DEMO-20261008-M",
+    "cursoId": 4,
+    "grupoId": 3,
+    "periodoId": 1,
+    "otroCursoId": 2,
+    "periodoInactivoId": 3,
+    "grupoInactivoId": 4,
+    "rubroOtroGrupoId": 3,
+    "idInexistente": 2147483647
+  },
+  "estado_grupo_nuevo": {
+    "CursoId": 4,
+    "GrupoId": 3,
+    "PeriodoId": 1,
+    "FechaInicio": "2026-01-01",
+    "FechaFin": "2026-12-31",
+    "matriculas": 0,
+    "rubros": 0,
+    "notas": 0,
+    "facturas": 0,
+    "pagos": 0
+  },
+  "expedientes_preparados": [
+    {
+      "Identificacion": "P5-JOSE-DEMO-20261008",
+      "Email": "p5.demo.20261008@cuc.cr",
+      "NombreCompleto": "Estudiante Demostracion Jose"
+    },
+    {
+      "Identificacion": "P5-JOSE-DEMO-20261008-M",
+      "Email": "p5.demo.20261008.m@cuc.cr",
+      "NombreCompleto": "Estudiante Modificacion Jose"
+    }
+  ],
+  "grupo_periodo_pasado": {
+    "CursoId": 4,
+    "GrupoId": 4,
+    "PeriodoId": 3,
+    "FechaInicio": "2026-09-01",
+    "FechaFin": "2026-10-07"
+  },
+  "datos_ayer_preservados": true,
+  "inventario_ayer": {
+    "matriculas_anteriores": 2,
+    "rubros_anteriores": 2,
+    "notas_anteriores": 2,
+    "facturas_anteriores": 1,
+    "pagos_anteriores": 1
+  },
+  "coleccion": "docs/pruebas/postman/Persona5_Jose_Demo_20261008.postman_collection.json",
+  "solicitudes_preparadas": 79,
+  "alcance": "Fixture y consultas SQL. No se ejecutaron matriculas, desglose del grupo nuevo, notas, facturas, pagos ni envios de correo."
+}
