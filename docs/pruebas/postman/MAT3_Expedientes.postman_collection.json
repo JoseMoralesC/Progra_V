@@ -2,7 +2,7 @@
   "info": {
     "name": "Fabian - MAT3 Expedientes",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Coleccion preparada; no ejecutada contra servicios reales. Requiere migraciones, token valido, DOMESTUD e IDs territoriales existentes. El flujo crea, modifica y elimina el expediente ficticio. Su ejecucion en PrograV requiere autorizacion de Fabian."
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla contra servicios reales. Compruebo las migraciones y utilizo token valido, DOMESTUD e IDs territoriales existentes. El flujo que preparo crea, modifica y elimina el expediente ficticio. Para ejecutarla en PrograV necesito la autorizacion de Fabian."
   },
   "auth": {
     "type": "bearer",

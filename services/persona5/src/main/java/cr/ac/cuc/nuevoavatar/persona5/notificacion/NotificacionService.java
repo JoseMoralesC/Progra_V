@@ -2,6 +2,8 @@ package cr.ac.cuc.nuevoavatar.persona5.notificacion;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
@@ -12,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class NotificacionService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NotificacionService.class);
 
     private final JavaMailSender mailSender;
     private final String remitente;
@@ -34,6 +38,7 @@ public class NotificacionService {
             mailSender.send(mensaje);
             return new NotificacionResponse(request.email().trim(), "ENVIADA");
         } catch (MessagingException | MailException ex) {
+            LOG.error("No fue posible enviar la notificacion por SMTP", ex);
             throw new ResponseStatusException(
                 HttpStatus.BAD_GATEWAY,
                 "No fue posible enviar la notificacion",

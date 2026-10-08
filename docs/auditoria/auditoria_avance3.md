@@ -6,19 +6,19 @@ Bases complementarias: `docs/roadmaps/roadmap 1.md`, `docs/roadmaps/propuesta.md
 
 ## Resumen
 
-El proyecto presenta un avance importante respecto a la auditoria de avance 2. El cambio mas relevante es que ahora existe `services/persona4` con implementacion visible para `MAT3`, `MAT1`, `ACA1` y `ACA2`, ademas de colecciones Postman y evidencia tecnica asociada. En esta auditoria se ejecuto la suite de Persona 4 y paso: 251 pruebas, 0 fallos, 0 errores y 0 omitidas.
+Identifico un avance importante del proyecto respecto a la auditoria de avance 2. El cambio mas relevante es que ahora existe `services/persona4` con implementacion visible para `MAT3`, `MAT1`, `ACA1` y `ACA2`, ademas de colecciones Postman y evidencia tecnica asociada. En esta auditoria se ejecuto la suite de Persona 4 y paso: 251 pruebas, 0 fallos, 0 errores y 0 omitidas.
 
-Persona 5 se mantiene estable y verificada: sus 14 pruebas automatizadas siguen pasando. Seguridad tambien se verifico con `dotnet test --no-restore` y termino con codigo 0.
+Documento que Persona 5 se mantiene estable y verificada: sus 14 pruebas automatizadas siguen pasando. Seguridad tambien se verifico con `dotnet test --no-restore` y termino con codigo 0.
 
-Persona 2 conserva un avance funcional amplio, pero sigue sin quedar verde en pruebas completas: la suite ejecuta 9 pruebas, con 8 exitosas y 1 error en `contextLoads` por conexion/metadata de SQL Server usando el usuario `db70273`. Este riesgo ya venia de la auditoria 2.
+Observo que Persona 2 conserva un avance funcional amplio, pero sigue sin quedar verde en pruebas completas: la suite ejecuta 9 pruebas, con 8 exitosas y 1 error en `contextLoads` por conexion/metadata de SQL Server usando el usuario `db70273`. Este riesgo ya venia de la auditoria 2.
 
-Persona 3 mantiene los avances de servicios separados en .NET para Curso, Grupo, Periodo y Direccion, pero los cuatro builds siguen bloqueados por una fuente NuGet local inexistente. Ademas, `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion` continuan con `GrupoAuthorizationMiddleware` vacio aunque se registra en `Program.cs`, por lo que no deben considerarse listos sin correccion o verificacion adicional.
+Observo que Persona 3 mantiene los avances de servicios separados en .NET para Curso, Grupo, Periodo y Direccion, pero los cuatro builds siguen bloqueados por una fuente NuGet local inexistente. Ademas, `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion` continuan con `GrupoAuthorizationMiddleware` vacio aunque se registra en `Program.cs`, por lo que no deben considerarse listos sin correccion o verificacion adicional.
 
-El avance global sube de forma clara por Persona 4, pero el proyecto aun no esta cerrado al 100% contra el PDF: falta evidencia de pruebas tecnicas por cada criterio de aceptacion en formato final con pantallazos, falta diagrama completo de base de datos, falta resolver la verificacion de Persona 2, falta compilar/verificar los servicios .NET nuevos y falta una validacion integrada real entre todos los servicios.
+Estimo un aumento claro del avance global por Persona 4, pero el proyecto aun no esta cerrado al 100% contra el PDF: falta evidencia de pruebas tecnicas por cada criterio de aceptacion en formato final con pantallazos, falta diagrama completo de base de datos, falta resolver la verificacion de Persona 2, falta compilar/verificar los servicios .NET nuevos y falta una validacion integrada real entre todos los servicios.
 
 ## Alcance auditado
 
-Se revisaron los siguientes elementos del repositorio:
+En esta auditoria reviso los siguientes elementos del repositorio:
 
 - `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`
 - `docs/roadmaps/roadmap 1.md`
@@ -41,10 +41,10 @@ Se revisaron los siguientes elementos del repositorio:
 - `db/persona4`
 - `db/persona5/migraciones`
 
-Estado Git observado durante la auditoria:
+Estado Git que documento durante la auditoria:
 
 - No habia cambios pendientes al iniciar la revision.
-- Se creo este documento como nueva evidencia de auditoria.
+- Presento este documento como nueva evidencia de auditoria.
 
 ## Verificacion ejecutada
 
@@ -60,21 +60,21 @@ Estado Git observado durante la auditoria:
 | Revision de `RESUMEN_PERSONA4.md` y evidencias | Exitosa | Documenta 251 pruebas, 37 peticiones HTTP y migraciones aplicadas en PrograV. |
 | Revision de colecciones Postman nuevas | Exitosa | Existen colecciones para `MAT3`, `MAT1`, `ACA1` y `ACA2`. No sustituyen pantallazos finales por criterio del PDF. |
 
-Nota: la suite de Persona 4 si fue ejecutada en esta auditoria. Las pruebas usan H2 y servicios externos simulados, por lo que demuestran reglas y contratos locales, pero no certifican por si solas la integracion real con `USR5`, `USR3`, `GEN1`, `MAT4`, `MAT2` y `MAT5` en ambiente compartido.
+Documento que la suite de Persona 4 si fue ejecutada en esta auditoria. Las pruebas usan H2 y servicios externos simulados, por lo que demuestran reglas y contratos locales, pero no certifican por si solas la integracion real con `USR5`, `USR3`, `GEN1`, `MAT4`, `MAT2` y `MAT5` en ambiente compartido.
 
 ## Criterios generales del PDF y roadmap
 
 | Criterio | Estado | Observacion |
 |---|---|---|
 | Base de datos versionada | En progreso | Hay scripts base en `db/persona2/sql`, migraciones de Persona 4 en `db/persona4` y migraciones de Persona 5 en `db/persona5/migraciones`. |
-| Diagrama completo de BD | No verificado | No se encontro archivo de diagrama completo en el repositorio auditado. |
+| Diagrama completo de BD | No verificado | No encuentro archivo de diagrama completo en el repositorio auditado. |
 | Servicios REST por HU | En progreso alto | Hay servicios para Seguridad, Persona 2, Persona 4, Persona 5 y Persona 3 en .NET. |
 | Validacion por token `/validate` | Parcialmente cubierto | Seguridad existe; Persona 2/4/5 la consumen. Curso usa filtro y Grupo usa middleware. Periodo/Direccion tienen middleware vacio. |
 | Registro de bitacora `/bitacora` | Parcialmente cubierto | Hay integracion transversal, pero falta evidencia completa con JSON nuevo/anterior/actual/eliminado en todos los CRUD. |
 | Contratos JSON | Parcialmente cubierto | DTOs y colecciones Postman existen para varias HU, pero falta documentacion consolidada de request/response por endpoint. |
 | Pruebas automatizadas | Parcialmente cubierto | Persona 4 y Persona 5 pasan. Seguridad termina con codigo 0. Persona 2 falla por BD. No hay pruebas automatizadas visibles para servicios .NET nuevos de Persona 3. |
 | Evidencia Postman | En progreso | Hay colecciones nuevas para Persona 4 y evidencia para Persona 1/2. Falta coleccion integrada final y pantallazos por criterio de aceptacion. |
-| Historias de usuario actualizadas | No verificado | No se encontro evidencia de herramienta Scrum/GitLab/Azure DevOps en el repositorio. |
+| Historias de usuario actualizadas | No verificado | No encuentro evidencia de herramienta Scrum/GitLab/Azure DevOps en el repositorio. |
 
 ## Comparacion contra auditoria de avance 2
 
@@ -96,7 +96,7 @@ Nota: la suite de Persona 4 si fue ejecutada en esta auditoria. Las pruebas usan
 
 ### Persona 1 - Hector
 
-Responsabilidad segun roadmap:
+Responsabilidades que reviso segun el roadmap:
 
 | HU | Endpoint | Alcance esperado | Estado |
 |---|---|---|---|
@@ -106,7 +106,7 @@ Responsabilidad segun roadmap:
 | `USR3` | `/parametro` | CRUD de parametros | Implementado |
 | `USR4` | `/modulo` | CRUD de modulos | Implementado |
 
-Evidencia encontrada:
+Evidencia que identifico:
 
 - Servicio .NET en `services/seguridad`.
 - Controladores para `/login`, `/refresh`, `/validate`, `/rol`, `/parametro`, `/modulo` y `/bitacora`.
@@ -114,17 +114,17 @@ Evidencia encontrada:
 - `dotnet test services/seguridad/NuevoAvatarSeguridad.sln --no-restore` termino con codigo 0.
 - Script SQL de seguridad y bitacora en `db/persona2/sql/separado/01_seguridad_general.sql`.
 
-Riesgos o pendientes:
+Riesgos y pendientes que identifico:
 
-- Falta confirmar evidencia Postman completa por cada criterio de aceptacion del PDF.
-- Falta verificar si bitacora registra exactamente JSON nuevo, anterior/actual y eliminado en todos los CRUD.
+- Tengo pendiente confirmar evidencia Postman completa por cada criterio de aceptacion del PDF.
+- Tengo pendiente verificar si bitacora registra exactamente JSON nuevo, anterior/actual y eliminado en todos los CRUD.
 - La ubicacion SQL de seguridad sigue dentro de `db/persona2/sql`.
 
-Dictamen: avance alto y estable.
+Mi dictamen: avance alto y estable.
 
 ### Persona 2 - Ramses
 
-Responsabilidad segun roadmap:
+Responsabilidades que reviso segun el roadmap:
 
 | HU | Endpoint | Alcance esperado | Estado |
 |---|---|---|---|
@@ -133,7 +133,7 @@ Responsabilidad segun roadmap:
 | `ACD6` | `/profesor` | CRUD de profesores, mayoria de edad, telefonos y dominio parametrizable | Implementado |
 | `ACD2` | `/carrera` | CRUD de carreras, filtro por institucion y director profesor | Implementado |
 
-Evidencia encontrada:
+Evidencia que identifico:
 
 - Servicio Java/Spring Boot en `services/persona2`.
 - Controladores para `/usuario`, `/institucion`, `/profesor`, `/carrera`, `/curso`, `/periodo` y `/grupo`.
@@ -142,18 +142,18 @@ Evidencia encontrada:
 - Documentacion tecnica en `services/persona2/README.md`.
 - Al ejecutar pruebas, 8 de 9 pruebas pasan.
 
-Riesgos o pendientes:
+Riesgos y pendientes que identifico:
 
 - La prueba completa de Persona 2 sigue fallando: 9 pruebas ejecutadas, 1 error, causado por login/conexion/metadata de SQL Server con usuario `db70273`.
 - `services/persona2` sigue mezclando HU de Persona 3 (`ACD3`, `ACD4`, `ACD5`) aunque tambien existen servicios .NET separados.
-- Falta evidencia Postman detallada por cada criterio de aceptacion.
-- Falta confirmar datos semilla completos de instituciones, profesores y carreras.
+- Identifico falta de evidencia Postman detallada por cada criterio de aceptacion.
+- Tengo pendiente confirmar datos semilla completos de instituciones, profesores y carreras.
 
-Dictamen: avance funcional alto, pero con riesgo actual de verificacion por base de datos.
+Mi dictamen: avance funcional alto, pero con riesgo actual de verificacion por base de datos.
 
 ### Persona 3 - Alejandro
 
-Responsabilidad segun roadmap:
+Responsabilidades que reviso segun el roadmap:
 
 | HU | Endpoint | Alcance esperado | Estado |
 |---|---|---|---|
@@ -162,7 +162,7 @@ Responsabilidad segun roadmap:
 | `ACD4` | `/grupo` | CRUD de grupos con curso, profesor, horario, cupo y periodo | Implementado en `services/persona2` y tambien en `NuevoAvatar.Grupo` |
 | `MAT4` | `/provincias`, `/cantones`, `/distritos` | Consultas territoriales y validacion jerarquica | Implementado en `NuevoAvatar.Direccion`, con riesgo de middleware/build |
 
-Evidencia encontrada:
+Evidencia que identifico:
 
 - `NuevoAvatar.Curso` expone endpoints de `/curso`, `/curso/{id}` y `/curso/carrera/{carreraId}`.
 - `NuevoAvatar.Curso` valida carrera, nivel 1 a 12 y nombre solo con letras/espacios.
@@ -172,19 +172,19 @@ Evidencia encontrada:
 - `DireccionRepository` valida jerarquia provincia-canton para distritos mediante join contra `matricula.Canton`.
 - Scripts territoriales existen en `db/persona2/sql/separado/03_matricula_catalogos.sql`.
 
-Riesgos o pendientes:
+Riesgos y pendientes que identifico:
 
 - `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion` registran `UseMiddleware<GrupoAuthorizationMiddleware>()`, pero la clase `GrupoAuthorizationMiddleware` esta vacia en esos proyectos.
-- No se pudo compilar ninguno de los servicios .NET nuevos por problema de fuente NuGet local inexistente.
-- No se encontraron pruebas automatizadas para `NuevoAvatar.Curso`, `Grupo`, `Periodo` o `Direccion`.
-- Falta evidencia Postman de `MAT4` y de los CRUD separados.
+- No logro verificar la compilacion de ninguno de los servicios .NET nuevos por problema de fuente NuGet local inexistente.
+- No encuentro pruebas automatizadas para `NuevoAvatar.Curso`, `Grupo`, `Periodo` o `Direccion`.
+- Identifico falta de evidencia Postman de `MAT4` y de los CRUD separados.
 - La coexistencia de implementaciones Java y .NET para `curso`, `periodo` y `grupo` puede causar confusion de fuente oficial si no se define cual se entrega.
 
-Dictamen: avance medio-alto en codigo, pero aun no verificable como entrega cerrada por build, middleware y falta de pruebas.
+Mi dictamen: avance medio-alto en codigo, pero aun no verificable como entrega cerrada por build, middleware y falta de pruebas.
 
 ### Persona 4 - Fabian
 
-Responsabilidad segun roadmap:
+Responsabilidades que reviso segun el roadmap:
 
 | HU | Endpoint | Alcance esperado | Estado |
 |---|---|---|---|
@@ -193,7 +193,7 @@ Responsabilidad segun roadmap:
 | `ACA1` | `/historialacademico` | Promedios de notas por estudiante | Implementado |
 | `ACA2` | `/listadoestudiantes` | Estudiantes matriculados por periodo con carrera, curso y grupo | Implementado |
 
-Evidencia encontrada:
+Evidencia que identifico:
 
 - Servicio Java/Spring Boot en `services/persona4`.
 - Controladores para `/expediente`, `/prematricula`, `/historialacademico` y `/listadoestudiantes`.
@@ -207,19 +207,19 @@ Evidencia encontrada:
 - Migraciones en `db/persona4` y resumen PrograV: 4 tablas nuevas, 9 relaciones nuevas, 16 relaciones anteriores verificadas y 0 errores de ejecucion.
 - Colecciones Postman para `MAT3`, `MAT1`, `ACA1` y `ACA2`.
 
-Riesgos o pendientes:
+Riesgos y pendientes que identifico:
 
 - Las 251 pruebas usan H2 y servicios externos simulados; aun falta validar integracion real con los servicios del equipo.
 - La evidencia HTTP con SQL real documenta MAT3, MAT1 y ACA2; el propio resumen indica que fue ejecutada antes de incorporar ACA1.
-- Falta ejecutar las colecciones Postman contra ambiente integrado real y guardar pantallazos por cada criterio de aceptacion.
+- Tengo pendiente ejecutar las colecciones Postman contra ambiente integrado real y guardar pantallazos por cada criterio de aceptacion.
 - `ACA1` depende de que `MAT5` devuelva datos consistentes por estudiante/curso/grupo; si el contrato real no distingue intentos ambiguos, el servicio responde 503.
-- Falta confirmar datos semilla compartidos para direcciones, oferta academica, estudiantes, prematriculas, matriculas y notas.
+- Tengo pendiente confirmar datos semilla compartidos para direcciones, oferta academica, estudiantes, prematriculas, matriculas y notas.
 
-Dictamen: avance alto y principal mejora frente a la auditoria 2; requiere integracion real y evidencia final de entrega.
+Mi dictamen: avance alto y principal mejora frente a la auditoria 2; requiere integracion real y evidencia final de entrega.
 
 ### Persona 5 - Jose
 
-Responsabilidad segun roadmap:
+Responsabilidades que reviso segun el roadmap:
 
 | HU | Endpoint | Alcance esperado | Estado |
 |---|---|---|---|
@@ -229,7 +229,7 @@ Responsabilidad segun roadmap:
 | `IPN2` | `/pago` | Crear pago, reversar pago, consultar y listar pagos por periodo | Implementado |
 | `IPN3` | `/notificar` | Envio de correo con email, asunto, cuerpo HTML y SMTP parametrizable | Implementado |
 
-Evidencia encontrada:
+Evidencia que identifico:
 
 - Servicio Java/Spring Boot en `services/persona5`.
 - Migraciones separadas en `db/persona5/migraciones`.
@@ -238,13 +238,13 @@ Evidencia encontrada:
 - Configuracion SMTP por variables de ambiente.
 - Pruebas automatizadas ejecutadas en esta auditoria: 14 pruebas, 0 fallos, 0 errores, 0 omitidas.
 
-Riesgos o pendientes:
+Riesgos y pendientes que identifico:
 
 - `MAT2` ya puede integrarse con Persona 4, pero falta evidencia de validacion integrada real expediente -> prematricula -> matricula.
-- Falta evidencia Postman por cada criterio de aceptacion.
-- `IPN3` usa variables de ambiente para SMTP; el PDF pide datos parametrizables. Se debe aclarar si se aceptara variable de ambiente o si debe integrarse con `USR3`.
+- Identifico falta de evidencia Postman por cada criterio de aceptacion.
+- `IPN3` usa variables de ambiente para SMTP; el PDF pide datos parametrizables. Tengo pendiente aclarar si se acepta variable de ambiente o si se requiere integracion con `USR3`.
 
-Dictamen: avance muy alto y verificado con pruebas automatizadas.
+Mi dictamen: avance muy alto y verificado con pruebas automatizadas.
 
 ## Trazabilidad global por HU
 
@@ -273,11 +273,11 @@ Dictamen: avance muy alto y verificado con pruebas automatizadas.
 | Finanzas/notificaciones | `IPN2` | Implementado |
 | Finanzas/notificaciones | `IPN3` | Implementado |
 
-Nota: el PDF oficial contiene 22 codigos de HU visibles: 5 USR, 6 ACD, 5 MAT, 2 ACA, 3 IPN y 1 GEN. El roadmap interno indica 24 historias; este desfase documental sigue pendiente de aclaracion.
+En mi revision observo que el PDF oficial contiene 22 codigos de HU visibles: 5 USR, 6 ACD, 5 MAT, 2 ACA, 3 IPN y 1 GEN. El roadmap interno indica 24 historias; mantengo este desfase documental como pendiente de aclaracion.
 
 ## Barras de progreso por persona
 
-Las barras mezclan implementacion visible, scripts SQL, pruebas, evidencia y capacidad de verificacion. No representan aprobacion final del profesor; son una lectura tecnica del repositorio contra el PDF y la documentacion interna.
+Para mis estimaciones combino implementacion visible, scripts SQL, pruebas, evidencia y capacidad de verificacion. No representan aprobacion final del profesor; expresan mi lectura tecnica del repositorio contra el PDF y la documentacion interna.
 
 | Persona | Responsable | Progreso | Barra |
 |---|---|---:|---|
@@ -289,53 +289,53 @@ Las barras mezclan implementacion visible, scripts SQL, pruebas, evidencia y cap
 
 ## Avance estimado del proyecto
 
-Progreso global estimado: 84%
+Estimo el progreso global en 84%
 
-Barra global:
+Represento mi estimacion global con esta barra:
 
 `[#################---]`
 
-El porcentaje sube respecto a avance 2 principalmente porque Persona 4 ya existe, tiene endpoints, migraciones, colecciones Postman y una suite automatizada amplia que pasa. No sube mas porque falta evidencia final con pantallazos por criterio del PDF, falta integracion real completa, Persona 2 sigue con pruebas rojas por base de datos, los servicios .NET nuevos no compilan en este ambiente y Periodo/Direccion tienen middleware vacio.
+Estimo un aumento respecto a avance 2 principalmente porque Persona 4 ya existe, tiene endpoints, migraciones, colecciones Postman y una suite automatizada amplia que pasa. No sube mas porque falta evidencia final con pantallazos por criterio del PDF, falta integracion real completa, Persona 2 sigue con pruebas rojas por base de datos, los servicios .NET nuevos no compilan en este ambiente y Periodo/Direccion tienen middleware vacio.
 
-## Hallazgos principales
+## Mis hallazgos principales
 
-1. Persona 4 ya no esta ausente: `MAT3`, `MAT1`, `ACA1` y `ACA2` tienen implementacion visible.
-2. La suite de Persona 4 pasa con 251 pruebas automatizadas.
-3. La evidencia de Persona 4 documenta 37 peticiones HTTP correctas y migraciones aplicadas en PrograV.
-4. Persona 5 mantiene pruebas verdes con 14 pruebas exitosas.
-5. Seguridad mantiene verificacion exitosa con `dotnet test --no-restore`.
-6. Persona 2 sigue fallando por conexion/metadata de SQL Server con el usuario `db70273`.
-7. Los servicios .NET de Persona 3 siguen bloqueados por configuracion NuGet local inexistente.
-8. `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion` tienen middleware vacio registrado, lo cual compromete la proteccion por token y posiblemente la ejecucion.
-9. Ya existen colecciones Postman de Persona 4, pero falta coleccion integrada final del equipo.
-10. Falta diagrama completo de base de datos.
-11. Falta evidencia final de pruebas tecnicas con pantallazos por cada criterio de aceptacion del PDF.
-12. El PDF visible suma 22 HU, mientras el roadmap habla de 24.
+1. Observo que Persona 4 ya no esta ausente: `MAT3`, `MAT1`, `ACA1` y `ACA2` tienen implementacion visible.
+2. Documento que la suite de Persona 4 pasa con 251 pruebas automatizadas.
+3. Identifico que la evidencia de Persona 4 documenta 37 peticiones HTTP correctas y migraciones aplicadas en PrograV.
+4. Observo que Persona 5 mantiene pruebas verdes con 14 pruebas exitosas.
+5. Documento que Seguridad mantiene verificacion exitosa con `dotnet test --no-restore`.
+6. Identifico que Persona 2 sigue fallando por conexion/metadata de SQL Server con el usuario `db70273`.
+7. Observo que los servicios .NET de Persona 3 siguen bloqueados por configuracion NuGet local inexistente.
+8. Documento que `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion` tienen middleware vacio registrado, lo cual compromete la proteccion por token y posiblemente la ejecucion.
+9. Identifico que ya existen colecciones Postman de Persona 4, pero falta coleccion integrada final del equipo.
+10. Identifico como pendiente el diagrama completo de base de datos.
+11. Identifico como pendiente la evidencia final de pruebas tecnicas con pantallazos por cada criterio de aceptacion del PDF.
+12. Observo que el PDF visible suma 22 HU, mientras el roadmap habla de 24.
 
-## Recomendaciones
+## Acciones que propongo
 
-1. Ejecutar pruebas integradas reales de extremo a extremo:
+1. Me propongo ejecutar pruebas integradas reales de extremo a extremo:
    - Login -> usuario/rol -> bitacora.
    - Institucion -> profesor -> carrera -> curso -> periodo -> grupo.
    - Direcciones -> expediente -> prematricula -> matricula -> notas.
    - Matricula -> factura -> pago/reverso.
    - Matricula/notas -> historial academico/listado de estudiantes.
-2. Corregir `GrupoAuthorizationMiddleware` vacio en `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion`.
-3. Arreglar la configuracion NuGet de los servicios .NET nuevos para poder compilar y probar.
-4. Definir si la entrega oficial de `ACD3`, `ACD4`, `ACD5` sera la version Java en `services/persona2`, la version .NET separada, o ambas.
-5. Corregir credenciales/variables de ambiente de Persona 2 para recuperar pruebas verdes.
-6. Agregar pruebas automatizadas para Curso, Grupo, Periodo y Direccion.
-7. Ejecutar las colecciones Postman de Persona 4 contra el ambiente integrado real.
-8. Crear una coleccion Postman integrada final del equipo.
-9. Preparar pantallazos por cada criterio de aceptacion del PDF, como pide la seccion de pruebas tecnicas.
-10. Documentar contratos JSON de request/response por endpoint.
-11. Agregar el diagrama completo de base de datos al repositorio.
-12. Aclarar documentalmente la diferencia entre 22 HU visibles en el PDF y 24 HU indicadas en el roadmap.
+2. Me propongo corregir `GrupoAuthorizationMiddleware` vacio en `NuevoAvatar.Periodo` y `NuevoAvatar.Direccion`.
+3. Me propongo arreglar la configuracion NuGet de los servicios .NET nuevos para poder compilar y probar.
+4. Me propongo definir si la entrega oficial de `ACD3`, `ACD4`, `ACD5` sera la version Java en `services/persona2`, la version .NET separada, o ambas.
+5. Me propongo corregir credenciales/variables de ambiente de Persona 2 para recuperar pruebas verdes.
+6. Me propongo agregar pruebas automatizadas para Curso, Grupo, Periodo y Direccion.
+7. Me propongo ejecutar las colecciones Postman de Persona 4 contra el ambiente integrado real.
+8. Me propongo crear una coleccion Postman integrada final del equipo.
+9. Me propongo preparar pantallazos por cada criterio de aceptacion del PDF, como pide la seccion de pruebas tecnicas.
+10. Me propongo documentar contratos JSON de request/response por endpoint.
+11. Me propongo agregar el diagrama completo de base de datos al repositorio.
+12. Me propongo aclarar documentalmente la diferencia entre 22 HU visibles en el PDF y 24 HU indicadas en el roadmap.
 
-## Dictamen final
+## Mi dictamen final
 
-El proyecto mejoro de forma sustancial desde la auditoria de avance 2. La ausencia de Persona 4, que era el bloqueo mas grande, ya fue atendida con codigo, pruebas, migraciones y evidencia. Esto cambia el estado del proyecto de "incompleto por ausencia critica" a "mayoritariamente implementado, pendiente de estabilizacion e integracion final".
+Observo una mejora sustancial del proyecto desde la auditoria de avance 2. Documento que la ausencia de Persona 4, que era el bloqueo mas grande, ya fue atendida con codigo, pruebas, migraciones y evidencia. Por ello considero que el proyecto paso de "incompleto por ausencia critica" a "mayoritariamente implementado, pendiente de estabilizacion e integracion final".
 
-No obstante, el proyecto todavia no debe considerarse cerrado contra el PDF. Los principales pendientes son integracion real entre servicios, evidencia tecnica final por criterio de aceptacion, correccion de Persona 2, compilacion de los servicios .NET nuevos, middleware real para Periodo/Direccion y diagrama completo de base de datos.
+No considero cerrado el proyecto contra el PDF. Los principales pendientes son integracion real entre servicios, evidencia tecnica final por criterio de aceptacion, correccion de Persona 2, compilacion de los servicios .NET nuevos, middleware real para Periodo/Direccion y diagrama completo de base de datos.
 
-El estado actual es alto y mucho mas cercano al cierre, pero el ultimo tramo debe enfocarse menos en agregar codigo nuevo y mas en demostrar funcionamiento integrado, corregir riesgos tecnicos conocidos y preparar evidencia formal de entrega.
+Considero que el estado actual es alto y mucho mas cercano al cierre, pero el ultimo tramo debe enfocarse menos en agregar codigo nuevo y mas en demostrar funcionamiento integrado, corregir riesgos tecnicos conocidos y preparar evidencia formal de entrega.

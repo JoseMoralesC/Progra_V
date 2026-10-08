@@ -2,7 +2,7 @@
   "info": {
     "name": "ACA1 - Historial academico",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Preparada, no ejecutada contra servicios reales. Configurar token y estudiante existente. Promedio acumulado = suma(nota * porcentaje / 100), sin normalizar rubros pendientes. Una fila por intento activo; solo codigoCurso, nombreCurso y promedio. Las consultas registran GEN1."
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla contra servicios reales. Configuro mi token y un estudiante existente. Compruebo promedio acumulado = suma(nota * porcentaje / 100), sin normalizar rubros pendientes, con una fila por intento activo y los campos codigoCurso, nombreCurso y promedio. Verifico el registro de consultas en GEN1."
   },
   "variable": [
     {

@@ -1,6 +1,6 @@
 # Pruebas y estado de persona4
 
-Estado al 4 de octubre de 2026: MAT3, MAT1, ACA1 y ACA2 implementadas localmente. Las migraciones de tablas y relaciones ya están aplicadas en PrograV. La integración completa con los servicios reales del equipo está pendiente.
+Documento el estado al 4 de octubre de 2026: MAT3, MAT1, ACA1 y ACA2 implementadas localmente. Las migraciones de tablas y relaciones ya están aplicadas en PrograV. La integración completa con los servicios reales del equipo está pendiente.
 
 | Comprobación | Resultado y alcance |
 |---|---|
@@ -12,9 +12,9 @@ Estado al 4 de octubre de 2026: MAT3, MAT1, ACA1 y ACA2 implementadas localmente
 | Backend con SQL Express local | 37 peticiones HTTP aprobadas para MAT3, MAT1 y ACA2, con persistencia JDBC real y dependencias HTTP simuladas. Ejecutadas antes de incorporar ACA1. |
 | PrograV | Cuatro tablas nuevas, nueve relaciones habilitadas/verificadas, cuatro llaves primarias, tres índices adicionales y seis CHECK. Sin datos ficticios ni transacciones pendientes. |
 
-La inspección previa y posterior de PrograV conservó las 16 relaciones y 37 columnas existentes incluidas en la revisión. Los catálogos revisados de direcciones y oferta académica estaban vacíos.
+En la inspección previa y posterior de PrograV registro que se conservaron las 16 relaciones y 37 columnas existentes incluidas en la revisión. Los catálogos revisados de direcciones y oferta académica estaban vacíos.
 
-## Evidencia incluida
+## Evidencia que documento
 
 - [Resultados por clase de las 251 pruebas](evidencias/2026-10-04/aca1/resumen-pruebas.json), consolidados de los reportes JUnit originales.
 - [Resumen de las 37 peticiones HTTP](evidencias/2026-10-04/http-sql-v2/resumen.json).
@@ -22,13 +22,13 @@ La inspección previa y posterior de PrograV conservó las 16 relaciones y 37 co
 - [Confirmación de las migraciones en PrograV](evidencias/2026-10-04/prograv/02_aplicacion.rpt).
 - [Resumen de la verificación de estructura](evidencias/2026-10-04/prograv/resumen.json).
 
-Los logs completos, reportes anteriores, capturas de trabajo y auxiliares de pruebas locales se conservan en el archivo local del proyecto. No forman parte de esta selección para el commit.
+Conservo los logs completos, reportes anteriores, capturas de trabajo y auxiliares de pruebas locales en el archivo local del proyecto. No los incluyo en esta selección para el commit.
 
-## Pendientes de integración y entrega
+## Mis pendientes de integración y entrega
 
-- Configurar URLs y credenciales fuera del repositorio y probar USR5, USR3, GEN1, MAT4, MAT2 y MAT5 reales.
-- Preparar los catálogos y datos acordados con el equipo, luego ejecutar las colecciones Postman.
-- Guardar las capturas requeridas por el PDF para cada criterio; los resultados automatizados no sustituyen esas capturas.
-- Completar con el equipo la documentación de análisis/diseño y los demás entregables del PDF. Este resumen contiene los resultados de verificación del módulo.
+- Me propongo configurar URLs y credenciales fuera del repositorio y probar USR5, USR3, GEN1, MAT4, MAT2 y MAT5 reales.
+- Me propongo preparar los catálogos y datos acordados con el equipo, luego ejecutar las colecciones Postman.
+- Me propongo guardar las capturas requeridas por el PDF para cada criterio; los resultados automatizados no sustituyen esas capturas.
+- Me propongo completar con el equipo la documentación de análisis/diseño y los demás entregables del PDF. En este resumen documento los resultados de verificación del módulo.
 
-MAT5 consulta notas de matrícula ACTIVA por estudiante/curso/grupo. ACA1 mantiene separados los intentos de grupos distintos; si ese contrato no permite distinguir dos matrículas, informa 503. La comprobación con servicios simulados no certifica todos los casos del ambiente compartido.
+Considero que MAT5 consulta notas de matrícula ACTIVA por estudiante/curso/grupo. ACA1 mantiene separados los intentos de grupos distintos; si ese contrato no permite distinguir dos matrículas, informa 503. La comprobación con servicios simulados no certifica todos los casos del ambiente compartido.

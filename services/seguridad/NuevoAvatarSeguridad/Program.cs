@@ -1,10 +1,42 @@
+using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using NuevoAvatar.Seguridad.Abstract;
 using NuevoAvatar.Seguridad.DataAccess;
 using NuevoAvatar.Seguridad.Models;
 
+Env.TraversePath().Load();
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+var dbHost = builder.Configuration["DB_HOST"];
+var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
+var dbName = builder.Configuration["DB_NAME"];
+var dbUsername = builder.Configuration["DB_USERNAME"];
+var dbPassword = builder.Configuration["DB_PASSWORD"];
+
+if (!string.IsNullOrWhiteSpace(dbHost) &&
+    !string.IsNullOrWhiteSpace(dbName) &&
+    !string.IsNullOrWhiteSpace(dbUsername) &&
+    !string.IsNullOrWhiteSpace(dbPassword))
+{
+    builder.Configuration["ConnectionStrings:SeguridadDb"] =
+        $"Server={dbHost},{dbPort};" +
+        $"Database={dbName};" +
+        $"User Id={dbUsername};" +
+        $"Password={dbPassword};" +
+        "Encrypt=False;" +
+        "TrustServerCertificate=True;";
+}
+
+if (!string.IsNullOrWhiteSpace(builder.Configuration["JWT_KEY"]))
+{
+    builder.Configuration["Jwt:Key"] = builder.Configuration["JWT_KEY"];
+}
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -49,7 +81,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-// Registra en bitácora cualquier error técnico no controlado
+// Registra en bitÃ¡cora cualquier error tÃ©cnico no controlado
 app.Use(async (context, next) =>
 {
     try
@@ -64,7 +96,7 @@ app.Use(async (context, next) =>
             await bitacora.Crear(new Bitacora
             {
                 Usuario = context.Items["usuario"]?.ToString() ?? "sistema",
-                Descripcion = $"Error técnico en {context.Request.Path}: {ex.Message}"
+                Descripcion = $"Error tÃ©cnico en {context.Request.Path}: {ex.Message}"
             });
         }
         catch { }
