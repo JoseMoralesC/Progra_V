@@ -2,7 +2,7 @@
   "info": {
     "name": "Fabian - ACA2 Listado de estudiantes",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Preparada; no ejecutada con servicios reales. Solo consulta ACA2, pero el backend registra bitacoras mediante GEN1. Requiere token y periodo del ambiente autorizado."
+    "description": "Prepare esta coleccion y mantengo pendiente ejecutarla con servicios reales. Consulto ACA2 y verifico que el backend registre bitacoras mediante GEN1. Utilizo un token y un periodo del ambiente autorizado."
   },
   "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{token}}", "type": "string"}]},
   "variable": [

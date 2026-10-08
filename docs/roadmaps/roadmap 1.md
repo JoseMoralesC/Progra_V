@@ -1,10 +1,10 @@
 # Roadmap 1 - Proyecto Nuevo Avatar V1
 
-Este roadmap organiza el trabajo de **5 personas** para completar el **primer avance**. El avance se divide en tres etapas internas de trabajo, tomando como base exclusiva las historias de usuario del PDF. No se agregan historias nuevas ni se eliminan historias existentes.
+En este roadmap organizo el trabajo de **5 personas** para completar el **primer avance**. El avance se divide en tres etapas internas de trabajo, tomando como base exclusiva las historias de usuario del PDF. No se agregan historias nuevas ni se eliminan historias existentes.
 
 ## Principio de alcance
 
-Las historias de usuario son la base del proyecto. Cada tarea tecnica debe poder rastrearse a una HU del PDF:
+Tomo las historias de usuario como base del proyecto y relaciono cada tarea tecnica con una HU del PDF:
 
 - Usuarios y roles: `USR1`, `USR2`, `USR3`, `USR4`, `USR5`.
 - Oferta academica: `ACD1`, `ACD2`, `ACD3`, `ACD4`, `ACD5`, `ACD6`.
@@ -17,9 +17,9 @@ Total: **24 historias de usuario**.
 
 ## Alcance del primer avance
 
-El primer avance corresponde al alcance indicado por el profesor. Se entrega y se prueba como base de datos y backend/API, sin interfaz grafica ni aplicacion cliente.
+Organizo el primer avance segun el alcance indicado por el profesor: planteo la entrega y las pruebas de base de datos y backend/API, sin interfaz grafica ni aplicacion cliente.
 
-El primer avance debe incluir:
+Incluyo estos elementos en la planificacion del primer avance:
 
 - Base de datos completa del sistema, modelada desde las HU.
 - Diagrama completo del modelo de base de datos y sus relaciones.
@@ -36,20 +36,20 @@ El primer avance debe incluir:
 
 ### Fuera del alcance
 
-En este avance no se desarrolla ni se entrega:
+Dejo fuera del alcance de este avance:
 
 - Frontend o interfaz grafica.
 - Aplicacion web, movil o de escritorio para consumir los servicios.
 - Pantallas, formularios o navegacion visual.
 - Pruebas ejecutadas desde una UI.
 
-Toda interaccion funcional se realiza directamente contra los endpoints REST mediante Postman.
+Planifico las pruebas funcionales directamente contra los endpoints REST mediante Postman.
 
 ## Base de datos y ambiente remoto
 
-La base de datos ya existe como infraestructura remota y se accede mediante Tailscale. Sobre esa infraestructura se debe crear la BD completa del sistema o, si el equipo lo justifica, varias BD separadas por dominio.
+Considero la infraestructura remota de SQL Server accesible mediante Tailscale como punto de partida. Sobre ella planifico la BD completa del sistema o varias BD por dominio si el equipo justifica esa decision.
 
-Recomendacion principal: usar una sola base de datos de integracion, por ejemplo `NuevoAvatar_Integracion`, con esquemas por dominio:
+Propongo usar una sola base de datos de integracion, por ejemplo `NuevoAvatar_Integracion`, con esquemas por dominio:
 
 - `seguridad`: usuarios, roles, parametros, modulos, tokens.
 - `general`: bitacoras.
@@ -58,23 +58,23 @@ Recomendacion principal: usar una sola base de datos de integracion, por ejemplo
 - `finanzas`: facturas, detalles y pagos.
 - `notificaciones`: configuracion/logs de notificacion si aplica.
 
-Si se usan varias bases de datos, debe quedar claro como se mantienen las relaciones entre dominios y como se prueban los flujos desde Postman. No se deben partir datos que necesitan integridad referencial fuerte sin una razon tecnica.
+Si optamos por varias bases, documento como mantendremos las relaciones entre dominios y probaremos los flujos desde Postman. Evito separar datos que necesitan integridad referencial fuerte sin una razon tecnica.
 
 ### Reglas de BD
 
-- Todo cambio estructural debe quedar en scripts SQL versionados.
-- No hacer cambios manuales en SSMS que no queden documentados en script.
-- Mantener llaves primarias, llaves foraneas, restricciones `NOT NULL`, unicidad e indices necesarios.
-- Los datos requeridos por el PDF no deben permitir `NULL`, vacio ni solo espacios.
-- Las contrasenas deben almacenarse encriptadas o hasheadas, nunca en texto plano.
-- Los dominios de correo, expiracion de JWT, expiracion de refresh token y datos de correo deben ser parametrizables.
-- La BD de integracion no debe depender de creacion automatica por ORM; el backend debe validar contra el modelo aprobado.
+- Documento cada cambio estructural en scripts SQL versionados.
+- Evito cambios manuales en SSMS que no queden documentados en un script.
+- Mantengo llaves primarias, llaves foraneas, restricciones `NOT NULL`, unicidad e indices necesarios.
+- Valido que los datos requeridos por el PDF no permitan `NULL`, vacio ni solo espacios.
+- Planteo almacenar las contrasenas encriptadas o hasheadas, nunca en texto plano.
+- Planteo parametrizar los dominios de correo, las expiraciones de JWT y refresh token, y los datos de correo.
+- Administro la BD de integracion con scripts y planteo que el backend valide el modelo aprobado, sin creacion automatica por ORM.
 
-## Stack recomendado
+## Stack que propongo
 
-El PDF permite escoger tecnologia siempre que se respeten principios de microservicios y se mantenga la integridad de la informacion.
+Tomo como condicion del PDF respetar los principios de microservicios y mantener la integridad de la informacion al escoger la tecnologia.
 
-Para mantener consistencia, se recomienda:
+Para mantener consistencia, propongo:
 
 - Backend: Java 21 + Spring Boot 3.
 - API REST: Spring Web, DTOs, controladores por modulo y OpenAPI/Swagger.
@@ -89,18 +89,18 @@ Para mantener consistencia, se recomienda:
 
 ## Acuerdos comunes de servicios
 
-- Todos los servicios deben exponer REST y consumir/producir JSON.
-- La conexion a SQL Server debe configurarse mediante variables de ambiente o perfiles locales; no se deben versionar usuarios, contrasenas ni secretos.
-- Los endpoints deben usar codigos HTTP correctos.
-- Todas las operaciones protegidas deben validar el token contra `/validate`, segun `USR5`.
-- Los consumos entre servicios deben usar URLs configurables y documentar sus dependencias; no deben quedar direcciones IP o puertos quemados en el codigo.
-- Cada historia debe documentar request, response, errores esperados y casos de prueba Postman.
-- Cada accion importante debe registrar bitacora usando `GEN1`.
-- Las consultas tambien registran bitacora segun el PDF: "El usuario consulta <elemento>".
-- En creaciones, la descripcion de bitacora incluye JSON del nuevo registro.
-- En actualizaciones, la descripcion de bitacora incluye JSON anterior y JSON actual.
-- En eliminaciones, la descripcion de bitacora incluye JSON eliminado.
-- Los errores tecnicos tambien deben registrarse.
+- Planteo que todos los servicios expongan REST y consuman/produzcan JSON.
+- Configuro la conexion a SQL Server mediante variables de ambiente o perfiles locales y mantengo usuarios, contrasenas y secretos fuera del control de versiones.
+- Defino codigos HTTP correctos para los endpoints.
+- Planteo validar el token contra `/validate` en todas las operaciones protegidas, segun `USR5`.
+- Planteo consumos entre servicios con URLs configurables y documento sus dependencias, sin fijar direcciones IP o puertos en el codigo.
+- Documento para cada historia request, response, errores esperados y casos de prueba Postman.
+- Planteo registrar cada accion importante en bitacora mediante `GEN1`.
+- Incluyo el registro de consultas en bitacora segun el PDF: "El usuario consulta <elemento>".
+- Incluyo el JSON nuevo en la descripcion de bitacora de las creaciones.
+- Incluyo el JSON anterior y actual en la descripcion de bitacora de las actualizaciones.
+- Incluyo el JSON eliminado en la descripcion de bitacora de las eliminaciones.
+- Incluyo el registro de errores tecnicos.
 
 ## Dependencias principales entre HU
 
@@ -131,7 +131,7 @@ Para mantener consistencia, se recomienda:
 
 ## Distribucion por persona
 
-La division busca balancear carga, dependencias y responsabilidad individual. Cada persona es responsable de sus HU completas: tablas, scripts, contratos JSON, endpoints, validaciones, bitacoras y pruebas Postman.
+Con esta division busco balancear carga, dependencias y responsabilidad individual. Asigno a cada persona sus HU completas: tablas, scripts, contratos JSON, endpoints, validaciones, bitacoras y pruebas Postman.
 
 ### Persona 1 (Hector) - Seguridad, parametros, roles y bitacora
 
@@ -145,12 +145,12 @@ Carga estimada: alta, porque desbloquea al resto del equipo.
 | `USR3` | `/parametro` | CRUD de parametros, identificador maximo 10 caracteres en mayusculas y valor maximo 500 caracteres. |
 | `USR4` | `/modulo` | CRUD de modulos, datos requeridos y nombre solo con letras y espacios. |
 
-Responsabilidades adicionales:
+Responsabilidades adicionales que incluyo en la planificacion:
 
-- Definir el contrato comun de autenticacion.
-- Entregar datos semilla minimos para roles, parametros y usuario administrador.
-- Definir formato comun de errores y estructura base de respuestas.
-- Coordinar que los demas servicios puedan validar token y registrar bitacoras.
+- Me propongo definir el contrato comun de autenticacion.
+- Me propongo entregar datos semilla minimos para roles, parametros y usuario administrador.
+- Me propongo definir formato comun de errores y estructura base de respuestas.
+- Me propongo coordinar que los demas servicios puedan validar token y registrar bitacoras.
 
 ### Persona 2 (Ramses) - Usuarios, profesores, instituciones y carreras
 
@@ -163,11 +163,11 @@ Carga estimada: media-alta, con relaciones importantes entre usuarios y oferta a
 | `ACD6` | `/profesor` | CRUD de profesores, mayoria de edad, telefonos y email `cuc.ac.cr` parametrizable. |
 | `ACD2` | `/carrera` | CRUD de carreras, consulta por institucion y director registrado como profesor. |
 
-Responsabilidades adicionales:
+Responsabilidades adicionales que incluyo en la planificacion:
 
-- Alinear roles de usuario con dominios `cuc.cr` y `cuc.ac.cr`.
-- Coordinar con Persona 3 (Alejandro) para que cursos tengan carreras disponibles.
-- Entregar datos semilla de instituciones, profesores y carreras.
+- Me propongo alinear roles de usuario con dominios `cuc.cr` y `cuc.ac.cr`.
+- Me propongo coordinar con Persona 3 (Alejandro) para que cursos tengan carreras disponibles.
+- Me propongo entregar datos semilla de instituciones, profesores y carreras.
 
 ### Persona 3 (Alejandro) - Cursos, periodos, grupos y direcciones
 
@@ -180,11 +180,11 @@ Carga estimada: media-alta, porque cierra la oferta academica y deja bases para 
 | `ACD4` | `/grupo` | CRUD de grupos con curso, profesor, horario, cupo y periodo. |
 | `MAT4` | `/provincias`, `/cantones`, `/distritos` | Consultas territoriales y validacion provincia-canton-distrito. |
 
-Responsabilidades adicionales:
+Responsabilidades adicionales que incluyo en la planificacion:
 
-- Entregar datos semilla de cursos, periodos, grupos y division territorial.
-- Coordinar con Persona 4 (Fabian) para que expediente use direcciones.
-- Coordinar con Persona 5 (Jose) para que matricula tenga cursos, grupos y periodos listos.
+- Me propongo entregar datos semilla de cursos, periodos, grupos y division territorial.
+- Me propongo coordinar con Persona 4 (Fabian) para que expediente use direcciones.
+- Me propongo coordinar con Persona 5 (Jose) para que matricula tenga cursos, grupos y periodos listos.
 
 ### Persona 4 (Fabian) - Expedientes, prematricula y consultas academicas
 
@@ -197,11 +197,11 @@ Carga estimada: alta, porque toca datos de estudiantes y consultas academicas.
 | `ACA1` | `/historialacademico` | Promedios de notas obtenidos por estudiante. |
 | `ACA2` | `/listadoestudiantes` | Estudiantes matriculados en un periodo con carrera, curso y grupo. |
 
-Responsabilidades adicionales:
+Responsabilidades adicionales que incluyo en la planificacion:
 
-- Coordinar con Persona 3 (Alejandro) para validar provincia/canton/distrito.
-- Coordinar con Persona 5 (Jose) para que `ACA1` consuma notas y `ACA2` consuma matricula.
-- Entregar datos semilla de estudiantes y prematriculas.
+- Me propongo coordinar con Persona 3 (Alejandro) para validar provincia/canton/distrito.
+- Me propongo coordinar con Persona 5 (Jose) para que `ACA1` consuma notas y `ACA2` consuma matricula.
+- Me propongo entregar datos semilla de estudiantes y prematriculas.
 
 ### Persona 5 (Jose) - Matricula, notas, facturacion, pagos y notificaciones
 
@@ -215,36 +215,36 @@ Carga estimada: alta, porque contiene los procesos mas transaccionales.
 | `IPN2` | `/pago` | Crear pago, reversar pago, consultar pago y listar pagos por periodo; actualiza estado de factura. |
 | `IPN3` | `/notificar` | Envio de correo con email, asunto y cuerpo HTML; datos SMTP parametrizables. |
 
-Responsabilidades adicionales:
+Responsabilidades adicionales que incluyo en la planificacion:
 
-- Coordinar con Persona 4 (Fabian) para estudiantes y prematricula.
-- Coordinar con Persona 3 (Alejandro) para grupos, cursos y periodos.
-- Entregar datos semilla para matriculas, desglose de rubros, facturas y pagos.
+- Me propongo coordinar con Persona 4 (Fabian) para estudiantes y prematricula.
+- Me propongo coordinar con Persona 3 (Alejandro) para grupos, cursos y periodos.
+- Me propongo entregar datos semilla para matriculas, desglose de rubros, facturas y pagos.
 
 ## Etapas del primer avance
 
-Estas etapas son parte del mismo primer entregable. No representan una aplicacion con UI ni entregas funcionales independientes.
+Organizo estas etapas como partes del mismo primer entregable, sin plantear una aplicacion con UI ni entregas funcionales independientes.
 
 ### Etapa 1 - Base de datos, conexiones y servicios REST
 
-Objetivo: entregar al profesor la base de datos completa y los servicios REST de las HU, probados desde Postman, sin frontend.
+Mi objetivo es entregar al profesor la base de datos completa y los servicios REST de las HU, probados desde Postman, sin frontend.
 
-Trabajo comun:
+Trabajo que planifico con el equipo:
 
-- Confirmar conexion remota por Tailscale a SQL Server.
-- Definir si se usara una BD o varias BD.
-- Crear modelo completo de datos basado en las 24 HU.
-- Crear scripts SQL de estructura, restricciones, indices y datos semilla.
-- Configurar y comprobar la conexion de cada servicio con la BD remota sin publicar credenciales en Git.
-- Definir contratos JSON por endpoint.
-- Implementar servicios REST por HU asignada.
-- Validar token con `USR5` en todas las operaciones protegidas.
-- Registrar bitacoras con `GEN1`.
-- Probar los consumos servicio-a-servicio requeridos por las HU.
-- Crear coleccion Postman por persona y una coleccion integrada del equipo.
-- Documentar evidencia por criterio de aceptacion.
+- Me propongo confirmar conexion remota por Tailscale a SQL Server.
+- Me propongo definir si se usara una BD o varias BD.
+- Me propongo crear modelo completo de datos basado en las 24 HU.
+- Me propongo crear scripts SQL de estructura, restricciones, indices y datos semilla.
+- Me propongo configurar y comprobar la conexion de cada servicio con la BD remota sin publicar credenciales en Git.
+- Me propongo definir contratos JSON por endpoint.
+- Me propongo implementar servicios REST por HU asignada.
+- Me propongo validar token con `USR5` en todas las operaciones protegidas.
+- Me propongo registrar bitacoras con `GEN1`.
+- Me propongo probar los consumos servicio-a-servicio requeridos por las HU.
+- Me propongo crear coleccion Postman por persona y una coleccion integrada del equipo.
+- Me propongo documentar evidencia por criterio de aceptacion.
 
-Orden sugerido dentro de la etapa:
+Orden que propongo dentro de la etapa:
 
 1. Persona 1 (Hector) implementa `USR5`, `USR2`, `USR3` y base de `GEN1`.
 2. Persona 2 (Ramses) implementa `USR1`, `ACD1` y `ACD6`.
@@ -255,7 +255,7 @@ Orden sugerido dentro de la etapa:
 7. Persona 4 (Fabian) completa `ACA1` y `ACA2` cuando existan matriculas y notas.
 8. Todo el equipo ejecuta pruebas integradas desde Postman.
 
-Resultados de la etapa 1:
+Resultados que espero de la etapa 1:
 
 - Diagrama de base de datos completo.
 - Script de base de datos completo.
@@ -266,24 +266,24 @@ Resultados de la etapa 1:
 
 ### Etapa 2 - Integracion, consistencia y pruebas tecnicas
 
-Objetivo: integrar y estabilizar lo construido en la etapa 1, sin agregar historias nuevas ni interfaces graficas.
+Mi objetivo es integrar y estabilizar lo construido en la etapa 1, sin agregar historias nuevas ni interfaces graficas.
 
-Trabajo comun:
+Trabajo que planifico con el equipo:
 
-- Ejecutar flujos completos entre HU:
+- Me propongo ejecutar flujos completos entre HU:
   - Login -> rol/usuario -> bitacora.
   - Institucion -> profesor -> carrera -> curso -> periodo -> grupo.
   - Direcciones -> expediente -> prematricula -> matricula -> notas.
   - Matricula -> factura -> pago/reverso.
   - Matricula/notas -> historial academico/listado de estudiantes.
-- Revisar que todas las operaciones protegidas validen token.
-- Revisar que todas las acciones importantes y errores tecnicos registren bitacora.
-- Validar integridad referencial en BD y servicios.
-- Normalizar respuestas de error y codigos HTTP.
-- Probar casos negativos: datos vacios, dominios invalidos, token invalido, relaciones inexistentes, rangos invalidos.
-- Ajustar indices o consultas cuando una HU lo necesite.
+- Me propongo revisar que todas las operaciones protegidas validen token.
+- Me propongo revisar que todas las acciones importantes y errores tecnicos registren bitacora.
+- Me propongo validar integridad referencial en BD y servicios.
+- Me propongo normalizar respuestas de error y codigos HTTP.
+- Me propongo probar casos negativos: datos vacios, dominios invalidos, token invalido, relaciones inexistentes, rangos invalidos.
+- Me propongo ajustar indices o consultas cuando una HU lo necesite.
 
-Resultados de la etapa 2:
+Resultados que espero de la etapa 2:
 
 - Coleccion Postman integrada y ordenada por flujos.
 - Matriz de dependencias HU vs endpoints.
@@ -293,33 +293,33 @@ Resultados de la etapa 2:
 
 ### Etapa 3 - Documentacion y cierre del primer avance
 
-Objetivo: cerrar la entrega con trazabilidad entre PDF, HU, BD, servicios y pruebas.
+Mi objetivo es cerrar la entrega con trazabilidad entre PDF, HU, BD, servicios y pruebas.
 
-Trabajo comun:
+Trabajo que planifico con el equipo:
 
-- Completar documentacion de analisis y diseno enfocada en las HU.
-- Incluir portada, introduccion, diagrama de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
-- Revisar que cada HU tenga endpoints, contratos JSON, pruebas y evidencia.
-- Revisar que no existan historias inventadas ni historias omitidas.
-- Preparar scripts finales para recrear la BD.
-- Preparar guia de ejecucion local/remota y variables de ambiente.
-- Validar que el profesor pueda probar todo desde Postman contra los servicios.
+- Me propongo completar documentacion de analisis y diseno enfocada en las HU.
+- Me propongo incluir portada, introduccion, diagrama de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
+- Me propongo revisar que cada HU tenga endpoints, contratos JSON, pruebas y evidencia.
+- Me propongo revisar que no existan historias inventadas ni historias omitidas.
+- Me propongo preparar scripts finales para recrear la BD.
+- Me propongo preparar guia de ejecucion local/remota y variables de ambiente.
+- Me propongo validar que el profesor pueda probar todo desde Postman contra los servicios.
 
-Entregables consolidados del primer avance:
+Entregables que planifico para el primer avance:
 
-- Documento de analisis y diseno con portada, introduccion, diagrama completo de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
-- Script versionado para crear la base de datos, sus restricciones y datos semilla.
-- Codigo fuente de los servicios REST y configuracion documentada de conexion.
-- Coleccion Postman integrada, con variables de ambiente y orden de ejecucion.
-- Evidencia de una prueba exitosa por cada criterio de aceptacion del PDF.
-- Historias de usuario actualizadas en la herramienta elegida.
-- Pull request hacia la rama principal o rama final acordada.
+- Me propongo documento de analisis y diseno con portada, introduccion, diagrama completo de BD, casos de uso, clases, pruebas tecnicas, conclusiones, recomendaciones y bibliografia.
+- Me propongo script versionado para crear la base de datos, sus restricciones y datos semilla.
+- Me propongo codigo fuente de los servicios REST y configuracion documentada de conexion.
+- Me propongo coleccion Postman integrada, con variables de ambiente y orden de ejecucion.
+- Me propongo evidencia de una prueba exitosa por cada criterio de aceptacion del PDF.
+- Me propongo historias de usuario actualizadas en la herramienta elegida.
+- Me propongo pull request hacia la rama principal o rama final acordada.
 
 Fecha indicada por el PDF para el primer alcance: **8 de octubre de 2026**.
 
 ## Checklist por historia
 
-Cada HU debe quedar cerrada solo cuando tenga:
+Considero una HU cerrada solo cuando cuenta con:
 
 - Tabla(s) o estructura de BD correspondiente.
 - Script SQL versionado.
@@ -358,4 +358,4 @@ Cada HU debe quedar cerrada solo cuando tenga:
 
 ## Nota final
 
-Este roadmap no cambia el alcance funcional del PDF. Organiza el primer avance para 5 personas y tres etapas internas, con una entrega centrada en base de datos, conexiones, servicios REST, consumos entre servicios y pruebas directas desde Postman. No contempla UI ni aplicacion cliente.
+En este roadmap mantengo el alcance funcional del PDF y organizo el primer avance para cinco personas y tres etapas internas. Centro la entrega en base de datos, conexiones, servicios REST, consumos entre servicios y pruebas directas desde Postman, sin incluir UI ni aplicacion cliente.

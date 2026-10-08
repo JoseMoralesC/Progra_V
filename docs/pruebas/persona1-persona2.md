@@ -1,6 +1,6 @@
 # Evidencia técnica - Persona 1 y Persona 2
 
-Fecha de ejecución: 29 de septiembre de 2026.
+Documento la ejecución del 29 de septiembre de 2026.
 
 ## Cobertura del roadmap
 
@@ -21,7 +21,7 @@ Fecha de ejecución: 29 de septiembre de 2026.
 
 ## Prueba integrada
 
-Se levantó Seguridad en el puerto `5158` y Persona 2 en `8082`, ambos conectados a `db70273`.
+En esta ejecución registro el inicio de Seguridad en el puerto `5158` y Persona 2 en `8082`, ambos conectados a `db70273`.
 
 | Verificación | Resultado |
 |---|---|
@@ -40,7 +40,7 @@ Se levantó Seguridad en el puerto `5158` y Persona 2 en `8082`, ambos conectado
 
 ## Pruebas automatizadas de Persona 2
 
-Comando ejecutado: `.\mvnw.cmd test` con `DB_PASSWORD` configurada solo como variable de entorno.
+Documento el comando ejecutado: `.\mvnw.cmd test` con `DB_PASSWORD` configurada solo como variable de entorno.
 
 - 9 pruebas ejecutadas.
 - 0 fallos.
@@ -50,7 +50,7 @@ Comando ejecutado: `.\mvnw.cmd test` con `DB_PASSWORD` configurada solo como var
 
 ## Pruebas automatizadas de Persona 1
 
-El proyecto `NuevoAvatarSeguridad.Tests` cubre los contratos críticos de autenticación:
+Con las pruebas de `NuevoAvatarSeguridad.Tests` documento los contratos críticos de autenticación:
 
 - rechazo de datos de login vacíos;
 - `401` para credenciales inválidas;
@@ -58,10 +58,10 @@ El proyecto `NuevoAvatarSeguridad.Tests` cubre los contratos críticos de autent
 - lectura de JWT desde `Authorization: Bearer`;
 - `401` para un JWT inválido.
 
-## Decisiones REST y de diseño
+## Mis criterios REST y de diseño
 
-- JSON como representación de intercambio.
-- Semántica HTTP: `GET` consulta, `POST` crea, `PUT` reemplaza los campos editables y `DELETE` elimina.
-- Controladores delgados; reglas de negocio y transacciones en servicios; persistencia en repositorios.
-- Dependencias inyectadas por constructor, DTO separados de entidades y manejo global uniforme de errores.
-- Autorización y bitácora implementadas como componentes transversales para evitar duplicación.
+- Utilizo JSON como representación de intercambio.
+- Aplico la semántica HTTP: `GET` consulta, `POST` crea, `PUT` reemplaza los campos editables y `DELETE` elimina.
+- Mantengo controladores delgados, reglas de negocio y transacciones en servicios, y persistencia en repositorios.
+- Utilizo dependencias inyectadas por constructor, DTO separados de entidades y manejo global uniforme de errores.
+- Organizo autorización y bitácora como componentes transversales para evitar duplicación.

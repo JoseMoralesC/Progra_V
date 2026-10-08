@@ -26,7 +26,9 @@ namespace NuevoAvatar.Seguridad.DataAccess
 
         public async Task<LoginResponse?> Login(string email, string password)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u =>
+                u.Email == email ||
+                u.Email == email + "@cuc.cr");
             if (usuario == null) return null;
 
             bool claveOk;

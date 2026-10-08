@@ -1,0 +1,2690 @@
+{
+  "info": {
+    "_postman_id": "b302295a-4a9a-4ad3-856f-c9ccfb89317f",
+    "name": "Fabian - Persona 4 - Recorrido y evidencia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Recorrido de MAT3, MAT1, ACA2 y ACA1. Reune los 83 casos existentes y agrega login y validacion del token. La organizacion de esta coleccion no acredita que los casos pendientes hayan sido ejecutados.\n\nPreparacion: guardar la clave del usuario de pruebas en Postman Local Vault con el nombre fabian-clave. Revisar las variables de direcciones, carreras, cursos y periodos contra PrograV; los numeros iniciales proceden de las colecciones anteriores y no confirman datos existentes. Para ACA1, identificacion debe corresponder a un estudiante con matriculas y notas.\n\nOrden: ejecutar 00.1 y 00.2; continuar por carpetas. Si vence el token, repetir el login. La carpeta 06 elimina primero la prematricula creada y despues el expediente de prueba. Las consultas academicas usan datos previamente preparados por los servicios responsables. La clave se referencia desde Vault y no se incluye en este archivo. No compartir ni exportar valores reales de tokenFabian."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{tokenFabian}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8084"
+    },
+    {
+      "key": "identificacionPrueba",
+      "value": "PRUEBA-MAT3-FABIAN"
+    },
+    {
+      "key": "identificacionEstudiante",
+      "value": "PRUEBA-MAT3-FABIAN"
+    },
+    {
+      "key": "carreraId",
+      "value": "1"
+    },
+    {
+      "key": "cursoId",
+      "value": "10"
+    },
+    {
+      "key": "otroCursoId",
+      "value": "11"
+    },
+    {
+      "key": "cursoNivelDosId",
+      "value": "12"
+    },
+    {
+      "key": "periodoFuturoId",
+      "value": "20"
+    },
+    {
+      "key": "periodoHoyId",
+      "value": "21"
+    },
+    {
+      "key": "periodoPasadoId",
+      "value": "22"
+    },
+    {
+      "key": "prematriculaId",
+      "value": "",
+      "description": "Se obtiene automaticamente al crear la prematricula de prueba."
+    },
+    {
+      "key": "tipoIdentificacion",
+      "value": "Cedula"
+    },
+    {
+      "key": "identificacion",
+      "value": "",
+      "description": "Estudiante existente con matriculas y notas para comprobar el historial completo."
+    },
+    {
+      "key": "identificacionInexistente",
+      "value": "INEXISTENTE_ACA1"
+    },
+    {
+      "key": "periodoId",
+      "value": "20"
+    },
+    {
+      "key": "seguridadUrl",
+      "value": "http://localhost:5158"
+    },
+    {
+      "key": "usuario",
+      "value": "fabian.pruebas@cuc.cr"
+    },
+    {
+      "key": "tokenFabian",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "provinciaId",
+      "value": "1"
+    },
+    {
+      "key": "cantonId",
+      "value": "2"
+    },
+    {
+      "key": "distritoId",
+      "value": "3"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Login y validacion",
+      "item": [
+        {
+          "name": "00.1 Login - guarda token",
+          "request": {
+            "method": "POST",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "{{vault:fabian-clave}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"tokenFabian\", \"\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "    const datos = pm.response.json();",
+                  "    pm.test(\"Token recibido\", function () { pm.expect(datos.access_token).to.be.a(\"string\").and.not.empty; });",
+                  "    if (typeof datos.access_token === \"string\" && datos.access_token.length > 0) {",
+                  "        pm.collectionVariables.set(\"tokenFabian\", datos.access_token);",
+                  "    } else { pm.execution.setNextRequest(null); }",
+                  "} else { pm.execution.setNextRequest(null); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "00.2 Validar token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200 y token valido\", function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.eql(true); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Seguridad transversal - 401",
+      "item": [
+        {
+          "name": "MAT3",
+          "item": [
+            {
+              "name": "P16 Sin token: POST /expediente",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P16 Sin token: PUT /expediente/{{identificacionPrueba}}",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P16 Sin token: DELETE /expediente/{{identificacionPrueba}}",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P16 Sin token: GET /expediente",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P16 Sin token: GET /expediente/{{identificacionPrueba}}",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "MAT1",
+          "item": [
+            {
+              "name": "Sin token: POST /prematricula",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin token: PUT /prematricula/{{prematriculaId}}",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin token: DELETE /prematricula/{{prematriculaId}}",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin token: GET /prematricula",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin token: GET /prematricula/{{prematriculaId}}",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ACA2",
+          "item": [
+            {
+              "name": "Rechazar consulta sin token",
+              "request": {
+                "method": "GET",
+                "auth": {
+                  "type": "noauth"
+                },
+                "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401', function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "ACA1",
+          "item": [
+            {
+              "name": "Sin token",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}",
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"Estado 401\", function () { pm.response.to.have.status(401); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - MAT3 Expedientes",
+      "item": [
+        {
+          "name": "Crear, consultar y modificar",
+          "item": [
+            {
+              "name": "P01 Crear expediente",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P04 Consultar todos",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P05 Consultar por identificacion",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Rechazar numero duplicado",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Pasaporte\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 409\", function () { pm.response.to.have.status(409); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P02 Modificar expediente",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Mora\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"333\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Consultar cambio guardado",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Campos obligatorios",
+          "item": [
+            {
+              "name": "P06 Crear sin identificacion",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin identificacion",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin tipoIdentificacion",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin tipoIdentificacion",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin email",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin email",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin nombreCompleto",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin nombreCompleto",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin fechaNacimiento",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin fechaNacimiento",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin provinciaId",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin provinciaId",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin cantonId",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin cantonId",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin distritoId",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin distritoId",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin otrasSenas",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin otrasSenas",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P06 Crear sin telefonos",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P08 Modificar sin telefonos",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Datos invalidos",
+          "item": [
+            {
+              "name": "P10 Nombre con numero (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P10 Nombre con numero (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P11 Email sin formato (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P11 Email sin formato (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P13 Dominio no permitido (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P13 Dominio no permitido (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P07 Telefonos vacios (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P07 Telefonos vacios (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P07 Otras senas en blanco (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "P07 Otras senas en blanco (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - MAT1 Prematricula",
+      "item": [
+        {
+          "name": "Crear, consultar y modificar",
+          "item": [
+            {
+              "name": "Crear prematricula de prueba",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                      "if (pm.response.code === 201) { pm.collectionVariables.set(\"prematriculaId\", pm.response.json().id); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.collectionVariables.unset(\"prematriculaId\");"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Consultar todas",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Consultar por llave",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Modificar y quitar observaciones",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}}\n  ],\n  \"observaciones\": null,\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Verificar modificacion",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Campos requeridos",
+          "item": [
+            {
+              "name": "POST sin identificacionEstudiante",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT sin identificacionEstudiante",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST sin carreraId",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT sin carreraId",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST sin cursos",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT sin cursos",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "POST sin periodoId",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "PUT sin periodoId",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Reglas MAT1",
+          "item": [
+            {
+              "name": "Identificacion vacia (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Identificacion vacia (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin cursos (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Sin cursos (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Curso de segundo nivel (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Curso de segundo nivel (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Periodo inicia hoy (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Periodo inicia hoy (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Periodo pasado (POST)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Periodo pasado (PUT)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - ACA2 Listado de estudiantes",
+      "item": [
+        {
+          "name": "Consultar listado por periodo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+                  "if (pm.response.code === 200) { pm.test('Campos requeridos del listado', function () { const filas = pm.response.json(); pm.expect(filas).to.be.an('array'); filas.forEach(function (fila) { pm.expect(fila).to.have.all.keys('tipoIdentificacion', 'identificacion', 'nombreCompleto', 'carrera', 'curso', 'grupo'); }); }); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar periodo ausente",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/listadoestudiantes"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rechazar periodo no numerico",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/listadoestudiantes?periodoId=texto"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - ACA1 Historial academico",
+      "item": [
+        {
+          "name": "Consultar historial",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Campos del historial\", function () { const filas = pm.response.json(); pm.expect(filas).to.be.an(\"array\"); filas.forEach(function (fila) { pm.expect(Object.keys(fila).sort()).to.eql([\"codigoCurso\", \"nombreCurso\", \"promedio\"]); pm.expect(fila.promedio).to.be.a(\"number\"); }); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Falta tipo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/historialacademico?identificacion={{identificacion}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Falta identificacion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Identificacion vacia",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion=%20"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado 400\", function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Estudiante inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacionInexistente}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Eliminacion al final",
+      "item": [
+        {
+          "name": "06.1 MAT1 Eliminar prematricula de prueba",
+          "item": [
+            {
+              "name": "Eliminar prematricula de prueba",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Confirmar eliminacion",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "06.2 MAT3 Eliminar expediente de prueba",
+          "item": [
+            {
+              "name": "P03 Eliminar expediente de prueba",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 204\", function () { pm.response.to.have.status(204); });"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Confirmar eliminacion",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+              },
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test(\"HTTP 404\", function () { pm.response.to.have.status(404); });"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "description": "Eliminacion de los registros creados en este recorrido, en orden de dependencia."
+    }
+  ]
+}
