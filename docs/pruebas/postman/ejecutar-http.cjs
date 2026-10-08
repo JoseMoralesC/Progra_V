@@ -1,5 +1,5 @@
-// Ejecuta las peticiones y aserciones de estas colecciones con Node y sus
-// bibliotecas integradas. No es Postman ni Newman: el reporte indica ese alcance.
+// Ejecuto las peticiones y aserciones de estas colecciones con Node y sus
+// bibliotecas integradas. Indico en el reporte que no uso Postman ni Newman.
 const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
@@ -70,14 +70,14 @@ async function main() {
           const headers = Object.fromEntries((item.request.header||[]).map(x=>[x.key,replace(x.value)]));
           if (item.request.auth?.type!=='noauth') headers.Authorization='Bearer '+env.get('token');
           const url = replace(item.request.url);
-          // El reporte conserva rutas de plantilla; nunca credenciales ni JWT.
+          // Conservo rutas de plantilla en el reporte, nunca credenciales ni JWT.
           record.ruta=item.request.url;
           const response=await call(url,{method:item.request.method,headers,body:item.request.body?replace(item.request.body.raw):undefined});
           const text=await response.text(); record.estado=response.status;
           pm.response={code:response.status,json:()=>JSON.parse(text),to:{have:{status:n=>assert.equal(response.status,n)}}};
           for(const event of item.event||[])if(event.listen==='test')vm.runInContext(event.script.exec.join('\n'),context,{timeout:1000});
-          // No se exportan respuestas completas: contienen datos personales o
-          // bitácoras del equipo. Las aserciones verifican los campos en memoria.
+          // No exporto respuestas completas: contienen datos personales o
+          // bitácoras del equipo. Verifico los campos en memoria con las aserciones.
         } catch(e) {record.error=e.message;}
         console.log(`${collection.info.name.split(' - ')[0]} | ${record.estado||'ERROR'} | ${item.name} | ${record.aserciones.some(x=>!x.aprobada)||record.error?'FALLO':'OK'}`);
       }

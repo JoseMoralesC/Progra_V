@@ -1,11 +1,11 @@
 /*
     Nuevo Avatar - datos mínimos de arranque (SQL Server)
-    Ejecutar después de 01_seguridad_general.sql. Puede repetirse: inserta
-    solo las claves faltantes y conserva valores ya configurados.
+    Ejecuto esta parte después de 01_seguridad_general.sql. Puedo repetirla:
+    inserto solo las claves faltantes y conservo los valores ya configurados.
 
-    No crea usuarios, contraseñas, tokens, bitácoras ni configuración SMTP.
-    DOMESTUD y DOMPROF son los dominios usados por el proyecto actual;
-    EXPJWT y EXPREFRESH son minutos, según AuthService de Seguridad.
+    No creo usuarios, contraseñas, tokens, bitácoras ni configuración SMTP.
+    Defino DOMESTUD y DOMPROF con los dominios usados por el proyecto actual;
+    uso minutos para EXPJWT y EXPREFRESH, según AuthService de Seguridad.
 */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;

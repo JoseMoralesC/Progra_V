@@ -1,4 +1,4 @@
-# Usa la misma conexion local de PrograV que Seguridad, sin guardar claves aqui.
+# Uso la misma conexion local de PrograV que Seguridad, sin guardar claves aqui.
 $ErrorActionPreference = 'Stop'
 $taskConfigPath = Join-Path $PSScriptRoot '../seguridad/NuevoAvatarSeguridad/appsettings.Development.json'
 if (!(Test-Path -LiteralPath $taskConfigPath)) {
