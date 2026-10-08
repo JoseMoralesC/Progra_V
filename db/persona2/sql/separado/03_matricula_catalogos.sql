@@ -1,8 +1,8 @@
 /*
     Nuevo Avatar - catálogo territorial de matrícula (SQL Server)
-    Crea las tres tablas presentes en la base compartida. Los nombres de
-    provincias, cantones y distritos se cargarán con un catálogo oficial
-    aparte; este archivo no inventa datos geográficos.
+    Creo las tres tablas presentes en la base compartida. Cargo los nombres de
+    provincias, cantones y distritos con un catálogo oficial
+    aparte; no incluyo datos geográficos inventados.
 */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;

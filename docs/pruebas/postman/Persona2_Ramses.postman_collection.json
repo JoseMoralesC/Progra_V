@@ -1,0 +1,1650 @@
+{
+  "info": {
+    "name": "Persona 2 - Ramses (USR1, ACD1, ACD6, ACD2)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Verificada en Postman Runner local el 5 de octubre de 2026 contra PrograV: 56 solicitudes, 72 comprobaciones aprobadas, cero fallos, errores y omisiones. Evidencias en docs/pruebas/RESUMEN_PERSONA2.md. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "p2Run",
+      "value": ""
+    },
+    {
+      "key": "emailPrueba",
+      "value": ""
+    },
+    {
+      "key": "institucionId",
+      "value": ""
+    },
+    {
+      "key": "profesorId",
+      "value": ""
+    },
+    {
+      "key": "carreraId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 · USR5 - Autenticación",
+      "item": [
+        {
+          "name": "Login válido y guardar tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "{{password}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.environment.get(\"usuario\") || !pm.environment.get(\"password\")) { pm.execution.skipRequest(); throw new Error(\"Complete usuario y password en el entorno local\"); }",
+                  "pm.collectionVariables.set(\"p2Run\", String(Date.now()));",
+                  "pm.environment.set(\"pruebaPassword\", \"PM!\"+pm.variables.replaceIn(\"{{$guid}}\"));",
+                  "pm.environment.unset(\"token\"); pm.environment.unset(\"refresh_token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { const j = pm.response.json(); pm.environment.set(\"token\", j.access_token); pm.environment.set(\"refresh_token\", j.refresh_token); }",
+                  "pm.test(\"JWT y refresh emitidos\", () => { const j = pm.response.json(); pm.expect(j.access_token).to.be.a(\"string\").and.not.empty; pm.expect(j.refresh_token).to.be.a(\"string\").and.not.empty; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar JWT",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Token válido\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login con contraseña incorrecta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "usuario",
+                "value": "{{usuario}}"
+              },
+              {
+                "key": "contrasena",
+                "value": "INCORRECTA_{{$guid}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login sin datos",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{seguridadUrl}}/login",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar token inválido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{$randomUUID}}"
+              }
+            ],
+            "url": "{{seguridadUrl}}/validate",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Renovar y guardar tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) { pm.environment.set(\"refreshAnterior\", pm.environment.get(\"refresh_token\")); const j=pm.response.json(); pm.environment.set(\"token\",j.access_token); pm.environment.set(\"refresh_token\",j.refresh_token); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh anterior revocado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{seguridadUrl}}/refresh",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshAnterior}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validar JWT renovado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/validate"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Token válido\", () => pm.expect(pm.response.json()).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 · Preparación y seguridad",
+      "item": [
+        {
+          "name": "Confirmar rol estudiante",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/rol/ESTUDIANTE"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar dominio de profesores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/parametro/DOMPROF"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Dominio configurado\", () => pm.expect(pm.response.json().valor).to.eql(pm.environment.get(\"dominioProfesor\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "usuario: sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/usuario",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "institucion: sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/institucion",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "profesor: sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/profesor",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "carrera: sin token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/carrera",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 · USR1 - Usuarios",
+      "item": [
+        {
+          "name": "Crear usuario ficticio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"emailPrueba\");pm.collectionVariables.unset(\"emailPruebaCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.collectionVariables.set(\"emailPrueba\",pm.response.json().email); pm.collectionVariables.set(\"emailPruebaCreado\",true); }",
+                  "pm.test(\"Respuesta sin contraseña\", () => { const j=pm.response.json(); pm.expect(j).not.to.have.property(\"passwordHash\"); pm.expect(j).not.to.have.property(\"contrasena\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Correo duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar por identificación",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/usuario?identificacion=PM{{p2Run}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Filtro contiene usuario\", () => pm.expect(pm.response.json().some(x => x.email === pm.collectionVariables.get(\"emailPrueba\"))).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar usuario conservando contraseña",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario/{{emailPrueba}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Actualizado\",\n  \"idRol\": \"ESTUDIANTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Nombre actualizado\", () => pm.expect(pm.response.json().nombre).to.eql(\"Estudiante Actualizado\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dominio ajeno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman{{p2Run}}@example.com\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Campos vacíos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \" \",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Rol inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/usuario",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"otro{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"NOEXISTE{{p2Run}}\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 · ACD1 - Instituciones",
+      "item": [
+        {
+          "name": "Crear institución",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/institucion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Institucion Postman\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"institucionId\");pm.collectionVariables.unset(\"institucionIdCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.collectionVariables.set(\"institucionId\",pm.response.json().id); pm.collectionVariables.set(\"institucionIdCreado\",true); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar instituciones",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/institucion"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar institución",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar institución",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/institucion/{{institucionId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Institucion Actualizada\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Nombre actualizado\", () => pm.expect(pm.response.json().nombre).to.eql(\"Institucion Actualizada\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nombre vacío",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/institucion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \" \"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nombre con números",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/institucion",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Institucion 123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 · ACD6 - Profesores",
+      "item": [
+        {
+          "name": "Crear profesor con dos teléfonos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"profesorId\");pm.collectionVariables.unset(\"profesorIdCreado\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.collectionVariables.set(\"profesorId\",pm.response.json().id); pm.collectionVariables.set(\"profesorIdCreado\",true); }",
+                  "pm.test(\"Dos teléfonos\", () => pm.expect(pm.response.json().telefonos).to.have.lengthOf(2));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profesor duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar profesores",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/profesor"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar profesor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar profesor y teléfonos",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor/{{profesorId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Actualizado\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880003\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Teléfono reemplazado\", () => pm.expect(pm.response.json().telefonos).to.eql([\"88880003\"]));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Menor de edad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"{{fechaMenor}}\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d=new Date();d.setFullYear(d.getFullYear()-10);pm.variables.set(\"fechaMenor\",d.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Dominio incorrecto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@example.com\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sin teléfonos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Teléfonos repetidos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/profesor",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880001\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 · ACD2 - Carreras",
+      "item": [
+        {
+          "name": "Crear carrera",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/carrera",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"carreraId\");pm.collectionVariables.unset(\"carreraIdCreado\");if(!pm.collectionVariables.get(\"institucionIdCreado\")||!pm.collectionVariables.get(\"profesorIdCreado\"))pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "if (pm.response.code===201) { pm.collectionVariables.set(\"carreraId\",pm.response.json().id); pm.collectionVariables.set(\"carreraIdCreado\",true); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar por institución",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/carrera?institucionId={{institucionId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Filtro por institución\", () => { const j=pm.response.json(); pm.expect(j).to.be.an(\"array\"); pm.expect(j.some(x=>x.id === Number(pm.collectionVariables.get(\"carreraId\")))).to.eql(true); j.forEach(x=>pm.expect(x.institucionId).to.eql(Number(pm.collectionVariables.get(\"institucionId\")))); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Consultar carrera",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar carrera",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/carrera/{{carreraId}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrera Actualizada\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Nombre actualizado\", () => pm.expect(pm.response.json().nombre).to.eql(\"Carrera Actualizada\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Institución inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/carrera",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": 2147483647,\n  \"directorProfesorId\": {{profesorId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profesor inexistente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/carrera",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": 2147483647\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Nombre vacío",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{persona2Url}}/carrera",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \" \",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Institución relacionada no se elimina",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Profesor director no se elimina",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "07 · GEN1 - Revisar bitácoras",
+      "item": [
+        {
+          "name": "Consultar bitácoras de integración",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seguridadUrl}}/bitacora"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Lista JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"Bitácora contiene el usuario ficticio\", () => pm.expect(pm.response.json().some(x => (x.descripcion || \"\").includes(pm.collectionVariables.get(\"emailPrueba\")))).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "08 · Limpieza de datos ficticios",
+      "item": [
+        {
+          "name": "Eliminar carrera creado en esta ejecución",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(!pm.collectionVariables.get(\"carreraIdCreado\"))pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "if(pm.response.code===204)pm.collectionVariables.unset(\"carreraIdCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación de carrera",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar profesor creado en esta ejecución",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(!pm.collectionVariables.get(\"profesorIdCreado\"))pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "if(pm.response.code===204)pm.collectionVariables.unset(\"profesorIdCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación de profesor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar institucion creado en esta ejecución",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(!pm.collectionVariables.get(\"institucionIdCreado\"))pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "if(pm.response.code===204)pm.collectionVariables.unset(\"institucionIdCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación de institucion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar usuario creado en esta ejecución",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(!pm.collectionVariables.get(\"emailPruebaCreado\"))pm.execution.skipRequest();"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
+                  "if(pm.response.code===204)pm.collectionVariables.unset(\"emailPruebaCreado\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirmar eliminación de usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

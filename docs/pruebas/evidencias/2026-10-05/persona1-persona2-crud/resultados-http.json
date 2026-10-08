@@ -1,0 +1,1433 @@
+{
+  "fecha": "2026-10-05T08:03:28.910Z",
+  "base": "PrograV",
+  "herramienta": "Ejecutor HTTP local Node; no Postman/Newman",
+  "preparacion": [
+    {
+      "parametro": "DOMPROF",
+      "accion": "Creado porque faltaba; dato inicial definido en 04_datos_iniciales.sql",
+      "estado": 201
+    }
+  ],
+  "colecciones": [
+    {
+      "archivo": "Persona1_Seguridad.postman_collection.json",
+      "peticiones": [
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login válido y guardar tokens",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "JWT y refresh emitidos",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar JWT",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Token válido",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login con contraseña incorrecta",
+          "metodo": "POST",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login sin datos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar token inválido",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Renovar y guardar tokens",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/refresh"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Refresh anterior revocado",
+          "metodo": "POST",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/refresh"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar JWT renovado",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Token válido",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Crear dato de prueba",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato creado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Rechazar identificador duplicado",
+          "metodo": "POST",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Listar",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Consultar por identificador",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Actualizar",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Rechazar campos vacíos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Rechazar nombre numérico",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Eliminar dato creado",
+          "metodo": "DELETE",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR2 - rol",
+          "nombre": "Confirmar eliminación",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Crear dato de prueba",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato creado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Rechazar identificador duplicado",
+          "metodo": "POST",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Listar",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Consultar por identificador",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Actualizar",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Rechazar campos vacíos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Rechazar identificador minúsculo",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Eliminar dato creado",
+          "metodo": "DELETE",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+        },
+        {
+          "grupo": "USR3 - parametro",
+          "nombre": "Confirmar eliminación",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro/{{parametroPrueba}}"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Crear dato de prueba",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato creado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Rechazar identificador duplicado",
+          "metodo": "POST",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Listar",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Consultar por identificador",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Actualizar",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dato actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Rechazar campos vacíos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Rechazar nombre numérico",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Eliminar dato creado",
+          "metodo": "DELETE",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+        },
+        {
+          "grupo": "USR4 - modulo",
+          "nombre": "Confirmar eliminación",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/modulo/PM{{p1Run}}"
+        },
+        {
+          "grupo": "GEN1 - Bitácora",
+          "nombre": "Sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/bitacora"
+        },
+        {
+          "grupo": "GEN1 - Bitácora",
+          "nombre": "Crear evidencia ficticia",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/bitacora"
+        },
+        {
+          "grupo": "GEN1 - Bitácora",
+          "nombre": "Consultar evidencia creada",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Descripción de prueba",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/bitacora/{{bitacoraId}}"
+        },
+        {
+          "grupo": "GEN1 - Bitácora",
+          "nombre": "Rechazar descripción vacía",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/bitacora"
+        }
+      ]
+    },
+    {
+      "archivo": "Persona2_Ramses.postman_collection.json",
+      "peticiones": [
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login válido y guardar tokens",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "JWT y refresh emitidos",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar JWT",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Token válido",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login con contraseña incorrecta",
+          "metodo": "POST",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Login sin datos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/login"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar token inválido",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Renovar y guardar tokens",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/refresh"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Refresh anterior revocado",
+          "metodo": "POST",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/refresh"
+        },
+        {
+          "grupo": "01 · USR5 - Autenticación",
+          "nombre": "Validar JWT renovado",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Token válido",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/validate"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "Confirmar rol estudiante",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/rol/ESTUDIANTE"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "Confirmar dominio de profesores",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dominio configurado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/parametro/DOMPROF"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "usuario: sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "institucion: sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "profesor: sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "02 · Preparación y seguridad",
+          "nombre": "carrera: sin token",
+          "metodo": "GET",
+          "estado": 401,
+          "aserciones": [
+            {
+              "nombre": "HTTP 401",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Crear usuario ficticio",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "Respuesta sin contraseña",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Correo duplicado",
+          "metodo": "POST",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Listar por identificación",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Filtro contiene usuario",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario?identificacion=PM{{p2Run}}"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Consultar usuario",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario/{{emailPrueba}}"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Actualizar usuario conservando contraseña",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Nombre actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario/{{emailPrueba}}"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Dominio ajeno",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Campos vacíos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "03 · USR1 - Usuarios",
+          "nombre": "Rol inexistente",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Crear institución",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Listar instituciones",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Consultar institución",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion/{{institucionId}}"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Actualizar institución",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Nombre actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion/{{institucionId}}"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Nombre vacío",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion"
+        },
+        {
+          "grupo": "04 · ACD1 - Instituciones",
+          "nombre": "Nombre con números",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Crear profesor con dos teléfonos",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            },
+            {
+              "nombre": "Dos teléfonos",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Profesor duplicado",
+          "metodo": "POST",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Listar profesores",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Consultar profesor",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor/{{profesorId}}"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Actualizar profesor y teléfonos",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Teléfono reemplazado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor/{{profesorId}}"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Menor de edad",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Dominio incorrecto",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Sin teléfonos",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "05 · ACD6 - Profesores",
+          "nombre": "Teléfonos repetidos",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Crear carrera",
+          "metodo": "POST",
+          "estado": 201,
+          "aserciones": [
+            {
+              "nombre": "HTTP 201",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Listar por institución",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Filtro por institución",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera?institucionId={{institucionId}}"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Consultar carrera",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera/{{carreraId}}"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Actualizar carrera",
+          "metodo": "PUT",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Nombre actualizado",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera/{{carreraId}}"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Institución inexistente",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Profesor inexistente",
+          "metodo": "POST",
+          "estado": 422,
+          "aserciones": [
+            {
+              "nombre": "HTTP 422",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Nombre vacío",
+          "metodo": "POST",
+          "estado": 400,
+          "aserciones": [
+            {
+              "nombre": "HTTP 400",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Institución relacionada no se elimina",
+          "metodo": "DELETE",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion/{{institucionId}}"
+        },
+        {
+          "grupo": "06 · ACD2 - Carreras",
+          "nombre": "Profesor director no se elimina",
+          "metodo": "DELETE",
+          "estado": 409,
+          "aserciones": [
+            {
+              "nombre": "HTTP 409",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor/{{profesorId}}"
+        },
+        {
+          "grupo": "07 · GEN1 - Revisar bitácoras",
+          "nombre": "Consultar bitácoras de integración",
+          "metodo": "GET",
+          "estado": 200,
+          "aserciones": [
+            {
+              "nombre": "HTTP 200",
+              "aprobada": true
+            },
+            {
+              "nombre": "Lista JSON",
+              "aprobada": true
+            },
+            {
+              "nombre": "Bitácora contiene el usuario ficticio",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{seguridadUrl}}/bitacora"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Eliminar carrera creado en esta ejecución",
+          "metodo": "DELETE",
+          "estado": 204,
+          "aserciones": [
+            {
+              "nombre": "HTTP 204",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera/{{carreraId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Confirmar eliminación de carrera",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/carrera/{{carreraId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Eliminar profesor creado en esta ejecución",
+          "metodo": "DELETE",
+          "estado": 204,
+          "aserciones": [
+            {
+              "nombre": "HTTP 204",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor/{{profesorId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Confirmar eliminación de profesor",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/profesor/{{profesorId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Eliminar institucion creado en esta ejecución",
+          "metodo": "DELETE",
+          "estado": 204,
+          "aserciones": [
+            {
+              "nombre": "HTTP 204",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion/{{institucionId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Confirmar eliminación de institucion",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/institucion/{{institucionId}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Eliminar usuario creado en esta ejecución",
+          "metodo": "DELETE",
+          "estado": 204,
+          "aserciones": [
+            {
+              "nombre": "HTTP 204",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario/{{emailPrueba}}"
+        },
+        {
+          "grupo": "08 · Limpieza de datos ficticios",
+          "nombre": "Confirmar eliminación de usuario",
+          "metodo": "GET",
+          "estado": 404,
+          "aserciones": [
+            {
+              "nombre": "HTTP 404",
+              "aprobada": true
+            }
+          ],
+          "ruta": "{{persona2Url}}/usuario/{{emailPrueba}}"
+        }
+      ]
+    }
+  ],
+  "resumen": {
+    "peticiones": 99,
+    "omitidas": 0,
+    "aserciones": 128,
+    "fallos": 0
+  }
+}

@@ -6,16 +6,15 @@ En este README documento el servicio REST de oferta académica y administración
 
 - Java 21.
 - Persona 1/Seguridad en `http://localhost:5158`.
-- Variable de entorno `DB_PASSWORD` con la contraseña de SQL Server.
-- Base `db70273` con los esquemas `academico` y `seguridad`.
+- Variables de entorno `DB_URL`, `DB_USER` y `DB_PASSWORD` para SQL Server.
+- Base de integración `PrograV`, accesible por Tailscale, con los esquemas `academico` y `seguridad`.
 
 ## Ejecución
 
 Inicio el servicio desde Windows PowerShell:
 
 ```powershell
-$env:DB_PASSWORD = '<contraseña>'
-.\mvnw.cmd spring-boot:run
+.\run-prograv.ps1
 ```
 
 Accedo al servicio en `http://localhost:8082`. Consulto Swagger en `http://localhost:8082/swagger-ui.html` y reviso el documento OpenAPI en `/v3/api-docs`.
@@ -41,7 +40,7 @@ En cada recurso dispongo de `GET`, `GET /{id}`, `POST`, `PUT /{id}` y `DELETE /{
 ## Pruebas
 
 ```powershell
-$env:DB_PASSWORD = '<contraseña>'
+# Configuro DB_URL, DB_USER y DB_PASSWORD localmente antes de ejecutar.
 .\mvnw.cmd test
 ```
 

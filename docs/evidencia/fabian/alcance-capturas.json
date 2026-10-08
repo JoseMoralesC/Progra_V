@@ -1,0 +1,125 @@
+{
+  "actualizado": "2026-10-05",
+  "herramienta": "Postman Desktop",
+  "backend": "persona4 localhost:8084; seguridad localhost:5158; base compartida PrograV",
+  "version_equipo": "096c770",
+  "alcance": "Evidencia parcial: cuatro rechazos sin token del 4 de octubre y seis consultas autenticadas del 5 de octubre. Tres consultas devolvieron listas vacias. No acredita CRUD completo ni historial con notas ni listado con matriculas.",
+  "capturas_sin_token": [
+    {
+      "historia": "MAT3",
+      "archivo": "MAT3_sin_token_401.png",
+      "caso": "GET sin Authorization",
+      "esperado": 401,
+      "observado": 401,
+      "pruebas_postman": "1/1",
+      "sha256": "d5788f543123073f096cff1ddedb8dcdc3feacbcd47dcfed5cf891a4bb07feab"
+    },
+    {
+      "historia": "MAT1",
+      "archivo": "MAT1_sin_token_401.png",
+      "caso": "GET sin Authorization",
+      "esperado": 401,
+      "observado": 401,
+      "pruebas_postman": "1/1",
+      "sha256": "77a70f3056102364c056ffc69dbe2917ac6e87df153b75cfdcbc92d13498bb7f"
+    },
+    {
+      "historia": "ACA1",
+      "archivo": "ACA1_sin_token_401.png",
+      "caso": "GET sin Authorization",
+      "esperado": 401,
+      "observado": 401,
+      "pruebas_postman": "1/1",
+      "sha256": "62298f758713aef0064d00d7a999d4edf8ba35116c2f85095bd493f012b695df"
+    },
+    {
+      "historia": "ACA2",
+      "archivo": "ACA2_sin_token_401.png",
+      "caso": "GET sin Authorization",
+      "esperado": 401,
+      "observado": 401,
+      "pruebas_postman": "1/1",
+      "sha256": "85e99a97e861a97b263a243eba6d7aaa85e6c7f348810c14be93842ddd1efa14"
+    }
+  ],
+  "capturas_autenticadas": [
+    {
+      "caso": "GET /listadoestudiantes?periodoId=20",
+      "fecha": "2026-10-05",
+      "esperado": 200,
+      "observado": 200,
+      "sha256": "6c45e749835b0d57dcf2b7a9c0f8c5a37d52e2217e19c55f4092696ac8b59128",
+      "respuesta": "[]",
+      "archivo": "ACA2_consulta_autenticada_vacia_200.png",
+      "historia": "ACA2",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "2/2"
+    },
+    {
+      "caso": "GET /listadoestudiantes sin periodoId",
+      "fecha": "2026-10-05",
+      "esperado": 400,
+      "observado": 400,
+      "sha256": "8a98d88455e99b491c550c4432194c6e5aaaf0751981ffdd78bb59a8f35d7c94",
+      "archivo": "ACA2_sin_periodo_400.png",
+      "historia": "ACA2",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "1/1"
+    },
+    {
+      "caso": "GET /historialacademico?tipoIdentificacion=Cedula&identificacion=INEXISTENTE_ACA1",
+      "fecha": "2026-10-05",
+      "esperado": 404,
+      "observado": 404,
+      "sha256": "f89fd4cb75a87e44dab031582f3924df4530dd23675bdd914157b26c3bcc02c8",
+      "archivo": "ACA1_estudiante_inexistente_404.png",
+      "historia": "ACA1",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "1/1"
+    },
+    {
+      "caso": "GET /prematricula",
+      "fecha": "2026-10-05",
+      "esperado": 200,
+      "observado": 200,
+      "sha256": "f4e5800c57ca444f057cf27884f46f7ccebbd953f6c0c6733d2174b1108e6ec2",
+      "respuesta": "[]",
+      "archivo": "MAT1_consulta_autenticada_vacia_200.png",
+      "historia": "MAT1",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "1/1"
+    },
+    {
+      "caso": "GET /expediente",
+      "fecha": "2026-10-05",
+      "esperado": 200,
+      "observado": 200,
+      "sha256": "7c5a4a6c6c2a077f7af4c08019811e6092d1d3304e30b71bd36130b63b38cac6",
+      "respuesta": "[]",
+      "archivo": "MAT3_consulta_autenticada_vacia_200.png",
+      "historia": "MAT3",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "1/1"
+    },
+    {
+      "caso": "GET /historialacademico?identificacion=INEXISTENTE_ACA1 sin tipoIdentificacion",
+      "fecha": "2026-10-05",
+      "esperado": 400,
+      "observado": 400,
+      "sha256": "0f164916b75fb13e64e3fa029564e4dfb4e44866c25564f11a3ac4c5b5fa4ddb",
+      "archivo": "ACA1_sin_tipo_400.png",
+      "historia": "ACA1",
+      "autenticacion": "Token valido del servicio real de seguridad; almacenado en Postman Local Vault.",
+      "pruebas_postman": "1/1"
+    }
+  ],
+  "efectos": "Las consultas validas usan PrograV y el servicio real de bitacora. No se crearon, modificaron ni eliminaron expedientes, prematriculas, matriculas o notas en estas pruebas. El usuario de pruebas fue creado previamente con su SQL conservado fuera del repositorio.",
+  "incidencias_resueltas": [
+    "El token vencio durante la prueba de MAT1. Se renovo mediante POST /refresh con refresh_token y se repitio correctamente la consulta. La captura corresponde al resultado 200 final."
+  ],
+  "pendientes": [
+    "Corregir arranque de NuevoAvatar.Direccion: GrupoAuthorizationMiddleware no tiene Invoke ni InvokeAsync.",
+    "Configurar DOMESTUD y contar con los catalogos y datos de prueba necesarios en PrograV; la inspeccion previa encontro las tablas academicas y de direcciones vacias.",
+    "Ejecutar creacion, modificacion y eliminacion; verificar listado con matriculas e historial con notas e intentos repetidos."
+  ]
+}

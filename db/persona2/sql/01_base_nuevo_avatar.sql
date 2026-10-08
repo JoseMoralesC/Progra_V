@@ -2,13 +2,13 @@
     Nuevo Avatar - esquema inicial de SQL Server
     Fuente: metadatos de db70273 consultados el 30-09-2026.
 
-    Ejecución: seleccionar una base de datos VACÍA antes de correr este archivo.
-    No crea la base ni elimina objetos. Si detecta tablas existentes en los
-    esquemas del proyecto, se detiene para proteger los datos actuales.
+    Selecciono una base de datos VACÍA antes de ejecutar este archivo.
+    No creo la base ni elimino objetos. Si encuentro tablas existentes en los
+    esquemas del proyecto, detengo la ejecución para proteger los datos actuales.
 
-    Incluye las 16 tablas existentes de seguridad, general, academico y
+    Incluyo las 16 tablas existentes de seguridad, general, academico y
     matricula (catálogo territorial), con claves, índices y validaciones.
-    Solo carga catálogos y parámetros mínimos; no copia usuarios, hashes,
+    Solo cargo catálogos y parámetros mínimos; no copio usuarios, hashes,
     refresh tokens, bitácoras ni valores SMTP de la base de desarrollo.
 */
 
@@ -31,7 +31,7 @@ BEGIN TRY
     IF SCHEMA_ID(N'academico') IS NULL EXEC(N'CREATE SCHEMA academico');
     IF SCHEMA_ID(N'matricula') IS NULL EXEC(N'CREATE SCHEMA matricula');
 
-    /* Persona 1: roles y cuentas. La clave se guarda como hash BCrypt. */
+    /* Creo roles y cuentas de Persona 1; reservo la clave para el hash BCrypt. */
     CREATE TABLE seguridad.rol (
         id_rol       varchar(20)  NOT NULL,
         nombre_rol   varchar(100) NOT NULL,
@@ -56,7 +56,7 @@ BEGIN TRY
         CONSTRAINT CK_usuario_nombre CHECK (LTRIM(RTRIM(nombre)) <> '')
     );
 
-    /* El refresh token es persistente y puede revocarse. Nunca usar tokens
+    /* Permito persistir y revocar refresh tokens. No uso tokens
        reales como datos semilla. */
     CREATE TABLE seguridad.refresh_token (
         id_token          int          IDENTITY(1,1) NOT NULL,
@@ -94,7 +94,7 @@ BEGIN TRY
         )
     );
 
-    /* Bitácora transversal: GET, altas, cambios, bajas y errores técnicos. */
+    /* Preparo la bitácora para consultas, altas, cambios, bajas y errores técnicos. */
     CREATE TABLE general.bitacora (
         id_bitacora bigint       IDENTITY(1,1) NOT NULL,
         usuario     varchar(150) NOT NULL,
@@ -108,7 +108,7 @@ BEGIN TRY
     CREATE INDEX IX_bitacora_usuario ON general.bitacora (usuario);
     CREATE INDEX IX_bitacora_fecha ON general.bitacora (fecha_hora);
 
-    /* Persona 2: crear primero catálogos independientes y luego sus relaciones. */
+    /* Creo primero los catálogos independientes de Persona 2 y luego sus relaciones. */
     CREATE TABLE academico.Institucion (
         InstitucionId int           IDENTITY(1,1) NOT NULL,
         Nombre        nvarchar(150) NOT NULL,
@@ -147,8 +147,8 @@ BEGIN TRY
         )
     );
 
-    /* El borrado del profesor elimina sus teléfonos; sus carreras y grupos
-       siguen protegidos por claves foráneas sin cascada. */
+    /* Elimino los teléfonos en cascada al borrar su profesor; mantengo sus carreras
+       y grupos protegidos por claves foráneas sin cascada. */
     CREATE TABLE academico.ProfesorTelefono (
         ProfesorTelefonoId int         IDENTITY(1,1) NOT NULL,
         ProfesorId         int         NOT NULL,
@@ -234,8 +234,8 @@ BEGIN TRY
         )
     );
 
-    /* Catálogo territorial presente en la base compartida. Los datos de
-       provincias, cantones y distritos se cargan por separado. */
+    /* Creo el catálogo territorial de la base compartida. Cargo los datos de
+       provincias, cantones y distritos por separado. */
     CREATE TABLE matricula.Provincia (
         ProvinciaId int          IDENTITY(1,1) NOT NULL,
         Nombre      varchar(100) NOT NULL,
@@ -272,7 +272,7 @@ BEGIN TRY
         )
     );
 
-    /* Catálogos mínimos que usan los servicios. No se cargan los registros
+    /* Cargo los catálogos mínimos que usan los servicios. No incluyo los registros
        de prueba encontrados en la base de desarrollo. */
     INSERT INTO seguridad.rol (id_rol, nombre_rol) VALUES
         ('ADMIN', 'Administrador'),
@@ -285,8 +285,8 @@ BEGIN TRY
         ('MATRICULA', 'Matricula'),
         ('SEGURIDAD', 'Seguridad');
 
-    /* Las expiraciones se interpretan en minutos por AuthService. Los
-       valores SMTP deben configurarse aparte para cada entorno. */
+    /* Defino las expiraciones en minutos, como las interpreta AuthService.
+       Configuro los valores SMTP aparte para cada entorno. */
     INSERT INTO seguridad.parametro (id_parametro, valor) VALUES
         ('DOMESTUD', 'cuc.cr'),
         ('DOMPROF', 'cuc.ac.cr'),

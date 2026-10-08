@@ -3,6 +3,7 @@ package cr.ac.cuc.nuevoavatar.persona2.seguridad;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,11 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Component
 public class BitacoraFilter extends OncePerRequestFilter {
+
+    private static final Pattern SECRETOS_JSON = Pattern.compile(
+        "(\"(?:contrasena|password|password_hash|passwordHash)\"\\s*:\\s*)\"(?:\\\\.|[^\"\\\\])*\"",
+        Pattern.CASE_INSENSITIVE
+    );
 
     private static final Set<String> RUTAS_EXCLUIDAS = Set.of(
         "/error", "/swagger-ui.html"
@@ -82,7 +88,11 @@ public class BitacoraFilter extends OncePerRequestFilter {
         if ("DELETE".equals(metodo)) {
             return "Eliminación solicitada en " + ruta;
         }
-        String detalle = cuerpo.isBlank() ? "{}" : cuerpo;
+        String detalle = cuerpo.isBlank() ? "{}" : ocultarSecretos(cuerpo);
         return metodo + " " + ruta + ". JSON: " + detalle;
+    }
+
+    static String ocultarSecretos(String json) {
+        return SECRETOS_JSON.matcher(json).replaceAll("$1\"[OCULTA]\"");
     }
 }

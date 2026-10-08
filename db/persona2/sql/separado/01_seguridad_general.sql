@@ -1,8 +1,8 @@
 /*
     Nuevo Avatar - Persona 1 y bitácora (SQL Server)
-    Ejecutar en la base elegida antes de 04_datos_iniciales.sql.
-    No crea la base ni modifica tablas existentes. Una instalación parcial
-    requiere una migración específica, no volver a ejecutar este archivo.
+    Ejecuto esta parte en la base elegida antes de 04_datos_iniciales.sql.
+    No creo la base ni modifico tablas existentes. Para una instalación parcial
+    uso una migración específica en lugar de volver a ejecutar este archivo.
 */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
@@ -20,7 +20,7 @@ BEGIN TRY
     IF SCHEMA_ID(N'seguridad') IS NULL EXEC(N'CREATE SCHEMA seguridad');
     IF SCHEMA_ID(N'general') IS NULL EXEC(N'CREATE SCHEMA general');
 
-    /* El rol debe existir antes de crear usuarios. */
+    /* Creo los roles antes de los usuarios para respetar su relación. */
     CREATE TABLE seguridad.rol (
         id_rol       varchar(20)  NOT NULL,
         nombre_rol   varchar(100) NOT NULL,
@@ -31,7 +31,7 @@ BEGIN TRY
         )
     );
 
-    /* La aplicación guarda un hash BCrypt, nunca la contraseña en claro. */
+    /* Reservo password_hash para BCrypt, nunca para la contraseña en claro. */
     CREATE TABLE seguridad.usuario (
         email                varchar(150) NOT NULL,
         tipo_identificacion  varchar(30)  NOT NULL,
@@ -46,7 +46,7 @@ BEGIN TRY
         CONSTRAINT CK_usuario_nombre CHECK (LTRIM(RTRIM(nombre)) <> '')
     );
 
-    /* Los refresh tokens pueden revocarse sin borrar la cuenta. */
+    /* Permito revocar los refresh tokens sin borrar la cuenta. */
     CREATE TABLE seguridad.refresh_token (
         id_token          int          IDENTITY(1,1) NOT NULL,
         email_usuario     varchar(150) NOT NULL,
@@ -83,7 +83,7 @@ BEGIN TRY
         )
     );
 
-    /* Bitácora compartida por todos los servicios. */
+    /* Creo la bitácora que comparten todos los servicios. */
     CREATE TABLE general.bitacora (
         id_bitacora bigint       IDENTITY(1,1) NOT NULL,
         usuario     varchar(150) NOT NULL,

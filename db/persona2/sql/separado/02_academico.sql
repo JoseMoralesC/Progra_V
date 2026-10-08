@@ -1,7 +1,7 @@
 /*
     Nuevo Avatar - Persona 2: oferta académica (SQL Server)
-    Ejecutar en la base elegida. Crea las tablas en orden de dependencias.
-    No crea la base, no carga datos de prueba y no modifica tablas existentes.
+    Ejecuto esta parte en la base elegida y creo las tablas en orden de dependencias.
+    No creo la base, no cargo datos de prueba y no modifico tablas existentes.
 */
 SET NOCOUNT ON;
 SET XACT_ABORT ON;
@@ -56,7 +56,7 @@ BEGIN TRY
         )
     );
 
-    /* Solo los teléfonos se eliminan en cascada con su profesor. */
+    /* Elimino en cascada solo los teléfonos asociados a su profesor. */
     CREATE TABLE academico.ProfesorTelefono (
         ProfesorTelefonoId int         IDENTITY(1,1) NOT NULL,
         ProfesorId         int         NOT NULL,
