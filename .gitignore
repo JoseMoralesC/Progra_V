@@ -11,6 +11,7 @@
 # Build
 bin/
 obj/
+services/persona4/target/
 
 # Rider
 .idea/
