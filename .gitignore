@@ -9,6 +9,7 @@
 *.suo
 
 # Build
+target/
 bin/
 obj/
 services/persona4/target/
