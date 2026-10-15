@@ -1,17 +1,18 @@
+using NuevoAvatar.Integracion;
 using DotNetEnv;
 using NuevoAvatar.Periodo.Nuevo;
 using NuevoAvatar.Periodo.Nuevo.Repository;
 using NuevoAvatar.Periodo.Nuevo.Services;
 
-Env.TraversePath().Load();
+Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
-var dbName = builder.Configuration["DB_NAME"];
-var dbUsername = builder.Configuration["DB_USERNAME"];
-var dbPassword = builder.Configuration["DB_PASSWORD"];
+var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Periodo";
+var dbUsername = builder.Configuration["SERVICE_DB_USER_PERIODO"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_PERIODO"];
 
 if (string.IsNullOrWhiteSpace(dbHost) ||
     string.IsNullOrWhiteSpace(dbName) ||
@@ -41,12 +42,14 @@ builder.Services.AddHttpClient<ISeguridadService, SeguridadService>(client =>
 {
     var baseUrl = builder.Configuration["Seguridad:BaseUrl"]
         ?? throw new InvalidOperationException(
-            "Falta la configuración 'Seguridad:BaseUrl'.");
+            "Falta la configuraciÃ³n 'Seguridad:BaseUrl'.");
 
     client.BaseAddress = new Uri(baseUrl);
 });
 
+builder.Services.AddIntegracion();
 var app = builder.Build();
+app.MapIntegracion("Periodo", builder.Configuration.GetConnectionString("DefaultConnection")!);
 
 app.UseMiddleware<GrupoAuthorizationMiddleware>();
 

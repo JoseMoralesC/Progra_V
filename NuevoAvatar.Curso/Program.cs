@@ -1,18 +1,19 @@
+using NuevoAvatar.Integracion;
 using DotNetEnv;
 using Microsoft.AspNetCore.Diagnostics;
 using NuevoAvatar.Curso;
 using NuevoAvatar.Curso.Repository;
 using NuevoAvatar.Curso.Services;
 
-Env.TraversePath().Load();
+Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
-var dbName = builder.Configuration["DB_NAME"];
-var dbUsername = builder.Configuration["DB_USERNAME"];
-var dbPassword = builder.Configuration["DB_PASSWORD"];
+var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Curso";
+var dbUsername = builder.Configuration["SERVICE_DB_USER_CURSO"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_CURSO"];
 
 if (string.IsNullOrWhiteSpace(dbHost) ||
     string.IsNullOrWhiteSpace(dbName) ||
@@ -47,7 +48,9 @@ builder.Services.AddScoped<ICursoRepository, CursoRepository>();
 builder.Services.AddScoped<ICursoService, CursoService>();
 builder.Services.AddScoped<CursoValidator>();
 
+builder.Services.AddIntegracion();
 var app = builder.Build();
+app.MapIntegracion("Curso", builder.Configuration.GetConnectionString("DefaultConnection")!);
 
 app.UseExceptionHandler(handler => handler.Run(async context =>
 {
@@ -60,8 +63,7 @@ app.UseExceptionHandler(handler => handler.Run(async context =>
             exception,
             "Error procesando la solicitud HTTP.");
 
-    context.Response.StatusCode =
-        StatusCodes.Status500InternalServerError;
+    context.Response.StatusCode = exception is DependenciaNoDisponibleException ? 503 : exception is ReferenciaUsadaException ? 409 : exception is ArgumentException ? 400 : 500;
 
     await context.Response.WriteAsJsonAsync(
         new

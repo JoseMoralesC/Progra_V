@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "services": 22,
+  "source_files": 282,
+  "failures": [],
+  "scope": "Accesos SQL explicitos y entidades JPA; complementa las cuentas SQL y las pruebas HTTP."
+}

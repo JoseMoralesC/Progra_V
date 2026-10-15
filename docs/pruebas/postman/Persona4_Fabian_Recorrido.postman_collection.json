@@ -3,7 +3,7 @@
     "_postman_id": "b302295a-4a9a-4ad3-856f-c9ccfb89317f",
     "name": "Fabian - Persona 4 - Recorrido y evidencia",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Recorrido de MAT3, MAT1, ACA2 y ACA1. Reune los 83 casos existentes y agrega login y validacion del token. La organizacion de esta coleccion no acredita que los casos pendientes hayan sido ejecutados.\n\nPreparacion: guardar la clave del usuario de pruebas en Postman Local Vault con el nombre fabian-clave. Revisar las variables de direcciones, carreras, cursos y periodos contra PrograV; los numeros iniciales proceden de las colecciones anteriores y no confirman datos existentes. Para ACA1, identificacion debe corresponder a un estudiante con matriculas y notas.\n\nOrden: ejecutar 00.1 y 00.2; continuar por carpetas. Si vence el token, repetir el login. La carpeta 06 elimina primero la prematricula creada y despues el expediente de prueba. Las consultas academicas usan datos previamente preparados por los servicios responsables. La clave se referencia desde Vault y no se incluye en este archivo. No compartir ni exportar valores reales de tokenFabian."
+    "description": "Actualizada para los 22 microservicios: cada recurso usa su URL propia. Consultar README_MICROSERVICIOS.md en docs/pruebas/postman. Las verificaciones historicas citadas a continuacion corresponden a la version anterior; no certifican esta actualizacion.\n\nRecorrido de MAT3, MAT1, ACA2 y ACA1. Reune los 83 casos existentes y agrega login y validacion del token. La organizacion de esta coleccion no acredita que los casos pendientes hayan sido ejecutados.\n\nPreparacion: guardar la clave del usuario de pruebas en Postman Local Vault con el nombre fabian-clave. Revisar las variables de direcciones, carreras, cursos y periodos contra PrograV; los numeros iniciales proceden de las colecciones anteriores y no confirman datos existentes. Para ACA1, identificacion debe corresponder a un estudiante con matriculas y notas.\n\nOrden: ejecutar 00.1 y 00.2; continuar por carpetas. Si vence el token, repetir el login. La carpeta 06 elimina primero la prematricula creada y despues el expediente de prueba. Las consultas academicas usan datos previamente preparados por los servicios responsables. La clave se referencia desde Vault y no se incluye en este archivo. No compartir ni exportar valores reales de tokenFabian."
   },
   "auth": {
     "type": "bearer",
@@ -16,10 +16,6 @@
     ]
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8084"
-    },
     {
       "key": "identificacionPrueba",
       "value": "PRUEBA-MAT3-FABIAN"
@@ -79,10 +75,6 @@
       "value": "20"
     },
     {
-      "key": "seguridadUrl",
-      "value": "http://localhost:5158"
-    },
-    {
       "key": "usuario",
       "value": "fabian.pruebas@cuc.cr"
     },
@@ -102,6 +94,31 @@
     {
       "key": "distritoId",
       "value": "3"
+    },
+    {
+      "key": "autenticacionUrl",
+      "value": "http://localhost:5158",
+      "type": "string"
+    },
+    {
+      "key": "expedienteUrl",
+      "value": "http://localhost:8084",
+      "type": "string"
+    },
+    {
+      "key": "prematriculaUrl",
+      "value": "http://localhost:8089",
+      "type": "string"
+    },
+    {
+      "key": "historialAcademicoUrl",
+      "value": "http://localhost:8090",
+      "type": "string"
+    },
+    {
+      "key": "listadoEstudiantesUrl",
+      "value": "http://localhost:8091",
+      "type": "string"
     }
   ],
   "item": [
@@ -125,7 +142,7 @@
                 "value": "{{vault:fabian-clave}}"
               }
             ],
-            "url": "{{seguridadUrl}}/login"
+            "url": "{{autenticacionUrl}}/login"
           },
           "event": [
             {
@@ -160,7 +177,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/validate"
+            "url": "{{autenticacionUrl}}/validate"
           },
           "event": [
             {
@@ -192,7 +209,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -228,7 +245,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -259,7 +276,7 @@
               "request": {
                 "method": "DELETE",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "auth": {
                   "type": "noauth"
                 }
@@ -281,7 +298,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "auth": {
                   "type": "noauth"
                 }
@@ -303,7 +320,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "auth": {
                   "type": "noauth"
                 }
@@ -335,7 +352,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -371,7 +388,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -402,7 +419,7 @@
               "request": {
                 "method": "DELETE",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "auth": {
                   "type": "noauth"
                 }
@@ -424,7 +441,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "auth": {
                   "type": "noauth"
                 }
@@ -446,7 +463,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "auth": {
                   "type": "noauth"
                 }
@@ -475,7 +492,7 @@
                 "auth": {
                   "type": "noauth"
                 },
-                "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"
+                "url": "{{listadoEstudiantesUrl}}/listadoestudiantes?periodoId={{periodoId}}"
               },
               "event": [
                 {
@@ -499,7 +516,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}",
+                "url": "{{historialAcademicoUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}",
                 "auth": {
                   "type": "noauth"
                 }
@@ -536,7 +553,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -564,7 +581,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente"
+                "url": "{{expedienteUrl}}/expediente"
               },
               "event": [
                 {
@@ -583,7 +600,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}"
               },
               "event": [
                 {
@@ -607,7 +624,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Pasaporte\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -640,7 +657,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Mora\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"333\"\n  ]\n}",
@@ -668,7 +685,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}"
               },
               "event": [
                 {
@@ -697,7 +714,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -730,7 +747,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -763,7 +780,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -796,7 +813,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -829,7 +846,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -862,7 +879,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -895,7 +912,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -928,7 +945,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -961,7 +978,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -994,7 +1011,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1027,7 +1044,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1060,7 +1077,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1093,7 +1110,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1126,7 +1143,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1159,7 +1176,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1192,7 +1209,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1225,7 +1242,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1258,7 +1275,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1291,7 +1308,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\"\n}",
@@ -1324,7 +1341,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\"\n}",
@@ -1362,7 +1379,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1395,7 +1412,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana2\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1428,7 +1445,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1461,7 +1478,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1494,7 +1511,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1527,7 +1544,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante@example.com\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1560,7 +1577,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
@@ -1593,7 +1610,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"Casa de prueba\",\n  \"telefonos\": []\n}",
@@ -1626,7 +1643,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente",
+                "url": "{{expedienteUrl}}/expediente",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1659,7 +1676,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}",
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacion\": \"{{identificacionPrueba}}\",\n  \"tipoIdentificacion\": \"Cedula\",\n  \"email\": \"estudiante.prueba@cuc.cr\",\n  \"nombreCompleto\": \"Ana Maria\",\n  \"fechaNacimiento\": \"2012-05-10\",\n  \"provinciaId\": {{provinciaId}},\n  \"cantonId\": {{cantonId}},\n  \"distritoId\": {{distritoId}},\n  \"otrasSenas\": \"   \",\n  \"telefonos\": [\n    \"2222-3333\",\n    \"8888-9999\"\n  ]\n}",
@@ -1702,7 +1719,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1740,7 +1757,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula"
+                "url": "{{prematriculaUrl}}/prematricula"
               },
               "event": [
                 {
@@ -1759,7 +1776,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}"
               },
               "event": [
                 {
@@ -1783,7 +1800,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}}\n  ],\n  \"observaciones\": null,\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1811,7 +1828,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}"
               },
               "event": [
                 {
@@ -1840,7 +1857,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1873,7 +1890,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1906,7 +1923,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1939,7 +1956,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -1972,7 +1989,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2005,7 +2022,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2038,7 +2055,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
@@ -2071,7 +2088,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\"\n}",
@@ -2109,7 +2126,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2142,7 +2159,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"   \",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2175,7 +2192,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2208,7 +2225,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2241,7 +2258,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2274,7 +2291,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoNivelDosId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoFuturoId}}\n}",
@@ -2307,7 +2324,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
@@ -2340,7 +2357,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoHoyId}}\n}",
@@ -2373,7 +2390,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula",
+                "url": "{{prematriculaUrl}}/prematricula",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
@@ -2406,7 +2423,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}",
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"identificacionEstudiante\": \"{{identificacionEstudiante}}\",\n  \"carreraId\": {{carreraId}},\n  \"cursos\": [\n    {{cursoId}},\n    {{otroCursoId}}\n  ],\n  \"observaciones\": \"Prematricula de prueba\",\n  \"periodoId\": {{periodoPasadoId}}\n}",
@@ -2440,7 +2457,7 @@
           "name": "Consultar listado por periodo",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/listadoestudiantes?periodoId={{periodoId}}"
+            "url": "{{listadoEstudiantesUrl}}/listadoestudiantes?periodoId={{periodoId}}"
           },
           "event": [
             {
@@ -2459,7 +2476,7 @@
           "name": "Rechazar periodo ausente",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/listadoestudiantes"
+            "url": "{{listadoEstudiantesUrl}}/listadoestudiantes"
           },
           "event": [
             {
@@ -2477,7 +2494,7 @@
           "name": "Rechazar periodo no numerico",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/listadoestudiantes?periodoId=texto"
+            "url": "{{listadoEstudiantesUrl}}/listadoestudiantes?periodoId=texto"
           },
           "event": [
             {
@@ -2501,7 +2518,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}"
+            "url": "{{historialAcademicoUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacion}}"
           },
           "event": [
             {
@@ -2521,7 +2538,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/historialacademico?identificacion={{identificacion}}"
+            "url": "{{historialAcademicoUrl}}/historialacademico?identificacion={{identificacion}}"
           },
           "event": [
             {
@@ -2540,7 +2557,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}"
+            "url": "{{historialAcademicoUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}"
           },
           "event": [
             {
@@ -2559,7 +2576,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion=%20"
+            "url": "{{historialAcademicoUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion=%20"
           },
           "event": [
             {
@@ -2578,7 +2595,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacionInexistente}}"
+            "url": "{{historialAcademicoUrl}}/historialacademico?tipoIdentificacion={{tipoIdentificacion}}&identificacion={{identificacionInexistente}}"
           },
           "event": [
             {
@@ -2605,7 +2622,7 @@
               "request": {
                 "method": "DELETE",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}"
               },
               "event": [
                 {
@@ -2624,7 +2641,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/prematricula/{{prematriculaId}}"
+                "url": "{{prematriculaUrl}}/prematricula/{{prematriculaId}}"
               },
               "event": [
                 {
@@ -2648,7 +2665,7 @@
               "request": {
                 "method": "DELETE",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}"
               },
               "event": [
                 {
@@ -2667,7 +2684,7 @@
               "request": {
                 "method": "GET",
                 "header": [],
-                "url": "{{baseUrl}}/expediente/{{identificacionPrueba}}"
+                "url": "{{expedienteUrl}}/expediente/{{identificacionPrueba}}"
               },
               "event": [
                 {

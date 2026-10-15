@@ -17,6 +17,7 @@ public class GrupoAuthorizationMiddleware
         HttpContext context,
         ISeguridadService seguridadService)
     {
+        if(context.Request.Path.StartsWithSegments("/interno")){ await _next(context); return; }
         var authorization = context.Request.Headers.Authorization.ToString();
 
         if (string.IsNullOrWhiteSpace(authorization) ||
@@ -48,6 +49,7 @@ public class GrupoAuthorizationMiddleware
         context.Items["token"] = token;
         context.Items["usuario"] = ObtenerUsuarioDelToken(token);
 
+        await NuevoAvatar.Integracion.IntegracionExtensions.ValidarEliminacion(context,"Grupo");
         await _next(context);
     }
 

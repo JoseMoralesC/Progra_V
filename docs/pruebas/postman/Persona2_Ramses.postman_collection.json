@@ -2,7 +2,7 @@
   "info": {
     "name": "Persona 2 - Ramses (USR1, ACD1, ACD6, ACD2)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Verificada en Postman Runner local el 5 de octubre de 2026 contra PrograV: 56 solicitudes, 72 comprobaciones aprobadas, cero fallos, errores y omisiones. Evidencias en docs/pruebas/RESUMEN_PERSONA2.md. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
+    "description": "Actualizada para los 22 microservicios: cada recurso usa su URL propia. Consultar README_MICROSERVICIOS.md en docs/pruebas/postman. Las verificaciones historicas citadas a continuacion corresponden a la version anterior; no certifican esta actualizacion.\n\nVerificada en Postman Runner local el 5 de octubre de 2026 contra PrograV: 56 solicitudes, 72 comprobaciones aprobadas, cero fallos, errores y omisiones. Evidencias en docs/pruebas/RESUMEN_PERSONA2.md. Usar el entorno Persona1_Persona2.local, completar credenciales localmente y seguir README_PERSONA1_PERSONA2.md. Crea datos ficticios exclusivos de cada ejecución; ejecutar limpieza al finalizar."
   },
   "auth": {
     "type": "bearer",
@@ -34,6 +34,46 @@
     {
       "key": "carreraId",
       "value": ""
+    },
+    {
+      "key": "autenticacionUrl",
+      "value": "http://localhost:5158",
+      "type": "string"
+    },
+    {
+      "key": "bitacoraUrl",
+      "value": "http://localhost:5159",
+      "type": "string"
+    },
+    {
+      "key": "rolUrl",
+      "value": "http://localhost:5160",
+      "type": "string"
+    },
+    {
+      "key": "parametroUrl",
+      "value": "http://localhost:5161",
+      "type": "string"
+    },
+    {
+      "key": "usuarioUrl",
+      "value": "http://localhost:8082",
+      "type": "string"
+    },
+    {
+      "key": "institucionUrl",
+      "value": "http://localhost:8086",
+      "type": "string"
+    },
+    {
+      "key": "profesorUrl",
+      "value": "http://localhost:8087",
+      "type": "string"
+    },
+    {
+      "key": "carreraUrl",
+      "value": "http://localhost:8088",
+      "type": "string"
     }
   ],
   "item": [
@@ -54,7 +94,7 @@
                 "value": "{{password}}"
               }
             ],
-            "url": "{{seguridadUrl}}/login",
+            "url": "{{autenticacionUrl}}/login",
             "auth": {
               "type": "noauth"
             }
@@ -90,7 +130,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/validate"
+            "url": "{{autenticacionUrl}}/validate"
           },
           "event": [
             {
@@ -119,7 +159,7 @@
                 "value": "INCORRECTA_{{$guid}}"
               }
             ],
-            "url": "{{seguridadUrl}}/login",
+            "url": "{{autenticacionUrl}}/login",
             "auth": {
               "type": "noauth"
             }
@@ -141,7 +181,7 @@
           "request": {
             "method": "POST",
             "header": [],
-            "url": "{{seguridadUrl}}/login",
+            "url": "{{autenticacionUrl}}/login",
             "auth": {
               "type": "noauth"
             }
@@ -163,7 +203,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/validate",
+            "url": "{{autenticacionUrl}}/validate",
             "auth": {
               "type": "noauth"
             }
@@ -190,7 +230,7 @@
                 "value": "Bearer {{$randomUUID}}"
               }
             ],
-            "url": "{{seguridadUrl}}/validate",
+            "url": "{{autenticacionUrl}}/validate",
             "auth": {
               "type": "noauth"
             }
@@ -217,7 +257,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{seguridadUrl}}/refresh",
+            "url": "{{autenticacionUrl}}/refresh",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
@@ -251,7 +291,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{seguridadUrl}}/refresh",
+            "url": "{{autenticacionUrl}}/refresh",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"refresh_token\": \"{{refreshAnterior}}\"\n}",
@@ -279,7 +319,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/validate"
+            "url": "{{autenticacionUrl}}/validate"
           },
           "event": [
             {
@@ -304,7 +344,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/rol/ESTUDIANTE"
+            "url": "{{rolUrl}}/rol/ESTUDIANTE"
           },
           "event": [
             {
@@ -323,7 +363,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/parametro/DOMPROF"
+            "url": "{{parametroUrl}}/parametro/DOMPROF"
           },
           "event": [
             {
@@ -343,7 +383,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "auth": {
               "type": "noauth"
             }
@@ -365,7 +405,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/institucion",
+            "url": "{{institucionUrl}}/institucion",
             "auth": {
               "type": "noauth"
             }
@@ -387,7 +427,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "auth": {
               "type": "noauth"
             }
@@ -409,7 +449,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/carrera",
+            "url": "{{carreraUrl}}/carrera",
             "auth": {
               "type": "noauth"
             }
@@ -441,7 +481,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
@@ -485,7 +525,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
@@ -513,7 +553,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/usuario?identificacion=PM{{p2Run}}"
+            "url": "{{usuarioUrl}}/usuario?identificacion=PM{{p2Run}}"
           },
           "event": [
             {
@@ -533,7 +573,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+            "url": "{{usuarioUrl}}/usuario/{{emailPrueba}}"
           },
           "event": [
             {
@@ -557,7 +597,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario/{{emailPrueba}}",
+            "url": "{{usuarioUrl}}/usuario/{{emailPrueba}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Actualizado\",\n  \"idRol\": \"ESTUDIANTE\"\n}",
@@ -591,7 +631,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"postman{{p2Run}}@example.com\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
@@ -624,7 +664,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"postman{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \" \",\n  \"idRol\": \"ESTUDIANTE\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
@@ -657,7 +697,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/usuario",
+            "url": "{{usuarioUrl}}/usuario",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"otro{{p2Run}}@cuc.cr\",\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PM{{p2Run}}\",\n  \"nombre\": \"Estudiante Postman\",\n  \"idRol\": \"NOEXISTE{{p2Run}}\",\n  \"contrasena\": \"{{pruebaPassword}}\"\n}",
@@ -695,7 +735,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/institucion",
+            "url": "{{institucionUrl}}/institucion",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Institucion Postman\"\n}",
@@ -733,7 +773,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/institucion"
+            "url": "{{institucionUrl}}/institucion"
           },
           "event": [
             {
@@ -753,7 +793,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+            "url": "{{institucionUrl}}/institucion/{{institucionId}}"
           },
           "event": [
             {
@@ -777,7 +817,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/institucion/{{institucionId}}",
+            "url": "{{institucionUrl}}/institucion/{{institucionId}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Institucion Actualizada\"\n}",
@@ -811,7 +851,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/institucion",
+            "url": "{{institucionUrl}}/institucion",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \" \"\n}",
@@ -844,7 +884,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/institucion",
+            "url": "{{institucionUrl}}/institucion",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Institucion 123\"\n}",
@@ -882,7 +922,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
@@ -926,7 +966,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
@@ -954,7 +994,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/profesor"
+            "url": "{{profesorUrl}}/profesor"
           },
           "event": [
             {
@@ -974,7 +1014,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+            "url": "{{profesorUrl}}/profesor/{{profesorId}}"
           },
           "event": [
             {
@@ -998,7 +1038,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor/{{profesorId}}",
+            "url": "{{profesorUrl}}/profesor/{{profesorId}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Actualizado\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880003\"\n  ]\n}",
@@ -1032,7 +1072,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"{{fechaMenor}}\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
@@ -1074,7 +1114,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@example.com\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880002\"\n  ]\n}",
@@ -1107,7 +1147,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": []\n}",
@@ -1140,7 +1180,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/profesor",
+            "url": "{{profesorUrl}}/profesor",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"tipoIdentificacion\": \"Prueba\",\n  \"identificacion\": \"PROF{{p2Run}}\",\n  \"email\": \"profesor{{p2Run}}@{{dominioProfesor}}\",\n  \"nombreCompleto\": \"Profesor Postman\",\n  \"fechaNacimiento\": \"1990-01-01\",\n  \"telefonos\": [\n    \"88880001\",\n    \"88880001\"\n  ]\n}",
@@ -1178,7 +1218,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/carrera",
+            "url": "{{carreraUrl}}/carrera",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
@@ -1216,7 +1256,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/carrera?institucionId={{institucionId}}"
+            "url": "{{carreraUrl}}/carrera?institucionId={{institucionId}}"
           },
           "event": [
             {
@@ -1236,7 +1276,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+            "url": "{{carreraUrl}}/carrera/{{carreraId}}"
           },
           "event": [
             {
@@ -1260,7 +1300,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/carrera/{{carreraId}}",
+            "url": "{{carreraUrl}}/carrera/{{carreraId}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Carrera Actualizada\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
@@ -1294,7 +1334,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/carrera",
+            "url": "{{carreraUrl}}/carrera",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": 2147483647,\n  \"directorProfesorId\": {{profesorId}}\n}",
@@ -1327,7 +1367,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/carrera",
+            "url": "{{carreraUrl}}/carrera",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \"Carrera Postman\",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": 2147483647\n}",
@@ -1360,7 +1400,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{persona2Url}}/carrera",
+            "url": "{{carreraUrl}}/carrera",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"nombre\": \" \",\n  \"institucionId\": {{institucionId}},\n  \"directorProfesorId\": {{profesorId}}\n}",
@@ -1388,7 +1428,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+            "url": "{{institucionUrl}}/institucion/{{institucionId}}"
           },
           "event": [
             {
@@ -1407,7 +1447,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+            "url": "{{profesorUrl}}/profesor/{{profesorId}}"
           },
           "event": [
             {
@@ -1431,7 +1471,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/bitacora"
+            "url": "{{bitacoraUrl}}/bitacora"
           },
           "event": [
             {
@@ -1457,7 +1497,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+            "url": "{{carreraUrl}}/carrera/{{carreraId}}"
           },
           "event": [
             {
@@ -1486,7 +1526,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/carrera/{{carreraId}}"
+            "url": "{{carreraUrl}}/carrera/{{carreraId}}"
           },
           "event": [
             {
@@ -1505,7 +1545,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+            "url": "{{profesorUrl}}/profesor/{{profesorId}}"
           },
           "event": [
             {
@@ -1534,7 +1574,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/profesor/{{profesorId}}"
+            "url": "{{profesorUrl}}/profesor/{{profesorId}}"
           },
           "event": [
             {
@@ -1553,7 +1593,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+            "url": "{{institucionUrl}}/institucion/{{institucionId}}"
           },
           "event": [
             {
@@ -1582,7 +1622,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/institucion/{{institucionId}}"
+            "url": "{{institucionUrl}}/institucion/{{institucionId}}"
           },
           "event": [
             {
@@ -1601,7 +1641,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+            "url": "{{usuarioUrl}}/usuario/{{emailPrueba}}"
           },
           "event": [
             {
@@ -1630,7 +1670,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{persona2Url}}/usuario/{{emailPrueba}}"
+            "url": "{{usuarioUrl}}/usuario/{{emailPrueba}}"
           },
           "event": [
             {

@@ -16,15 +16,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioService {
 
     private final UsuarioRepository usuarios;
-    private final JdbcTemplate jdbc;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
     private final BCryptPasswordEncoder encoder;
 
     public UsuarioService(
             UsuarioRepository usuarios,
-            JdbcTemplate jdbc,
+            cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos,
             BCryptPasswordEncoder encoder) {
         this.usuarios = usuarios;
-        this.jdbc = jdbc;
+        this.datos = datos;
         this.encoder = encoder;
     }
 
@@ -153,17 +153,7 @@ public class UsuarioService {
     }
 
     private void validarRolYDominio(String email, String rol) {
-        Integer cantidad = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM seguridad.rol WHERE id_rol = ?",
-            Integer.class,
-            rol
-        );
-
-        if (cantidad == null || cantidad == 0) {
-            throw new ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_CONTENT, "El rol no existe"
-            );
-        }
+        datos.exigir("Rol","rol","id_rol",rol);
 
         if (email.endsWith("@cuc.cr")) {
             if (!rol.equals("ESTUDIANTE")) {

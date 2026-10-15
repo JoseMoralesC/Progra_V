@@ -18,11 +18,11 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProfesorService {
 
     private final ProfesorRepository repositorio;
-    private final JdbcTemplate jdbc;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
-    public ProfesorService(ProfesorRepository repositorio, JdbcTemplate jdbc) {
+    public ProfesorService(ProfesorRepository repositorio, cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.repositorio = repositorio;
-        this.jdbc = jdbc;
+        this.datos = datos;
     }
 
     @Transactional
@@ -117,23 +117,8 @@ public class ProfesorService {
             );
         }
 
-        String dominio;
-        try {
-            dominio = jdbc.queryForObject(
-                """
-                SELECT valor
-                FROM seguridad.parametro
-                WHERE id_parametro = 'DOMPROF'
-                """,
-                String.class
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            throw new ResponseStatusException(
-                HttpStatus.SERVICE_UNAVAILABLE,
-                "Falta configurar el parámetro DOMPROF",
-                ex
-            );
-        }
+        var parametro = datos.buscar("Parametro","parametro","id_parametro","DOMPROF").orElseThrow(() -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Falta DOMPROF"));
+        String dominio = cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.texto(parametro,"valor");
 
         if (dominio == null || dominio.isBlank()) {
             throw new ResponseStatusException(

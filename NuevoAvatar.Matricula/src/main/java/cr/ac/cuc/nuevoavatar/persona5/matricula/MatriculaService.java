@@ -21,16 +21,18 @@ public class MatriculaService {
     private final CursoRepository cursos;
     private final GrupoRepository grupos;
     private final PeriodoRepository periodos;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
     public MatriculaService(
             MatriculaRepository matriculas,
             CursoRepository cursos,
             GrupoRepository grupos,
-            PeriodoRepository periodos) {
+            PeriodoRepository periodos, cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.matriculas = matriculas;
         this.cursos = cursos;
         this.grupos = grupos;
         this.periodos = periodos;
+        this.datos = datos;
     }
 
     @Transactional
@@ -78,6 +80,7 @@ public class MatriculaService {
     }
 
     private void validar(MatriculaRequest request, Integer idActual) {
+        datos.exigir("Expediente","Estudiante","Identificacion",request.identificacionEstudiante().trim());
         if (!cursos.existsById(request.cursoId())) {
             throw invalido("El curso no existe");
         }
