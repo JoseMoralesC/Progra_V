@@ -1,0 +1,77 @@
+{
+  "validation": "static",
+  "http_requests_sent": 0,
+  "passed": true,
+  "collections": 11,
+  "requests": 533,
+  "scripts": 665,
+  "environments": 2,
+  "details": [
+    {
+      "file": "docs/pruebas/postman/ACA1_Historial.postman_collection.json",
+      "requests": 6,
+      "scripts": 6,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/ACA2_Listado.postman_collection.json",
+      "requests": 4,
+      "scripts": 4,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/MAT1_Prematricula.postman_collection.json",
+      "requests": 30,
+      "scripts": 31,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/MAT3_Expedientes.postman_collection.json",
+      "requests": 43,
+      "scripts": 43,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/Persona1_Seguridad.postman_collection.json",
+      "requests": 43,
+      "scripts": 50,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/Persona2_Ramses.postman_collection.json",
+      "requests": 56,
+      "scripts": 66,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/Persona4_Fabian_Recorrido.postman_collection.json",
+      "requests": 85,
+      "scripts": 87,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/Persona5_Jose.postman_collection.json",
+      "requests": 79,
+      "scripts": 134,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/Persona5_Jose_Demo_20261008.postman_collection.json",
+      "requests": 79,
+      "scripts": 134,
+      "passed": true
+    },
+    {
+      "file": "docs/pruebas/postman/PrograV_Persona3_Pruebas_POSTMAN_FINAL.json",
+      "requests": 23,
+      "scripts": 23,
+      "passed": true
+    },
+    {
+      "file": "docs/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json",
+      "requests": 85,
+      "scripts": 87,
+      "passed": true
+    }
+  ]
+}

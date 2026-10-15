@@ -22,18 +22,23 @@ public class FacturaService {
     private final FacturaRepository facturas;
     private final FacturaDetalleRepository detalles;
     private final MatriculaRepository matriculas;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbc;
 
     public FacturaService(
             FacturaRepository facturas,
             FacturaDetalleRepository detalles,
-            MatriculaRepository matriculas) {
+            MatriculaRepository matriculas, org.springframework.jdbc.core.JdbcTemplate jdbc) {
         this.facturas = facturas;
         this.detalles = detalles;
         this.matriculas = matriculas;
+        this.jdbc = jdbc;
     }
 
     @Transactional
     public FacturaResponse crear(CrearFacturaRequest request) {
+        // JDBC usa transacciones implicitas: sp_getapplock por si solo no las inicia.
+        Integer bloqueo=jdbc.queryForObject("DECLARE @inicio int;SELECT @inicio=COUNT(*) FROM finanzas.Factura WHERE FacturaId=-1;DECLARE @r int;EXEC @r=sys.sp_getapplock @Resource=?,@LockMode='Exclusive',@LockOwner='Transaction',@LockTimeout=5000;SELECT @r",Integer.class,"factura-matricula:"+request.matriculaId());
+        if(bloqueo==null || bloqueo<0)throw new ResponseStatusException(HttpStatus.CONFLICT,"Otra factura se esta creando para la matricula");
         Matricula matricula = matriculas.findById(request.matriculaId()).orElseThrow(() ->
             invalido("La matricula no existe")
         );
@@ -73,7 +78,7 @@ public class FacturaService {
 
     @Transactional
     public FacturaResponse reversar(Integer id) {
-        Factura factura = buscarO404(id);
+        Factura factura = facturas.bloquearPorId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Factura no encontrada"));
         if (Factura.PAGADA.equals(factura.getEstado())) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,

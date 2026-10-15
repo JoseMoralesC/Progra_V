@@ -1,3 +1,4 @@
+using NuevoAvatar.Integracion;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -5,7 +6,7 @@ using NuevoAvatar.Seguridad.Abstract;
 using NuevoAvatar.Seguridad.DataAccess;
 using NuevoAvatar.Seguridad.Models;
 
-Env.TraversePath().Load();
+Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +16,9 @@ builder.Logging.AddDebug();
 
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
-var dbName = builder.Configuration["DB_NAME"];
-var dbUsername = builder.Configuration["DB_USERNAME"];
-var dbPassword = builder.Configuration["DB_PASSWORD"];
+var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Modulo";
+var dbUsername = builder.Configuration["SERVICE_DB_USER_MODULO"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_MODULO"];
 
 if (!string.IsNullOrWhiteSpace(dbHost) &&
     !string.IsNullOrWhiteSpace(dbName) &&
@@ -71,7 +72,7 @@ builder.Services.AddScoped<IParametroService, ParametroService>();
 builder.Services.AddScoped<IModuloService, ModuloService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<ISesionTokenService, SesionTokenService>();
-builder.Services.AddScoped<IBitacoraService, BitacoraService>();
+builder.Services.AddScoped<IBitacoraService, BitacoraRemotaService>();
 builder.Services.AddSingleton(new JwtSettings
 {
     Key = builder.Configuration["Jwt:Key"]
@@ -79,7 +80,9 @@ builder.Services.AddSingleton(new JwtSettings
 });
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddIntegracion();
 var app = builder.Build();
+app.MapIntegracion("Modulo", builder.Configuration.GetConnectionString("SeguridadDb")!);
 
 // Registro los errores tecnicos no controlados en la bitacora.
 app.Use(async (context, next) =>
@@ -88,7 +91,7 @@ app.Use(async (context, next) =>
     {
         await next();
     }
-    catch (Exception ex)
+    catch (Exception ex) when (ex is not DependenciaNoDisponibleException and not ReferenciaUsadaException)
     {
         try
         {

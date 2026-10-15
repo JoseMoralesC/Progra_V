@@ -14,17 +14,17 @@ import org.springframework.stereotype.Repository;
 public class ExpedienteRepository {
     private static final String CONSULTA = """
             SELECT e.Identificacion, e.TipoIdentificacion, e.Email, e.NombreCompleto,
-                   e.FechaNacimiento, c.ProvinciaId, d.CantonId, e.DistritoId,
+                   e.FechaNacimiento, e.DistritoId,
                    e.OtrasSenas, t.Telefono
             FROM matricula.Estudiante e
-            JOIN matricula.Distrito d ON d.DistritoId = e.DistritoId
-            JOIN matricula.Canton c ON c.CantonId = d.CantonId
             LEFT JOIN matricula.EstudianteTelefono t ON t.IdentificacionEstudiante = e.Identificacion
             """;
     private final JdbcTemplate jdbc;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
-    public ExpedienteRepository(JdbcTemplate jdbc) {
+    public ExpedienteRepository(JdbcTemplate jdbc, cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.jdbc = jdbc;
+        this.datos = datos;
     }
 
     public List<DatosExpediente> obtenerTodos() {
@@ -90,10 +90,13 @@ public class ExpedienteRepository {
             String identificacion = filas.getString("Identificacion");
             DatosExpediente expediente = expedientes.get(identificacion);
             if (expediente == null) {
+                var distrito = datos.buscar("Direccion","Distrito","DistritoId",filas.getInt("DistritoId")).orElseThrow(() -> new IllegalStateException("Distrito no encontrado"));
+                int cantonId = cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(distrito,"CantonId");
+                var canton = datos.buscar("Direccion","Canton","CantonId",cantonId).orElseThrow(() -> new IllegalStateException("Canton no encontrado"));
                 expediente = new DatosExpediente(filas.getString("TipoIdentificacion"), identificacion,
                         filas.getString("Email"), filas.getString("NombreCompleto"),
-                        filas.getDate("FechaNacimiento").toLocalDate(), filas.getInt("ProvinciaId"),
-                        filas.getInt("CantonId"), filas.getInt("DistritoId"), filas.getString("OtrasSenas"),
+                        filas.getDate("FechaNacimiento").toLocalDate(), cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(canton,"ProvinciaId"),
+                        cantonId, filas.getInt("DistritoId"), filas.getString("OtrasSenas"),
                         new ArrayList<>());
                 expedientes.put(identificacion, expediente);
             }

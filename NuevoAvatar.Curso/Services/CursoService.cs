@@ -6,7 +6,7 @@ namespace NuevoAvatar.Curso.Services;
 
 public sealed class CursoService(
     ICursoRepository repository,
-    CursoValidator validator) : ICursoService
+    CursoValidator validator, NuevoAvatar.Integracion.DatosRemotos datos) : ICursoService
 {
     public Task<IReadOnlyList<CursoEntity>> GetAllAsync() =>
         repository.GetAllAsync();
@@ -29,6 +29,7 @@ public sealed class CursoService(
     public async Task<int> CreateAsync(CursoRequest? curso)
     {
         Validate(curso);
+        await datos.Exigir("Carrera","Carrera","CarreraId",curso!.CarreraId);
 
         try
         {
@@ -46,6 +47,7 @@ public sealed class CursoService(
     {
         ValidateId(id, "Id");
         Validate(curso);
+        await datos.Exigir("Carrera","Carrera","CarreraId",curso!.CarreraId);
 
         try
         {

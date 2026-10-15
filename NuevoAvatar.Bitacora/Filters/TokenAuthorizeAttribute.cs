@@ -22,6 +22,7 @@ namespace NuevoAvatarSeguridad.Filters
                 return;
             }
 
+            NuevoAvatar.Integracion.IntegracionExtensions.ValidarEliminacion(context.HttpContext,"Bitacora").GetAwaiter().GetResult();
             context.HttpContext.Items["usuario"] = email;
         }
     }

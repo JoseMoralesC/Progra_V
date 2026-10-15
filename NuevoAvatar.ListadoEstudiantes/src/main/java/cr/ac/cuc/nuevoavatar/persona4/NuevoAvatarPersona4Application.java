@@ -1,19 +1,6 @@
 package cr.ac.cuc.nuevoavatar.persona4;
-
-import java.time.Clock;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-@SpringBootApplication
+@org.springframework.context.annotation.Import(cr.ac.cuc.nuevoavatar.integracion.IntegracionConfiguration.class)
+@org.springframework.boot.autoconfigure.SpringBootApplication
 public class NuevoAvatarPersona4Application {
-    @Bean
-    public Clock reloj() {
-        return Clock.systemDefaultZone();
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(NuevoAvatarPersona4Application.class, args);
-    }
+    public static void main(String[] args){cr.ac.cuc.nuevoavatar.integracion.IntegracionBootstrap.run(NuevoAvatarPersona4Application.class,"ListadoEstudiantes",args);}
 }
-
