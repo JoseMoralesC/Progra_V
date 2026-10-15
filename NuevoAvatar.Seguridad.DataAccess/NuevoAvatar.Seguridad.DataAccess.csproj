@@ -17,5 +17,6 @@
     <ProjectReference Include="..\NuevoAvatar.Seguridad.Models\NuevoAvatar.Seguridad.Models.csproj" />
   </ItemGroup>
 
+<ItemGroup><ProjectReference Include="..\NuevoAvatar.Integracion\NuevoAvatar.Integracion.csproj" /></ItemGroup>
 </Project>
 

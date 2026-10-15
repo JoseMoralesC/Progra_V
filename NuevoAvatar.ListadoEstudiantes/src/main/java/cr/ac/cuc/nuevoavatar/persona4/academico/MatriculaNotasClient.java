@@ -63,7 +63,7 @@ public class MatriculaNotasClient {
 
     public List<Rubro> obtenerDesglose(String token, Integer grupoId) {
         try {
-            List<Rubro> respuesta = cliente.get().uri(uri -> uri.path("/obtenerdesglose")
+            List<Rubro> respuesta = notas.get().uri(uri -> uri.path("/obtenerdesglose")
                     .queryParam("grupoId", grupoId).build())
                     .header(HttpHeaders.AUTHORIZATION, token).retrieve()
                     .body(new ParameterizedTypeReference<>() {});

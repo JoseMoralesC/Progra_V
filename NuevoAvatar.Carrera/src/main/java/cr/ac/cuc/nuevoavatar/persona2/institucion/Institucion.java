@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Nationalized;
 
-@Entity
 @Table(name = "Institucion", schema = "academico")
 public class Institucion {
 

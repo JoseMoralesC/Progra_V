@@ -1,3 +1,4 @@
+using NuevoAvatar.Integracion;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NuevoAvatar.Seguridad.Abstract;
@@ -17,42 +18,40 @@ namespace NuevoAvatar.Seguridad.DataAccess
     {
         private readonly SeguridadDbContext _context;
         private readonly JwtSettings _settings;
+        private readonly DatosRemotos _remotos;
 
-        public AuthService(SeguridadDbContext context, JwtSettings settings)
+        public AuthService(SeguridadDbContext context, JwtSettings settings, DatosRemotos remotos)
         {
             _context = context;
             _settings = settings;
+            _remotos = remotos;
         }
 
         public async Task<LoginResponse?> Login(string email, string password)
         {
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u =>
-                u.Email == email ||
-                u.Email == email + "@cuc.cr");
-            if (usuario == null) return null;
-
-            bool claveOk;
-            try { claveOk = BCrypt.Net.BCrypt.Verify(password, usuario.PasswordHash); }
-            catch { claveOk = false; }
-            if (!claveOk) return null;
-
-            var respuesta = await GenerarTokens(usuario.Email);
-            respuesta.UsuarioID = usuario.Email;
+            var datos = await _remotos.Post("Usuario", "/interno/credenciales", new { email, contrasena = password });
+            if (!datos.TryGetProperty("email", out var cuenta)) return null;
+            var respuesta = await GenerarTokens(cuenta.GetString()!);
+            respuesta.UsuarioID = cuenta.GetString()!;
             return respuesta;
         }
 
         public async Task<LoginResponse?> Refresh(string refreshToken)
         {
+            await using var transaccion = await _context.Database.BeginTransactionAsync();
             var sesion = await _context.SesionesToken
                 .FirstOrDefaultAsync(s => s.RefreshToken == refreshToken);
 
             if (sesion == null || sesion.Revocado || sesion.FechaExpiracion < DateTime.Now)
                 return null;
 
-            sesion.Revocado = true;
-            await _context.SaveChangesAsync();
-
-            return await GenerarTokens(sesion.EmailUsuario);
+            var modificadas = await _context.SesionesToken
+                .Where(s => s.IdToken == sesion.IdToken && !s.Revocado && s.FechaExpiracion >= DateTime.Now)
+                .ExecuteUpdateAsync(update => update.SetProperty(s => s.Revocado, true));
+            if (modificadas != 1) return null;
+            var respuesta = await GenerarTokens(sesion.EmailUsuario);
+            await transaccion.CommitAsync();
+            return respuesta;
         }
 
         public string? ValidarToken(string token)
@@ -85,6 +84,7 @@ namespace NuevoAvatar.Seguridad.DataAccess
             int minutosJwt = await LeerParametro("EXPJWT", 5);
             int minutosRefresh = await LeerParametro("EXPREFRESH", 60);
 
+            if (minutosRefresh <= minutosJwt) throw new InvalidOperationException("EXPREFRESH debe superar EXPJWT");
             var venceUtc = DateTime.UtcNow.AddMinutes(minutosJwt);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Key));
             var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -116,8 +116,8 @@ namespace NuevoAvatar.Seguridad.DataAccess
 
         private async Task<int> LeerParametro(string id, int porDefecto)
         {
-            var p = await _context.Parametros.FindAsync(id);
-            return p != null && int.TryParse(p.Valor, out var v) && v > 0 ? v : porDefecto;
+            var datos = await _remotos.Listar("Parametro", "parametro", new() { ["id_parametro"] = id });
+            return datos.Count > 0 && int.TryParse(DatosRemotos.Valor(datos[0], "valor").GetString(), out var v) && v > 0 ? v : porDefecto;
         }
     }
 }

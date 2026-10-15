@@ -1,0 +1,606 @@
+{
+  "Autenticacion": {
+    "port": 5158,
+    "resources": {
+      "refresh_token": {
+        "table": "[seguridad].[refresh_token]",
+        "columns": [
+          "id_token",
+          "email_usuario",
+          "fecha_creacion",
+          "fecha_expiracion",
+          "revocado"
+        ],
+        "key": "id_token",
+        "readable": false
+      }
+    },
+    "references": []
+  },
+  "Usuario": {
+    "port": 8082,
+    "resources": {
+      "usuario": {
+        "table": "[seguridad].[usuario]",
+        "columns": [
+          "email",
+          "tipo_identificacion",
+          "identificacion",
+          "nombre",
+          "id_rol"
+        ],
+        "key": "email",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "usuario",
+        "key": "email",
+        "service": "Autenticacion",
+        "dependent": "refresh_token",
+        "field": "email_usuario"
+      }
+    ]
+  },
+  "Rol": {
+    "port": 5160,
+    "resources": {
+      "rol": {
+        "table": "[seguridad].[rol]",
+        "columns": [
+          "id_rol",
+          "nombre_rol"
+        ],
+        "key": "id_rol",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "rol",
+        "key": "id_rol",
+        "service": "Usuario",
+        "dependent": "usuario",
+        "field": "id_rol"
+      }
+    ]
+  },
+  "Parametro": {
+    "port": 5161,
+    "resources": {
+      "parametro": {
+        "table": "[seguridad].[parametro]",
+        "columns": [
+          "id_parametro",
+          "valor"
+        ],
+        "key": "id_parametro",
+        "readable": true
+      }
+    },
+    "references": []
+  },
+  "Modulo": {
+    "port": 5162,
+    "resources": {
+      "modulo": {
+        "table": "[seguridad].[modulo]",
+        "columns": [
+          "id_modulo",
+          "nombre_modulo"
+        ],
+        "key": "id_modulo",
+        "readable": true
+      }
+    },
+    "references": []
+  },
+  "Bitacora": {
+    "port": 5159,
+    "resources": {
+      "bitacora": {
+        "table": "[general].[bitacora]",
+        "columns": [
+          "id_bitacora",
+          "usuario",
+          "descripcion",
+          "fecha_hora"
+        ],
+        "key": "id_bitacora",
+        "readable": false
+      }
+    },
+    "references": []
+  },
+  "Institucion": {
+    "port": 8086,
+    "resources": {
+      "Institucion": {
+        "table": "[academico].[Institucion]",
+        "columns": [
+          "InstitucionId",
+          "Nombre"
+        ],
+        "key": "InstitucionId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Institucion",
+        "key": "InstitucionId",
+        "service": "Carrera",
+        "dependent": "Carrera",
+        "field": "InstitucionId"
+      }
+    ]
+  },
+  "Profesor": {
+    "port": 8087,
+    "resources": {
+      "Profesor": {
+        "table": "[academico].[Profesor]",
+        "columns": [
+          "ProfesorId",
+          "TipoIdentificacion",
+          "Identificacion",
+          "Email",
+          "NombreCompleto",
+          "FechaNacimiento"
+        ],
+        "key": "ProfesorId",
+        "readable": true
+      },
+      "ProfesorTelefono": {
+        "table": "[academico].[ProfesorTelefono]",
+        "columns": [
+          "ProfesorTelefonoId",
+          "ProfesorId",
+          "Telefono"
+        ],
+        "key": "ProfesorTelefonoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Profesor",
+        "key": "ProfesorId",
+        "service": "Carrera",
+        "dependent": "Carrera",
+        "field": "DirectorProfesorId"
+      },
+      {
+        "resource": "Profesor",
+        "key": "ProfesorId",
+        "service": "Grupo",
+        "dependent": "Grupo",
+        "field": "ProfesorId"
+      }
+    ]
+  },
+  "Carrera": {
+    "port": 8088,
+    "resources": {
+      "Carrera": {
+        "table": "[academico].[Carrera]",
+        "columns": [
+          "CarreraId",
+          "Nombre",
+          "InstitucionId",
+          "DirectorProfesorId"
+        ],
+        "key": "CarreraId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Carrera",
+        "key": "CarreraId",
+        "service": "Curso",
+        "dependent": "Curso",
+        "field": "CarreraId"
+      },
+      {
+        "resource": "Carrera",
+        "key": "CarreraId",
+        "service": "Prematricula",
+        "dependent": "Prematricula",
+        "field": "CarreraId"
+      }
+    ]
+  },
+  "Curso": {
+    "port": 5255,
+    "resources": {
+      "Curso": {
+        "table": "[academico].[Curso]",
+        "columns": [
+          "CursoId",
+          "CarreraId",
+          "Nivel",
+          "Nombre"
+        ],
+        "key": "CursoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Curso",
+        "key": "CursoId",
+        "service": "Grupo",
+        "dependent": "Grupo",
+        "field": "CursoId"
+      },
+      {
+        "resource": "Curso",
+        "key": "CursoId",
+        "service": "Matricula",
+        "dependent": "Matricula",
+        "field": "CursoId"
+      },
+      {
+        "resource": "Curso",
+        "key": "CursoId",
+        "service": "Prematricula",
+        "dependent": "PrematriculaCurso",
+        "field": "CursoId"
+      }
+    ]
+  },
+  "Periodo": {
+    "port": 5262,
+    "resources": {
+      "Periodo": {
+        "table": "[academico].[Periodo]",
+        "columns": [
+          "PeriodoId",
+          "Anio",
+          "NumeroPeriodo",
+          "FechaInicio",
+          "FechaFin"
+        ],
+        "key": "PeriodoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Periodo",
+        "key": "PeriodoId",
+        "service": "Grupo",
+        "dependent": "Grupo",
+        "field": "PeriodoId"
+      },
+      {
+        "resource": "Periodo",
+        "key": "PeriodoId",
+        "service": "Factura",
+        "dependent": "Factura",
+        "field": "PeriodoId"
+      },
+      {
+        "resource": "Periodo",
+        "key": "PeriodoId",
+        "service": "Pago",
+        "dependent": "Pago",
+        "field": "PeriodoId"
+      },
+      {
+        "resource": "Periodo",
+        "key": "PeriodoId",
+        "service": "Matricula",
+        "dependent": "Matricula",
+        "field": "PeriodoId"
+      },
+      {
+        "resource": "Periodo",
+        "key": "PeriodoId",
+        "service": "Prematricula",
+        "dependent": "Prematricula",
+        "field": "PeriodoId"
+      }
+    ]
+  },
+  "Grupo": {
+    "port": 5256,
+    "resources": {
+      "Grupo": {
+        "table": "[academico].[Grupo]",
+        "columns": [
+          "GrupoId",
+          "NumeroGrupo",
+          "CursoId",
+          "ProfesorId",
+          "Horario",
+          "Cupo",
+          "PeriodoId"
+        ],
+        "key": "GrupoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Grupo",
+        "key": "GrupoId",
+        "service": "Notas",
+        "dependent": "DesgloseRubro",
+        "field": "GrupoId"
+      },
+      {
+        "resource": "Grupo",
+        "key": "GrupoId",
+        "service": "Matricula",
+        "dependent": "Matricula",
+        "field": "GrupoId"
+      }
+    ]
+  },
+  "Direccion": {
+    "port": 5227,
+    "resources": {
+      "Provincia": {
+        "table": "[matricula].[Provincia]",
+        "columns": [
+          "ProvinciaId",
+          "Nombre"
+        ],
+        "key": "ProvinciaId",
+        "readable": true
+      },
+      "Canton": {
+        "table": "[matricula].[Canton]",
+        "columns": [
+          "CantonId",
+          "ProvinciaId",
+          "Nombre"
+        ],
+        "key": "CantonId",
+        "readable": true
+      },
+      "Distrito": {
+        "table": "[matricula].[Distrito]",
+        "columns": [
+          "DistritoId",
+          "CantonId",
+          "Nombre"
+        ],
+        "key": "DistritoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Distrito",
+        "key": "DistritoId",
+        "service": "Expediente",
+        "dependent": "Estudiante",
+        "field": "DistritoId"
+      }
+    ]
+  },
+  "Expediente": {
+    "port": 8084,
+    "resources": {
+      "Estudiante": {
+        "table": "[matricula].[Estudiante]",
+        "columns": [
+          "Identificacion",
+          "TipoIdentificacion",
+          "Email",
+          "NombreCompleto",
+          "FechaNacimiento",
+          "DistritoId",
+          "OtrasSenas"
+        ],
+        "key": "Identificacion",
+        "readable": true
+      },
+      "EstudianteTelefono": {
+        "table": "[matricula].[EstudianteTelefono]",
+        "columns": [
+          "EstudianteTelefonoId",
+          "IdentificacionEstudiante",
+          "Telefono"
+        ],
+        "key": "EstudianteTelefonoId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Estudiante",
+        "key": "Identificacion",
+        "service": "Factura",
+        "dependent": "Factura",
+        "field": "IdentificacionEstudiante"
+      },
+      {
+        "resource": "Estudiante",
+        "key": "Identificacion",
+        "service": "Matricula",
+        "dependent": "Matricula",
+        "field": "IdentificacionEstudiante"
+      },
+      {
+        "resource": "Estudiante",
+        "key": "Identificacion",
+        "service": "Prematricula",
+        "dependent": "Prematricula",
+        "field": "IdentificacionEstudiante"
+      }
+    ]
+  },
+  "Prematricula": {
+    "port": 8089,
+    "resources": {
+      "Prematricula": {
+        "table": "[matricula].[Prematricula]",
+        "columns": [
+          "PrematriculaId",
+          "IdentificacionEstudiante",
+          "CarreraId",
+          "PeriodoId",
+          "Observaciones"
+        ],
+        "key": "PrematriculaId",
+        "readable": true
+      },
+      "PrematriculaCurso": {
+        "table": "[matricula].[PrematriculaCurso]",
+        "columns": [
+          "PrematriculaCursoId",
+          "PrematriculaId",
+          "CursoId"
+        ],
+        "key": "PrematriculaCursoId",
+        "readable": true
+      }
+    },
+    "references": []
+  },
+  "Matricula": {
+    "port": 8085,
+    "resources": {
+      "Matricula": {
+        "table": "[matricula].[Matricula]",
+        "columns": [
+          "MatriculaId",
+          "IdentificacionEstudiante",
+          "CursoId",
+          "GrupoId",
+          "PeriodoId",
+          "Estado",
+          "FechaMatricula"
+        ],
+        "key": "MatriculaId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Matricula",
+        "key": "MatriculaId",
+        "service": "Factura",
+        "dependent": "Factura",
+        "field": "MatriculaId"
+      },
+      {
+        "resource": "Matricula",
+        "key": "MatriculaId",
+        "service": "Notas",
+        "dependent": "NotaRubro",
+        "field": "MatriculaId"
+      }
+    ]
+  },
+  "Notas": {
+    "port": 8092,
+    "resources": {
+      "DesgloseRubro": {
+        "table": "[matricula].[DesgloseRubro]",
+        "columns": [
+          "RubroId",
+          "GrupoId",
+          "Nombre",
+          "Porcentaje",
+          "FechaCreacion"
+        ],
+        "key": "RubroId",
+        "readable": true
+      },
+      "NotaRubro": {
+        "table": "[matricula].[NotaRubro]",
+        "columns": [
+          "NotaRubroId",
+          "MatriculaId",
+          "RubroId",
+          "Nota",
+          "FechaRegistro"
+        ],
+        "key": "NotaRubroId",
+        "readable": true
+      }
+    },
+    "references": []
+  },
+  "Factura": {
+    "port": 8093,
+    "resources": {
+      "Factura": {
+        "table": "[finanzas].[Factura]",
+        "columns": [
+          "FacturaId",
+          "MatriculaId",
+          "IdentificacionEstudiante",
+          "PeriodoId",
+          "Subtotal",
+          "Impuesto",
+          "Total",
+          "Estado",
+          "FechaFactura"
+        ],
+        "key": "FacturaId",
+        "readable": true
+      },
+      "FacturaDetalle": {
+        "table": "[finanzas].[FacturaDetalle]",
+        "columns": [
+          "FacturaDetalleId",
+          "FacturaId",
+          "Descripcion",
+          "Monto"
+        ],
+        "key": "FacturaDetalleId",
+        "readable": true
+      }
+    },
+    "references": [
+      {
+        "resource": "Factura",
+        "key": "FacturaId",
+        "service": "Pago",
+        "dependent": "Pago",
+        "field": "FacturaId"
+      }
+    ]
+  },
+  "Pago": {
+    "port": 8094,
+    "resources": {
+      "Pago": {
+        "table": "[finanzas].[Pago]",
+        "columns": [
+          "PagoId",
+          "FacturaId",
+          "PeriodoId",
+          "Monto",
+          "Estado",
+          "FechaPago"
+        ],
+        "key": "PagoId",
+        "readable": true
+      }
+    },
+    "references": []
+  },
+  "HistorialAcademico": {
+    "port": 8090,
+    "resources": {},
+    "references": []
+  },
+  "ListadoEstudiantes": {
+    "port": 8091,
+    "resources": {},
+    "references": []
+  },
+  "Notificacion": {
+    "port": 8095,
+    "resources": {},
+    "references": []
+  }
+}

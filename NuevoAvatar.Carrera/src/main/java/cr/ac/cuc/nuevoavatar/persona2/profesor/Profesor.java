@@ -14,7 +14,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Nationalized;
 
-@Entity
 @Table(name = "Profesor", schema = "academico")
 public class Profesor {
 

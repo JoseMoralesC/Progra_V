@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-@Entity
 @Table(name = "Factura", schema = "finanzas")
 public class Factura {
 

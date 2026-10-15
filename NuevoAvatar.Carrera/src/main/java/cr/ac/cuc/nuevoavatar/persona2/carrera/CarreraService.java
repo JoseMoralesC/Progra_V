@@ -15,15 +15,15 @@ public class CarreraService {
 
     private final CarreraRepository carreras;
     private final ProfesorRepository profesores;
-    private final JdbcTemplate jdbc;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
     public CarreraService(
             CarreraRepository carreras,
             ProfesorRepository profesores,
-            JdbcTemplate jdbc) {
+            cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.carreras = carreras;
         this.profesores = profesores;
-        this.jdbc = jdbc;
+        this.datos = datos;
     }
 
     @Transactional
@@ -97,18 +97,7 @@ public class CarreraService {
     }
 
     private void validarReferencias(CarreraRequest request) {
-        Integer cantidadInstituciones = jdbc.queryForObject(
-            "SELECT COUNT(*) FROM academico.Institucion WHERE InstitucionId = ?",
-            Integer.class,
-            request.institucionId()
-        );
-
-        if (cantidadInstituciones == null || cantidadInstituciones == 0) {
-            throw new ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_CONTENT,
-                "La institución no existe"
-            );
-        }
+        datos.exigir("Institucion","Institucion","InstitucionId",request.institucionId());
 
         if (!profesores.existsById(request.directorProfesorId())) {
             throw new ResponseStatusException(

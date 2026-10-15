@@ -21,9 +21,11 @@ public class PrematriculaRepository {
             LEFT JOIN matricula.PrematriculaCurso pc ON pc.PrematriculaId = p.PrematriculaId
             """;
     private final JdbcTemplate jdbc;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
-    public PrematriculaRepository(JdbcTemplate jdbc) {
+    public PrematriculaRepository(JdbcTemplate jdbc, cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.jdbc = jdbc;
+        this.datos = datos;
     }
 
     public List<PrematriculaResponse> obtenerTodos() {
@@ -38,21 +40,12 @@ public class PrematriculaRepository {
         return encontrados.stream().findFirst();
     }
 
-    public boolean existeCarrera(Integer carreraId) {
-        return jdbc.queryForObject("SELECT COUNT(*) FROM academico.Carrera WHERE CarreraId = ?",
-                Integer.class, carreraId) > 0;
+    public boolean existeCarrera(Integer id) { return datos.buscar("Carrera","Carrera","CarreraId",id).isPresent(); }
+    public Optional<DatosPrematricula.Curso> obtenerCurso(Integer id) {
+        return datos.buscar("Curso","Curso","CursoId",id).map(r -> new DatosPrematricula.Curso(id,cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(r,"Nivel")));
     }
-
-    public Optional<DatosPrematricula.Curso> obtenerCurso(Integer cursoId) {
-        return jdbc.query("SELECT CursoId, Nivel FROM academico.Curso WHERE CursoId = ?",
-                (fila, numero) -> new DatosPrematricula.Curso(fila.getInt("CursoId"), fila.getInt("Nivel")), cursoId)
-                .stream().findFirst();
-    }
-
-    public Optional<DatosPrematricula.Periodo> obtenerPeriodo(Integer periodoId) {
-        return jdbc.query("SELECT PeriodoId, FechaInicio FROM academico.Periodo WHERE PeriodoId = ?",
-                (fila, numero) -> new DatosPrematricula.Periodo(fila.getInt("PeriodoId"),
-                        fila.getDate("FechaInicio").toLocalDate()), periodoId).stream().findFirst();
+    public Optional<DatosPrematricula.Periodo> obtenerPeriodo(Integer id) {
+        return datos.buscar("Periodo","Periodo","PeriodoId",id).map(r -> new DatosPrematricula.Periodo(id,cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.fecha(r,"FechaInicio")));
     }
 
     public Integer crear(PrematriculaRequest datos) {

@@ -1,40 +1,21 @@
 package cr.ac.cuc.nuevoavatar.persona4.academico;
-
-import java.util.List;
-import java.util.Optional;
-import org.springframework.jdbc.core.JdbcTemplate;
+import java.util.*;
+import cr.ac.cuc.nuevoavatar.integracion.DatosRemotos;
+import static cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.*;
 import org.springframework.stereotype.Repository;
-
 @Repository
 public class ListadoEstudiantesRepository {
-    private final JdbcTemplate jdbc;
-
-    public ListadoEstudiantesRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    private final DatosRemotos datos;
+    public ListadoEstudiantesRepository(DatosRemotos datos){this.datos=datos;}
+    public List<Grupo> obtenerGrupos(Integer periodoId){
+        return datos.listar("Grupo","Grupo",Map.of("PeriodoId",periodoId)).stream().map(g->{
+            var curso=datos.buscar("Curso","Curso","CursoId",entero(g,"CursoId")).orElseThrow();
+            var carrera=datos.buscar("Carrera","Carrera","CarreraId",entero(curso,"CarreraId")).orElseThrow();
+            return new Grupo(entero(g,"GrupoId"),entero(g,"NumeroGrupo"),entero(g,"CursoId"),texto(curso,"Nombre"),texto(carrera,"Nombre"));
+        }).toList();
     }
-
-    public List<Grupo> obtenerGrupos(Integer periodoId) {
-        return jdbc.query("""
-                SELECT g.GrupoId, g.NumeroGrupo, g.CursoId, c.Nombre AS Curso, ca.Nombre AS Carrera
-                FROM academico.Grupo g
-                JOIN academico.Curso c ON c.CursoId = g.CursoId
-                JOIN academico.Carrera ca ON ca.CarreraId = c.CarreraId
-                WHERE g.PeriodoId = ?
-                ORDER BY g.GrupoId
-                """, (fila, numero) -> new Grupo(fila.getInt("GrupoId"), fila.getInt("NumeroGrupo"),
-                        fila.getInt("CursoId"), fila.getString("Curso"), fila.getString("Carrera")), periodoId);
-    }
-
-    public Optional<Estudiante> obtenerEstudiante(String identificacion) {
-        return jdbc.query("""
-                SELECT TipoIdentificacion, Identificacion, NombreCompleto
-                FROM matricula.Estudiante WHERE Identificacion = ?
-                """, (fila, numero) -> new Estudiante(fila.getString("TipoIdentificacion"),
-                        fila.getString("Identificacion"), fila.getString("NombreCompleto")), identificacion)
-                .stream().findFirst();
-    }
-
-    public record Grupo(Integer id, Integer numero, Integer cursoId, String curso, String carrera) {}
-    public record Estudiante(String tipoIdentificacion, String identificacion, String nombreCompleto) {}
+    public Optional<Estudiante> obtenerEstudiante(String id){return datos.buscar("Expediente","Estudiante","Identificacion",id)
+        .map(e->new Estudiante(texto(e,"TipoIdentificacion"),texto(e,"Identificacion"),texto(e,"NombreCompleto")));}
+    public record Grupo(Integer id,Integer numero,Integer cursoId,String curso,String carrera){}
+    public record Estudiante(String tipoIdentificacion,String identificacion,String nombreCompleto){}
 }
-
