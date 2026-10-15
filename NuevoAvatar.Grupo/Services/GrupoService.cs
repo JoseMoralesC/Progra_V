@@ -7,10 +7,12 @@ namespace NuevoAvatar.Grupo.Nuevo.Services;
 public class GrupoService : IGrupoService
 {
     private readonly IGrupoRepository _repository;
+    private readonly NuevoAvatar.Integracion.DatosRemotos datos;
 
-    public GrupoService(IGrupoRepository repository)
+    public GrupoService(IGrupoRepository repository, NuevoAvatar.Integracion.DatosRemotos datos)
     {
         _repository = repository;
+        this.datos = datos;
     }
 
     public async Task<int> CrearAsync(GrupoRequest grupo)
@@ -20,6 +22,7 @@ public class GrupoService : IGrupoService
         if (errors.Count > 0)
             throw new ArgumentException(string.Join(" ", errors));
 
+        await ValidarReferencias(grupo);
         return await _repository.CrearAsync(grupo);
     }
 
@@ -32,9 +35,15 @@ public class GrupoService : IGrupoService
         if (errors.Count > 0)
             throw new ArgumentException(string.Join(" ", errors));
 
+        await ValidarReferencias(grupo);
         return await _repository.ModificarAsync(grupoId, grupo);
     }
 
+    private async Task ValidarReferencias(GrupoRequest grupo) {
+        await datos.Exigir("Curso","Curso","CursoId",grupo.CursoId);
+        await datos.Exigir("Profesor","Profesor","ProfesorId",grupo.ProfesorId);
+        await datos.Exigir("Periodo","Periodo","PeriodoId",grupo.PeriodoId);
+    }
     public Task<bool> EliminarAsync(int grupoId)
     {
         return _repository.EliminarAsync(grupoId);

@@ -2,6 +2,8 @@
 
 public class PeriodoRequest
 {
+    public int PeriodoId { get; set; }
+
     public short Anio { get; set; }
 
     public byte NumeroPeriodo { get; set; }

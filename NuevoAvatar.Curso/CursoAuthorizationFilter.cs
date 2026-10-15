@@ -43,6 +43,7 @@ public sealed class CursoAuthorizationFilter(
             return Results.Unauthorized();
         }
 
+        await NuevoAvatar.Integracion.IntegracionExtensions.ValidarEliminacion(context.HttpContext,"Curso");
         object? resultado = null;
         Exception? excepcion = null;
 

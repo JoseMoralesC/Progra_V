@@ -18,7 +18,7 @@ public class PeriodoRepository : IPeriodoRepository
 
         const string sql = """
             SELECT
-                Anio,
+                PeriodoId, Anio,
                 NumeroPeriodo,
                 FechaInicio,
                 FechaFin
@@ -35,7 +35,7 @@ public class PeriodoRepository : IPeriodoRepository
 
         const string sql = """
             SELECT
-                Anio,
+                PeriodoId, Anio,
                 NumeroPeriodo,
                 FechaInicio,
                 FechaFin

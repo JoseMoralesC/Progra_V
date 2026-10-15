@@ -13,13 +13,15 @@ public class ExpedienteService {
     private final ExpedienteValidador validador;
     private final DireccionClient direcciones;
     private final BitacoraService bitacora;
+    private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos remotos;
 
     public ExpedienteService(ExpedienteRepository repositorio, ExpedienteValidador validador,
-            DireccionClient direcciones, BitacoraService bitacora) {
+            DireccionClient direcciones, BitacoraService bitacora, cr.ac.cuc.nuevoavatar.integracion.DatosRemotos remotos) {
         this.repositorio = repositorio;
         this.validador = validador;
         this.direcciones = direcciones;
         this.bitacora = bitacora;
+        this.remotos = remotos;
     }
 
     @Transactional
@@ -40,6 +42,7 @@ public class ExpedienteService {
     @Transactional
     public DatosExpediente modificar(String identificacion, DatosExpediente datos, String token, String usuario) {
         DatosExpediente anterior = buscar(identificacion);
+        if(datos != null && datos.identificacion()!=null && !identificacion.equals(datos.identificacion().trim())) remotos.sinReferencias("Expediente","Estudiante",identificacion);
         validador.validar(datos, token);
         datos = normalizar(datos);
         direcciones.validar(token, datos.provinciaId(), datos.cantonId(), datos.distritoId());

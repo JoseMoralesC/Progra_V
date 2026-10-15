@@ -30,15 +30,15 @@ async function main() {
   env.set('usuario', process.env.POSTMAN_USER);
   env.set('password', process.env.POSTMAN_PASSWORD);
   if (!env.get('usuario') || !env.get('password')) throw new Error('Configure POSTMAN_USER y POSTMAN_PASSWORD localmente.');
-  const report = {fecha: new Date().toISOString(), base: 'PrograV', herramienta: 'Ejecutor HTTP local Node; no Postman/Newman', preparacion: [], colecciones: []};
+  const report = {fecha: new Date().toISOString(), arquitectura: 'Una base por microservicio', herramienta: 'Ejecutor HTTP local Node; no Postman/Newman', preparacion: [], colecciones: []};
   const call = (url, options) => fetch(url, {...options, signal: AbortSignal.timeout(30000)});
-  const login = await call(env.get('seguridadUrl')+'/login', {method:'POST', headers:{usuario:env.get('usuario'), contrasena:env.get('password')}});
+  const login = await call(env.get('autenticacionUrl')+'/login', {method:'POST', headers:{usuario:env.get('usuario'), contrasena:env.get('password')}});
   assert.equal(login.status, 201, 'Login de preparación');
   const loginBody = await login.json();
   const auth = {Authorization:'Bearer '+loginBody.access_token};
-  let domain = await call(env.get('seguridadUrl')+'/parametro/DOMPROF', {headers:auth});
+  let domain = await call(env.get('parametroUrl')+'/parametro/DOMPROF', {headers:auth});
   if (domain.status === 404) {
-    domain = await call(env.get('seguridadUrl')+'/parametro', {method:'POST', headers:{...auth,'Content-Type':'application/json'}, body:JSON.stringify({idParametro:'DOMPROF',valor:env.get('dominioProfesor')})});
+    domain = await call(env.get('parametroUrl')+'/parametro', {method:'POST', headers:{...auth,'Content-Type':'application/json'}, body:JSON.stringify({idParametro:'DOMPROF',valor:env.get('dominioProfesor')})});
     assert.equal(domain.status,201,'Creación de DOMPROF');
     report.preparacion.push({parametro:'DOMPROF',accion:'Creado porque faltaba; dato inicial definido en 04_datos_iniciales.sql',estado:201});
   } else {
@@ -56,7 +56,7 @@ async function main() {
         if (item.item) { await walk(item.item,item.name); continue; }
         const record = {grupo:group,nombre:item.name,metodo:item.request.method,estado:null,aserciones:[]}; output.peticiones.push(record);
         const scope = new Map(); let skipped = false;
-        const replace = text => text.replace(/\{\{([^}]+)\}\}/g, (_,key) => key==='$guid' ? crypto.randomUUID() : String(scope.get(key)??local.get(key)??env.get(key)??''));
+        const replace = text => text.replace(/\{\{([^}]+)\}\}/g, (_,key) => key==='$guid' ? crypto.randomUUID() : String(scope.get(key)??env.get(key)??local.get(key)??''));
         const pm = {
           environment:facade(env), collectionVariables:facade(local),
           variables:{...facade(scope),replaceIn:replace},

@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace NuevoAvatar.Curso.Services;
@@ -30,7 +30,7 @@ public sealed class SeguridadService(HttpClient httpClient)
     {
         using var request = new HttpRequestMessage(
             HttpMethod.Post,
-            "/bitacora");
+            (Environment.GetEnvironmentVariable("BITACORA_BASE_URL") ?? Environment.GetEnvironmentVariable("BITACORA_URL") ?? "http://localhost:5159") + "/bitacora");
 
         request.Headers.Authorization =
             new AuthenticationHeaderValue(
@@ -43,6 +43,7 @@ public sealed class SeguridadService(HttpClient httpClient)
             Descripcion = descripcion
         });
 
-        await httpClient.SendAsync(request);
+        using var bitacoraResponse = await httpClient.SendAsync(request);
+        bitacoraResponse.EnsureSuccessStatusCode();
     }
 }

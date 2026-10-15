@@ -2,7 +2,7 @@
   "info": {
     "name": "Jose - Persona 5 - Recorrido y evidencia",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "Prepare esta coleccion a partir del PDF (pp.17-18,20-21,23-25) y del codigo. Documento el recorrido en persona5-recorrido.md y contrasto los resultados esperados con mis capturas. Utilizo un grupo exclusivo de pruebas, las tablas correspondientes y un periodo vigente. Configuro SMTP y los datos adicionales antes de ejecutar las carpetas que los requieren. Creo datos y anulo pago, factura y matricula al finalizar; conservo notas y rubros."
+    "description": "Actualizada para los 22 microservicios: cada recurso usa su URL propia. Consultar README_MICROSERVICIOS.md en docs/pruebas/postman. Las verificaciones historicas citadas a continuacion corresponden a la version anterior; no certifican esta actualizacion.\n\nPrepare esta coleccion a partir del PDF (pp.17-18,20-21,23-25) y del codigo. Documento el recorrido en persona5-recorrido.md y contrasto los resultados esperados con mis capturas. Utilizo un grupo exclusivo de pruebas, las tablas correspondientes y un periodo vigente. Configuro SMTP y los datos adicionales antes de ejecutar las carpetas que los requieren. Creo datos y anulo pago, factura y matricula al finalizar; conservo notas y rubros."
   },
   "auth": {
     "type": "bearer",
@@ -15,16 +15,6 @@
     ]
   },
   "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:8085",
-      "type": "string"
-    },
-    {
-      "key": "seguridadUrl",
-      "value": "http://localhost:5158",
-      "type": "string"
-    },
     {
       "key": "usuario",
       "value": "jose",
@@ -124,6 +114,41 @@
       "key": "rubroOtroGrupoId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "autenticacionUrl",
+      "value": "http://localhost:5158",
+      "type": "string"
+    },
+    {
+      "key": "bitacoraUrl",
+      "value": "http://localhost:5159",
+      "type": "string"
+    },
+    {
+      "key": "matriculaUrl",
+      "value": "http://localhost:8085",
+      "type": "string"
+    },
+    {
+      "key": "notasUrl",
+      "value": "http://localhost:8092",
+      "type": "string"
+    },
+    {
+      "key": "facturaUrl",
+      "value": "http://localhost:8093",
+      "type": "string"
+    },
+    {
+      "key": "pagoUrl",
+      "value": "http://localhost:8094",
+      "type": "string"
+    },
+    {
+      "key": "notificacionUrl",
+      "value": "http://localhost:8095",
+      "type": "string"
     }
   ],
   "item": [
@@ -144,7 +169,7 @@
                 "value": "{{contrasena}}"
               }
             ],
-            "url": "{{seguridadUrl}}/login",
+            "url": "{{autenticacionUrl}}/login",
             "auth": {
               "type": "noauth"
             }
@@ -182,7 +207,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/validate"
+            "url": "{{autenticacionUrl}}/validate"
           },
           "event": [
             {
@@ -214,7 +239,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"1\",\n  \"cursoId\": 1,\n  \"grupoId\": 1,\n  \"periodoId\": 1\n}",
@@ -250,7 +275,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula/1",
+            "url": "{{matriculaUrl}}/matricula/1",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"1\",\n  \"cursoId\": 1,\n  \"grupoId\": 1,\n  \"periodoId\": 1\n}",
@@ -281,7 +306,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/matricula/1",
+            "url": "{{matriculaUrl}}/matricula/1",
             "auth": {
               "type": "noauth"
             }
@@ -303,7 +328,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/matricula?cursoId=1&grupoId=1",
+            "url": "{{matriculaUrl}}/matricula?cursoId=1&grupoId=1",
             "auth": {
               "type": "noauth"
             }
@@ -330,7 +355,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/cargardesglose",
+            "url": "{{notasUrl}}/cargardesglose",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"grupoId\": 1,\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
@@ -366,7 +391,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": 1,\n  \"rubroId\": 1,\n  \"nota\": 85\n}",
@@ -402,7 +427,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": 1,\n  \"rubroId\": 1,\n  \"nota\": 90\n}",
@@ -433,7 +458,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenerdesglose?grupoId=1",
+            "url": "{{notasUrl}}/obtenerdesglose?grupoId=1",
             "auth": {
               "type": "noauth"
             }
@@ -455,7 +480,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante=1&cursoId=1&grupoId=1",
+            "url": "{{notasUrl}}/obtenernotas?identificacionEstudiante=1&cursoId=1&grupoId=1",
             "auth": {
               "type": "noauth"
             }
@@ -482,7 +507,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/factura",
+            "url": "{{facturaUrl}}/factura",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": 1\n}",
@@ -513,7 +538,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/factura/1/reversar",
+            "url": "{{facturaUrl}}/factura/1/reversar",
             "auth": {
               "type": "noauth"
             }
@@ -535,7 +560,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/1",
+            "url": "{{facturaUrl}}/factura/1",
             "auth": {
               "type": "noauth"
             }
@@ -557,7 +582,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura?periodoId=1",
+            "url": "{{facturaUrl}}/factura?periodoId=1",
             "auth": {
               "type": "noauth"
             }
@@ -584,7 +609,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/pago",
+            "url": "{{pagoUrl}}/pago",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"facturaId\": 1\n}",
@@ -615,7 +640,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/pago/1/reversar",
+            "url": "{{pagoUrl}}/pago/1/reversar",
             "auth": {
               "type": "noauth"
             }
@@ -637,7 +662,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/pago/1",
+            "url": "{{pagoUrl}}/pago/1",
             "auth": {
               "type": "noauth"
             }
@@ -659,7 +684,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/pago?periodoId=1",
+            "url": "{{pagoUrl}}/pago?periodoId=1",
             "auth": {
               "type": "noauth"
             }
@@ -686,7 +711,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/notificar",
+            "url": "{{notificacionUrl}}/notificar",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"prueba@example.com\",\n  \"asunto\": \"Prueba\",\n  \"cuerpoHtml\": \"<p>Prueba</p>\"\n}",
@@ -717,7 +742,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenerdesglose?grupoId=1",
+            "url": "{{notasUrl}}/obtenerdesglose?grupoId=1",
             "auth": {
               "type": "bearer",
               "bearer": [
@@ -756,7 +781,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -802,7 +827,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+            "url": "{{matriculaUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -840,7 +865,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -885,7 +910,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula/{{matriculaId}}",
+            "url": "{{matriculaUrl}}/matricula/{{matriculaId}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}-M\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -931,7 +956,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+            "url": "{{matriculaUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -969,7 +994,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{}",
@@ -1002,7 +1027,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{idInexistente}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -1047,7 +1072,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{idInexistente}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -1092,7 +1117,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula/{{idInexistente}}",
+            "url": "{{matriculaUrl}}/matricula/{{idInexistente}}",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -1143,7 +1168,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/cargardesglose",
+            "url": "{{notasUrl}}/cargardesglose",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
@@ -1188,7 +1213,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenerdesglose?grupoId={{grupoId}}"
+            "url": "{{notasUrl}}/obtenerdesglose?grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -1225,7 +1250,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/cargardesglose",
+            "url": "{{notasUrl}}/cargardesglose",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 50\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 50\n    }\n  ]\n}",
@@ -1275,7 +1300,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/cargardesglose",
+            "url": "{{notasUrl}}/cargardesglose",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 50\n    }\n  ]\n}",
@@ -1313,7 +1338,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenerdesglose?grupoId={{grupoId}}"
+            "url": "{{notasUrl}}/obtenerdesglose?grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -1351,7 +1376,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 85\n}",
@@ -1399,7 +1424,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 1\n}",
@@ -1447,7 +1472,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 100\n}",
@@ -1495,7 +1520,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 90\n}",
@@ -1543,7 +1568,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubro2Id}},\n  \"nota\": 80\n}",
@@ -1581,7 +1606,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante={{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
+            "url": "{{notasUrl}}/obtenernotas?identificacionEstudiante={{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -1622,7 +1647,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 0\n}",
@@ -1665,7 +1690,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 101\n}",
@@ -1708,7 +1733,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/cargardesglose",
+            "url": "{{notasUrl}}/cargardesglose",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"grupoId\": {{grupoId}},\n  \"rubros\": [\n    {\n      \"nombre\": \"Examen\",\n      \"porcentaje\": 40\n    },\n    {\n      \"nombre\": \"Proyecto\",\n      \"porcentaje\": 60\n    }\n  ]\n}",
@@ -1751,7 +1776,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{idInexistente}},\n  \"nota\": 85\n}",
@@ -1789,7 +1814,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/obtenernotas?identificacionEstudiante=SIN-MATRICULA-{{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
+            "url": "{{notasUrl}}/obtenernotas?identificacionEstudiante=SIN-MATRICULA-{{estudiante}}&cursoId={{cursoId}}&grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -1829,7 +1854,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/factura",
+            "url": "{{facturaUrl}}/factura",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
@@ -1878,7 +1903,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}"
           },
           "event": [
             {
@@ -1910,7 +1935,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura?periodoId={{periodoId}}"
+            "url": "{{facturaUrl}}/factura?periodoId={{periodoId}}"
           },
           "event": [
             {
@@ -1947,7 +1972,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/factura",
+            "url": "{{facturaUrl}}/factura",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
@@ -1989,7 +2014,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/factura",
+            "url": "{{facturaUrl}}/factura",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{idInexistente}}\n}",
@@ -2026,7 +2051,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{idInexistente}}"
+            "url": "{{facturaUrl}}/factura/{{idInexistente}}"
           },
           "event": [
             {
@@ -2064,7 +2089,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/pago",
+            "url": "{{pagoUrl}}/pago",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
@@ -2107,7 +2132,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}"
           },
           "event": [
             {
@@ -2139,7 +2164,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/pago/{{pagoId}}"
+            "url": "{{pagoUrl}}/pago/{{pagoId}}"
           },
           "event": [
             {
@@ -2171,7 +2196,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/pago?periodoId={{periodoId}}"
+            "url": "{{pagoUrl}}/pago?periodoId={{periodoId}}"
           },
           "event": [
             {
@@ -2208,7 +2233,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/pago",
+            "url": "{{pagoUrl}}/pago",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
@@ -2245,7 +2270,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}/reversar"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}/reversar"
           },
           "event": [
             {
@@ -2273,7 +2298,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/pago/{{pagoId}}/reversar"
+            "url": "{{pagoUrl}}/pago/{{pagoId}}/reversar"
           },
           "event": [
             {
@@ -2305,7 +2330,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}"
           },
           "event": [
             {
@@ -2337,7 +2362,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/pago/{{pagoId}}/reversar"
+            "url": "{{pagoUrl}}/pago/{{pagoId}}/reversar"
           },
           "event": [
             {
@@ -2365,7 +2390,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/pago/{{idInexistente}}"
+            "url": "{{pagoUrl}}/pago/{{idInexistente}}"
           },
           "event": [
             {
@@ -2398,7 +2423,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/pago",
+            "url": "{{pagoUrl}}/pago",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"facturaId\": {{idInexistente}}\n}",
@@ -2435,7 +2460,7 @@
           "request": {
             "method": "PUT",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}/reversar"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}/reversar"
           },
           "event": [
             {
@@ -2467,7 +2492,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/factura/{{facturaId}}"
+            "url": "{{facturaUrl}}/factura/{{facturaId}}"
           },
           "event": [
             {
@@ -2504,7 +2529,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/pago",
+            "url": "{{pagoUrl}}/pago",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"facturaId\": {{facturaId}}\n}",
@@ -2551,7 +2576,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/notificar",
+            "url": "{{notificacionUrl}}/notificar",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"correo-invalido\",\n  \"asunto\": \"Prueba persona 5\",\n  \"cuerpoHtml\": \"<p>Prueba</p>\"\n}",
@@ -2584,7 +2609,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/notificar",
+            "url": "{{notificacionUrl}}/notificar",
             "body": {
               "mode": "raw",
               "raw": "{}",
@@ -2617,7 +2642,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/notificar",
+            "url": "{{notificacionUrl}}/notificar",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"{{emailDestino}}\",\n  \"asunto\": \"Evidencia Persona 5 Jose\",\n  \"cuerpoHtml\": \"<h1>Nuevo Avatar</h1><p>Prueba de notificacion de persona 5.</p>\"\n}",
@@ -2663,7 +2688,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/matricula/{{matriculaId}}"
+            "url": "{{matriculaUrl}}/matricula/{{matriculaId}}"
           },
           "event": [
             {
@@ -2691,7 +2716,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
+            "url": "{{matriculaUrl}}/matricula?cursoId={{cursoId}}&grupoId={{grupoId}}"
           },
           "event": [
             {
@@ -2724,7 +2749,7 @@
           "request": {
             "method": "DELETE",
             "header": [],
-            "url": "{{baseUrl}}/matricula/{{idInexistente}}"
+            "url": "{{matriculaUrl}}/matricula/{{idInexistente}}"
           },
           "event": [
             {
@@ -2757,7 +2782,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroId}},\n  \"nota\": 85\n}",
@@ -2800,7 +2825,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/factura",
+            "url": "{{facturaUrl}}/factura",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}}\n}",
@@ -2842,7 +2867,7 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{seguridadUrl}}/bitacora"
+            "url": "{{bitacoraUrl}}/bitacora"
           },
           "event": [
             {
@@ -2875,7 +2900,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{otroCursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoId}}\n}",
@@ -2920,7 +2945,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoId}},\n  \"periodoId\": {{periodoInactivoId}}\n}",
@@ -2965,7 +2990,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/matricula",
+            "url": "{{matriculaUrl}}/matricula",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"identificacionEstudiante\": \"{{estudiante}}\",\n  \"cursoId\": {{cursoId}},\n  \"grupoId\": {{grupoInactivoId}},\n  \"periodoId\": {{periodoInactivoId}}\n}",
@@ -3010,7 +3035,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{baseUrl}}/asignarnotarubro",
+            "url": "{{notasUrl}}/asignarnotarubro",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"matriculaId\": {{matriculaId}},\n  \"rubroId\": {{rubroOtroGrupoId}},\n  \"nota\": 85\n}",

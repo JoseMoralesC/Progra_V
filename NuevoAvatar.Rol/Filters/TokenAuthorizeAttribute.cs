@@ -22,6 +22,7 @@ namespace NuevoAvatarSeguridad.Filters
                 return;
             }
 
+            NuevoAvatar.Integracion.IntegracionExtensions.ValidarEliminacion(context.HttpContext,"Rol").GetAwaiter().GetResult();
             context.HttpContext.Items["usuario"] = email;
         }
     }

@@ -1,0 +1,231 @@
+{
+  "phase": "pagos",
+  "created_at_utc": "2026-10-15T04:25:04.789475+00:00",
+  "finished_at_utc": "2026-10-15T04:27:25.933452+00:00",
+  "passed": true,
+  "failure": null,
+  "tests": [
+    {
+      "test": "Aislamiento SQL Autenticacion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Usuario",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Rol",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Parametro",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Modulo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Bitacora",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Institucion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Profesor",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Carrera",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Curso",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Periodo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Grupo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Direccion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Expediente",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Prematricula",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Matricula",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Notas",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Factura",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Pago",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL HistorialAcademico",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL ListadoEstudiantes",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Notificacion",
+      "passed": true
+    },
+    {
+      "test": "Base propia Autenticacion",
+      "passed": true
+    },
+    {
+      "test": "Base propia Parametro",
+      "passed": true
+    },
+    {
+      "test": "Base propia Bitacora",
+      "passed": true
+    },
+    {
+      "test": "Base propia Usuario",
+      "passed": true
+    },
+    {
+      "test": "Login mediante Usuario y Parametro",
+      "passed": true
+    },
+    {
+      "test": "Rotacion de refresh token",
+      "passed": true
+    },
+    {
+      "test": "Base propia Matricula",
+      "passed": true
+    },
+    {
+      "test": "Login mediante Usuario y Parametro",
+      "passed": true
+    },
+    {
+      "test": "Rotacion de refresh token",
+      "passed": true
+    },
+    {
+      "test": "Base propia Factura",
+      "passed": true
+    },
+    {
+      "test": "Creacion concurrente no duplica facturas",
+      "passed": true,
+      "statuses": [
+        409,
+        201
+      ],
+      "reasons": [
+        "Ya existe una factura activa para esta matricula",
+        null
+      ]
+    },
+    {
+      "test": "Factura obtiene matricula mediante API",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "test": "Base propia Pago",
+      "passed": true
+    },
+    {
+      "test": "Fallo de Factura conserva operacion pendiente",
+      "passed": true,
+      "status": 503
+    },
+    {
+      "test": "Outbox persistida antes de comunicar factura",
+      "passed": true
+    },
+    {
+      "test": "Base propia Pago",
+      "passed": true
+    },
+    {
+      "test": "Recuperacion automatica despues de reiniciar Pago",
+      "passed": true
+    },
+    {
+      "test": "Factura pagada tras recuperacion",
+      "passed": true
+    },
+    {
+      "test": "Un solo pago pese a reintentos",
+      "passed": true
+    },
+    {
+      "test": "Reverso sincroniza factura",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Factura pendiente despues del reverso",
+      "passed": true
+    },
+    {
+      "test": "Entrega antigua no revierte estado posterior",
+      "passed": true
+    },
+    {
+      "test": "Peticiones concurrentes responden de forma controlada",
+      "passed": true
+    },
+    {
+      "test": "Concurrencia no duplica pagos aplicados",
+      "passed": true
+    }
+  ],
+  "temporary_databases": [
+    "PrograV_IT_f4330b2f_Autenticacion",
+    "PrograV_IT_f4330b2f_Usuario",
+    "PrograV_IT_f4330b2f_Rol",
+    "PrograV_IT_f4330b2f_Parametro",
+    "PrograV_IT_f4330b2f_Modulo",
+    "PrograV_IT_f4330b2f_Bitacora",
+    "PrograV_IT_f4330b2f_Institucion",
+    "PrograV_IT_f4330b2f_Profesor",
+    "PrograV_IT_f4330b2f_Carrera",
+    "PrograV_IT_f4330b2f_Curso",
+    "PrograV_IT_f4330b2f_Periodo",
+    "PrograV_IT_f4330b2f_Grupo",
+    "PrograV_IT_f4330b2f_Direccion",
+    "PrograV_IT_f4330b2f_Expediente",
+    "PrograV_IT_f4330b2f_Prematricula",
+    "PrograV_IT_f4330b2f_Matricula",
+    "PrograV_IT_f4330b2f_Notas",
+    "PrograV_IT_f4330b2f_Factura",
+    "PrograV_IT_f4330b2f_Pago",
+    "PrograV_IT_f4330b2f_HistorialAcademico",
+    "PrograV_IT_f4330b2f_ListadoEstudiantes",
+    "PrograV_IT_f4330b2f_Notificacion"
+  ],
+  "temporary_databases_cleaned": true,
+  "business_databases_modified": false,
+  "smtp_sent": false
+}

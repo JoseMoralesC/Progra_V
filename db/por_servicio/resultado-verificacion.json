@@ -1,0 +1,369 @@
+{
+  "verified_at_utc": "2026-10-15T04:35:15.151263+00:00",
+  "mode": "verify_only",
+  "source": "PrograV",
+  "source_rows_modified": false,
+  "tables": [
+    {
+      "table": "academico.Carrera",
+      "database": "PrograV_Carrera",
+      "rows": 2,
+      "sha256_binary_values": "6d8a4169acea86ca49d5af86cd884c276ab3c0eb81acbc94c7c6b7fec729041a"
+    },
+    {
+      "table": "academico.Curso",
+      "database": "PrograV_Curso",
+      "rows": 2,
+      "sha256_binary_values": "d62d0b9cd71baf7101776ccd664d6ab9adae7c78b7ca2f804ea140e568197fc1"
+    },
+    {
+      "table": "academico.Grupo",
+      "database": "PrograV_Grupo",
+      "rows": 3,
+      "sha256_binary_values": "a3872bc5a8dab2457672690e8e8ff814b96082385651cfbb370ee441c6668233"
+    },
+    {
+      "table": "academico.Institucion",
+      "database": "PrograV_Institucion",
+      "rows": 2,
+      "sha256_binary_values": "a4b276c85c604cda01e714c4df04a1237163dde93ca72b586f6cedcc5322bc7a"
+    },
+    {
+      "table": "academico.Periodo",
+      "database": "PrograV_Periodo",
+      "rows": 2,
+      "sha256_binary_values": "308b2c384a059a67b30efcb3054f72dfa2199c4cae00dfe52beadfaafe0a11b8"
+    },
+    {
+      "table": "academico.Profesor",
+      "database": "PrograV_Profesor",
+      "rows": 2,
+      "sha256_binary_values": "4be5e11da2ce9cd79a4098a0672040c02ab8bd3df1c39fe40e2519c9af51f171"
+    },
+    {
+      "table": "academico.ProfesorTelefono",
+      "database": "PrograV_Profesor",
+      "rows": 1,
+      "sha256_binary_values": "87060ee389be2cc9c161b5adc47fc1a393fef7dee4d564a6bbb0faab75935a64"
+    },
+    {
+      "table": "finanzas.Factura",
+      "database": "PrograV_Factura",
+      "rows": 1,
+      "sha256_binary_values": "0d65f9ccb8abf7fa0f5384c9b0ac6676bfa1fb69a9c2fe10744bd32fd9694471"
+    },
+    {
+      "table": "finanzas.FacturaDetalle",
+      "database": "PrograV_Factura",
+      "rows": 1,
+      "sha256_binary_values": "006cc5dcab0d2d3fc8d7c628b52109d51d6b48a6daea16a5b3d409998b62b6bc"
+    },
+    {
+      "table": "finanzas.Pago",
+      "database": "PrograV_Pago",
+      "rows": 1,
+      "sha256_binary_values": "d702b822f6ff0f1d7098bb52e00dcf7951d24e49a9d9b5c94499159770c999b0"
+    },
+    {
+      "table": "general.bitacora",
+      "database": "PrograV_Bitacora",
+      "rows": 338,
+      "sha256_binary_values": "160ef0bd170bb6fb91b1af196bbfb686a105088b4f1900aed4f8a2b5b8f341a8"
+    },
+    {
+      "table": "matricula.Canton",
+      "database": "PrograV_Direccion",
+      "rows": 1,
+      "sha256_binary_values": "42bd529fa6f2b7d72ef64054758dda163e5fb0df2385522620f8522b29c1fd92"
+    },
+    {
+      "table": "matricula.DesgloseRubro",
+      "database": "PrograV_Notas",
+      "rows": 2,
+      "sha256_binary_values": "09722c09644e1c1852860ded20be9ecd9fc4dd3483fd7364243db304354fb048"
+    },
+    {
+      "table": "matricula.Distrito",
+      "database": "PrograV_Direccion",
+      "rows": 1,
+      "sha256_binary_values": "4c33d7f6d2d68ed18d608767e86e8fc7a41bb43d4016025711d5a05d3993f272"
+    },
+    {
+      "table": "matricula.Estudiante",
+      "database": "PrograV_Expediente",
+      "rows": 4,
+      "sha256_binary_values": "500a361b369cca074cac57101eaa2109c6e99b87a4fb07ef9b2edafc596fe6d0"
+    },
+    {
+      "table": "matricula.EstudianteTelefono",
+      "database": "PrograV_Expediente",
+      "rows": 0,
+      "sha256_binary_values": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "matricula.Matricula",
+      "database": "PrograV_Matricula",
+      "rows": 2,
+      "sha256_binary_values": "af0072bf177230a3d2cc0e44d3e91b23bed1e9cc762cfd655b6bf4b3788f6cee"
+    },
+    {
+      "table": "matricula.NotaRubro",
+      "database": "PrograV_Notas",
+      "rows": 2,
+      "sha256_binary_values": "5ddf079f14d3c045d2c0791efa57649fabc6a6608bee9dce407ef38dfe96fa82"
+    },
+    {
+      "table": "matricula.Prematricula",
+      "database": "PrograV_Prematricula",
+      "rows": 0,
+      "sha256_binary_values": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "matricula.PrematriculaCurso",
+      "database": "PrograV_Prematricula",
+      "rows": 0,
+      "sha256_binary_values": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "matricula.Provincia",
+      "database": "PrograV_Direccion",
+      "rows": 1,
+      "sha256_binary_values": "fcb11452e00edcf64e39d24edab650769b31ca87a934bf82e7c707ca4e51c576"
+    },
+    {
+      "table": "seguridad.modulo",
+      "database": "PrograV_Modulo",
+      "rows": 1,
+      "sha256_binary_values": "7cc64c316690c6ba6b0e9584ba7c0a9cf49c4cc165f4d510c3e3cd53df109c5a"
+    },
+    {
+      "table": "seguridad.parametro",
+      "database": "PrograV_Parametro",
+      "rows": 2,
+      "sha256_binary_values": "54dac08f75fdb13afbb94d131569fc620c2a10481285ef2f43f211c141d3f05e"
+    },
+    {
+      "table": "seguridad.refresh_token",
+      "database": "PrograV_Autenticacion",
+      "rows": 144,
+      "sha256_binary_values": "3bdc255c5e309970fce48c53cfe54fcaeee29da6a92325c456b1c9afb520e286"
+    },
+    {
+      "table": "seguridad.rol",
+      "database": "PrograV_Rol",
+      "rows": 2,
+      "sha256_binary_values": "efff3b4d33723fda6543113177aa2c2188f252c568c60cf6d4dccd717e57f25e"
+    },
+    {
+      "table": "seguridad.usuario",
+      "database": "PrograV_Usuario",
+      "rows": 5,
+      "sha256_binary_values": "8003d58c4c5a35aa7fabe51506d50a936b992fdcae3d8be63faba63e6a018d12"
+    }
+  ],
+  "databases": [
+    {
+      "database": "PrograV_Autenticacion",
+      "table_count": 1,
+      "indexes": 2,
+      "checks": 0,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Usuario",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 2,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Rol",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 1,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Parametro",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 2,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Modulo",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 1,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Bitacora",
+      "table_count": 1,
+      "indexes": 3,
+      "checks": 2,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Institucion",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 1,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Profesor",
+      "table_count": 2,
+      "indexes": 5,
+      "checks": 5,
+      "local_foreign_keys": 1,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Carrera",
+      "table_count": 1,
+      "indexes": 3,
+      "checks": 1,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Curso",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 3,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Periodo",
+      "table_count": 1,
+      "indexes": 2,
+      "checks": 1,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Grupo",
+      "table_count": 1,
+      "indexes": 1,
+      "checks": 3,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Direccion",
+      "table_count": 3,
+      "indexes": 6,
+      "checks": 3,
+      "local_foreign_keys": 2,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Expediente",
+      "table_count": 2,
+      "indexes": 3,
+      "checks": 6,
+      "local_foreign_keys": 1,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Prematricula",
+      "table_count": 2,
+      "indexes": 4,
+      "checks": 0,
+      "local_foreign_keys": 1,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Matricula",
+      "table_count": 1,
+      "indexes": 3,
+      "checks": 2,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Notas",
+      "table_count": 2,
+      "indexes": 6,
+      "checks": 3,
+      "local_foreign_keys": 1,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Factura",
+      "table_count": 2,
+      "indexes": 5,
+      "checks": 5,
+      "local_foreign_keys": 1,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Pago",
+      "table_count": 1,
+      "indexes": 3,
+      "checks": 2,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_HistorialAcademico",
+      "table_count": 0,
+      "indexes": 0,
+      "checks": 0,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_ListadoEstudiantes",
+      "table_count": 0,
+      "indexes": 0,
+      "checks": 0,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    },
+    {
+      "database": "PrograV_Notificacion",
+      "table_count": 0,
+      "indexes": 0,
+      "checks": 0,
+      "local_foreign_keys": 0,
+      "structure_matches": true,
+      "identity_matches": true
+    }
+  ],
+  "total_rows": 522,
+  "business_table_count": 26,
+  "source_references_checked": 31,
+  "application_cutover": false,
+  "note": "Verifica las 26 tablas migradas. La tabla tecnica OperacionPago se comprueba en la suite de integracion."
+}
