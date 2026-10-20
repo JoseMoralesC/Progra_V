@@ -18,7 +18,7 @@ foreach ($taskService in $taskServices) {
     Push-Location $taskDirectory
     try {
         if ($taskService.kind -eq 'java') {
-            $taskArguments = @('-q', '-DskipTests', 'clean', 'package')
+            $taskArguments = @('-q', '-f', (Join-Path $taskRoot 'pom.xml'), '-pl', ('NuevoAvatar.' + $taskService.name), '-am', '-DskipTests', 'clean', 'package')
             if ($SinRed) { $taskArguments = @('-o') + $taskArguments }
             & .\mvnw.cmd @taskArguments
         } else {

@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const assert = require('node:assert/strict');
-const root = path.resolve(__dirname, '../../..');
+const root = path.resolve(__dirname, '../../../..');
 const services = JSON.parse(fs.readFileSync(path.join(root, 'tools/servicios.json'), 'utf8'));
 const variables = Object.fromEntries(services.map(s => [s.name, s.name[0].toLowerCase()+s.name.slice(1)+'Url']));
 const urls = Object.fromEntries(services.map(s => [variables[s.name], `http://localhost:${s.port}`]));
@@ -19,7 +19,7 @@ const owners = {
   historialacademico:'HistorialAcademico', listadoestudiantes:'ListadoEstudiantes'
 };
 const files = fs.readdirSync(__dirname).filter(f => f.endsWith('.json')).map(f => path.join(__dirname,f));
-files.push(path.join(root,'docs/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json'));
+files.push(path.join(root,'docs/primer_avance/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json'));
 const results = []; let requestCount=0; let scriptCount=0; let environments=0;
 for (const file of files) {
   const data = JSON.parse(fs.readFileSync(file,'utf8'));
@@ -51,5 +51,5 @@ for (const file of files) {
   results.push({file:path.relative(root,file).replaceAll('\\','/'),requests,scripts,passed:true});
 }
 const report={validation:'static',http_requests_sent:0,passed:true,collections:results.length,requests:requestCount,scripts:scriptCount,environments,details:results};
-fs.writeFileSync(path.join(root,'docs/pruebas/postman-validacion.json'),JSON.stringify(report,null,2)+'\n');
+fs.writeFileSync(path.join(root,'docs/primer_avance/pruebas/postman-validacion.json'),JSON.stringify(report,null,2)+'\n');
 console.log(`APROBADO: ${results.length} colecciones, ${requestCount} peticiones, ${scriptCount} scripts y ${environments} entornos. Sin enviar HTTP.`);

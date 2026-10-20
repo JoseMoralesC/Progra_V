@@ -10,6 +10,7 @@ failures=[];checked=0
 for service in manifest:
     folder=root/("NuevoAvatar."+service)
     for file in folder.rglob("*"):
+        if file.relative_to(folder).parts[:2] == ("src", "test"):continue
         if file.suffix not in {".cs",".java"} or set(file.parts)&{"bin","obj","target"}:continue
         checked+=1
         try:source=file.read_text(encoding="utf-8-sig")
@@ -23,6 +24,6 @@ for service in manifest:
                 failures.append({"service":service,"file":str(file.relative_to(root)),"foreign_entity":table[1]})
 report={"passed":not failures,"services":len(manifest),"source_files":checked,"failures":failures,
         "scope":"Accesos SQL explicitos y entidades JPA; complementa las cuentas SQL y las pruebas HTTP."}
-(root/"docs/pruebas/limites-servicios.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+(root/"docs/primer_avance/pruebas/limites-servicios.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 print(f"Limites SQL/JPA: {len(manifest)} servicios, {checked} fuentes, {len(failures)} infracciones.")
 raise SystemExit(1 if failures else 0)

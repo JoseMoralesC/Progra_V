@@ -25,8 +25,8 @@ public class MatriculaNotasClient {
         var factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(3000);
         factory.setReadTimeout(5000);
-        cliente = builder.baseUrl(baseUrl).requestFactory(factory).build();
-        notas = builder.clone().baseUrl(notasUrl).requestFactory(factory).build();
+        cliente = builder.baseUrl(java.util.Objects.requireNonNull(baseUrl)).requestFactory(factory).build();
+        notas = builder.clone().baseUrl(java.util.Objects.requireNonNull(notasUrl)).requestFactory(factory).build();
     }
 
     MatriculaNotasClient(RestClient cliente) {

@@ -1,8 +1,8 @@
 # Auditoria de avance 3 - Proyecto Nuevo Avatar V1
 
 Fecha de auditoria: 4 de octubre de 2026  
-Base principal: `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
-Bases complementarias: `docs/roadmaps/roadmap 1.md`, `docs/roadmaps/propuesta.md`, `docs/auditoria/auditoria_avance2.md`, `docs/pruebas/RESUMEN_PERSONA4.md`  
+Base principal: `docs/primer_avance/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
+Bases complementarias: `docs/primer_avance/roadmaps/roadmap 1.md`, `docs/primer_avance/roadmaps/propuesta.md`, `docs/primer_avance/auditoria/auditoria_avance2.md`, `docs/primer_avance/pruebas/RESUMEN_PERSONA4.md`  
 
 ## Resumen
 
@@ -20,15 +20,15 @@ Estimo un aumento claro del avance global por Persona 4, pero el proyecto aun no
 
 En esta auditoria reviso los siguientes elementos del repositorio:
 
-- `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`
-- `docs/roadmaps/roadmap 1.md`
-- `docs/roadmaps/propuesta.md`
-- `docs/auditoria/auditoria_avance1.md`
-- `docs/auditoria/auditoria_avance2.md`
-- `docs/pruebas/persona1-persona2.md`
-- `docs/pruebas/RESUMEN_PERSONA4.md`
-- `docs/pruebas/postman`
-- `docs/pruebas/evidencias/2026-10-04`
+- `docs/primer_avance/requerimientos/Proyecto Nuevo Avatar V1.pdf`
+- `docs/primer_avance/roadmaps/roadmap 1.md`
+- `docs/primer_avance/roadmaps/propuesta.md`
+- `docs/primer_avance/auditoria/auditoria_avance1.md`
+- `docs/primer_avance/auditoria/auditoria_avance2.md`
+- `docs/primer_avance/pruebas/persona1-persona2.md`
+- `docs/primer_avance/pruebas/RESUMEN_PERSONA4.md`
+- `docs/primer_avance/pruebas/postman`
+- `docs/primer_avance/pruebas/evidencias/2026-10-04`
 - `services/seguridad`
 - `services/persona2`
 - `services/persona4`
@@ -202,7 +202,7 @@ Evidencia que identifico:
 - `HistorialAcademicoService` consulta intentos del estudiante, consume notas de `MAT5` y calcula acumulado ponderado.
 - `ListadoEstudiantesService` cruza grupos del periodo con matriculas activas de `MAT2` y expedientes locales.
 - Suite ejecutada: 251 pruebas, 0 fallos, 0 errores, 0 omitidas.
-- Evidencia documental en `docs/pruebas/RESUMEN_PERSONA4.md`.
+- Evidencia documental en `docs/primer_avance/pruebas/RESUMEN_PERSONA4.md`.
 - Evidencia JSON indica 37 peticiones HTTP correctas para MAT3, MAT1 y ACA2 con SQL real local antes de incorporar ACA1.
 - Migraciones en `db/persona4` y resumen PrograV: 4 tablas nuevas, 9 relaciones nuevas, 16 relaciones anteriores verificadas y 0 errores de ejecucion.
 - Colecciones Postman para `MAT3`, `MAT1`, `ACA1` y `ACA2`.

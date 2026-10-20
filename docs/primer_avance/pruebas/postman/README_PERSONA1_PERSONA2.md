@@ -26,9 +26,17 @@ Ejecutar cada colección en el Runner, en orden, con una iteración. La primera 
 
 Las pruebas CRUD crean registros ficticios identificados por el número de ejecución. La limpieza utiliza solo los identificadores devueltos por las altas exitosas. Mantener los valores automáticos de esos identificadores. Persona 2 elimina primero carrera, luego profesor, institución y usuario ficticio. Si se interrumpe la ejecución, conservar las variables y ejecutar la carpeta de limpieza al terminar. Las bitácoras y sesiones de autenticación permanecen como evidencia de las operaciones.
 
+Para ejecutar `Crear carrera` individualmente, configurar `institucionId` y
+`profesorId` con referencias existentes válidas. Esas referencias no se marcan
+como creadas por la prueba. Guardo los IDs de las altas en variables terminadas
+en `Limpieza`; los borrados usan esos IDs aunque el entorno tenga otros valores.
+Las confirmaciones consultan el mismo registro borrado. Si una alta falla,
+su limpieza y su confirmación se omiten. Un borrado fallido conserva su ID
+para reintentarlo.
+
 ## Guardar evidencia en docs
 
-Crear una carpeta `docs/pruebas/evidencias/AAAA-MM-DD/persona2-postman/` y guardar:
+Crear una carpeta `docs/primer_avance/pruebas/evidencias/AAAA-MM-DD/persona2-postman/` y guardar:
 
 - Capturas con nombre de petición, método, URL, código HTTP y respuesta.
 - Resumen del Runner con peticiones aprobadas y fallidas.
@@ -46,4 +54,4 @@ La consulta inicial de `DOMPROF` respondió 404. Durante las pruebas de CRUD se 
 
 Las dos colecciones se ejecutaron con `ejecutar-http.cjs` y después en la aplicación Postman 12.30.5 mediante Runner local: 99 peticiones y 128 aserciones aprobadas (56 de Persona 1 y 72 de Persona 2), cero fallos, errores y omisiones. Ver [resumen y capturas del Runner](../RESUMEN_PERSONA2.md). La prueba de token inválido genera un UUID aleatorio; no contiene un token fijo ni una credencial real. Los valores de usuario y contraseña se mantienen locales: no pulsar Share ni exportarlos al repositorio.
 
-Para repetir con el ejecutor HTTP local, configurar `POSTMAN_USER`, `POSTMAN_PASSWORD` y `HTTP_REPORT_PATH` en el ambiente local y ejecutar `node docs/pruebas/postman/ejecutar-http.cjs` desde la raíz. El reporte omite credenciales, tokens y respuestas completas. El ejecutor conserva DOMPROF si existe y lo crea con el dominio del entorno únicamente si falta. Solo admite los métodos de aserción utilizados por estas dos colecciones; no reemplaza el runtime general de Postman.
+Para repetir con el ejecutor HTTP local, configurar `POSTMAN_USER`, `POSTMAN_PASSWORD` y `HTTP_REPORT_PATH` en el ambiente local y ejecutar `node docs/primer_avance/pruebas/postman/ejecutar-http.cjs` desde la raíz. El reporte omite credenciales, tokens y respuestas completas. El ejecutor conserva DOMPROF si existe y lo crea con el dominio del entorno únicamente si falta. Solo admite los métodos de aserción utilizados por estas dos colecciones; no reemplaza el runtime general de Postman.

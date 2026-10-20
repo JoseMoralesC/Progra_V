@@ -36,7 +36,7 @@ public class ExpedienteRepository {
         List<DatosExpediente> encontrados = jdbc.query(
                 CONSULTA + " WHERE e.Identificacion = ? ORDER BY t.EstudianteTelefonoId",
                 (ResultSetExtractor<List<DatosExpediente>>) this::leer, identificacion);
-        return encontrados.stream().findFirst();
+        return java.util.Objects.requireNonNull(encontrados).stream().findFirst();
     }
 
     public boolean existe(String identificacion) {

@@ -37,7 +37,7 @@ public class PrematriculaRepository {
         List<PrematriculaResponse> encontrados = jdbc.query(
                 CONSULTA + " WHERE p.PrematriculaId = ? ORDER BY pc.PrematriculaCursoId",
                 (ResultSetExtractor<List<PrematriculaResponse>>) this::leer, id);
-        return encontrados.stream().findFirst();
+        return java.util.Objects.requireNonNull(encontrados).stream().findFirst();
     }
 
     public boolean existeCarrera(Integer id) { return datos.buscar("Carrera","Carrera","CarreraId",id).isPresent(); }

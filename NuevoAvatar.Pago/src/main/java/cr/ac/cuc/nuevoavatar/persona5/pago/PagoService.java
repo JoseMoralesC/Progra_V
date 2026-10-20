@@ -49,5 +49,5 @@ public class PagoService {
     public List<PagoResponse> listarPorPeriodo(Integer periodoId){return pagos.findByPeriodoId(periodoId).stream().map(PagoResponse::desde).toList();}
     private Pago buscar(Integer id){return pagos.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Pago no encontrado"));}
     private ResponseStatusException conflicto(String m){return new ResponseStatusException(HttpStatus.CONFLICT,m);}
-    private ResponseStatusException invalido(String m){return new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,m);}
+    private ResponseStatusException invalido(String m){return new ResponseStatusException(HttpStatus.UNPROCESSABLE_CONTENT,m);}
 }

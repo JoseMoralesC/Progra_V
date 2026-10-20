@@ -4,7 +4,7 @@
 
 Prepare esta coleccion y la contraste con el codigo antes de las ejecuciones
 contra la base real. Documento la evidencia inicial del login en
-`docs/evidencia/persona5/POST_Login_Persona5.PNG`.
+`docs/primer_avance/evidencia/persona5/POST_Login_Persona5.PNG`.
 En esta guia presento los estados HTTP esperados y los distingo de los
 resultados observados en mis capturas. Organizo 79 solicitudes, incluidas
 pruebas de seguridad y casos opcionales. Considero exitoso un rechazo
@@ -200,7 +200,7 @@ Para cada caso ejecutado documento lo siguiente:
 1. Tomo una captura de Postman con nombre de solicitud, metodo, URL, estado HTTP y
    respuesta. Para POST/PUT tomo otra captura del Body cuando no quepa
    junto a la respuesta. Incluyo Test Results en las comprobaciones.
-2. Guardo las capturas en `docs/evidencia/persona5`, usando por ejemplo
+2. Guardo las capturas en `docs/primer_avance/evidencia/persona5`, usando por ejemplo
    `MAT2_01_Crear_201.PNG`, `MAT5_14_Bloqueo_409.PNG`,
    `IPN2_08_FacturaPendiente_200.PNG`.
 3. Para el correo guardo la respuesta ENVIADA y una captura del mensaje recibido con

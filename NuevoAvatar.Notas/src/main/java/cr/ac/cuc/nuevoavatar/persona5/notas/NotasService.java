@@ -44,7 +44,7 @@ public class NotasService {
         validarSuma(request);
 
         List<DesgloseRubro> actuales = rubros.findByGrupoId(request.grupoId());
-        List<Integer> idsActuales = actuales.stream().map(DesgloseRubro::getId).toList();
+        List<Integer> idsActuales = actuales.stream().map(rubro -> java.util.Objects.requireNonNull(rubro).getId()).toList();
         if (!idsActuales.isEmpty() && notas.existsByRubroIdIn(idsActuales)) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -112,7 +112,7 @@ public class NotasService {
         Map<Integer, DesgloseRubro> rubrosPorId = rubros
             .findByGrupoId(grupoId)
             .stream()
-            .collect(Collectors.toMap(DesgloseRubro::getId, Function.identity()));
+            .collect(Collectors.toMap(rubro -> java.util.Objects.requireNonNull(rubro).getId(), Function.identity()));
 
         return notas.findByMatriculaId(matricula.getId())
             .stream()
@@ -123,8 +123,8 @@ public class NotasService {
 
     private void validarSuma(CargarDesgloseRequest request) {
         BigDecimal total = request.rubros().stream()
-            .map(CargarDesgloseRequest.RubroRequest::porcentaje)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            .map(rubro -> java.util.Objects.requireNonNull(rubro).porcentaje())
+            .reduce(BigDecimal.ZERO, (acumulado, porcentaje) -> java.util.Objects.requireNonNull(acumulado).add(porcentaje));
         if (total.compareTo(CIEN) != 0) {
             throw invalido("La sumatoria de rubros debe ser 100");
         }

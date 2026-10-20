@@ -17,7 +17,7 @@
   "variable": [
     {
       "key": "usuario",
-      "value": "jose",
+      "value": "",
       "type": "string"
     },
     {
@@ -37,17 +37,17 @@
     },
     {
       "key": "cursoId",
-      "value": "",
+      "value": "4",
       "type": "string"
     },
     {
       "key": "grupoId",
-      "value": "",
+      "value": "3",
       "type": "string"
     },
     {
       "key": "periodoId",
-      "value": "",
+      "value": "1",
       "type": "string"
     },
     {
@@ -72,7 +72,7 @@
     },
     {
       "key": "notaId",
-      "value": "",
+      "value": "1",
       "type": "string"
     },
     {
@@ -92,27 +92,27 @@
     },
     {
       "key": "emailDestino",
-      "value": "",
+      "value": "jose@cuc.cr",
       "type": "string"
     },
     {
       "key": "otroCursoId",
-      "value": "",
+      "value": "7",
       "type": "string"
     },
     {
       "key": "periodoInactivoId",
-      "value": "",
+      "value": "3",
       "type": "string"
     },
     {
       "key": "grupoInactivoId",
-      "value": "",
+      "value": "4",
       "type": "string"
     },
     {
       "key": "rubroOtroGrupoId",
-      "value": "",
+      "value": "1",
       "type": "string"
     },
     {
@@ -180,8 +180,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"usuario\") || \"\").trim()) throw new Error(\"Configura usuario antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"contrasena\") || \"\").trim()) throw new Error(\"Configura contrasena antes de enviar esta solicitud.\");"
+                  "let u = pm.variables.get(\"usuario\") || pm.variables.get(\"loginUsuario\") || \"\";",
+                  "if (u === \"jose\") u = \"jose@cuc.cr\";",
+                  "let p = pm.variables.get(\"contrasena\") || pm.variables.get(\"password\") || pm.variables.get(\"loginContrasena\") || \"\";",
+                  "pm.collectionVariables.set(\"usuario\", u);",
+                  "pm.collectionVariables.set(\"contrasena\", p);"
                 ]
               }
             },
@@ -192,9 +195,12 @@
                 "exec": [
                   "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
                   "if (pm.response.code === 201) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.access_token).to.be.a(\"string\").and.not.empty;",
-                  "pm.collectionVariables.set(\"token\", data.access_token);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.access_token).to.be.a(\"string\").and.not.empty;",
+                  "pm.collectionVariables.set(\"token\", respData.access_token);",
+                  "if (pm.environment) {",
+                  "pm.environment.set(\"token\", respData.access_token);",
+                  "}",
                   "if (!pm.collectionVariables.get(\"estudiante\")) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
                   "}"
                 ]
@@ -798,10 +804,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");",
+                  "pm.collectionVariables.unset(\"matriculaId\"); if (pm.environment) pm.environment.unset(\"matriculaId\");"
                 ]
               }
             },
@@ -812,10 +819,10 @@
                 "exec": [
                   "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
                   "if (pm.response.code === 201) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"matriculaId\", data.id);",
-                  "pm.expect(data.estado).to.eql(\"ACTIVA\");",
-                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.id).to.be.a(\"number\"); pm.collectionVariables.set(\"matriculaId\", respData.id); if (pm.environment) { pm.environment.set(\"matriculaId\", respData.id);  }",
+                  "pm.expect(respData.estado).to.eql(\"ACTIVA\");",
+                  "pm.expect(respData.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
                   "}"
                 ]
               }
@@ -835,8 +842,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -847,8 +854,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"matriculaId\")) && x.estado === \"ACTIVA\")).to.eql(true);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.some(x => x.id === Number(pm.variables.get(\"matriculaId\")) && x.estado === \"ACTIVA\")).to.eql(true);",
                   "}"
                 ]
               }
@@ -882,10 +889,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -927,11 +934,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -942,9 +952,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\") + \"-M\");",
-                  "pm.collectionVariables.set(\"estudiante\", data.identificacionEstudiante);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\") + \"-M\");",
+                  "pm.collectionVariables.set(\"estudiante\", respData.identificacionEstudiante); if (pm.environment) pm.environment.set(\"estudiante\", respData.identificacionEstudiante);",
                   "}"
                 ]
               }
@@ -964,8 +974,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -976,8 +986,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.find(x => x.id === Number(pm.variables.get(\"matriculaId\"))).identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.find(x => x.id === Number(pm.variables.get(\"matriculaId\"))).identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
                   "}"
                 ]
               }
@@ -1044,10 +1054,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -1089,10 +1099,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -1134,11 +1144,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");",
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -1185,8 +1195,13 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (String(pm.variables.get(\"grupoPruebasConfirmado\")) !== \"true\") {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Confirmar grupo dedicado a pruebas y establecer grupoPruebasConfirmado=true\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "pm.collectionVariables.unset(\"rubroId\"); if (pm.environment) pm.environment.unset(\"rubroId\");",
+                  "pm.collectionVariables.unset(\"rubro2Id\"); if (pm.environment) pm.environment.unset(\"rubro2Id\");"
                 ]
               }
             },
@@ -1197,11 +1212,15 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data).to.have.lengthOf(2);",
-                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
-                  "pm.collectionVariables.set(\"rubroId\", data.find(x => x.nombre === \"Examen\").id);",
-                  "pm.collectionVariables.set(\"rubro2Id\", data.find(x => x.nombre === \"Proyecto\").id);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData).to.have.lengthOf(2);",
+                  "pm.expect(respData.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
+                  "pm.collectionVariables.set(\"rubroId\", respData.find(x => x.nombre === \"Examen\").id);",
+                  "pm.collectionVariables.set(\"rubro2Id\", respData.find(x => x.nombre === \"Proyecto\").id);",
+                  "if (pm.environment) {",
+                  "  pm.environment.set(\"rubroId\", pm.collectionVariables.get(\"rubroId\"));",
+                  "  pm.environment.set(\"rubro2Id\", pm.collectionVariables.get(\"rubro2Id\"));",
+                  "}",
                   "}"
                 ]
               }
@@ -1221,7 +1240,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1232,8 +1251,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
                   "}"
                 ]
               }
@@ -1267,8 +1286,13 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (String(pm.variables.get(\"grupoPruebasConfirmado\")) !== \"true\") {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Confirmar grupo dedicado a pruebas y establecer grupoPruebasConfirmado=true\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "pm.collectionVariables.unset(\"rubroId\"); if (pm.environment) pm.environment.unset(\"rubroId\");",
+                  "pm.collectionVariables.unset(\"rubro2Id\"); if (pm.environment) pm.environment.unset(\"rubro2Id\");"
                 ]
               }
             },
@@ -1279,11 +1303,15 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data).to.have.lengthOf(2);",
-                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
-                  "pm.collectionVariables.set(\"rubroId\", data.find(x => x.nombre === \"Examen\").id);",
-                  "pm.collectionVariables.set(\"rubro2Id\", data.find(x => x.nombre === \"Proyecto\").id);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData).to.have.lengthOf(2);",
+                  "pm.expect(respData.reduce((s,x) => s + Number(x.porcentaje), 0)).to.eql(100);",
+                  "pm.collectionVariables.set(\"rubroId\", respData.find(x => x.nombre === \"Examen\").id);",
+                  "pm.collectionVariables.set(\"rubro2Id\", respData.find(x => x.nombre === \"Proyecto\").id);",
+                  "if (pm.environment) {",
+                  "  pm.environment.set(\"rubroId\", pm.collectionVariables.get(\"rubroId\"));",
+                  "  pm.environment.set(\"rubro2Id\", pm.collectionVariables.get(\"rubro2Id\"));",
+                  "}",
                   "}"
                 ]
               }
@@ -1317,8 +1345,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (String(pm.variables.get(\"grupoPruebasConfirmado\")) !== \"true\") {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Confirmar grupo dedicado a pruebas y establecer grupoPruebasConfirmado=true\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1346,7 +1377,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1357,9 +1388,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
-                  "pm.expect(data.find(x => x.id === Number(pm.variables.get(\"rubroId\"))).porcentaje).to.eql(50);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.reduce((s,x) => s + Number(x.porcentaje),0)).to.eql(100);",
+                  "pm.expect(respData.find(x => x.id === Number(pm.variables.get(\"rubroId\"))).porcentaje).to.eql(50);",
                   "}"
                 ]
               }
@@ -1393,8 +1424,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1405,9 +1442,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(Number(data.nota)).to.eql(85);",
-                  "pm.collectionVariables.set(\"notaId\", data.id);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(Number(respData.nota)).to.eql(85);",
+                  "pm.collectionVariables.set(\"notaId\", respData.id);",
                   "}"
                 ]
               }
@@ -1441,8 +1478,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1453,9 +1496,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(Number(data.nota)).to.eql(1);",
-                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(Number(respData.nota)).to.eql(1);",
+                  "pm.expect(respData.id).to.eql(Number(pm.variables.get(\"notaId\")));",
                   "}"
                 ]
               }
@@ -1489,8 +1532,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1501,9 +1550,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(Number(data.nota)).to.eql(100);",
-                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(Number(respData.nota)).to.eql(100);",
+                  "pm.expect(respData.id).to.eql(Number(pm.variables.get(\"notaId\")));",
                   "}"
                 ]
               }
@@ -1537,8 +1586,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1549,9 +1604,9 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(Number(data.nota)).to.eql(90);",
-                  "pm.expect(data.id).to.eql(Number(pm.variables.get(\"notaId\")));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(Number(respData.nota)).to.eql(90);",
+                  "pm.expect(respData.id).to.eql(Number(pm.variables.get(\"notaId\")));",
                   "}"
                 ]
               }
@@ -1585,8 +1640,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubro2Id\") || \"\").trim()) throw new Error(\"Configura rubro2Id antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubro2Id\"))) || Number(pm.variables.get(\"rubro2Id\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubro2Id\");",
+                  "}"
                 ]
               }
             },
@@ -1614,9 +1675,9 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1627,10 +1688,10 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data).to.have.lengthOf(2);",
-                  "pm.expect(Number(data.find(x => x.rubroId === Number(pm.variables.get(\"rubroId\"))).nota)).to.eql(90);",
-                  "pm.expect(Number(data.find(x => x.rubroId === Number(pm.variables.get(\"rubro2Id\"))).nota)).to.eql(80);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData).to.have.lengthOf(2);",
+                  "pm.expect(Number(respData.find(x => x.rubroId === Number(pm.variables.get(\"rubroId\"))).nota)).to.eql(90);",
+                  "pm.expect(Number(respData.find(x => x.rubroId === Number(pm.variables.get(\"rubro2Id\"))).nota)).to.eql(80);",
                   "}"
                 ]
               }
@@ -1664,8 +1725,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1707,8 +1774,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -1750,8 +1823,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (pm.variables.get(\"grupoPruebasConfirmado\") !== \"true\") throw new Error(\"Usa un grupo exclusivo de pruebas y configura grupoPruebasConfirmado=true.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (String(pm.variables.get(\"grupoPruebasConfirmado\")) !== \"true\") {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Confirmar grupo dedicado a pruebas y establecer grupoPruebasConfirmado=true\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1793,8 +1869,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -1822,9 +1901,9 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -1871,7 +1950,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "pm.collectionVariables.unset(\"facturaId\"); if (pm.environment) pm.environment.unset(\"facturaId\");"
                 ]
               }
             },
@@ -1882,16 +1965,16 @@
                 "exec": [
                   "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
                   "if (pm.response.code === 201) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"facturaId\", data.id);",
-                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
-                  "pm.expect(Number(data.subtotal)).to.eql(30000);",
-                  "pm.expect(Number(data.impuesto)).to.eql(600);",
-                  "pm.expect(Number(data.total)).to.eql(30600);",
-                  "pm.expect(data.detalles).to.have.lengthOf(1);",
-                  "pm.expect(data.detalles[0].descripcion).to.eql(\"Servicios estudiantiles\");",
-                  "pm.expect(Number(data.detalles[0].monto)).to.eql(30000);",
-                  "pm.expect(data.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.id).to.be.a(\"number\"); pm.collectionVariables.set(\"facturaId\", respData.id); if (pm.environment) pm.environment.set(\"facturaId\", respData.id);",
+                  "pm.expect(respData.estado).to.eql(\"PENDIENTE\");",
+                  "pm.expect(Number(respData.subtotal)).to.eql(30000);",
+                  "pm.expect(Number(respData.impuesto)).to.eql(600);",
+                  "pm.expect(Number(respData.total)).to.eql(30600);",
+                  "pm.expect(respData.detalles).to.have.lengthOf(1);",
+                  "pm.expect(respData.detalles[0].descripcion).to.eql(\"Servicios estudiantiles\");",
+                  "pm.expect(Number(respData.detalles[0].monto)).to.eql(30000);",
+                  "pm.expect(respData.identificacionEstudiante).to.eql(pm.variables.get(\"estudiante\"));",
                   "}"
                 ]
               }
@@ -1911,7 +1994,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -1922,8 +2008,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"PENDIENTE\");",
                   "}"
                 ]
               }
@@ -1943,7 +2029,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -1954,8 +2040,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"facturaId\")))).to.eql(true);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.some(x => x.id === Number(pm.variables.get(\"facturaId\")))).to.eql(true);",
                   "}"
                 ]
               }
@@ -1989,7 +2075,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}"
                 ]
               }
             },
@@ -2031,7 +2120,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -2059,7 +2148,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -2106,7 +2195,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}",
+                  "pm.collectionVariables.unset(\"pagoId\"); if (pm.environment) pm.environment.unset(\"pagoId\");"
                 ]
               }
             },
@@ -2117,10 +2210,10 @@
                 "exec": [
                   "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
                   "if (pm.response.code === 201) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.id).to.be.a(\"number\"); pm.collectionVariables.set(\"pagoId\", data.id);",
-                  "pm.expect(data.estado).to.eql(\"APLICADO\");",
-                  "pm.expect(Number(data.monto)).to.eql(30600);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.id).to.be.a(\"number\"); pm.collectionVariables.set(\"pagoId\", respData.id); if (pm.environment) pm.environment.set(\"pagoId\", respData.id);",
+                  "pm.expect(respData.estado).to.eql(\"APLICADO\");",
+                  "pm.expect(Number(respData.monto)).to.eql(30600);",
                   "}"
                 ]
               }
@@ -2140,7 +2233,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2151,8 +2247,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"PAGADA\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"PAGADA\");",
                   "}"
                 ]
               }
@@ -2172,7 +2268,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"pagoId\"))) || Number(pm.variables.get(\"pagoId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar pagoId\");",
+                  "}"
                 ]
               }
             },
@@ -2183,8 +2282,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"APLICADO\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"APLICADO\");",
                   "}"
                 ]
               }
@@ -2204,7 +2303,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -2215,8 +2314,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"pagoId\")))).to.eql(true);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.some(x => x.id === Number(pm.variables.get(\"pagoId\")))).to.eql(true);",
                   "}"
                 ]
               }
@@ -2250,7 +2349,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2278,7 +2380,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2306,7 +2411,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"pagoId\"))) || Number(pm.variables.get(\"pagoId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar pagoId\");",
+                  "}"
                 ]
               }
             },
@@ -2317,8 +2425,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"ANULADO\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"ANULADO\");",
                   "}"
                 ]
               }
@@ -2338,7 +2446,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2349,8 +2460,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"PENDIENTE\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"PENDIENTE\");",
                   "}"
                 ]
               }
@@ -2370,7 +2481,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"pagoId\") || \"\").trim()) throw new Error(\"Configura pagoId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"pagoId\"))) || Number(pm.variables.get(\"pagoId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar pagoId\");",
+                  "}"
                 ]
               }
             },
@@ -2398,7 +2512,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -2440,7 +2554,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -2468,7 +2582,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2479,8 +2596,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"ANULADA\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"ANULADA\");",
                   "}"
                 ]
               }
@@ -2500,7 +2617,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2511,8 +2631,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"ANULADA\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"ANULADA\");",
                   "}"
                 ]
               }
@@ -2546,7 +2666,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"facturaId\") || \"\").trim()) throw new Error(\"Configura facturaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"facturaId\"))) || Number(pm.variables.get(\"facturaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar facturaId\");",
+                  "}"
                 ]
               }
             },
@@ -2659,7 +2782,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"emailDestino\") || \"\").trim()) throw new Error(\"Configura emailDestino antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"emailDestino\") || \"\").trim()) pm.collectionVariables.set(\"emailDestino\", \"jose@cuc.cr\");"
                 ]
               }
             },
@@ -2670,8 +2793,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.estado).to.eql(\"ENVIADA\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.estado).to.eql(\"ENVIADA\");",
                   "}"
                 ]
               }
@@ -2696,7 +2819,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}"
                 ]
               }
             },
@@ -2724,8 +2850,8 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");"
                 ]
               }
             },
@@ -2736,8 +2862,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.some(x => x.id === Number(pm.variables.get(\"matriculaId\")))).to.eql(false);",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.some(x => x.id === Number(pm.variables.get(\"matriculaId\")))).to.eql(false);",
                   "}"
                 ]
               }
@@ -2757,7 +2883,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) throw new Error(\"Configura idInexistente antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"idInexistente\") || \"\").trim()) pm.collectionVariables.set(\"idInexistente\", \"2147483647\");"
                 ]
               }
             },
@@ -2799,8 +2925,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroId\") || \"\").trim()) throw new Error(\"Configura rubroId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!Number.isInteger(Number(pm.variables.get(\"rubroId\"))) || Number(pm.variables.get(\"rubroId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar rubroId\");",
+                  "}"
                 ]
               }
             },
@@ -2842,7 +2974,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}"
                 ]
               }
             },
@@ -2877,8 +3012,8 @@
                 "exec": [
                   "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
                   "if (pm.response.code === 200) {",
-                  "const data = pm.response.json();",
-                  "pm.expect(data).to.be.an(\"array\");",
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData).to.be.an(\"array\");",
                   "}"
                 ]
               }
@@ -2917,10 +3052,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"otroCursoId\") || \"\").trim()) throw new Error(\"Configura otroCursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) throw new Error(\"Configura periodoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"otroCursoId\") || \"\").trim()) pm.collectionVariables.set(\"otroCursoId\", \"7\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoId\", \"1\");"
                 ]
               }
             },
@@ -2962,10 +3097,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) throw new Error(\"Configura grupoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) throw new Error(\"Configura periodoInactivoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoId\", \"3\");",
+                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoInactivoId\", \"3\");"
                 ]
               }
             },
@@ -3007,10 +3142,10 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) throw new Error(\"Configura estudiante antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) throw new Error(\"Configura cursoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"grupoInactivoId\") || \"\").trim()) throw new Error(\"Configura grupoInactivoId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) throw new Error(\"Configura periodoInactivoId antes de enviar esta solicitud.\");"
+                  "if (!String(pm.variables.get(\"estudiante\") || \"\").trim()) pm.collectionVariables.set(\"estudiante\", \"P5-JOSE-ESTUDIANTE\");",
+                  "if (!String(pm.variables.get(\"cursoId\") || \"\").trim()) pm.collectionVariables.set(\"cursoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"grupoInactivoId\") || \"\").trim()) pm.collectionVariables.set(\"grupoInactivoId\", \"4\");",
+                  "if (!String(pm.variables.get(\"periodoInactivoId\") || \"\").trim()) pm.collectionVariables.set(\"periodoInactivoId\", \"3\");"
                 ]
               }
             },
@@ -3052,8 +3187,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!String(pm.variables.get(\"matriculaId\") || \"\").trim()) throw new Error(\"Configura matriculaId antes de enviar esta solicitud.\");",
-                  "if (!String(pm.variables.get(\"rubroOtroGrupoId\") || \"\").trim()) throw new Error(\"Configura rubroOtroGrupoId antes de enviar esta solicitud.\");"
+                  "if (!Number.isInteger(Number(pm.variables.get(\"matriculaId\"))) || Number(pm.variables.get(\"matriculaId\")) <= 0) {",
+                  "  pm.execution.skipRequest();",
+                  "  throw new Error(\"Ejecutar primero el alta correspondiente o configurar matriculaId\");",
+                  "}",
+                  "if (!String(pm.variables.get(\"rubroOtroGrupoId\") || \"\").trim()) pm.collectionVariables.set(\"rubroOtroGrupoId\", \"1\");"
                 ]
               }
             },

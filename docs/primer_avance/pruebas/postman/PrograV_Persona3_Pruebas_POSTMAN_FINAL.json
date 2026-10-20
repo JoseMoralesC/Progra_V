@@ -33,7 +33,7 @@
     },
     {
       "key": "carreraId",
-      "value": "3",
+      "value": "6",
       "type": "string"
     },
     {
@@ -139,6 +139,18 @@
           },
           "event": [
             {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const u = pm.variables.get('loginUsuario') || pm.variables.get('usuario') || \"\";",
+                  "const p = pm.variables.get('loginContrasena') || pm.variables.get('contrasena') || pm.variables.get('password') || \"\";",
+                  "pm.collectionVariables.set('loginUsuario', u);",
+                  "pm.collectionVariables.set('loginContrasena', p);"
+                ]
+              }
+            },
+            {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
@@ -147,11 +159,17 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "const data = pm.response.json();",
-                  "pm.expect(data.access_token, 'access_token').to.be.a('string').and.not.empty;",
-                  "pm.collectionVariables.set('token', data.access_token);",
-                  "if (data.refresh_token) pm.collectionVariables.set('refreshToken', data.refresh_token);",
-                  "if (data.expires_in) pm.collectionVariables.set('tokenExpiresIn', data.expires_in);"
+                  "const respData = pm.response.json();",
+                  "pm.expect(respData.access_token, 'access_token').to.be.a('string').and.not.empty;",
+                  "pm.collectionVariables.set('token', respData.access_token);",
+                  "if (pm.environment) {",
+                  "    pm.environment.set('token', respData.access_token);",
+                  "}",
+                  "if (respData.refresh_token) {",
+                  "    pm.collectionVariables.set('refreshToken', respData.refresh_token);",
+                  "    if (pm.environment) pm.environment.set('refresh_token', respData.refresh_token);",
+                  "}",
+                  "if (respData.expires_in) pm.collectionVariables.set('tokenExpiresIn', respData.expires_in);"
                 ]
               }
             }
@@ -278,7 +296,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"carreraId\": 3,\n  \"nivel\": 1,\n  \"nombre\": \"Curso Prueba Persona 3\"\n}"
+              "raw": "{\n  \"carreraId\": 6,\n  \"nivel\": 1,\n  \"nombre\": \"Curso Prueba Persona Tres\"\n}"
             },
             "url": "{{cursoUrl}}/curso"
           },
@@ -292,8 +310,11 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "const data = pm.response.json();",
-                  "if (data.cursoId != null) pm.collectionVariables.set('cursoPruebaId', String(data.cursoId));"
+                  "const respData = pm.response.json();",
+                  "if (respData.cursoId != null) {",
+                  "    pm.collectionVariables.set('cursoPruebaId', String(respData.cursoId));",
+                  "    if (pm.environment) pm.environment.set('cursoPruebaId', String(respData.cursoId));",
+                  "}"
                 ]
               }
             }
@@ -311,7 +332,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"carreraId\": 3,\n  \"nivel\": 3,\n  \"nombre\": \"Curso Prueba QA Modificado\"\n}"
+              "raw": "{\n  \"carreraId\": 6,\n  \"nivel\": 3,\n  \"nombre\": \"Curso Prueba QA Modificado\"\n}"
             },
             "url": "{{cursoUrl}}/curso/{{cursoPruebaId}}"
           },
@@ -465,8 +486,11 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "const data = pm.response.json();",
-                  "if (data.periodoId != null) pm.collectionVariables.set('periodoPruebaId', String(data.periodoId));"
+                  "const respData = pm.response.json();",
+                  "if (respData.periodoId != null) {",
+                  "    pm.collectionVariables.set('periodoPruebaId', String(respData.periodoId));",
+                  "    if (pm.environment) pm.environment.set('periodoPruebaId', String(respData.periodoId));",
+                  "}"
                 ]
               }
             }
@@ -596,8 +620,11 @@
                   "    pm.response.to.have.status(201);",
                   "});",
                   "",
-                  "const data = pm.response.json();",
-                  "if (data.grupoId != null) pm.collectionVariables.set('grupoPruebaId', String(data.grupoId));"
+                  "const respData = pm.response.json();",
+                  "if (respData.grupoId != null) {",
+                  "    pm.collectionVariables.set('grupoPruebaId', String(respData.grupoId));",
+                  "    if (pm.environment) pm.environment.set('grupoPruebaId', String(respData.grupoId));",
+                  "}"
                 ]
               }
             }

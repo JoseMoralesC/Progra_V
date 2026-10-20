@@ -29,8 +29,8 @@ m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
 def cleanup_report(report_path):
     """Reintenta solamente la limpieza de bases identificadas en un reporte local."""
     path=Path(report_path).resolve()
-    if path.parent != (ROOT/"docs/pruebas").resolve():
-        raise ValueError("El reporte debe estar en docs/pruebas")
+    if path.parent != (ROOT/"docs/primer_avance/pruebas").resolve():
+        raise ValueError("El reporte debe estar en docs/primer_avance/pruebas")
     report=json.loads(path.read_text(encoding="utf-8"))
     databases=report["temporary_databases"]
     services=json.loads((ROOT/"db/por_servicio/distribucion.json").read_text())
@@ -348,7 +348,7 @@ class Suite:
             try:self.cleanup()
             except Exception as error:failure=(failure or "")+" Limpieza pendiente: "+type(error).__name__
             report={"phase":phase,"created_at_utc":self.created_at,"finished_at_utc":datetime.now(timezone.utc).isoformat(),"passed":failure is None,"failure":failure,"tests":self.results,"temporary_databases":self.created,"temporary_databases_cleaned":self.cleaned,"business_databases_modified":False,"smtp_sent":False}
-            destination=ROOT/("docs/pruebas/integracion-"+("separada" if phase=="completa" else phase)+".json");destination.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+            destination=ROOT/("docs/primer_avance/pruebas/integracion-"+("separada" if phase=="completa" else phase)+".json");destination.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
         if failure:raise SystemExit(1)
         print("APROBADO: "+str(len(self.results))+" comprobaciones.",flush=True)
 

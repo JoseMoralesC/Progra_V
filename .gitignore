@@ -24,7 +24,10 @@ services/persona4/target/
 TestResults/
 
 # IDE files
-.vscode/
+**/.vscode/
+!/.vscode/
+/.vscode/*
+!/.vscode/settings.json
 
 # Logs and temporary files
 *.log

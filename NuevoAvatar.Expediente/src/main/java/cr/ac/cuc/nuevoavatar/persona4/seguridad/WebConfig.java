@@ -13,8 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(autorizacion).addPathPatterns(
+    public void addInterceptors(@org.springframework.lang.NonNull InterceptorRegistry registry) {
+        registry.addInterceptor(java.util.Objects.requireNonNull(autorizacion)).addPathPatterns(
                 "/expediente", "/expediente/**",
                 "/prematricula", "/prematricula/**",
                 "/historialacademico", "/listadoestudiantes");

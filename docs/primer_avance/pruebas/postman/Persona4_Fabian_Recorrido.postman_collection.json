@@ -26,15 +26,15 @@
     },
     {
       "key": "carreraId",
-      "value": "1"
+      "value": "6"
     },
     {
       "key": "cursoId",
-      "value": "10"
+      "value": "5"
     },
     {
       "key": "otroCursoId",
-      "value": "11"
+      "value": "7"
     },
     {
       "key": "cursoNivelDosId",
@@ -42,15 +42,15 @@
     },
     {
       "key": "periodoFuturoId",
-      "value": "20"
+      "value": "6"
     },
     {
       "key": "periodoHoyId",
-      "value": "21"
+      "value": "1"
     },
     {
       "key": "periodoPasadoId",
-      "value": "22"
+      "value": "3"
     },
     {
       "key": "prematriculaId",
@@ -63,7 +63,7 @@
     },
     {
       "key": "identificacion",
-      "value": "",
+      "value": "PRUEBA-MAT3-FABIAN",
       "description": "Estudiante existente con matriculas y notas para comprobar el historial completo."
     },
     {
@@ -72,14 +72,24 @@
     },
     {
       "key": "periodoId",
-      "value": "20"
+      "value": "1"
     },
     {
       "key": "usuario",
-      "value": "fabian.pruebas@cuc.cr"
+      "value": ""
+    },
+    {
+      "key": "contrasena",
+      "value": "",
+      "type": "string"
     },
     {
       "key": "tokenFabian",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token",
       "value": "",
       "type": "string"
     },
@@ -89,11 +99,11 @@
     },
     {
       "key": "cantonId",
-      "value": "2"
+      "value": "1"
     },
     {
       "key": "distritoId",
-      "value": "3"
+      "value": "1"
     },
     {
       "key": "autenticacionUrl",
@@ -139,7 +149,7 @@
               },
               {
                 "key": "contrasena",
-                "value": "{{vault:fabian-clave}}"
+                "value": "{{contrasena}}"
               }
             ],
             "url": "{{autenticacionUrl}}/login"
@@ -150,7 +160,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.set(\"tokenFabian\", \"\");"
+                  "const u = pm.variables.get(\"usuario\") || \"\";",
+                  "const p = pm.variables.get(\"contrasena\") || pm.variables.get(\"password\") || \"\";",
+                  "pm.collectionVariables.set(\"usuario\", u);",
+                  "pm.collectionVariables.set(\"contrasena\", p);",
+                  "pm.collectionVariables.set(\"tokenFabian\", \"\");",
+                  "pm.collectionVariables.set(\"token\", \"\");"
                 ]
               }
             },
@@ -165,6 +180,11 @@
                   "    pm.test(\"Token recibido\", function () { pm.expect(datos.access_token).to.be.a(\"string\").and.not.empty; });",
                   "    if (typeof datos.access_token === \"string\" && datos.access_token.length > 0) {",
                   "        pm.collectionVariables.set(\"tokenFabian\", datos.access_token);",
+                  "        pm.collectionVariables.set(\"token\", datos.access_token);",
+                  "        if (pm.environment) {",
+                  "            pm.environment.set(\"tokenFabian\", datos.access_token);",
+                  "            pm.environment.set(\"token\", datos.access_token);",
+                  "        }",
                   "    } else { pm.execution.setNextRequest(null); }",
                   "} else { pm.execution.setNextRequest(null); }"
                 ]
@@ -1737,7 +1757,11 @@
                     "type": "text/javascript",
                     "exec": [
                       "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
-                      "if (pm.response.code === 201) { pm.collectionVariables.set(\"prematriculaId\", pm.response.json().id); }"
+                      "if (pm.response.code === 201) {",
+                      "    const id = pm.response.json().id;",
+                      "    pm.collectionVariables.set(\"prematriculaId\", id);",
+                      "    if (pm.environment) pm.environment.set(\"prematriculaId\", id);",
+                      "}"
                     ]
                   }
                 },

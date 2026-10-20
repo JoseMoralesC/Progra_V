@@ -29,9 +29,9 @@ public class SeguridadClient {
         var requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(connectTimeout);
         requestFactory.setReadTimeout(readTimeout);
-        this.cliente = builder.baseUrl(baseUrl).requestFactory(requestFactory).build();
-        this.bitacora = builder.clone().baseUrl(bitacoraUrl).requestFactory(requestFactory).build();
-        this.parametros = builder.clone().baseUrl(parametroUrl).requestFactory(requestFactory).build();
+        this.cliente = builder.baseUrl(java.util.Objects.requireNonNull(baseUrl)).requestFactory(requestFactory).build();
+        this.bitacora = builder.clone().baseUrl(java.util.Objects.requireNonNull(bitacoraUrl)).requestFactory(requestFactory).build();
+        this.parametros = builder.clone().baseUrl(java.util.Objects.requireNonNull(parametroUrl)).requestFactory(requestFactory).build();
     }
 
     SeguridadClient(RestClient cliente) {
@@ -74,8 +74,8 @@ public class SeguridadClient {
         try {
             bitacora.post().uri("/bitacora")
                     .header(HttpHeaders.AUTHORIZATION, autorizacion)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(Map.of("usuario", usuario, "descripcion", descripcion))
+                    .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
+                    .body(java.util.Objects.requireNonNull(Map.of("usuario", usuario, "descripcion", descripcion)))
                     .retrieve().toBodilessEntity();
         } catch (RestClientException ex) {
             throw noDisponible("registrar la bitacora", ex);

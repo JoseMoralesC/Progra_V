@@ -17,8 +17,8 @@ builder.Logging.AddDebug();
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
 var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Rol";
-var dbUsername = builder.Configuration["SERVICE_DB_USER_ROL"];
-var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_ROL"];
+var dbUsername = builder.Configuration["SERVICE_DB_USER_ROL"] ?? builder.Configuration["DB_USERNAME"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_ROL"] ?? builder.Configuration["DB_PASSWORD"];
 
 if (!string.IsNullOrWhiteSpace(dbHost) &&
     !string.IsNullOrWhiteSpace(dbName) &&

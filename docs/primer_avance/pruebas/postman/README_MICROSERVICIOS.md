@@ -2,7 +2,7 @@
 
 Las colecciones usan ahora una variable de URL para cada servicio. Las rutas,
 metodos, cuerpos, identificadores de prueba y aserciones existentes se conservan.
-La copia de Fabián en `docs/evidencia/fabian` tambien esta actualizada.
+La copia de Fabián en `docs/primer_avance/evidencia/fabian` tambien esta actualizada.
 
 ## Importar y ejecutar
 
@@ -68,19 +68,29 @@ registros referenciados pueden responder 409. Pago conserva automaticamente las
 operaciones pendientes para recuperarlas cuando vuelva Factura. No se cambiaron
 las aserciones para aceptar esos fallos como resultados satisfactorios.
 
+En Persona 5 configuro `cursoId`, `grupoId` y `periodoId` antes de ejecutar;
+el alta de matrícula conserva esos valores. Para modificar desgloses, primero
+compruebo que el grupo está dedicado a estas pruebas y establezco manualmente
+`grupoPruebasConfirmado=true` en el entorno seleccionado. La colección no activa
+esa confirmación automáticamente. Los IDs de matrícula, rubros, factura y pago
+se obtienen de sus altas; si falta alguno, la petición se detiene con un mensaje
+que indica el paso requerido. Para solicitudes individuales puedo configurar
+explícitamente un ID existente adecuado al escenario.
+
 ## Validacion de esta actualizacion
 
 Ejecutar desde la raiz:
 
 ```powershell
-node docs/pruebas/postman/validar-colecciones.cjs
-node --check docs/pruebas/postman/ejecutar-http.cjs
+node docs/primer_avance/pruebas/postman/validar-colecciones.cjs
+node --check docs/primer_avance/pruebas/postman/ejecutar-http.cjs
+node --test docs/primer_avance/pruebas/postman/verificar-flujos.cjs
 ```
 
 El validador revisa el JSON, la correspondencia de cada ruta con su servicio,
 los puertos contra `tools/servicios.json`, las variables de ambos entornos y la
 sintaxis JavaScript de los eventos. El reporte esta en
-`docs/pruebas/postman-validacion.json`. Esta comprobacion es estatica: no ejecuta
+`docs/primer_avance/pruebas/postman-validacion.json`. Esta comprobacion es estatica: no ejecuta
 los runners, no envia solicitudes HTTP ni correo y no modifica datos de negocio.
 Los resultados historicos que figuran en las descripciones de las colecciones
 corresponden a la arquitectura anterior.
