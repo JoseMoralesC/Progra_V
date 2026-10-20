@@ -21,7 +21,7 @@ public class DireccionClient {
         var factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(3000);
         factory.setReadTimeout(5000);
-        cliente = builder.baseUrl(baseUrl).requestFactory(factory).build();
+        cliente = builder.baseUrl(java.util.Objects.requireNonNull(baseUrl)).requestFactory(factory).build();
     }
 
     DireccionClient(RestClient cliente) {

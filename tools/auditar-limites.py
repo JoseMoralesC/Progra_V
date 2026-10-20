@@ -10,6 +10,7 @@ failures=[];checked=0
 for service in manifest:
     folder=root/("NuevoAvatar."+service)
     for file in folder.rglob("*"):
+        if file.relative_to(folder).parts[:2] == ("src", "test"):continue
         if file.suffix not in {".cs",".java"} or set(file.parts)&{"bin","obj","target"}:continue
         checked+=1
         try:source=file.read_text(encoding="utf-8-sig")

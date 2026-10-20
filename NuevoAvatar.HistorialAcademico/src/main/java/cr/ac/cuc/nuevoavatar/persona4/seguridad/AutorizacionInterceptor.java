@@ -25,8 +25,8 @@ public class AutorizacionInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-            Object handler) throws IOException {
+    public boolean preHandle(@org.springframework.lang.NonNull HttpServletRequest request, @org.springframework.lang.NonNull HttpServletResponse response,
+            @org.springframework.lang.NonNull Object handler) throws IOException {
         String autorizacion = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (autorizacion == null || !autorizacion.regionMatches(true, 0, "Bearer ", 0, 7)
                 || autorizacion.substring(7).isBlank()) {

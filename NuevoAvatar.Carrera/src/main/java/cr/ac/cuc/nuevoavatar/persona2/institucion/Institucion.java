@@ -1,7 +1,6 @@
 package cr.ac.cuc.nuevoavatar.persona2.institucion;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

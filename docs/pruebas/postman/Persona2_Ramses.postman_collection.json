@@ -21,19 +21,19 @@
     },
     {
       "key": "emailPrueba",
-      "value": ""
+      "value": "jose@cuc.cr"
     },
     {
       "key": "institucionId",
-      "value": ""
+      "value": "3"
     },
     {
       "key": "profesorId",
-      "value": ""
+      "value": "5"
     },
     {
       "key": "carreraId",
-      "value": ""
+      "value": "6"
     },
     {
       "key": "autenticacionUrl",
@@ -74,6 +74,21 @@
       "key": "carreraUrl",
       "value": "http://localhost:8088",
       "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "dominioProfesor",
+      "value": "cuc.ac.cr",
+      "type": "string"
     }
   ],
   "item": [
@@ -105,10 +120,14 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if (!pm.environment.get(\"usuario\") || !pm.environment.get(\"password\")) { pm.execution.skipRequest(); throw new Error(\"Complete usuario y password en el entorno local\"); }",
+                  "const u = pm.environment.get(\"usuario\") || pm.variables.get(\"usuario\") || \"\";",
+                  "const p = pm.environment.get(\"password\") || pm.variables.get(\"password\") || pm.variables.get(\"contrasena\") || \"\";",
+                  "if (pm.environment) { pm.environment.set(\"usuario\", u); pm.environment.set(\"password\", p); }",
                   "pm.collectionVariables.set(\"p2Run\", String(Date.now()));",
-                  "pm.environment.set(\"pruebaPassword\", \"PM!\"+pm.variables.replaceIn(\"{{$guid}}\"));",
-                  "pm.environment.unset(\"token\"); pm.environment.unset(\"refresh_token\");"
+                  "if (pm.environment) {",
+                  "    pm.environment.set(\"pruebaPassword\", \"PM!\"+pm.variables.replaceIn(\"{{$guid}}\"));",
+                  "    pm.environment.unset(\"token\"); pm.environment.unset(\"refresh_token\");",
+                  "}"
                 ]
               }
             },
@@ -118,8 +137,20 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                  "if (pm.response.code === 201) { const j = pm.response.json(); pm.environment.set(\"token\", j.access_token); pm.environment.set(\"refresh_token\", j.refresh_token); }",
-                  "pm.test(\"JWT y refresh emitidos\", () => { const j = pm.response.json(); pm.expect(j.access_token).to.be.a(\"string\").and.not.empty; pm.expect(j.refresh_token).to.be.a(\"string\").and.not.empty; });"
+                  "if (pm.response.code === 201) {",
+                  "  const j = pm.response.json();",
+                  "  pm.collectionVariables.set(\"token\", j.access_token);",
+                  "  pm.collectionVariables.set(\"refresh_token\", j.refresh_token);",
+                  "  if (pm.environment) {",
+                  "    pm.environment.set(\"token\", j.access_token);",
+                  "    pm.environment.set(\"refresh_token\", j.refresh_token);",
+                  "  }",
+                  "}",
+                  "pm.test(\"JWT y refresh emitidos\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j.access_token).to.be.a(\"string\").and.not.empty;",
+                  "  pm.expect(j.refresh_token).to.be.a(\"string\").and.not.empty;",
+                  "});"
                 ]
               }
             }
@@ -498,7 +529,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.unset(\"emailPrueba\");pm.collectionVariables.unset(\"emailPruebaCreado\");"
+                  "pm.collectionVariables.unset(\"emailPrueba\");",
+                  "pm.collectionVariables.unset(\"emailPruebaCreado\");",
+                  "pm.collectionVariables.unset(\"emailPruebaLimpieza\");",
+                  "pm.collectionVariables.unset(\"emailPruebaEliminado\");",
+                  "if (pm.environment) pm.environment.unset(\"emailPrueba\");"
                 ]
               }
             },
@@ -508,8 +543,19 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                  "if (pm.response.code===201) { pm.collectionVariables.set(\"emailPrueba\",pm.response.json().email); pm.collectionVariables.set(\"emailPruebaCreado\",true); }",
-                  "pm.test(\"Respuesta sin contraseña\", () => { const j=pm.response.json(); pm.expect(j).not.to.have.property(\"passwordHash\"); pm.expect(j).not.to.have.property(\"contrasena\"); });"
+                  "if (pm.response.code === 201) {",
+                  "  const email = pm.response.json().email;",
+                  "  if (typeof email !== \"string\" || !email.trim()) throw new Error(\"El alta no devolvio un correo valido\");",
+                  "  pm.collectionVariables.set(\"emailPruebaLimpieza\", email);",
+                  "  pm.collectionVariables.set(\"emailPrueba\", email);",
+                  "  pm.collectionVariables.set(\"emailPruebaCreado\", true);",
+                  "  if (pm.environment) pm.environment.set(\"emailPrueba\", email);",
+                  "}",
+                  "pm.test(\"Respuesta sin contraseña\", () => {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).not.to.have.property(\"passwordHash\");",
+                  "  pm.expect(j).not.to.have.property(\"contrasena\");",
+                  "});"
                 ]
               }
             }
@@ -752,7 +798,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.unset(\"institucionId\");pm.collectionVariables.unset(\"institucionIdCreado\");"
+                  "pm.collectionVariables.unset(\"institucionId\");",
+                  "pm.collectionVariables.unset(\"institucionIdCreado\");",
+                  "pm.collectionVariables.unset(\"institucionIdLimpieza\");",
+                  "pm.collectionVariables.unset(\"institucionIdEliminado\");",
+                  "if (pm.environment) pm.environment.unset(\"institucionId\");"
                 ]
               }
             },
@@ -762,7 +812,14 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                  "if (pm.response.code===201) { pm.collectionVariables.set(\"institucionId\",pm.response.json().id); pm.collectionVariables.set(\"institucionIdCreado\",true); }"
+                  "if (pm.response.code === 201) {",
+                  "  const id = pm.response.json().id;",
+                  "  if (!Number.isInteger(id) || id <= 0) throw new Error(\"El alta no devolvio un ID valido\");",
+                  "  pm.collectionVariables.set(\"institucionIdLimpieza\", id);",
+                  "  pm.collectionVariables.set(\"institucionId\", id);",
+                  "  pm.collectionVariables.set(\"institucionIdCreado\", true);",
+                  "  if (pm.environment) pm.environment.set(\"institucionId\", id);",
+                  "}"
                 ]
               }
             }
@@ -939,7 +996,11 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.unset(\"profesorId\");pm.collectionVariables.unset(\"profesorIdCreado\");"
+                  "pm.collectionVariables.unset(\"profesorId\");",
+                  "pm.collectionVariables.unset(\"profesorIdCreado\");",
+                  "pm.collectionVariables.unset(\"profesorIdLimpieza\");",
+                  "pm.collectionVariables.unset(\"profesorIdEliminado\");",
+                  "if (pm.environment) pm.environment.unset(\"profesorId\");"
                 ]
               }
             },
@@ -949,7 +1010,14 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                  "if (pm.response.code===201) { pm.collectionVariables.set(\"profesorId\",pm.response.json().id); pm.collectionVariables.set(\"profesorIdCreado\",true); }",
+                  "if (pm.response.code === 201) {",
+                  "  const id = pm.response.json().id;",
+                  "  if (!Number.isInteger(id) || id <= 0) throw new Error(\"El alta no devolvio un ID valido\");",
+                  "  pm.collectionVariables.set(\"profesorIdLimpieza\", id);",
+                  "  pm.collectionVariables.set(\"profesorId\", id);",
+                  "  pm.collectionVariables.set(\"profesorIdCreado\", true);",
+                  "  if (pm.environment) pm.environment.set(\"profesorId\", id);",
+                  "}",
                   "pm.test(\"Dos teléfonos\", () => pm.expect(pm.response.json().telefonos).to.have.lengthOf(2));"
                 ]
               }
@@ -1235,7 +1303,19 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.collectionVariables.unset(\"carreraId\");pm.collectionVariables.unset(\"carreraIdCreado\");if(!pm.collectionVariables.get(\"institucionIdCreado\")||!pm.collectionVariables.get(\"profesorIdCreado\"))pm.execution.skipRequest();"
+                  "pm.collectionVariables.unset(\"carreraId\");",
+                  "pm.collectionVariables.unset(\"carreraIdCreado\");",
+                  "pm.collectionVariables.unset(\"carreraIdLimpieza\");",
+                  "pm.collectionVariables.unset(\"carreraIdEliminado\");",
+                  "if (pm.environment) pm.environment.unset(\"carreraId\");",
+                  "for (const key of [\"institucionId\", \"profesorId\"]) {",
+                  "  const id = Number(pm.variables.get(key));",
+                  "  if (!Number.isInteger(id) || id <= 0) {",
+                  "    pm.execution.skipRequest();",
+                  "    throw new Error(\"Crear primero institucion y profesor, o configurar sus IDs existentes: \" + key);",
+                  "  }",
+                  "  pm.variables.set(key, id);",
+                  "}"
                 ]
               }
             },
@@ -1245,7 +1325,14 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
-                  "if (pm.response.code===201) { pm.collectionVariables.set(\"carreraId\",pm.response.json().id); pm.collectionVariables.set(\"carreraIdCreado\",true); }"
+                  "if (pm.response.code === 201) {",
+                  "  const id = pm.response.json().id;",
+                  "  if (!Number.isInteger(id) || id <= 0) throw new Error(\"El alta no devolvio un ID valido\");",
+                  "  pm.collectionVariables.set(\"carreraIdLimpieza\", id);",
+                  "  pm.collectionVariables.set(\"carreraId\", id);",
+                  "  pm.collectionVariables.set(\"carreraIdCreado\", true);",
+                  "  if (pm.environment) pm.environment.set(\"carreraId\", id);",
+                  "}"
                 ]
               }
             }
@@ -1505,7 +1592,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if(!pm.collectionVariables.get(\"carreraIdCreado\"))pm.execution.skipRequest();"
+                  "const creado = pm.collectionVariables.get(\"carreraIdLimpieza\");",
+                  "if (!creado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"carreraId\", creado);",
+                  "}"
                 ]
               }
             },
@@ -1515,7 +1607,11 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
-                  "if(pm.response.code===204)pm.collectionVariables.unset(\"carreraIdCreado\");"
+                  "if (pm.response.code === 204) {",
+                  "  pm.collectionVariables.set(\"carreraIdEliminado\", pm.collectionVariables.get(\"carreraIdLimpieza\"));",
+                  "  pm.collectionVariables.unset(\"carreraIdLimpieza\");",
+                  "  pm.collectionVariables.unset(\"carreraIdCreado\");",
+                  "}"
                 ]
               }
             }
@@ -1537,6 +1633,20 @@
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const eliminado = pm.collectionVariables.get(\"carreraIdEliminado\");",
+                  "if (!eliminado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"carreraId\", eliminado);",
+                  "}"
+                ]
+              }
             }
           ]
         },
@@ -1553,7 +1663,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if(!pm.collectionVariables.get(\"profesorIdCreado\"))pm.execution.skipRequest();"
+                  "const creado = pm.collectionVariables.get(\"profesorIdLimpieza\");",
+                  "if (!creado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"profesorId\", creado);",
+                  "}"
                 ]
               }
             },
@@ -1563,7 +1678,11 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
-                  "if(pm.response.code===204)pm.collectionVariables.unset(\"profesorIdCreado\");"
+                  "if (pm.response.code === 204) {",
+                  "  pm.collectionVariables.set(\"profesorIdEliminado\", pm.collectionVariables.get(\"profesorIdLimpieza\"));",
+                  "  pm.collectionVariables.unset(\"profesorIdLimpieza\");",
+                  "  pm.collectionVariables.unset(\"profesorIdCreado\");",
+                  "}"
                 ]
               }
             }
@@ -1585,6 +1704,20 @@
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const eliminado = pm.collectionVariables.get(\"profesorIdEliminado\");",
+                  "if (!eliminado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"profesorId\", eliminado);",
+                  "}"
+                ]
+              }
             }
           ]
         },
@@ -1601,7 +1734,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if(!pm.collectionVariables.get(\"institucionIdCreado\"))pm.execution.skipRequest();"
+                  "const creado = pm.collectionVariables.get(\"institucionIdLimpieza\");",
+                  "if (!creado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"institucionId\", creado);",
+                  "}"
                 ]
               }
             },
@@ -1611,7 +1749,11 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
-                  "if(pm.response.code===204)pm.collectionVariables.unset(\"institucionIdCreado\");"
+                  "if (pm.response.code === 204) {",
+                  "  pm.collectionVariables.set(\"institucionIdEliminado\", pm.collectionVariables.get(\"institucionIdLimpieza\"));",
+                  "  pm.collectionVariables.unset(\"institucionIdLimpieza\");",
+                  "  pm.collectionVariables.unset(\"institucionIdCreado\");",
+                  "}"
                 ]
               }
             }
@@ -1633,6 +1775,20 @@
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
                 ]
               }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const eliminado = pm.collectionVariables.get(\"institucionIdEliminado\");",
+                  "if (!eliminado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"institucionId\", eliminado);",
+                  "}"
+                ]
+              }
             }
           ]
         },
@@ -1649,7 +1805,12 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "if(!pm.collectionVariables.get(\"emailPruebaCreado\"))pm.execution.skipRequest();"
+                  "const creado = pm.collectionVariables.get(\"emailPruebaLimpieza\");",
+                  "if (!creado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"emailPrueba\", creado);",
+                  "}"
                 ]
               }
             },
@@ -1659,7 +1820,11 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 204\", () => pm.response.to.have.status(204));",
-                  "if(pm.response.code===204)pm.collectionVariables.unset(\"emailPruebaCreado\");"
+                  "if (pm.response.code === 204) {",
+                  "  pm.collectionVariables.set(\"emailPruebaEliminado\", pm.collectionVariables.get(\"emailPruebaLimpieza\"));",
+                  "  pm.collectionVariables.unset(\"emailPruebaLimpieza\");",
+                  "  pm.collectionVariables.unset(\"emailPruebaCreado\");",
+                  "}"
                 ]
               }
             }
@@ -1679,6 +1844,20 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const eliminado = pm.collectionVariables.get(\"emailPruebaEliminado\");",
+                  "if (!eliminado) {",
+                  "  pm.execution.skipRequest();",
+                  "} else {",
+                  "  pm.variables.set(\"emailPrueba\", eliminado);",
+                  "}"
                 ]
               }
             }

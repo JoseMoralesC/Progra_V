@@ -16,6 +16,11 @@
         <java.version>21</java.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>cr.ac.cuc</groupId>
+            <artifactId>nuevo-avatar-integracion</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.21.5</version></dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,11 +52,7 @@
     </dependencies>
     <build>
         <plugins>
-      <plugin><groupId>org.codehaus.mojo</groupId><artifactId>build-helper-maven-plugin</artifactId><version>3.6.1</version>
-      <executions><execution><id>integracion-compartida</id><phase>generate-sources</phase><goals><goal>add-source</goal><goal>add-resource</goal></goals>
-      <configuration><sources><source>${project.basedir}/../integracion/java</source></sources>
-      <resources><resource><directory>${project.basedir}/../integracion</directory><includes><include>contratos.json</include></includes></resource></resources></configuration>
-      </execution></executions></plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

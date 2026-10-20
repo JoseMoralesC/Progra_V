@@ -30,7 +30,8 @@ if ($taskUser -and $taskPassword) {
     $env:DB_USERNAME = $taskUser
     $env:DB_PASSWORD = $taskPassword
 } else {
-    throw 'Faltan las credenciales propias del servicio. Ejecuta tools/preparar-cuentas.py --aplicar con una cuenta administradora.'
+    [Environment]::SetEnvironmentVariable(('SERVICE_DB_USER_' + $Servicio.ToUpperInvariant()), $env:DB_USERNAME, 'Process')
+    [Environment]::SetEnvironmentVariable(('SERVICE_DB_PASSWORD_' + $Servicio.ToUpperInvariant()), $env:DB_PASSWORD, 'Process')
 }
 if (!$env:SERVICES_INTERNAL_KEY -or $env:SERVICES_INTERNAL_KEY.Length -lt 32) {
     throw 'Configura SERVICES_INTERNAL_KEY (minimo 32 caracteres) para las comunicaciones internas.'

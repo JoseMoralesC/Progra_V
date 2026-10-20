@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cr.ac.cuc</groupId>
+    <artifactId>nuevo-avatar-java</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>integracion</module>
+        <module>NuevoAvatar.Usuario</module><module>NuevoAvatar.Institucion</module>
+        <module>NuevoAvatar.Profesor</module><module>NuevoAvatar.Carrera</module>
+        <module>NuevoAvatar.Expediente</module><module>NuevoAvatar.Prematricula</module>
+        <module>NuevoAvatar.HistorialAcademico</module><module>NuevoAvatar.ListadoEstudiantes</module>
+        <module>NuevoAvatar.Matricula</module><module>NuevoAvatar.Notas</module>
+        <module>NuevoAvatar.Factura</module><module>NuevoAvatar.Pago</module><module>NuevoAvatar.Notificacion</module>
+    </modules>
+</project>

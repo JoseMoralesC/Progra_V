@@ -68,6 +68,15 @@ registros referenciados pueden responder 409. Pago conserva automaticamente las
 operaciones pendientes para recuperarlas cuando vuelva Factura. No se cambiaron
 las aserciones para aceptar esos fallos como resultados satisfactorios.
 
+En Persona 5 configuro `cursoId`, `grupoId` y `periodoId` antes de ejecutar;
+el alta de matrícula conserva esos valores. Para modificar desgloses, primero
+compruebo que el grupo está dedicado a estas pruebas y establezco manualmente
+`grupoPruebasConfirmado=true` en el entorno seleccionado. La colección no activa
+esa confirmación automáticamente. Los IDs de matrícula, rubros, factura y pago
+se obtienen de sus altas; si falta alguno, la petición se detiene con un mensaje
+que indica el paso requerido. Para solicitudes individuales puedo configurar
+explícitamente un ID existente adecuado al escenario.
+
 ## Validacion de esta actualizacion
 
 Ejecutar desde la raiz:
@@ -75,6 +84,7 @@ Ejecutar desde la raiz:
 ```powershell
 node docs/pruebas/postman/validar-colecciones.cjs
 node --check docs/pruebas/postman/ejecutar-http.cjs
+node --test docs/pruebas/postman/verificar-flujos.cjs
 ```
 
 El validador revisa el JSON, la correspondencia de cada ruta con su servicio,

@@ -1,0 +1,1 @@
+{ "java.import.exclusions": ["**/services/**", "**/target/**", "**/node_modules/**", "**/.git/**"], "java.configuration.updateBuildConfiguration": "automatic", "java.compile.nullAnalysis.mode": "automatic" }

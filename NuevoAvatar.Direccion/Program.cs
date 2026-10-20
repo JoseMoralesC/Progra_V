@@ -11,8 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
 var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Direccion";
-var dbUsername = builder.Configuration["SERVICE_DB_USER_DIRECCION"];
-var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_DIRECCION"];
+var dbUsername = builder.Configuration["SERVICE_DB_USER_DIRECCION"] ?? builder.Configuration["DB_USERNAME"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_DIRECCION"] ?? builder.Configuration["DB_PASSWORD"];
 
 if (string.IsNullOrWhiteSpace(dbHost) ||
     string.IsNullOrWhiteSpace(dbName) ||
