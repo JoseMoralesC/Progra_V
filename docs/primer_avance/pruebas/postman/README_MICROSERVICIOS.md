@@ -2,7 +2,7 @@
 
 Las colecciones usan ahora una variable de URL para cada servicio. Las rutas,
 metodos, cuerpos, identificadores de prueba y aserciones existentes se conservan.
-La copia de Fabián en `docs/evidencia/fabian` tambien esta actualizada.
+La copia de Fabián en `docs/primer_avance/evidencia/fabian` tambien esta actualizada.
 
 ## Importar y ejecutar
 
@@ -82,15 +82,15 @@ explícitamente un ID existente adecuado al escenario.
 Ejecutar desde la raiz:
 
 ```powershell
-node docs/pruebas/postman/validar-colecciones.cjs
-node --check docs/pruebas/postman/ejecutar-http.cjs
-node --test docs/pruebas/postman/verificar-flujos.cjs
+node docs/primer_avance/pruebas/postman/validar-colecciones.cjs
+node --check docs/primer_avance/pruebas/postman/ejecutar-http.cjs
+node --test docs/primer_avance/pruebas/postman/verificar-flujos.cjs
 ```
 
 El validador revisa el JSON, la correspondencia de cada ruta con su servicio,
 los puertos contra `tools/servicios.json`, las variables de ambos entornos y la
 sintaxis JavaScript de los eventos. El reporte esta en
-`docs/pruebas/postman-validacion.json`. Esta comprobacion es estatica: no ejecuta
+`docs/primer_avance/pruebas/postman-validacion.json`. Esta comprobacion es estatica: no ejecuta
 los runners, no envia solicitudes HTTP ni correo y no modifica datos de negocio.
 Los resultados historicos que figuran en las descripciones de las colecciones
 corresponden a la arquitectura anterior.

@@ -138,7 +138,7 @@ Los reportes XML existentes reflejan 12 pruebas para persona 2, 251 para persona
 
 Comparando las fuentes Java de ambas estructuras e ignorando espacio al principio/final, gran parte de la lógica se conserva. Los clientes de Seguridad cambian al separar Bitácora/Parámetro; los clientes académicos separan Matrícula/Notas. Precisamente esos cambios de integración necesitan cobertura actualizada.
 
-Las colecciones están en `docs/pruebas/postman`; capturas y resultados están repartidos entre `docs/evidencia` y `docs/pruebas/evidencias`. El manifiesto de Fabián declara alcance parcial. Una colección preparada o una captura histórica no demuestra todos los criterios contra la arquitectura actual.
+Las colecciones están en `docs/primer_avance/pruebas/postman`; capturas y resultados están repartidos entre `docs/evidencia` y `docs/primer_avance/pruebas/evidencias`. El manifiesto de Fabián declara alcance parcial. Una colección preparada o una captura histórica no demuestra todos los criterios contra la arquitectura actual.
 
 ## Hallazgos confirmados por inspección
 

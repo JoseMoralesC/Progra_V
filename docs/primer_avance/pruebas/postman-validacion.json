@@ -8,37 +8,37 @@
   "environments": 2,
   "details": [
     {
-      "file": "docs/pruebas/postman/Persona1_Seguridad.postman_collection.json",
+      "file": "docs/primer_avance/pruebas/postman/Persona1_Seguridad.postman_collection.json",
       "requests": 43,
       "scripts": 50,
       "passed": true
     },
     {
-      "file": "docs/pruebas/postman/Persona2_Ramses.postman_collection.json",
+      "file": "docs/primer_avance/pruebas/postman/Persona2_Ramses.postman_collection.json",
       "requests": 56,
       "scripts": 70,
       "passed": true
     },
     {
-      "file": "docs/pruebas/postman/Persona4_Fabian_Recorrido.postman_collection.json",
+      "file": "docs/primer_avance/pruebas/postman/Persona4_Fabian_Recorrido.postman_collection.json",
       "requests": 85,
       "scripts": 87,
       "passed": true
     },
     {
-      "file": "docs/pruebas/postman/Persona5_Jose.postman_collection.json",
+      "file": "docs/primer_avance/pruebas/postman/Persona5_Jose.postman_collection.json",
       "requests": 79,
       "scripts": 134,
       "passed": true
     },
     {
-      "file": "docs/pruebas/postman/PrograV_Persona3_Pruebas_POSTMAN_FINAL.json",
+      "file": "docs/primer_avance/pruebas/postman/PrograV_Persona3_Pruebas_POSTMAN_FINAL.json",
       "requests": 23,
       "scripts": 24,
       "passed": true
     },
     {
-      "file": "docs/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json",
+      "file": "docs/primer_avance/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json",
       "requests": 85,
       "scripts": 87,
       "passed": true

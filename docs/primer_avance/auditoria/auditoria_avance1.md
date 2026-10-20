@@ -1,7 +1,7 @@
 # Auditoria de avance 1 - Proyecto Nuevo Avatar V1
 
 Fecha de auditoria: 1 de octubre de 2026  
-Base principal: `docs/roadmaps/roadmap 1.md`  
+Base principal: `docs/primer_avance/roadmaps/roadmap 1.md`  
 Mi objetivo es revisar el avance real del proyecto contra las historias de usuario, entregables y responsabilidades definidas para el primer avance.
 
 ## Resumen 
@@ -14,8 +14,8 @@ Considero alta la fidelidad funcional al roadmap en las partes implementadas, pe
 
 En esta auditoria reviso los siguientes elementos del repositorio:
 
-- `docs/roadmaps/roadmap 1.md`
-- `docs/pruebas/persona1-persona2.md`
+- `docs/primer_avance/roadmaps/roadmap 1.md`
+- `docs/primer_avance/pruebas/persona1-persona2.md`
 - `services/seguridad`
 - `services/persona2`
 - `services/persona5`
@@ -60,7 +60,7 @@ Evidencia que identifico:
 - Controladores para `/login`, `/refresh`, `/validate`, `/rol`, `/parametro`, `/modulo` y `/bitacora`.
 - Pruebas de autenticacion en `services/seguridad/NuevoAvatarSeguridad.Tests`.
 - Script SQL de seguridad y bitacora dentro de `db/persona2/sql/separado/01_seguridad_general.sql`.
-- Evidencia tecnica en `docs/pruebas/persona1-persona2.md`.
+- Evidencia tecnica en `docs/primer_avance/pruebas/persona1-persona2.md`.
 
 Riesgos y pendientes que identifico:
 
@@ -87,7 +87,7 @@ Evidencia que identifico:
 - Controladores para `/usuario`, `/institucion`, `/profesor` y `/carrera`.
 - DTOs, servicios, repositorios y validaciones por modulo.
 - Integracion con seguridad para `/validate` y `/bitacora`.
-- Pruebas automatizadas documentadas: 9 pruebas sin fallos segun `docs/pruebas/persona1-persona2.md`.
+- Pruebas automatizadas documentadas: 9 pruebas sin fallos segun `docs/primer_avance/pruebas/persona1-persona2.md`.
 - Scripts SQL academicos en `db/persona2/sql`.
 
 Riesgos y pendientes que identifico:

@@ -1,8 +1,8 @@
 # Auditoria de avance 2 - Proyecto Nuevo Avatar V1
 
 Fecha de auditoria: 3 de octubre de 2026  
-Base principal: `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
-Bases complementarias: `docs/roadmaps/roadmap 1.md`, `docs/roadmaps/propuesta.md`, `docs/auditoria/auditoria_avance1.md`  
+Base principal: `docs/primer_avance/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
+Bases complementarias: `docs/primer_avance/roadmaps/roadmap 1.md`, `docs/primer_avance/roadmaps/propuesta.md`, `docs/primer_avance/auditoria/auditoria_avance1.md`  
 Mi objetivo es revisar el avance real mas reciente del proyecto contra el PDF oficial de requerimientos, el roadmap interno y la auditoria de avance 1.
 
 ## Resumen
@@ -19,11 +19,11 @@ Tambien identifico un riesgo tecnico nuevo: los servicios .NET nuevos no pudiero
 
 En esta auditoria reviso los siguientes elementos del repositorio:
 
-- `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`
-- `docs/roadmaps/roadmap 1.md`
-- `docs/roadmaps/propuesta.md`
-- `docs/auditoria/auditoria_avance1.md`
-- `docs/pruebas/persona1-persona2.md`
+- `docs/primer_avance/requerimientos/Proyecto Nuevo Avatar V1.pdf`
+- `docs/primer_avance/roadmaps/roadmap 1.md`
+- `docs/primer_avance/roadmaps/propuesta.md`
+- `docs/primer_avance/auditoria/auditoria_avance1.md`
+- `docs/primer_avance/pruebas/persona1-persona2.md`
 - `services/seguridad`
 - `services/persona2`
 - `services/persona5`

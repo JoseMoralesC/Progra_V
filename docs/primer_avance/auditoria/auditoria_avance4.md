@@ -1,7 +1,7 @@
 # Auditoria de avance 4 - Proyecto Nuevo Avatar V1
 
 Fecha de auditoria: 8 de octubre de 2026  
-Base principal: `docs/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
+Base principal: `docs/primer_avance/requerimientos/Proyecto Nuevo Avatar V1.pdf`  
 Version revisada: `143f92fbefed2d0fd228d9c4a6ec07d2cc78aa58`  
 Bases complementarias: Doc Master, roadmaps, auditorias 1 a 3, codigo, scripts, colecciones y evidencias del repositorio.  
 Resultados consolidados: [verificacion-avance4.json](verificacion-avance4.json).
@@ -21,13 +21,13 @@ Mi dictamen es **implementacion amplia, con pruebas locales aprobadas, pero entr
 En esta revision comparo los siguientes elementos:
 
 - PDF oficial completo: 30 paginas; criterios funcionales y entregables.
-- `docs/doc_master/Doc Master.docx`: contenido, tablas y presencia de diagramas.
-- `docs/roadmaps/propuesta.md` y `docs/roadmaps/roadmap 1.md`.
-- `docs/auditoria/auditoria_avance1.md`, `auditoria_avance2.md` y `auditoria_avance3.md`.
+- `docs/primer_avance/doc_master/Doc Master.docx`: contenido, tablas y presencia de diagramas.
+- `docs/primer_avance/roadmaps/propuesta.md` y `docs/primer_avance/roadmaps/roadmap 1.md`.
+- `docs/primer_avance/auditoria/auditoria_avance1.md`, `auditoria_avance2.md` y `auditoria_avance3.md`.
 - README de servicios y SQL; resumenes de pruebas de Personas 1, 2 y 4; recorrido de Persona 5.
 - Seguridad .NET; servicios Java de Personas 2, 4 y 5; proyectos .NET Curso, Grupo, Periodo y Direccion.
 - Scripts en `db/persona2`, `db/persona3`, `db/persona4`, `db/persona5` y preparaciones de pruebas.
-- Ocho colecciones principales en `docs/pruebas/postman`, resultados HTTP historicos y carpetas de capturas.
+- Ocho colecciones principales en `docs/primer_avance/pruebas/postman`, resultados HTTP historicos y carpetas de capturas.
 - Metadatos de tablas, relaciones, parametros seleccionados y cantidades de catalogos en PrograV.
 
 Documento que el arbol Git estaba limpio al iniciar. Las pruebas generan archivos en `services/persona4/target/`; no los considero parte de la entrega documental. No modifico codigo funcional ni ejecuto creaciones, pagos, anulaciones o envios SMTP durante esta auditoria. En la carpeta Doc Master encuentro el archivo `.docx`; no encuentro `Doc_Master.doc`, aunque figure entre las pestanas del editor.
@@ -138,7 +138,7 @@ Mi dictamen: codigo presente y compilacion resuelta en esta revision, pero dos s
 | ACA1 / 21-22 | `/historialacademico` | Tipo/identificacion, codigo/nombre/promedio por curso | Implementado y probado con MAT5 simulado; solo contempla matriculas ACTIVA y detecta intentos ambiguos. |
 | ACA2 / 22-23 | `/listadoestudiantes` | Periodo requerido y campos del estudiante/carrera/curso/grupo | Implementado con consumo MAT2; captura de lista vacia no acredita listado con estudiantes. |
 
-Mi dictamen: cobertura automatizada fuerte con 251 pruebas aprobadas, sin certificacion integral real. El archivo `docs/evidencia/fabian/alcance-capturas.json` limita expresamente sus diez capturas a seguridad y consultas, sin acreditar CRUD completo, historial con notas ni listado con matriculas. No actualizo ese alcance solo porque la coleccion tenga 85 solicitudes.
+Mi dictamen: cobertura automatizada fuerte con 251 pruebas aprobadas, sin certificacion integral real. El archivo `docs/primer_avance/evidencia/fabian/alcance-capturas.json` limita expresamente sus diez capturas a seguridad y consultas, sin acreditar CRUD completo, historial con notas ni listado con matriculas. No actualizo ese alcance solo porque la coleccion tenga 85 solicitudes.
 
 ### Persona 5 - Jose
 
@@ -186,9 +186,9 @@ Documento A4-05 y A4-12 por inspeccion de codigo, no como solicitudes HTTP nueva
 | Fuente | Cantidad / resultado | Interpretacion que aplico |
 |---|---|---|
 | P1/P2: JSON HTTP del 5 de octubre | 43 + 56 solicitudes; 56 + 72 aserciones; cero fallos registrados | Evidencia historica de ejecutor HTTP Node, complementada por capturas de Runner; no ejecucion nueva de esta auditoria. |
-| `docs/evidencia/alejandro` | 20 PNG | Inventario; reviso visualmente dos consultas 200. No certifica seguridad ni version actual completa. |
-| `docs/evidencia/fabian` | 10 PNG y manifiesto de alcance | Cuatro rechazos sin token y seis consultas autenticadas; tres listas vacias. |
-| `docs/evidencia/persona5` | 61 PNG | Evidencia ampliada de MAT2/MAT5/IPN1/IPN2/IPN3/GEN1/USR5; muestra visual de tres capturas. |
+| `docs/primer_avance/evidencia/alejandro` | 20 PNG | Inventario; reviso visualmente dos consultas 200. No certifica seguridad ni version actual completa. |
+| `docs/primer_avance/evidencia/fabian` | 10 PNG y manifiesto de alcance | Cuatro rechazos sin token y seis consultas autenticadas; tres listas vacias. |
+| `docs/primer_avance/evidencia/persona5` | 61 PNG | Evidencia ampliada de MAT2/MAT5/IPN1/IPN2/IPN3/GEN1/USR5; muestra visual de tres capturas. |
 | Colecciones P1/P2/P4/P5 | 43 / 56 / 85 / 79 solicitudes preparadas | No sumo estos numeros como solicitudes ejecutadas. |
 | Colecciones separadas P4 | MAT3 43, MAT1 30, ACA1 6, ACA2 4 | Existen recorridos solapados; no los sumo como cobertura independiente. |
 

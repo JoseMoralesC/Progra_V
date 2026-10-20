@@ -101,7 +101,7 @@ def main():
                 cursor.execute("REVERT")
         connection.rollback()
     report = {"verified_at_utc": datetime.now(timezone.utc).isoformat(), "mode": "apply_and_verify" if args.aplicar else "verify_only", "passed": all(c["passed"] for c in checks), "passwords_changed": False, "business_rows_modified": False, "server_roles_changed": False, "source_permissions_changed": False, "login_status": login_status, "checks": checks}
-    destination = ROOT / "docs/pruebas/usuarios-remotos.json"
+    destination = ROOT / "docs/primer_avance/pruebas/usuarios-remotos.json"
     destination.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     for name in USERS:
         own = [c for c in checks if c["login"].lower() == name]

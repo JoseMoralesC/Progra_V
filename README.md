@@ -40,8 +40,8 @@ La suite de integracion utiliza bases temporales y cuentas de servicio reales, s
 - [Biblioteca Java, configuracion del IDE y pruebas locales](docs/desarrollo-java.md).
 - [Integracion, contratos internos y recuperacion de pagos](docs/integracion-servicios.md).
 - [Distribucion y migracion de las bases](db/por_servicio/README.md).
-- [Pruebas de integracion](docs/pruebas/integracion-separada.json).
-- [Auditoria de accesos SQL y entidades JPA](docs/pruebas/limites-servicios.json).
-- [Requisitos originales](docs/requerimientos/Proyecto%20Nuevo%20Avatar%20V1.pdf).
+- [Pruebas de integracion](docs/primer_avance/pruebas/integracion-separada.json).
+- [Auditoria de accesos SQL y entidades JPA](docs/primer_avance/pruebas/limites-servicios.json).
+- [Requisitos originales](docs/primer_avance/requerimientos/Proyecto%20Nuevo%20Avatar%20V1.pdf).
 
 Las aplicaciones activas estan en las carpetas `NuevoAvatar.*` de la raiz. Los proyectos agrupados bajo `services/` y sus pruebas corresponden a la estructura anterior y se conservan como referencia.
