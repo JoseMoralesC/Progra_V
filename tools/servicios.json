@@ -1,0 +1,156 @@
+[
+  {
+    "name": "Autenticacion",
+    "persona": 1,
+    "port": 5158,
+    "kind": "dotnet",
+    "database": "PrograV_Autenticacion"
+  },
+  {
+    "name": "Bitacora",
+    "persona": 1,
+    "port": 5159,
+    "kind": "dotnet",
+    "database": "PrograV_Bitacora"
+  },
+  {
+    "name": "Rol",
+    "persona": 1,
+    "port": 5160,
+    "kind": "dotnet",
+    "database": "PrograV_Rol"
+  },
+  {
+    "name": "Parametro",
+    "persona": 1,
+    "port": 5161,
+    "kind": "dotnet",
+    "database": "PrograV_Parametro"
+  },
+  {
+    "name": "Modulo",
+    "persona": 1,
+    "port": 5162,
+    "kind": "dotnet",
+    "database": "PrograV_Modulo"
+  },
+  {
+    "name": "Usuario",
+    "persona": 2,
+    "port": 8082,
+    "kind": "java",
+    "database": "PrograV_Usuario"
+  },
+  {
+    "name": "Institucion",
+    "persona": 2,
+    "port": 8086,
+    "kind": "java",
+    "database": "PrograV_Institucion"
+  },
+  {
+    "name": "Profesor",
+    "persona": 2,
+    "port": 8087,
+    "kind": "java",
+    "database": "PrograV_Profesor"
+  },
+  {
+    "name": "Carrera",
+    "persona": 2,
+    "port": 8088,
+    "kind": "java",
+    "database": "PrograV_Carrera"
+  },
+  {
+    "name": "Expediente",
+    "persona": 4,
+    "port": 8084,
+    "kind": "java",
+    "database": "PrograV_Expediente"
+  },
+  {
+    "name": "Prematricula",
+    "persona": 4,
+    "port": 8089,
+    "kind": "java",
+    "database": "PrograV_Prematricula"
+  },
+  {
+    "name": "HistorialAcademico",
+    "persona": 4,
+    "port": 8090,
+    "kind": "java",
+    "database": "PrograV_HistorialAcademico"
+  },
+  {
+    "name": "ListadoEstudiantes",
+    "persona": 4,
+    "port": 8091,
+    "kind": "java",
+    "database": "PrograV_ListadoEstudiantes"
+  },
+  {
+    "name": "Matricula",
+    "persona": 5,
+    "port": 8085,
+    "kind": "java",
+    "database": "PrograV_Matricula"
+  },
+  {
+    "name": "Notas",
+    "persona": 5,
+    "port": 8092,
+    "kind": "java",
+    "database": "PrograV_Notas"
+  },
+  {
+    "name": "Factura",
+    "persona": 5,
+    "port": 8093,
+    "kind": "java",
+    "database": "PrograV_Factura"
+  },
+  {
+    "name": "Pago",
+    "persona": 5,
+    "port": 8094,
+    "kind": "java",
+    "database": "PrograV_Pago"
+  },
+  {
+    "name": "Notificacion",
+    "persona": 5,
+    "port": 8095,
+    "kind": "java",
+    "database": "PrograV_Notificacion"
+  },
+  {
+    "name": "Curso",
+    "persona": 3,
+    "port": 5255,
+    "kind": "dotnet",
+    "database": "PrograV_Curso"
+  },
+  {
+    "name": "Grupo",
+    "persona": 3,
+    "port": 5256,
+    "kind": "dotnet",
+    "database": "PrograV_Grupo"
+  },
+  {
+    "name": "Periodo",
+    "persona": 3,
+    "port": 5262,
+    "kind": "dotnet",
+    "database": "PrograV_Periodo"
+  },
+  {
+    "name": "Direccion",
+    "persona": 3,
+    "port": 5227,
+    "kind": "dotnet",
+    "database": "PrograV_Direccion"
+  }
+]

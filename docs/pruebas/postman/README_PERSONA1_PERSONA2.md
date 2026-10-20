@@ -1,14 +1,16 @@
-# Postman: Persona 1 y Persona 2 en PrograV
+# Postman: Persona 1 y Persona 2 con bases separadas
 
-Las dos APIs deben conectarse a la base `PrograV` por Tailscale. Postman consume las APIs HTTP; no se conecta directamente a SQL Server.
+Estas colecciones consumen las APIs de Autenticacion, Bitacora, Rol, Parametro,
+Modulo, Usuario, Institucion, Profesor y Carrera. Cada servicio usa su propia
+base SQL Server; Postman solo se conecta a las APIs HTTP.
 
-## Preparación
+## Preparacion
 
-1. Activar Tailscale y confirmar acceso al servidor SQL del equipo.
-2. Configurar `SeguridadDb` en el archivo local `services/seguridad/NuevoAvatarSeguridad/appsettings.Development.json` para usar `PrograV`. Las credenciales quedan fuera de Git.
-3. Levantar Seguridad desde su carpeta con `dotnet run --launch-profile http` (puerto 5158).
-4. Desde `services/persona2`, ejecutar `./run-prograv.ps1` (puerto 8082). Este script usa la misma conexión local de Seguridad.
-5. Confirmar que existan el rol `ESTUDIANTE` y el parámetro `DOMPROF`, cuyo valor debe coincidir con `dominioProfesor` del entorno. Si falta el parámetro, acordar con el equipo la carga de los datos iniciales de `db/persona2/sql/separado/04_datos_iniciales.sql` antes de probar profesores.
+1. Activar Tailscale para que los servicios alcancen SQL Server y mantener la configuracion local de `.env`.
+2. Desde la raiz, compilar con `powershell -NoProfile -File tools/compilar-servicios.ps1` si hubo cambios de codigo.
+3. Iniciar `ejecutar_persona1.bat` y `ejecutar_persona2.bat`. Para ejecutar carpetas CRUD con comprobacion de referencias, iniciar tambien los servicios restantes con los otros tres lanzadores.
+4. Confirmar que existan el rol `ESTUDIANTE` y el parametro `DOMPROF` en sus APIs propietarias. El dominio del parametro debe coincidir con `dominioProfesor` del entorno. El ejecutor HTTP conserva el valor existente y solo crea el parametro si falta.
+5. Consultar [la guia general](README_MICROSERVICIOS.md) para las URLs por servicio, dependencias y configuracion en equipos remotos. No iniciar los proyectos historicos bajo `services/`.
 
 ## Importar y ejecutar
 
@@ -18,7 +20,7 @@ Importar estos tres archivos en Postman:
 - `Persona2_Ramses.postman_collection.json`: 56 peticiones para USR1, ACD1, ACD6 y ACD2, incluyendo seguridad y bitácora.
 - `Persona1_Persona2.postman_environment.json`: entorno con URLs locales y credenciales vacías.
 
-Seleccionar el entorno `Persona1_Persona2.local`. Completar `usuario` y `password` con las credenciales de una cuenta de la aplicación en PrograV. La clave del login de la aplicación es distinta de la clave de conexión SQL.
+Seleccionar el entorno `Persona1_Persona2.local`. Completar `usuario` y `password` con las credenciales de una cuenta de la aplicacion registrada en Usuario. La clave del login de la aplicación es distinta de la clave de conexión SQL.
 
 Ejecutar cada colección en el Runner, en orden, con una iteración. La primera petición hace login y guarda automáticamente `token` y `refresh_token`. Si vence el JWT durante una ejecución manual, repetir el login y luego la petición pendiente; reiniciar toda la colección genera nuevos identificadores de prueba.
 
@@ -36,7 +38,7 @@ Para USR1 cubrir alta, consulta, filtros, actualización, duplicado, campos vac�
 
 Ocultar encabezados de contraseña y Authorization, tokens, claves SQL y datos personales antes de guardar capturas o exportaciones en Git. Conservar el entorno versionado con los secretos vacíos.
 
-## Estado de verificación
+## Verificacion historica (arquitectura anterior)
 
 El 5 de octubre de 2026 se comprobó el arranque de Persona 2 con `ddl-auto=validate` contra `PrograV`, login HTTP en Seguridad y consultas autenticadas de usuario, institución, profesor y carrera. Ver `../evidencias/2026-10-05/persona2-prograv/verificacion-http.json`.
 

@@ -1,0 +1,587 @@
+{
+  "phase": "completa",
+  "created_at_utc": "2026-10-15T04:27:38.711229+00:00",
+  "finished_at_utc": "2026-10-15T04:35:02.333341+00:00",
+  "passed": true,
+  "failure": null,
+  "tests": [
+    {
+      "test": "Aislamiento SQL Autenticacion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Usuario",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Rol",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Parametro",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Modulo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Bitacora",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Institucion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Profesor",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Carrera",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Curso",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Periodo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Grupo",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Direccion",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Expediente",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Prematricula",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Matricula",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Notas",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Factura",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Pago",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL HistorialAcademico",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL ListadoEstudiantes",
+      "passed": true
+    },
+    {
+      "test": "Aislamiento SQL Notificacion",
+      "passed": true
+    },
+    {
+      "test": "Base propia Autenticacion",
+      "passed": true
+    },
+    {
+      "test": "Base propia Parametro",
+      "passed": true
+    },
+    {
+      "test": "Base propia Bitacora",
+      "passed": true
+    },
+    {
+      "test": "Base propia Usuario",
+      "passed": true
+    },
+    {
+      "test": "Login mediante Usuario y Parametro",
+      "passed": true
+    },
+    {
+      "test": "Rotacion de refresh token",
+      "passed": true
+    },
+    {
+      "test": "Base propia Rol",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Rol",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Rol",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Rol",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Modulo",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Modulo",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Modulo",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Modulo",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Institucion",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Institucion",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Institucion",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Institucion",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Profesor",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Profesor",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Profesor",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Profesor",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Carrera",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Carrera",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Carrera",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Carrera",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Curso",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Curso",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Curso",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Curso",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Periodo",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Periodo",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Periodo",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Periodo",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Grupo",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Grupo",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Grupo",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Grupo",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Direccion",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Direccion",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Direccion",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Direccion",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Matricula",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Matricula",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Matricula",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Matricula",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Notas",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Notas",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Notas",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Notas",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Factura",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Factura",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Factura",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Factura",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Pago",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Pago",
+      "passed": true
+    },
+    {
+      "test": "Sin JWT Pago",
+      "passed": true
+    },
+    {
+      "test": "Consulta autenticada Pago",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Notificacion",
+      "passed": true
+    },
+    {
+      "test": "API interna rechaza falta de clave Notificacion",
+      "passed": true
+    },
+    {
+      "test": "Correo invalido sin enviar SMTP",
+      "passed": true
+    },
+    {
+      "test": "Login mediante Usuario y Parametro",
+      "passed": true
+    },
+    {
+      "test": "Rotacion de refresh token",
+      "passed": true
+    },
+    {
+      "test": "Base propia Direccion",
+      "passed": true
+    },
+    {
+      "test": "Base propia Expediente",
+      "passed": true
+    },
+    {
+      "test": "Crear expediente mediante Direccion y Parametro",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "test": "Base propia Curso",
+      "passed": true
+    },
+    {
+      "test": "Base propia Grupo",
+      "passed": true
+    },
+    {
+      "test": "Base propia Periodo",
+      "passed": true
+    },
+    {
+      "test": "Base propia Profesor",
+      "passed": true
+    },
+    {
+      "test": "Crear grupo con referencias por API",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "test": "Grupo rechaza profesor inexistente",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "test": "Base propia Matricula",
+      "passed": true
+    },
+    {
+      "test": "Matricula rechaza estudiante inexistente",
+      "passed": true,
+      "status": 422
+    },
+    {
+      "test": "Crear matricula mediante cuatro propietarios",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "test": "Base propia Notas",
+      "passed": true
+    },
+    {
+      "test": "Crear desglose con grupo remoto",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Asignar nota con matricula remota",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia HistorialAcademico",
+      "passed": true
+    },
+    {
+      "test": "Historial ponderado mediante APIs",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Carrera",
+      "passed": true
+    },
+    {
+      "test": "Base propia ListadoEstudiantes",
+      "passed": true
+    },
+    {
+      "test": "Listado compuesto mediante APIs",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Base propia Prematricula",
+      "passed": true
+    },
+    {
+      "test": "Base propia Carrera",
+      "passed": true
+    },
+    {
+      "test": "Base propia Curso",
+      "passed": true
+    },
+    {
+      "test": "Base propia Periodo",
+      "passed": true
+    },
+    {
+      "test": "Prematricula consulta su base propia",
+      "passed": true
+    },
+    {
+      "test": "Prematricula valida periodo futuro via API",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "test": "Base propia Factura",
+      "passed": true
+    },
+    {
+      "test": "Eliminar estudiante referenciado se rechaza",
+      "passed": true,
+      "status": 409
+    },
+    {
+      "test": "Login mediante Usuario y Parametro",
+      "passed": true
+    },
+    {
+      "test": "Rotacion de refresh token",
+      "passed": true
+    },
+    {
+      "test": "Creacion concurrente no duplica facturas",
+      "passed": true,
+      "statuses": [
+        409,
+        201
+      ],
+      "reasons": [
+        "Ya existe una factura activa para esta matricula",
+        null
+      ]
+    },
+    {
+      "test": "Factura obtiene matricula mediante API",
+      "passed": true,
+      "status": 201
+    },
+    {
+      "test": "Base propia Pago",
+      "passed": true
+    },
+    {
+      "test": "Fallo de Factura conserva operacion pendiente",
+      "passed": true,
+      "status": 503
+    },
+    {
+      "test": "Outbox persistida antes de comunicar factura",
+      "passed": true
+    },
+    {
+      "test": "Base propia Pago",
+      "passed": true
+    },
+    {
+      "test": "Recuperacion automatica despues de reiniciar Pago",
+      "passed": true
+    },
+    {
+      "test": "Factura pagada tras recuperacion",
+      "passed": true
+    },
+    {
+      "test": "Un solo pago pese a reintentos",
+      "passed": true
+    },
+    {
+      "test": "Reverso sincroniza factura",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "test": "Factura pendiente despues del reverso",
+      "passed": true
+    },
+    {
+      "test": "Entrega antigua no revierte estado posterior",
+      "passed": true
+    },
+    {
+      "test": "Peticiones concurrentes responden de forma controlada",
+      "passed": true
+    },
+    {
+      "test": "Concurrencia no duplica pagos aplicados",
+      "passed": true
+    }
+  ],
+  "temporary_databases": [
+    "PrograV_IT_eac45248_Autenticacion",
+    "PrograV_IT_eac45248_Usuario",
+    "PrograV_IT_eac45248_Rol",
+    "PrograV_IT_eac45248_Parametro",
+    "PrograV_IT_eac45248_Modulo",
+    "PrograV_IT_eac45248_Bitacora",
+    "PrograV_IT_eac45248_Institucion",
+    "PrograV_IT_eac45248_Profesor",
+    "PrograV_IT_eac45248_Carrera",
+    "PrograV_IT_eac45248_Curso",
+    "PrograV_IT_eac45248_Periodo",
+    "PrograV_IT_eac45248_Grupo",
+    "PrograV_IT_eac45248_Direccion",
+    "PrograV_IT_eac45248_Expediente",
+    "PrograV_IT_eac45248_Prematricula",
+    "PrograV_IT_eac45248_Matricula",
+    "PrograV_IT_eac45248_Notas",
+    "PrograV_IT_eac45248_Factura",
+    "PrograV_IT_eac45248_Pago",
+    "PrograV_IT_eac45248_HistorialAcademico",
+    "PrograV_IT_eac45248_ListadoEstudiantes",
+    "PrograV_IT_eac45248_Notificacion"
+  ],
+  "temporary_databases_cleaned": true,
+  "business_databases_modified": false,
+  "smtp_sent": false
+}

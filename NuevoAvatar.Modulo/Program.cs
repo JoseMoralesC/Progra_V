@@ -1,0 +1,125 @@
+using NuevoAvatar.Integracion;
+using DotNetEnv;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using NuevoAvatar.Seguridad.Abstract;
+using NuevoAvatar.Seguridad.DataAccess;
+using NuevoAvatar.Seguridad.Models;
+
+Env.NoClobber().TraversePath().Load();
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+var dbHost = builder.Configuration["DB_HOST"];
+var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
+var dbName = builder.Configuration["SERVICE_DB_NAME"] ?? "PrograV_Modulo";
+var dbUsername = builder.Configuration["SERVICE_DB_USER_MODULO"];
+var dbPassword = builder.Configuration["SERVICE_DB_PASSWORD_MODULO"];
+
+if (!string.IsNullOrWhiteSpace(dbHost) &&
+    !string.IsNullOrWhiteSpace(dbName) &&
+    !string.IsNullOrWhiteSpace(dbUsername) &&
+    !string.IsNullOrWhiteSpace(dbPassword))
+{
+    builder.Configuration["ConnectionStrings:SeguridadDb"] =
+        $"Server={dbHost},{dbPort};" +
+        $"Database={dbName};" +
+        $"User Id={dbUsername};" +
+        $"Password={dbPassword};" +
+        "Encrypt=False;" +
+        "TrustServerCertificate=True;";
+}
+
+if (!string.IsNullOrWhiteSpace(builder.Configuration["JWT_KEY"]))
+{
+    builder.Configuration["Jwt:Key"] = builder.Configuration["JWT_KEY"];
+}
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Pega solo el access_token"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+builder.Services.AddDbContext<SeguridadDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SeguridadDb")));
+
+builder.Services.AddScoped<IRolService, RolService>();
+builder.Services.AddScoped<IParametroService, ParametroService>();
+builder.Services.AddScoped<IModuloService, ModuloService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<ISesionTokenService, SesionTokenService>();
+builder.Services.AddScoped<IBitacoraService, BitacoraRemotaService>();
+builder.Services.AddSingleton(new JwtSettings
+{
+    Key = builder.Configuration["Jwt:Key"]
+          ?? throw new InvalidOperationException("Falta Jwt:Key en secrets.json")
+});
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddIntegracion();
+var app = builder.Build();
+app.MapIntegracion("Modulo", builder.Configuration.GetConnectionString("SeguridadDb")!);
+
+// Registro los errores tecnicos no controlados en la bitacora.
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex) when (ex is not DependenciaNoDisponibleException and not ReferenciaUsadaException)
+    {
+        try
+        {
+            var bitacora = context.RequestServices.GetRequiredService<IBitacoraService>();
+            await bitacora.Crear(new Bitacora
+            {
+                Usuario = context.Items["usuario"]?.ToString() ?? "sistema",
+                Descripcion = $"Error técnico en {context.Request.Path}: {ex.Message}"
+            });
+        }
+        catch { }
+
+        if (!context.Response.HasStarted)
+        {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsync("Error interno del servidor");
+        }
+    }
+});
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+
+app.UseAuthorization();
+app.MapControllers();
+app.Run();
+

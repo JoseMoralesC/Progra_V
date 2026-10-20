@@ -9,8 +9,10 @@
 *.suo
 
 # Build
+target/
 bin/
 obj/
+services/persona4/target/
 
 # Rider
 .idea/
@@ -40,3 +42,6 @@ tmp/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Python tools
+__pycache__/

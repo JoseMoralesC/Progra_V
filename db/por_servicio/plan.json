@@ -1,0 +1,610 @@
+{
+  "source": "PrograV",
+  "databases": {
+    "PrograV_Autenticacion": [
+      "seguridad.refresh_token"
+    ],
+    "PrograV_Usuario": [
+      "seguridad.usuario"
+    ],
+    "PrograV_Rol": [
+      "seguridad.rol"
+    ],
+    "PrograV_Parametro": [
+      "seguridad.parametro"
+    ],
+    "PrograV_Modulo": [
+      "seguridad.modulo"
+    ],
+    "PrograV_Bitacora": [
+      "general.bitacora"
+    ],
+    "PrograV_Institucion": [
+      "academico.Institucion"
+    ],
+    "PrograV_Profesor": [
+      "academico.Profesor",
+      "academico.ProfesorTelefono"
+    ],
+    "PrograV_Carrera": [
+      "academico.Carrera"
+    ],
+    "PrograV_Curso": [
+      "academico.Curso"
+    ],
+    "PrograV_Periodo": [
+      "academico.Periodo"
+    ],
+    "PrograV_Grupo": [
+      "academico.Grupo"
+    ],
+    "PrograV_Direccion": [
+      "matricula.Provincia",
+      "matricula.Canton",
+      "matricula.Distrito"
+    ],
+    "PrograV_Expediente": [
+      "matricula.Estudiante",
+      "matricula.EstudianteTelefono"
+    ],
+    "PrograV_Prematricula": [
+      "matricula.Prematricula",
+      "matricula.PrematriculaCurso"
+    ],
+    "PrograV_Matricula": [
+      "matricula.Matricula"
+    ],
+    "PrograV_Notas": [
+      "matricula.DesgloseRubro",
+      "matricula.NotaRubro"
+    ],
+    "PrograV_Factura": [
+      "finanzas.Factura",
+      "finanzas.FacturaDetalle"
+    ],
+    "PrograV_Pago": [
+      "finanzas.Pago"
+    ],
+    "PrograV_HistorialAcademico": [],
+    "PrograV_ListadoEstudiantes": [],
+    "PrograV_Notificacion": []
+  },
+  "collation": "Modern_Spanish_CI_AS",
+  "table_count": 26,
+  "index_count": 52,
+  "check_count": 43,
+  "local_foreign_keys": [
+    {
+      "name": "FK_ProfesorTelefono_Profesor",
+      "parent_table": "academico.ProfesorTelefono",
+      "referenced_table": "academico.Profesor",
+      "delete_referential_action_desc": "CASCADE",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "ProfesorId",
+          "referenced_column": "ProfesorId"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_FacturaDetalle_Factura",
+      "parent_table": "finanzas.FacturaDetalle",
+      "referenced_table": "finanzas.Factura",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "FacturaId",
+          "referenced_column": "FacturaId"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_Canton_Provincia",
+      "parent_table": "matricula.Canton",
+      "referenced_table": "matricula.Provincia",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "ProvinciaId",
+          "referenced_column": "ProvinciaId"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_Distrito_Canton",
+      "parent_table": "matricula.Distrito",
+      "referenced_table": "matricula.Canton",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CantonId",
+          "referenced_column": "CantonId"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_EstudianteTelefono_Estudiante",
+      "parent_table": "matricula.EstudianteTelefono",
+      "referenced_table": "matricula.Estudiante",
+      "delete_referential_action_desc": "CASCADE",
+      "update_referential_action_desc": "CASCADE",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "IdentificacionEstudiante",
+          "referenced_column": "Identificacion"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_NotaRubro_Rubro",
+      "parent_table": "matricula.NotaRubro",
+      "referenced_table": "matricula.DesgloseRubro",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "RubroId",
+          "referenced_column": "RubroId"
+        }
+      ],
+      "local": true
+    },
+    {
+      "name": "FK_PrematriculaCurso_Prematricula",
+      "parent_table": "matricula.PrematriculaCurso",
+      "referenced_table": "matricula.Prematricula",
+      "delete_referential_action_desc": "CASCADE",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PrematriculaId",
+          "referenced_column": "PrematriculaId"
+        }
+      ],
+      "local": true
+    }
+  ],
+  "external_references": [
+    {
+      "name": "FK_Carrera_Director",
+      "parent_table": "academico.Carrera",
+      "referenced_table": "academico.Profesor",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "DirectorProfesorId",
+          "referenced_column": "ProfesorId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Carrera_Institucion",
+      "parent_table": "academico.Carrera",
+      "referenced_table": "academico.Institucion",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "InstitucionId",
+          "referenced_column": "InstitucionId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Curso_Carrera",
+      "parent_table": "academico.Curso",
+      "referenced_table": "academico.Carrera",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CarreraId",
+          "referenced_column": "CarreraId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Grupo_Curso",
+      "parent_table": "academico.Grupo",
+      "referenced_table": "academico.Curso",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CursoId",
+          "referenced_column": "CursoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Grupo_Periodo",
+      "parent_table": "academico.Grupo",
+      "referenced_table": "academico.Periodo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PeriodoId",
+          "referenced_column": "PeriodoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Grupo_Profesor",
+      "parent_table": "academico.Grupo",
+      "referenced_table": "academico.Profesor",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "ProfesorId",
+          "referenced_column": "ProfesorId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Factura_Estudiante",
+      "parent_table": "finanzas.Factura",
+      "referenced_table": "matricula.Estudiante",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "CASCADE",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "IdentificacionEstudiante",
+          "referenced_column": "Identificacion"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Factura_Matricula",
+      "parent_table": "finanzas.Factura",
+      "referenced_table": "matricula.Matricula",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "MatriculaId",
+          "referenced_column": "MatriculaId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Factura_Periodo",
+      "parent_table": "finanzas.Factura",
+      "referenced_table": "academico.Periodo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PeriodoId",
+          "referenced_column": "PeriodoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Pago_Factura",
+      "parent_table": "finanzas.Pago",
+      "referenced_table": "finanzas.Factura",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "FacturaId",
+          "referenced_column": "FacturaId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Pago_Periodo",
+      "parent_table": "finanzas.Pago",
+      "referenced_table": "academico.Periodo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PeriodoId",
+          "referenced_column": "PeriodoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_DesgloseRubro_Grupo",
+      "parent_table": "matricula.DesgloseRubro",
+      "referenced_table": "academico.Grupo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "GrupoId",
+          "referenced_column": "GrupoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Estudiante_Distrito",
+      "parent_table": "matricula.Estudiante",
+      "referenced_table": "matricula.Distrito",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "DistritoId",
+          "referenced_column": "DistritoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Matricula_Curso",
+      "parent_table": "matricula.Matricula",
+      "referenced_table": "academico.Curso",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CursoId",
+          "referenced_column": "CursoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Matricula_Estudiante",
+      "parent_table": "matricula.Matricula",
+      "referenced_table": "matricula.Estudiante",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "CASCADE",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "IdentificacionEstudiante",
+          "referenced_column": "Identificacion"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Matricula_Grupo",
+      "parent_table": "matricula.Matricula",
+      "referenced_table": "academico.Grupo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "GrupoId",
+          "referenced_column": "GrupoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Matricula_Periodo",
+      "parent_table": "matricula.Matricula",
+      "referenced_table": "academico.Periodo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PeriodoId",
+          "referenced_column": "PeriodoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_NotaRubro_Matricula",
+      "parent_table": "matricula.NotaRubro",
+      "referenced_table": "matricula.Matricula",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "MatriculaId",
+          "referenced_column": "MatriculaId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Prematricula_Carrera",
+      "parent_table": "matricula.Prematricula",
+      "referenced_table": "academico.Carrera",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CarreraId",
+          "referenced_column": "CarreraId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Prematricula_Estudiante",
+      "parent_table": "matricula.Prematricula",
+      "referenced_table": "matricula.Estudiante",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "CASCADE",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "IdentificacionEstudiante",
+          "referenced_column": "Identificacion"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_Prematricula_Periodo",
+      "parent_table": "matricula.Prematricula",
+      "referenced_table": "academico.Periodo",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "PeriodoId",
+          "referenced_column": "PeriodoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_PrematriculaCurso_Curso",
+      "parent_table": "matricula.PrematriculaCurso",
+      "referenced_table": "academico.Curso",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "CursoId",
+          "referenced_column": "CursoId"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_refresh_token_usuario",
+      "parent_table": "seguridad.refresh_token",
+      "referenced_table": "seguridad.usuario",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "email_usuario",
+          "referenced_column": "email"
+        }
+      ],
+      "local": false
+    },
+    {
+      "name": "FK_usuario_rol",
+      "parent_table": "seguridad.usuario",
+      "referenced_table": "seguridad.rol",
+      "delete_referential_action_desc": "NO_ACTION",
+      "update_referential_action_desc": "NO_ACTION",
+      "is_disabled": false,
+      "is_not_trusted": false,
+      "is_not_for_replication": false,
+      "columns": [
+        {
+          "parent_column": "id_rol",
+          "referenced_column": "id_rol"
+        }
+      ],
+      "local": false
+    }
+  ],
+  "preserved_in_source": [
+    "dbo.sysdiagrams"
+  ]
+}
