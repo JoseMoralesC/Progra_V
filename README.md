@@ -37,6 +37,7 @@ La suite de integracion utiliza bases temporales y cuentas de servicio reales, s
 
 ## Referencias
 
+- [Plan conjunto de los avances 2 y 3: alcance, historias y reparto](docs/segundo_avance/README.md).
 - [Biblioteca Java, configuracion del IDE y pruebas locales](docs/desarrollo-java.md).
 - [Registro de limpieza del proyecto](docs/limpieza-proyecto.md).
 - [Integracion, contratos internos y recuperacion de pagos](docs/primer_avance/integracion-servicios.md).
