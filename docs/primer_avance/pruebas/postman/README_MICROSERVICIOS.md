@@ -2,7 +2,9 @@
 
 Las colecciones usan ahora una variable de URL para cada servicio. Las rutas,
 metodos, cuerpos, identificadores de prueba y aserciones existentes se conservan.
-La copia de Fabián en `docs/primer_avance/evidencia/fabian` tambien esta actualizada.
+La coleccion de Fabian tiene una unica copia en
+`Persona4_Fabian_Recorrido.postman_collection.json`, en esta carpeta. Se retiro
+su duplicado de `docs/primer_avance/evidencia/fabian`; las capturas se conservan.
 
 ## Importar y ejecutar
 

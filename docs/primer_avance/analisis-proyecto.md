@@ -1,6 +1,17 @@
-# Mapa técnico de Nuevo Avatar
+# Mapa técnico histórico de Nuevo Avatar
+
+Nota de archivo: `services/` fue retirada el 23 de octubre de 2026. Las rutas
+y comandos de esa estructura se conservan aqui como registro historico, no como
+instrucciones de arranque. Consultar la [guia actual](integracion-servicios.md).
 
 Este diagnostico describe el estado previo a la separacion de bases y la adaptacion de servicios. El funcionamiento posterior se documenta en [integracion-servicios.md](integracion-servicios.md).
+
+Nota de archivo (23 de octubre de 2026): los hallazgos y conteos siguientes
+corresponden a la revision del 14 de octubre, no al estado actual. La estructura
+vigente tiene 22 servicios en el manifiesto y pruebas en los proyectos activos.
+Periodo y Direccion ya incorporan `InvokeAsync`, el cliente de desglose usa
+Notas y Autenticacion valida que la duracion de refresh supere la del JWT.
+La documentacion actual de pruebas esta en [desarrollo-java.md](../desarrollo-java.md).
 
 Revisión del 14 de octubre de 2026 sobre la rama local `jose`, HEAD `1ad918f`.
 
@@ -14,7 +25,7 @@ No se ejecutaron suites, servicios, migraciones ni solicitudes a la base remota.
 
 El sistema administra una academia: usuarios, autenticación, oferta académica, estudiantes, prematrícula, matrícula, evaluación, historial, facturación, pagos y correo. El alcance documentado del primer entregable es backend/API y base de datos, probado mediante Postman, sin interfaz gráfica.
 
-La fuente funcional principal es [Proyecto Nuevo Avatar V1.pdf](requerimientos/Proyecto%20Nuevo%20Avatar%20V1.pdf). El PDF contiene **22 HU**: USR1–USR5, ACD1–ACD6, MAT1–MAT5, ACA1–ACA2, IPN1–IPN3 y GEN1. Roadmap y Doc Master indican 24, aunque sus listas suman 22.
+La fuente funcional principal es [Proyecto Nuevo Avatar V1.pdf](requerimientos/Proyecto%20Nuevo%20Avatar%20V1.pdf). El PDF contiene **22 HU**: USR1–USR5, ACD1–ACD6, MAT1–MAT5, ACA1–ACA2, IPN1–IPN3 y GEN1. El conteo de 24 indicado originalmente en Roadmap y Doc Master se corrigio a 22 durante la limpieza documental del 23 de octubre de 2026.
 
 La página 29 pide documentación de análisis/diseño, diagramas de BD/casos de uso/clases, pruebas por criterio, conclusiones, bibliografía, SQL, servicios REST, HU actualizadas y PR a la rama final.
 
@@ -112,7 +123,7 @@ Notificación envía email con asunto y HTML por SMTP. El envío se solicita exp
 
 ## Persistencia y scripts SQL
 
-El modelo usa cinco esquemas: `seguridad`, `general`, `academico`, `matricula` y `finanzas`. El diagrama [PrograV Diagrama completo.jpeg](../PrograV%20Diagrama%20completo.jpeg) declara 26 tablas y 31 relaciones; su organización es coherente con los dominios revisados. La imagen no verifica el estado actual de la BD remota.
+El modelo usa cinco esquemas: `seguridad`, `general`, `academico`, `matricula` y `finanzas`. El diagrama [PrograV Diagrama completo.jpeg](../../PrograV%20Diagrama%20completo.jpeg) declara 26 tablas y 31 relaciones; su organización es coherente con los dominios revisados. La imagen no verifica el estado actual de la BD remota.
 
 Seguridad contiene rol, usuario, refresh_token, parametro y modulo; General contiene bitacora. Académico contiene institución, profesor, teléfonos de profesor, carrera, curso, periodo y grupo. Matrícula contiene catálogos territoriales, estudiante/teléfonos, prematrícula/detalle, matrícula, rubros y notas. Finanzas contiene factura, detalle y pago.
 

@@ -19,7 +19,6 @@ const owners = {
   historialacademico:'HistorialAcademico', listadoestudiantes:'ListadoEstudiantes'
 };
 const files = fs.readdirSync(__dirname).filter(f => f.endsWith('.json')).map(f => path.join(__dirname,f));
-files.push(path.join(root,'docs/primer_avance/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json'));
 const results = []; let requestCount=0; let scriptCount=0; let environments=0;
 for (const file of files) {
   const data = JSON.parse(fs.readFileSync(file,'utf8'));
