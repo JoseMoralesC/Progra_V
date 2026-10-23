@@ -13,7 +13,7 @@ Tomo las historias de usuario como base del proyecto y relaciono cada tarea tecn
 - Integracion de pagos y notificaciones: `IPN1`, `IPN2`, `IPN3`.
 - General: `GEN1`.
 
-Total: **24 historias de usuario**.
+Total: **22 historias de usuario**.
 
 ## Alcance del primer avance
 
@@ -233,7 +233,7 @@ Trabajo que planifico con el equipo:
 
 - Me propongo confirmar conexion remota por Tailscale a SQL Server.
 - Me propongo definir si se usara una BD o varias BD.
-- Me propongo crear modelo completo de datos basado en las 24 HU.
+- Me propongo crear modelo completo de datos basado en las 22 HU.
 - Me propongo crear scripts SQL de estructura, restricciones, indices y datos semilla.
 - Me propongo configurar y comprobar la conexion de cada servicio con la BD remota sin publicar credenciales en Git.
 - Me propongo definir contratos JSON por endpoint.

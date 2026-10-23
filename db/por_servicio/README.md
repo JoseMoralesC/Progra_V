@@ -6,7 +6,7 @@ Migracion ejecutada y confirmada el 14 de octubre de 2026: **22 bases, 26 tablas
 
 Esta etapa implementa la distribucion aprobada de las **26 tablas en 22 bases** de la misma instancia SQL Server accesible por Tailscale. Las credenciales se leen del `.env` local y no se escriben en estos archivos.
 
-`PrograV` se conserva como origen, con sus tablas, filas, relaciones y objetos tecnicos de diagramas. La etapa posterior adapto las conexiones y las consultas entre servicios; su configuracion y pruebas se describen en [integracion-servicios.md](../../docs/integracion-servicios.md). Las credenciales administrativas siguen reservadas a las herramientas y cada aplicacion selecciona su cuenta propia.
+`PrograV` se conserva como origen, con sus tablas, filas, relaciones y objetos tecnicos de diagramas. La etapa posterior adapto las conexiones y las consultas entre servicios; su configuracion y pruebas se describen en [integracion-servicios.md](../../docs/primer_avance/integracion-servicios.md). Las credenciales administrativas siguen reservadas a las herramientas y cada aplicacion selecciona su cuenta propia.
 ## Archivos
 
 - `distribucion.json`: propietario unico de cada tabla. Es la entrada del migrador.
@@ -94,4 +94,4 @@ La adaptacion posterior incorpora:
 5. Cuentas de ejecucion independientes, sin `db_owner` ni acceso a bases ajenas.
 6. Una suite reproducible de integracion con bases temporales y reporte separado de esta verificacion de copia.
 
-La comparacion de copia cubre las 26 tablas originales. Los resultados funcionales y los limites de las comprobaciones HTTP de referencias se documentan en [integracion-servicios.md](../../docs/integracion-servicios.md).
+La comparacion de copia cubre las 26 tablas originales. Los resultados funcionales y los limites de las comprobaciones HTTP de referencias se documentan en [integracion-servicios.md](../../docs/primer_avance/integracion-servicios.md).

@@ -10,7 +10,7 @@ base SQL Server; Postman solo se conecta a las APIs HTTP.
 2. Desde la raiz, compilar con `powershell -NoProfile -File tools/compilar-servicios.ps1` si hubo cambios de codigo.
 3. Iniciar `ejecutar_persona1.bat` y `ejecutar_persona2.bat`. Para ejecutar carpetas CRUD con comprobacion de referencias, iniciar tambien los servicios restantes con los otros tres lanzadores.
 4. Confirmar que existan el rol `ESTUDIANTE` y el parametro `DOMPROF` en sus APIs propietarias. El dominio del parametro debe coincidir con `dominioProfesor` del entorno. El ejecutor HTTP conserva el valor existente y solo crea el parametro si falta.
-5. Consultar [la guia general](README_MICROSERVICIOS.md) para las URLs por servicio, dependencias y configuracion en equipos remotos. No iniciar los proyectos historicos bajo `services/`.
+5. Consultar [la guia general](README_MICROSERVICIOS.md) para las URLs por servicio, dependencias y configuracion en equipos remotos. Utilizar los proyectos activos de la raiz; la antigua carpeta `services/` fue retirada.
 
 ## Importar y ejecutar
 
