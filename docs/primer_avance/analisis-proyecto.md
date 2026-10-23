@@ -1,5 +1,9 @@
 # Mapa técnico histórico de Nuevo Avatar
 
+Nota de archivo: `services/` fue retirada el 23 de octubre de 2026. Las rutas
+y comandos de esa estructura se conservan aqui como registro historico, no como
+instrucciones de arranque. Consultar la [guia actual](integracion-servicios.md).
+
 Este diagnostico describe el estado previo a la separacion de bases y la adaptacion de servicios. El funcionamiento posterior se documenta en [integracion-servicios.md](integracion-servicios.md).
 
 Nota de archivo (23 de octubre de 2026): los hallazgos y conteos siguientes

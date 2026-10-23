@@ -1,5 +1,9 @@
 # Persona 5 - Jose: demostracion del 8 de octubre de 2026
 
+Nota de archivo: `services/` fue retirada el 23 de octubre de 2026. Las rutas
+y comandos de esa estructura se conservan aqui como registro historico, no como
+instrucciones de arranque. Consultar la [guia actual](postman/README_MICROSERVICIOS.md).
+
 ## Estado de los datos
 
 Prepare y verifique estos datos en la base **PrograV**, el 8 de octubre de

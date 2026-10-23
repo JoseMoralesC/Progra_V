@@ -45,4 +45,4 @@ La suite de integracion utiliza bases temporales y cuentas de servicio reales, s
 - [Auditoria de accesos SQL y entidades JPA](docs/primer_avance/pruebas/limites-servicios.json).
 - [Requisitos originales](docs/primer_avance/requerimientos/Proyecto%20Nuevo%20Avatar%20V1.pdf).
 
-Las aplicaciones activas estan en las carpetas `NuevoAvatar.*` de la raiz. Los proyectos agrupados bajo `services/` y sus pruebas corresponden a la estructura anterior y se conservan como referencia.
+Las aplicaciones activas estan en las carpetas `NuevoAvatar.*` de la raiz. La estructura anterior `services/` fue retirada; sus fuentes y pruebas originales se conservan en el historial de Git. Las pruebas vigentes estan en los proyectos activos.

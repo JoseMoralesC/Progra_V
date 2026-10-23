@@ -1,6 +1,6 @@
 # Integracion de servicios con bases independientes
 
-Los 22 proyectos `NuevoAvatar.*` de la raiz son las aplicaciones activas. Cada servicio conecta a `PrograV_<Servicio>` con su cuenta `svc_avatar_<servicio>`. Las carpetas agrupadas bajo `services/` se conservan como referencia historica y no utilizan este nuevo cableado.
+Los 22 proyectos `NuevoAvatar.*` de la raiz son las aplicaciones activas. Cada servicio conecta a `PrograV_<Servicio>` con su cuenta `svc_avatar_<servicio>`. Las carpetas agrupadas bajo `services/` fueron retiradas; la estructura anterior puede consultarse en el historial de Git.
 
 La base `PrograV` permanece como origen de la migracion. Los servicios adaptados no la consultan. La distribucion de las 26 tablas de negocio se mantiene en `db/por_servicio/distribucion.json`.
 

@@ -6,8 +6,9 @@ sin cambios en reglas de negocio, endpoints, conexiones, datos ni contratos.
 ## Cambios
 
 - Se retiraron del indice de Git los 94 archivos generados de
-  `services/persona4/target/`. Sus copias locales permanecen ignoradas mediante
-  la regla general `target/`; se retiro la regla especifica redundante.
+  `services/persona4/target/`. Inicialmente sus copias locales quedaron ignoradas
+  mediante la regla general `target/`; al retirar `services/` se trasladaron
+  fuera del repositorio junto con esa carpeta. Se retiro la regla especifica redundante.
 - Se eliminaron las tres clases vacias `Class1.cs` de las bibliotecas de seguridad.
 - Se elimino la copia identica de la coleccion de Fabian bajo
   `primer_avance/evidencia/fabian/`. La fuente unica permanece en
@@ -23,13 +24,36 @@ sin cambios en reglas de negocio, endpoints, conexiones, datos ni contratos.
 
 ## Elementos conservados
 
-Las fuentes y pruebas historicas de `services/` permanecen como referencia,
-tal como establece el README. Tambien se conservan el controlador de
+Tras la autorizacion posterior del usuario, las fuentes y pruebas historicas de
+`services/` fueron retiradas del proyecto. Se conservan el controlador de
 compatibilidad de Bitacora, los servicios y registros de dependencias candidatos
 a depuracion, las bibliotecas de integracion y los diagnosticos locales en `tmp/`.
 Retirar componentes funcionales o diagnosticos sin uso demostrado queda fuera
 de esta limpieza. Los cambios locales previos en `.vscode/settings.json` y
 `PrograV.sln` se conservaron.
+
+## Retiro de la estructura anterior
+
+El usuario autorizo posteriormente retirar `services/`. Se retiraron sus 229
+archivos versionados, sin modificar fuentes, proyectos ni lanzadores activos.
+La ultima version anterior al retiro puede consultarse en el commit
+`92d38f64bd376468ca5032ae0c6b053d9b46c8e0`.
+
+La eliminacion recursiva fue bloqueada por la revision automatica. Se utilizo
+un traslado reversible fuera del repositorio, a
+`%TEMP%/PrograV-services-retirado-92d38f6`, incluyendo las salidas locales ignoradas.
+La carpeta `services/` ya no existe en el proyecto.
+
+Se actualizaron README, las guias vigentes y la exclusion Java del editor.
+Las auditorias mantienen sus datos originales con una nota de archivo; sus
+enlaces a fuentes retiradas se convirtieron en rutas historicas para evitar
+enlaces locales rotos.
+
+Tras el retiro, `mvnw -B -q -o -f pom.xml verify` termino con salida 0:
+273 pruebas Java, sin fallos, errores ni omisiones. Tambien aprobaron las 15
+pruebas .NET, los 13 artefactos Java, la validacion estatica de Postman y el
+auditor SQL/JPA. No se encontraron referencias a `services/` en los proyectos
+y herramientas activos ni enlaces Markdown locales rotos en las guias revisadas.
 
 ## Verificacion
 

@@ -2,7 +2,7 @@
 
 ## Biblioteca e IDE
 
-Abro la carpeta raiz del repositorio, no `services/`. El `pom.xml` de la raiz agrupa
+Abro la carpeta raiz del repositorio. El `pom.xml` de la raiz agrupa
 los 13 servicios Java y la biblioteca `integracion`. Cada servicio conserva su
 version de Spring Boot; la biblioteca no incorpora otro servidor ni impone sus
 dependencias Spring en tiempo de ejecucion.
@@ -11,8 +11,8 @@ Mantengo las clases compartidas en `integracion/src/main/java`. Maven incluye
 `integracion/contratos.json` en el JAR de la biblioteca; conservo ese contrato
 en su ubicacion para no cambiar sus consumidores .NET.
 
-La configuracion compartida `.vscode/settings.json` excluye `services/` de la
-importacion Java. Si VS Code conserva errores anteriores, abro la paleta de
+La configuracion compartida `.vscode/settings.json` excluye las salidas de
+compilacion de la importacion Java. Si VS Code conserva errores anteriores, abro la paleta de
 comandos y ejecuto `Java: Clean Java Language Server Workspace`, confirmo el
 reinicio y espero la importacion Maven. No borro carpetas de datos de VS Code
 manualmente. Esta recarga requiere una comprobacion visual en el editor.
@@ -49,7 +49,7 @@ biblioteca en la cache local:
 ## Recuperacion de las pruebas anteriores
 
 Los 26 archivos de pruebas originales tienen su destino en proyectos activos.
-Conservo las pruebas originales en `services/` como referencia de la migracion.
+Las pruebas originales de `services/` se conservan en el historial de Git.
 Los primeros 17 archivos quedaron distribuidos asi:
 
 | Origen | Destino | Archivos |
@@ -94,7 +94,8 @@ La prueba que antes invocaba `/expediente` dentro de Prematricula ahora comprueb
 que ese endpoint no existe alli. La restriccion por referencias se comprueba en
 Expediente, que es el servicio propietario.
 
-Conservo las fuentes historicas de `services/` como referencia. Sus salidas de
-compilacion no forman parte del repositorio. Los `.bat` actuales utilizan
+La carpeta historica `services/` fue retirada del proyecto. Su ultima version
+previa al retiro esta en el commit `92d38f64bd376468ca5032ae0c6b053d9b46c8e0`.
+Los `.bat` actuales utilizan
 `tools/ejecutar-servicio.ps1` y `NuevoAvatar.*`; el antiguo
 `tools/ejecutar-persona-java.ps1` no esta incluido en esta copia.
