@@ -2,9 +2,9 @@
   "validation": "static",
   "http_requests_sent": 0,
   "passed": true,
-  "collections": 6,
-  "requests": 371,
-  "scripts": 452,
+  "collections": 5,
+  "requests": 286,
+  "scripts": 365,
   "environments": 2,
   "details": [
     {
@@ -35,12 +35,6 @@
       "file": "docs/primer_avance/pruebas/postman/PrograV_Persona3_Pruebas_POSTMAN_FINAL.json",
       "requests": 23,
       "scripts": 24,
-      "passed": true
-    },
-    {
-      "file": "docs/primer_avance/evidencia/fabian/Persona4_Fabian_Recorrido.postman_collection.json",
-      "requests": 85,
-      "scripts": 87,
       "passed": true
     }
   ]

@@ -2,6 +2,10 @@
 
 ## Estado de este material
 
+Recorrido historico del primer avance. Sus instrucciones sobre la base compartida
+y los servicios agrupados no describen el arranque actual; usar la
+[guia vigente](postman/README_MICROSERVICIOS.md).
+
 Prepare esta coleccion y la contraste con el codigo antes de las ejecuciones
 contra la base real. Documento la evidencia inicial del login en
 `docs/primer_avance/evidencia/persona5/POST_Login_Persona5.PNG`.
@@ -16,7 +20,7 @@ cuando coincide con el resultado esperado.
   MAT2 pp. 17-18, MAT5 pp. 20-21, IPN1 pp. 23-24,
   IPN2 pp. 24-25, IPN3 p. 25.
 - [Asignacion persona 5](../roadmaps/roadmap%201.md), seccion Persona 5.
-- [Servicio implementado](../../services/persona5/README.md).
+- Servicio historico: `services/persona5`; la guia vigente es [Postman con bases por servicio](postman/README_MICROSERVICIOS.md).
 - [Auditoria anterior](../auditoria/auditoria_avance3.md), seccion Persona 5.
 - Controladores, DTOs, servicios y filtros de `services/persona5/src/main/java`.
 
@@ -34,7 +38,7 @@ Utilizo el login como preparacion, no como cobertura de mis cinco historias.
    [consulta de preparacion](persona5-preparacion.sql) sobre la base elegida.
    El archivo solo consulta: no crea tablas ni modifica registros.
 4. Si faltan tablas de persona 5, reviso las seis
-   [migraciones](../../db/persona5/migraciones/README.md).
+   migraciones historicas de `db/persona5/migraciones/` (ya no incluidas; para la estructura actual consultar [bases por servicio](../../../db/por_servicio/README.md)).
    Compruebo primero su estado: las migraciones fallan si las tablas ya existen.
 5. Obtengo un curso, un grupo de ese curso y su periodo. Compruebo que
    la fecha actual este entre FechaInicio y FechaFin, inclusive.

@@ -38,6 +38,7 @@ La suite de integracion utiliza bases temporales y cuentas de servicio reales, s
 ## Referencias
 
 - [Biblioteca Java, configuracion del IDE y pruebas locales](docs/desarrollo-java.md).
+- [Registro de limpieza del proyecto](docs/limpieza-proyecto.md).
 - [Integracion, contratos internos y recuperacion de pagos](docs/primer_avance/integracion-servicios.md).
 - [Distribucion y migracion de las bases](db/por_servicio/README.md).
 - [Pruebas de integracion](docs/primer_avance/pruebas/integracion-separada.json).

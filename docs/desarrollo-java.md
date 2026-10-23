@@ -2,7 +2,7 @@
 
 ## Biblioteca e IDE
 
-Abro la carpeta raiz `Progra_V`, no `services/`. El `pom.xml` de la raiz agrupa
+Abro la carpeta raiz del repositorio, no `services/`. El `pom.xml` de la raiz agrupa
 los 13 servicios Java y la biblioteca `integracion`. Cada servicio conserva su
 version de Spring Boot; la biblioteca no incorpora otro servidor ni impone sus
 dependencias Spring en tiempo de ejecucion.
@@ -94,6 +94,7 @@ La prueba que antes invocaba `/expediente` dentro de Prematricula ahora comprueb
 que ese endpoint no existe alli. La restriccion por referencias se comprueba en
 Expediente, que es el servicio propietario.
 
-No elimino `services/` en esta migracion de pruebas. El lanzador local no versionado
-`tools/ejecutar-persona-java.ps1` aun apunta a esa estructura antigua; los `.bat`
-actuales utilizan `tools/ejecutar-servicio.ps1` y `NuevoAvatar.*`.
+Conservo las fuentes historicas de `services/` como referencia. Sus salidas de
+compilacion no forman parte del repositorio. Los `.bat` actuales utilizan
+`tools/ejecutar-servicio.ps1` y `NuevoAvatar.*`; el antiguo
+`tools/ejecutar-persona-java.ps1` no esta incluido en esta copia.
