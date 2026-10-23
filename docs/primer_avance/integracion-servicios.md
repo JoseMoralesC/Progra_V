@@ -1,6 +1,6 @@
 # Integracion de servicios con bases independientes
 
-Los 22 proyectos `NuevoAvatar.*` de la raiz son las aplicaciones activas. Cada servicio conecta a `PrograV_<Servicio>` con su cuenta `svc_avatar_<servicio>`. Las carpetas agrupadas bajo `services/` se conservan como referencia historica y no utilizan este nuevo cableado.
+Los 22 proyectos `NuevoAvatar.*` de la raiz son las aplicaciones activas. Cada servicio conecta a `PrograV_<Servicio>` con su cuenta `svc_avatar_<servicio>`. Las carpetas agrupadas bajo `services/` fueron retiradas; la estructura anterior puede consultarse en el historial de Git.
 
 La base `PrograV` permanece como origen de la migracion. Los servicios adaptados no la consultan. La distribucion de las 26 tablas de negocio se mantiene en `db/por_servicio/distribucion.json`.
 
@@ -33,7 +33,7 @@ Las contrasenas se generan y guardan localmente antes de crear cada login para p
 
 ## Contratos internos
 
-Las fuentes compartidas estan en `NuevoAvatar.Integracion` para .NET e `integracion/java` para Java. Ambos usan `integracion/contratos.json`, que declara los recursos que posee cada servicio, sus campos permitidos y referencias entrantes.
+Las fuentes compartidas estan en `NuevoAvatar.Integracion` para .NET e `integracion/src/main/java` para Java. Ambos usan `integracion/contratos.json`, que declara los recursos que posee cada servicio, sus campos permitidos y referencias entrantes.
 
 Los endpoints `/interno/**` exigen `X-Servicio-Key`. No dependen de un token de usuario: de esa forma Autenticacion puede verificar credenciales y obtener parametros antes de emitir el primer JWT.
 

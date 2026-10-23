@@ -1,5 +1,9 @@
 # Persona 5 - Jose: demostracion del 8 de octubre de 2026
 
+Nota de archivo: `services/` fue retirada el 23 de octubre de 2026. Las rutas
+y comandos de esa estructura se conservan aqui como registro historico, no como
+instrucciones de arranque. Consultar la [guia actual](postman/README_MICROSERVICIOS.md).
+
 ## Estado de los datos
 
 Prepare y verifique estos datos en la base **PrograV**, el 8 de octubre de
@@ -15,7 +19,10 @@ datos nuevos: no cambiaron matriculas, rubros, notas, facturas ni pagos.
 
 ## Coleccion lista para importar
 
-Importar [Persona5_Jose_Demo_20261008.postman_collection.json](postman/Persona5_Jose_Demo_20261008.postman_collection.json).
+La coleccion historica `Persona5_Jose_Demo_20261008.postman_collection.json`
+no esta incluida en esta copia del repositorio. Para pruebas actuales, usar
+[la guia Postman vigente](postman/README_MICROSERVICIOS.md) y su coleccion Persona 5;
+no se presupone que conserve los valores de aquella demostracion.
 
 Su nombre es **Jose - Persona 5 - Demostracion 2026-10-08**. Tiene un ID de
 coleccion distinto al recorrido anterior, 79 solicitudes y las variables
@@ -128,8 +135,8 @@ desglose del grupo anterior.
   ni crea operaciones de negocio. Fue ejecutado correctamente.
 - [Verificacion SQL](persona5-demo-20261008-verificacion.json): IDs obtenidos,
   grupo limpio, expedientes, casos negativos y preservacion del recorrido anterior.
-- [Coleccion de hoy](postman/Persona5_Jose_Demo_20261008.postman_collection.json):
-  valores iniciales y solicitudes preparadas; no es un reporte de ejecucion.
+- Coleccion de la demostracion: archivo historico no incluido; sus valores
+  iniciales no constituyen un reporte de ejecucion.
 
 El script puede volver a consultar/preparar el mismo fixture mientras el
 grupo siga sin matriculas ni rubros. Despues de utilizarlo, rechaza una

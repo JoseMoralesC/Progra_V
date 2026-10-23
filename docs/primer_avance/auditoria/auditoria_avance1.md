@@ -1,5 +1,9 @@
 # Auditoria de avance 1 - Proyecto Nuevo Avatar V1
 
+Nota de archivo: la carpeta `services/` fue retirada el 23 de octubre de 2026.
+Las rutas y comandos siguientes corresponden a la revision original; sus fuentes
+pueden consultarse en el commit `92d38f64bd376468ca5032ae0c6b053d9b46c8e0`.
+
 Fecha de auditoria: 1 de octubre de 2026  
 Base principal: `docs/primer_avance/roadmaps/roadmap 1.md`  
 Mi objetivo es revisar el avance real del proyecto contra las historias de usuario, entregables y responsabilidades definidas para el primer avance.
