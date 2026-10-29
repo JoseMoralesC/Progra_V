@@ -1,151 +1,119 @@
 # Analisis del alcance y propuesta de reparto
 
-Revision del 23 de octubre de 2026. Sustituye el reparto del 19 de octubre.
-Es una propuesta de compromiso del equipo, no una nueva rubrica del profesor.
-El [indice del plan](../README.md) distingue PDF, aclaraciones y decisiones.
-
-## Diagnostico del roadmap anterior
-
-El reparto anterior era correcto para las 33 HU expresas del PDF: 197 puntos,
-50/49/49/49 por persona. Sin embargo, ese equilibrio dejaba cuatro problemas:
-
-1. No incluia historias explicitas para la web estudiantil que aclaro el profesor.
-2. No asignaba cada HU a una entrega; una persona podia concentrar su carga en
-   el final y otra asumir todas las dependencias tempranas.
-3. Jose acumulaba plantilla, sesion, permisos, parametros, perfil y auditoria;
-   Fabian acumulaba gateway, base movil y finanzas. Los puntos iguales no
-   eliminaban la concentracion de infraestructura ni sus riesgos de evaluacion.
-4. No especificaba contratos propios del estudiante. Tener CRUD con JWT en V1
-   no garantiza consultas propias ni protege contra cambiar IDs en el navegador.
-
-El plan revisado incorpora las [8 HU WEB](../requerimientos/web-estudiantes.md),
-con 43 puntos adicionales propuestos. Tras confirmar el usuario que se permiten
-subhistorias evaluables, se conservan las 41 HU de origen y se planifican
-45 unidades, sin alterar los 240 puntos. Cada persona tiene 30 por avance.
+Reajuste del 28 de octubre de 2026, limitado al segundo y tercer avance.
+Sustituye el reparto con subhistorias del 23 de octubre. El profesor no permite
+historias divididas ni una historia entre dos personas. El equipo acepta que
+los puntos queden desiguales. El primer avance conserva su reparto y documentos.
 El [backlog](../planificacion/backlog.md) es la fuente unica de asignaciones.
 
-## Corte elegido y alternativas consideradas
+## Alcance y criterio de asignacion
 
-| Alternativa | Ventaja | Problema |
-|---|---|---|
-| Toda la web en A2 y todo movil en A3 | Frontera visual sencilla. | Concentra 24 ADM, portal estudiantil y gateway antes del primer corte; una parte movil pequena no compensa la carga del cierre web. |
-| UI en A2; permisos, pruebas e integracion en A3 | Permite mostrar mas pantallas pronto. | Deja HU incompletas en A2 y expone la calificacion individual a criterios no demostrables. Se descarta. |
-| Flujos completos en A2; ampliacion web y movil en A3 | Cada persona presenta HU completas en ambos avances y se prueba identidad desde el inicio. | Requiere fixtures V1 y acuerdos tempranos de API; es el corte propuesto. |
+Se conservan 41 historias completas y 240 puntos: las 33 ADM/MOB/GTW del PDF
+suman 197 y las 8 WEB propuestas por el equipo suman 43. No se altera el alcance
+ni la estimacion para igualar cargas. Cada historia tiene una persona responsable
+de todos sus criterios, integracion, pruebas y documentacion, en un solo avance.
 
-A2 permite administrar usuarios/oferta, autenticar por gateway, operar notas y
-correo, y que el estudiante consulte/actualice su expediente y se prematricule.
-A3 agrega matricula web/movil, administracion de expedientes/grupos/prematricula,
-reportes, finanzas, resto del portal y la app movil completa.
+**Alejandro creo la plantilla de UI/UX.** Se reconoce expresamente su autoria y
+se le asigna ADM1 completa, incluyendo responsive, navegacion por rol y
+componentes comunes para ambas webs. La plantilla creada es un aporte existente
+comunicado por el equipo; acreditar el cierre requiere verificar toda la HU.
+Su reutilizacion en otras historias no vuelve a sumar los puntos de ADM1.
 
-No es necesario crear las pantallas administrativas de todas las dependencias
-para probar el primer flujo: V1 ya dispone de servicios. Para notas y dashboards
-A2 se preparan matriculas, grupos y facturas verificables mediante fixtures/API.
-Esos datos no acreditan las pantallas que se entregaran en A3.
+Las cuatro historias antes divididas recuperan su ID y sus 8 puntos originales:
 
-## Reparto evaluable
+| Historia | Avance | Responsable unico | Razon de continuidad |
+|---|---:|---|---|
+| ADM3 | 2 | Fabian | Integra el dashboard administrativo y del profesor con usuarios, permisos y parametros. |
+| ADM17 | 2 | Jose | Reune rubros y notas con los permisos y pruebas de backend ya documentados por Jose. |
+| MOB1 | 3 | Jose | Integra autenticacion y ciclo seguro de sesion con la base movil. |
+| MOB5 | 3 | Alejandro | Reune seleccion y confirmacion movil con la matricula administrativa y WEB5. |
 
-| Persona | A2: unidades / puntos | A3 nuevas: unidades / puntos | Total: unidades / puntos | Enfoque |
+Los [criterios completos](../planificacion/subhistorias.md) mantienen el alcance
+anterior sin subhistorias evaluables. Las contribuciones tecnicas previas
+conservan su autoria historica; no crean responsabilidad compartida por HU.
+
+## Carga por persona
+
+| Persona | HU A2 / puntos | HU nuevas A3 / puntos | HU totales / puntos | Enfoque |
 |---|---|---|---|---|
-| Jose | 5 / 30 | 6 / 30 | 11 / 60 | Plantilla/sesion/seguridad y vista del profesor/notas; luego base movil, grupos y auditoria. |
+| Jose | 4 / 32 | 6 / 33 | 10 / 65 | Sesion, routing, seguridad y notas; luego grupos, auditoria y base/sesion/resumen/expediente movil. |
 | Ramses | 6 / 30 | 6 / 30 | 12 / 60 | Modulos, oferta y correo; luego consultas, reportes y cursos web/movil. |
-| Alejandro | 5 / 30 | 5 / 30 | 10 / 60 | Usuarios/roles/parametros/instituciones y routing; luego expedientes/matricula y persistencia de sesion movil. |
-| Fabian | 6 / 30 | 6 / 30 | 12 / 60 | Inicio administrativo/estudiantil, rubros, perfil/expediente/prematricula propios; luego finanzas y prematricula/seleccion movil. |
-| Total | 22 / 120 | 23 / 120 | 45 / 240 | 41 historias de origen, cuatro divididas en dos. |
+| Alejandro | 5 / 28 | 4 / 32 | 9 / 60 | Plantilla de UI/UX, perfil, inicio, expediente y prematricula propios; luego expedientes y matricula web/movil. |
+| Fabian | 5 / 30 | 5 / 25 | 10 / 55 | Dashboards, usuarios, permisos, parametros e instituciones; luego finanzas y prematricula administrativa/movil. |
+| Total | 20 / 120 | 21 / 120 | 41 / 240 | Historias completas, con un responsable cada una. |
 
-Se logra igualdad exacta por persona y entrega conservando los puntos originales.
-La cantidad de unidades sigue variando segun su complejidad. Los puntos iguales
-no garantizan igual duracion ni eliminan los riesgos de integracion; las tareas
-compartidas y sus responsables se mantienen visibles.
+Para equilibrar el segundo avance, GTW1 (8 puntos) pasa completa de Alejandro
+a Jose, que ya tiene GTW2: el gateway queda bajo un mismo responsable con dos
+historias oficiales separadas. Alejandro recibe ADM24/WEB1/WEB2/WEB4 completas
+(20 puntos) y Fabian recibe ADM4/ADM5/ADM6/ADM8 completas (22 puntos).
+A2 queda en 32/30/28/30 puntos para Jose/Ramses/Alejandro/Fabian. Alejandro
+conserva ADM1 y el reconocimiento por la plantilla de UI/UX. A3 mantiene su
+reparto; los totales acumulados quedan en 65/60/60/55 puntos. Se acepta esa diferencia
+para mantener historias completas y continuidad de dominio. Si surge un bloqueo, se puede reasignar una historia
+completa actualizando el backlog y todos los resumenes; no se divide para
+conservar un total individual. Los puntos expresan complejidad, no horas ni nota.
 
-## Descomposicion necesaria para 30 puntos exactos
+## Corte entre entregas
 
-El usuario confirmo que el profesor permite subhistorias evaluables. La solucion
-no cambia las estimaciones: ADM3 y ADM17 (A2), MOB1 y MOB5 (A3) se dividen en
-bloques funcionales de 5 + 3. Se mantienen los criterios y el ID padre del PDF.
-Los [criterios de cada unidad](../planificacion/subhistorias.md) separan actores
-o etapas de un flujo, fijan evidencia propia y exigen integracion conjunta.
+A2 entrega gateway, seguridad, usuarios/oferta, notas, correo y vistas por rol;
+el estudiante dispone de inicio, expediente y prematricula. A3 agrega grupos,
+matricula, expedientes administrativos, reportes, finanzas, resto del portal y
+las siete HU moviles. El final demuestra las 41 historias acumuladas y la
+regresion de las 20 de A2, sin sumar otra vez sus puntos.
 
-Con los pesos 3/5/8 actuales no existe un reparto de ocho grupos de 30 usando
-solo historias indivisibles. Dos divisiones por avance bastan y son el minimo
-para el corte elegido usando 8 -> 5 + 3. La solucion no convierte tareas de
-apoyo en historias nuevas ni contabiliza 8 del padre ademas de 5 + 3 de los hijos.
+Se mantienen flujos completos por entrega. Aplazar permisos, pruebas o
+integracion a A3 dejaria incompletas las historias de A2. Para notas y metricas
+se preparan grupos, matriculas y facturas mediante fixtures/API V1 verificables;
+esos datos no acreditan las pantallas administrativas previstas para A3.
 
-## Escala y alcance de los puntos
+## Estimacion y calificacion
 
-Se conserva la escala acordada de Planning Poker: 0, 1/2, 1, 2, 3, 5, 8, 13 y 21.
-Infinito, interrogacion y cafe son cartas de discusion; no suman puntos.
+Se conserva la escala de Planning Poker: 0, 1/2, 1, 2, 3, 5, 8, 13 y 21.
+Infinito, interrogacion y cafe son cartas de discusion, sin puntos. Un 3
+representa mantenimiento pequeno; 5, interfaz de dominio e integracion acotada;
+8, seguridad transversal o flujos con varias reglas y dependencias. Las
+incertidumbres de 13/21 se aclaran antes de comprometer la historia, manteniendo
+una HU completa con un responsable para la evaluacion.
 
-- 3: mantenimiento pequeno con reglas conocidas.
-- 5: interfaz de dominio, relaciones, filtros o consultas e integracion acotada.
-- 8: seguridad/infraestructura transversal o flujo con varias reglas y dependencias.
-- 13/21: aclarar o dividir una historia demasiado incierta antes de comprometerla.
+WEB1/2/3/4/6/7/8 se estiman en 5 y WEB5 en 8. Las estimaciones incluyen interfaz,
+adaptaciones de API, permisos, bitacora, integracion, pruebas y documentacion.
+El trabajo compartido se vincula a una HU propietaria, sin cobrarlo por consumidor.
+Si cambia el alcance se reestima con el equipo; no se oculta el esfuerzo ni se
+conservan artificialmente los puntos.
 
-Se mantienen los 197 puntos anteriores de ADM/MOB/GTW como estimacion inicial,
-no como certificacion de que las ampliaciones de API ya estan cubiertas en codigo.
-Las nuevas WEB1/2/3/4/6/7/8 se proponen en 5 y WEB5 en 8: total 43.
+El PDF indica 15% para A2 y 30% para A3; no se infiere una formula de nota ni
+fechas calendario. Los puntos y criterios se registran separados de la nota
+que comunique el profesor. Las estimaciones WEB siguen siendo propuestas del
+equipo, sin presentarlas como puntajes aprobados por el profesor.
 
-La estimacion incluye adaptacion de backend, pruebas y documentacion por HU.
-Las tareas comunes se asignan a una HU propietaria y no se cobran por cada
-consumidor. Si la inspeccion de contratos cambia una estimacion de forma material,
-se reestima con el equipo y se rebalancea el mismo avance; no se oculta el esfuerzo
-bajo otra persona ni se conserva artificialmente el total de 240.
-
-## Calificacion y responsabilidad individual
-
-El PDF define 15% para A2 y 30% para A3, pero no establece en el texto revisado
-la formula que combina puntos y calificacion de cada HU. No se asume que la
-nota sea un promedio simple ni se convierten story points en porcentaje academico.
-Se registra por separado para cada HU: puntos, responsable, criterios completos,
-evidencia y calificacion cuando el profesor la comunique.
-
-Cada unidad evaluable tiene un responsable y un revisor de apoyo; el revisor no
-recibe otros puntos por revisar. Dependencias compartidas no se registran como
-historias duplicadas ni como responsables colectivos sin una persona concreta.
-Los padres descompuestos tienen coordinador de integracion, sin otros puntos,
-y se cierran solo cuando ambos hijos y la prueba conjunta cumplen el alcance.
-Una HU no se marca terminada si solo existen algunas pantallas o parte de sus
-criterios. Los defectos y su impacto en consumidores quedan visibles en el tablero.
+## Revision y responsabilidad individual
 
 | Autor responsable | Revisor de apoyo | Objetivo de la revision |
 |---|---|---|
-| Jose | Fabian | Seguridad de sesion y gateway, luego navegacion/identidad movil. |
-| Fabian | Jose | Autorizacion, notas y consistencia de operaciones financieras. |
-| Alejandro | Ramses | Integridad de referencias, campos propios y tramites estudiantiles. |
-| Ramses | Alejandro | Filtros, contratos de consulta, exportaciones y datos de oferta. |
+| Jose | Fabian | Sesion, gateway y notas; luego identidad y navegacion movil. |
+| Fabian | Jose | Dashboards, autorizacion y consistencia financiera. |
+| Alejandro | Ramses | Plantilla, integridad de referencias y tramites estudiantiles. |
+| Ramses | Alejandro | Filtros, exportaciones, consultas y oferta. |
 
-## Cambios principales de responsabilidad
+El revisor contrasta evidencia; no comparte responsabilidad evaluable ni recibe
+puntos por la HU revisada. Cada responsable cierra su historia completa. Se
+registran apoyos previos, bloqueos y defectos sin atribuir a una persona trabajo
+hecho por otra. La [guia de evidencia](../pruebas/criterio-evidencia.md) permite
+identificar la aportacion individual y el cumplimiento real.
 
-- Jose cede ADM5 a Alejandro, mantiene ADM1/ADM2/GTW2 y toma ADM3-P/ADM17-N:
-  plantilla/sesion, seguridad y experiencia del profesor. En A3 conserva auditoria
-  y base movil, toma ADM13 y comparte MOB1 con Alejandro.
-- Ramses mantiene sus unidades de ambas entregas: su reparto ya era 30/30.
-- Alejandro recibe ADM5 y GTW1, conservando usuarios/parametros/instituciones.
-  WEB2/WEB4/ADM24 pasan a Fabian. En A3 concentra ADM15/ADM16/WEB5 y las partes
-  de persistencia de sesion y confirmacion movil; cede ADM13 a Jose y ADM14/MOB4 a Fabian.
-- Fabian conserva ADM3-A/ADM17-R/WEB1 y recibe perfil/expediente/prematricula
-  estudiantiles. En A3 mantiene finanzas, recibe la prematricula administrativa
-  y movil, y comparte la matricula movil con Alejandro.
+GTW1 y GTW2 de Jose son historias distintas del PDF integradas en
+un unico gateway. Las dependencias entre HU no implican compartir una historia.
+El autor historico de un servicio V1 no determina el responsable de su HU V2.
 
-GTW1 (routing) y GTW2 (seguridad) siguen integrados en un unico gateway. Los
-servicios de apoyo no se reimplementan por cambiar de responsable.
+## Acuerdos y riesgos
 
-El reparto no queda atado al autor historico de cada servicio V1. Los cambios
-necesarios se coordinan desde la HU V2 responsable y se integran por contrato.
-
-## Acuerdos y riesgos antes de comprometer el plan
-
-- El corte A2/A3 lo elige el equipo por la libertad comunicada por el profesor;
-  no se deja pendiente una autorizacion adicional del profesor para empezar.
-- El equipo debe revisar la estimacion WEB y los permisos por identidad; no
-  se presenta esta propuesta como puntaje ya aceptado por el profesor.
-- Resolver SRV7, el alcance de profesor en ADM13 y los destinos moviles implicitos
-  con el profesor cuando corresponda. Estas dudas no justifican inventar accesos.
+- El corte A2/A3 lo elige el equipo segun la libertad comunicada por el profesor.
+- Resolver SRV7, permisos de profesor en ADM13 y destinos moviles implicitos con
+  el profesor cuando corresponda; no inventar accesos ni acreditar tabs vacios.
 - Mantener React/TypeScript, React Native/TypeScript y YARP como propuestas
-  tecnicas previas; el PDF permite alternativas. Este cambio es documental,
-  no selecciona versiones ni verifica compatibilidad de frameworks.
-- Los cambios de BD siguen el procedimiento del PDF. No se modifica SQL ni codigo
-  como parte de esta planificacion.
-
-Los bloqueos y sus responsables estan en [contratos](../planificacion/contratos.md).
-La [matriz de evidencia](../pruebas/criterio-evidencia.md) permite demostrar la
-aportacion individual sin confundir preparacion con una prueba aprobada.
+  tecnicas previas. Este reajuste documental no selecciona versiones.
+- Los cambios de BD siguen el procedimiento del PDF. Esta planificacion no
+  modifica codigo ni SQL.
+- Los contratos, responsables y consumidores se detallan en
+  [contratos](../planificacion/contratos.md). Cada HU demuestra permisos por rol,
+  identidad propia, errores de dependencia y bitacoras con evidencia real.

@@ -1,6 +1,7 @@
 # Contratos y dependencias del plan
 
-Revision estatica de las fuentes activas del 23 de octubre de 2026. No es una
+Revision estatica de las fuentes activas del 23 de octubre de 2026;
+responsables reajustados el 28 de octubre de 2026. No es una
 prueba de conectividad ni una implementacion de las ampliaciones descritas.
 Se conserva la propiedad de datos de los 22 servicios y las tecnologias V1.
 
@@ -22,22 +23,22 @@ Se conserva la propiedad de datos de los 22 servicios y las tecnologias V1.
 
 | Acuerdo | Cuando debe estar resuelto | Responsable principal | Consumidores y condicion |
 |---|---|---|---|
-| Rutas externas, verbos y errores | Inicio del avance 2 | Alejandro, GTW1 | Jose valida proteccion con GTW2; un solo gateway. |
-| Sesion, rol e identidad Usuario-Expediente | Antes del primer flujo estudiantil A2 | Jose, ADM2/GTW2; Alejandro, ADM4/ADM5 | Fabian verifica WEB2/WEB4/ADM24; sin vinculo valido no se permite elegir otro expediente. |
-| Permisos y menu persistidos | Antes de cerrar ADM1/ADM5/ADM7 | Alejandro (permisos), Ramses (modulos) | Jose integra el layout y la politica del gateway; Fabian verifica perfiles. |
-| Campos editables del estudiante | A2, antes de WEB2/ADM24 | Fabian | Jose reutiliza el contrato en MOB3, sin otro desarrollo backend equivalente. |
-| Prematricula propia y duplicados | A2, WEB4 | Fabian | Se reutiliza en ADM14/MOB4 del mismo responsable en A3; las interfaces y evidencia son nuevas. |
-| Historial de correo y parametros | A2, ADM22 | Ramses; Alejandro provee contrato ADM6 | Fabian lo consume en ADM3-A y Jose en ADM3-P con permisos por rol. |
-| Dashboards y notas | A2, ADM3/ADM17 | Fabian (ADM3-A/ADM17-R), Jose (ADM3-P/ADM17-N) | Contratos comunes y prueba conjunta de cada padre; fixtures V1 para notas/metricas. |
-| Mis matriculas/cursos y filtros propios | Inicio de A3 | Ramses (WEB3), Alejandro (WEB5/MOB5-C), Fabian (MOB5-S) | Un contrato de consulta y otro de confirmacion; Alejandro gobierna escritura propia y validacion final. |
-| Historial y notas propias | A3 antes de WEB6/WEB7/MOB6 | Ramses | Jose entrega las restricciones de escritura de notas en ADM17-N desde A2, coordinado con los rubros de Fabian. |
+| Rutas externas, verbos y errores | Inicio del avance 2 | Jose, GTW1 | El mismo responsable integra proteccion con GTW2; un solo gateway. |
+| Sesion, rol e identidad Usuario-Expediente | Antes del primer flujo estudiantil A2 | Jose, ADM2/GTW2; Fabian, ADM4/ADM5 | Alejandro verifica WEB2/WEB4/ADM24; sin vinculo valido no se permite elegir otro expediente. |
+| Permisos y menu persistidos | Antes de cerrar ADM1/ADM5/ADM7 | Fabian (permisos), Ramses (modulos) | Alejandro integra el layout de ADM1 cuya plantilla de UI/UX creo; Jose integra la politica del gateway; Alejandro verifica perfiles en ADM24/WEB1. |
+| Campos editables del estudiante | A2, antes de WEB2/ADM24 | Alejandro | Jose reutiliza el contrato en MOB3, sin otro desarrollo backend equivalente. |
+| Prematricula propia y duplicados | A2, WEB4 | Alejandro | Fabian reutiliza el contrato en ADM14/MOB4 en A3; coordina con Alejandro, sin duplicar backend. Las interfaces y evidencia son nuevas. |
+| Historial de correo y parametros | A2, ADM22 | Ramses; Fabian provee contrato ADM6 | Fabian lo consume en ADM3 para ambos perfiles, con permisos por rol. |
+| Dashboards y notas | A2, ADM3/ADM17 | Fabian (ADM3 completa), Jose (ADM17 completa) | Contrato entre dashboards y notas; cada responsable prueba su HU completa con fixtures V1 para notas/metricas. |
+| Mis matriculas/cursos y filtros propios | Inicio de A3 | Ramses (WEB3), Alejandro (WEB5/MOB5 completas) | Un contrato de consulta y otro de confirmacion; Alejandro gobierna escritura propia y validacion final. |
+| Historial y notas propias | A3 antes de WEB6/WEB7/MOB6 | Ramses | Jose entrega las restricciones de escritura de notas en ADM17 desde A2, incluidos los rubros de la misma HU. |
 | Finanzas por estudiante | A3 antes de WEB8/MOB2 | Fabian | Jose consume el contrato para el resumen movil. |
-| Sesion movil segura | A3, antes de cerrar MOB1 | Jose (MOB1-A), Alejandro (MOB1-S) | Contrato de entrega de tokens y eventos; probar login, restauracion y salida juntos. |
+| Sesion movil segura | A3, antes de cerrar MOB1 | Jose (MOB1 completa) | Autenticacion y ciclo seguro de sesion bajo un mismo responsable; probar login, restauracion y salida. |
 | Navegacion movil y destinos implicitos | Inicio de A3, antes de cerrar MOB0/MOB6 | Jose y Ramses | Resolver Pagos/Perfil/Notas/Historial; un tab sin destino no acredita cumplimiento. |
 
 El responsable de cada unidad evaluable V2 coordina los cambios del servicio que necesita;
-no depende de que vuelva una quinta persona de V1. Las cuatro HU descompuestas
-conservan coordinador y contratos de integracion en [subhistorias](subhistorias.md). La autoria historica del
+no depende de que vuelva una quinta persona de V1. Cada HU tiene un unico responsable; los acuerdos entre HU no implican
+compartir una historia. Ver [criterios indivisibles](subhistorias.md). La autoria historica del
 backend no transfiere automaticamente la responsabilidad evaluable.
 
 ## Decisiones que no deben ocultarse
