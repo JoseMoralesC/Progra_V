@@ -1,0 +1,166 @@
+{
+  "audit_date": "2026-10-28",
+  "timezone": "America/Mexico_City",
+  "commit": "d5c9769dce2539aaca80525873a98450c21a2d33",
+  "evidence_type": "Resumen de ejecuciones actuales observadas; desglose Java extraido de XML Surefire. No es un log bruto ni evidencia de integracion real.",
+  "scope": {
+    "delivery": 2,
+    "story_count": 20,
+    "estimated_points": 120,
+    "closed_stories_accredited": 0,
+    "owners": {
+      "Jose": [
+        "ADM2",
+        "ADM17",
+        "GTW1",
+        "GTW2"
+      ],
+      "Ramses": [
+        "ADM7",
+        "ADM9",
+        "ADM10",
+        "ADM11",
+        "ADM12",
+        "ADM22"
+      ],
+      "Alejandro": [
+        "ADM1",
+        "ADM24",
+        "WEB1",
+        "WEB2",
+        "WEB4"
+      ],
+      "Fabian": [
+        "ADM3",
+        "ADM4",
+        "ADM5",
+        "ADM6",
+        "ADM8"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "command": "dotnet test NuevoAvatar.Autenticacion.Tests/NuevoAvatar.Autenticacion.Tests.csproj --no-restore",
+      "exit_code": 0,
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "Pruebas locales con dobles"
+    },
+    {
+      "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am test",
+      "exit_code": 0,
+      "passed": 33,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "30 Notas, 3 configuracion de biblioteca Java; Mockito/MockMvc, sin SQL remoto"
+    },
+    {
+      "command": "dotnet build Usuario.ConsumoWeb/NuevoAvatar.Web/Usuario.ConsumoWeb.csproj --no-restore",
+      "exit_code": 0,
+      "errors": 0,
+      "warnings": 0,
+      "preliminary_attempt": "NETSDK1004: assets ausentes; resuelto con dotnet restore del proyecto --ignore-failed-sources",
+      "scope": "Prototipo Razor Pages; sin verificacion visual"
+    },
+    {
+      "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am package -DskipTests",
+      "exit_code": 0,
+      "scope": "Empaquetado; no se cuentan nuevas pruebas"
+    },
+    {
+      "command": "python tools/validar-artefactos.py --servicio Notas",
+      "exit_code": 0,
+      "result": "Artefacto verificado: Notas",
+      "preliminary_attempt": "Falta un jar unico de Notas; resuelto con package"
+    },
+    {
+      "command": "python tools/auditar-limites.py",
+      "exit_code": 0,
+      "services": 22,
+      "source_files": 290,
+      "infractions_detected": 0,
+      "scope": "SQL explicito y entidades JPA; no prueba roles ni pertenencia. Reporte V1 restaurado a contenido previo."
+    }
+  ],
+  "java_suites": [
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest",
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.xml"
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.integracion.ConfiguracionLocalTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "report": "integracion/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.integracion.ConfiguracionLocalTest.xml"
+    }
+  ],
+  "totals": {
+    "local_tests_passed": 58,
+    "local_tests_failed": 0,
+    "real_ui_gateway_service_journeys_executed": 0
+  },
+  "not_performed": [
+    "SQL Server remoto",
+    "Migraciones",
+    "Envio de correo",
+    "Suite con bases temporales",
+    "Pruebas de navegador/dispositivos",
+    "Pruebas de concurrencia SQL",
+    "Verificacion remota de tablero/PR/aprobaciones"
+  ],
+  "primary_blockers": [
+    "Tecnologia web: Razor Pages frente a React/Blazor WebAssembly del PDF",
+    "Falta host proxy YARP/Ocelot y routing",
+    "Interfaces con datos de prototipo sin integracion real",
+    "Faltan permisos persistidos y operaciones propias de estudiante",
+    "Faltan criterios V2 de correo, auditoria de rubros y evidencia final"
+  ]
+}
