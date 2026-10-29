@@ -1,0 +1,210 @@
+﻿
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Mantenimiento de Usuarios";
+}
+
+<div class="stage">
+    <aside class="menu glass" aria-label="Menú principal" id="sidebar">
+        <div class="menu-head">
+            <span class="logo-star">✦</span>
+            <span class="head-title">Menú</span>
+            <button class="head-toggle" id="sidebarToggle" title="Contraer menú" aria-label="Contraer menú">‹</button>
+        </div>
+
+        <button class="menu-item" data-menu="Inicio" title="Inicio">
+            <span class="mi">⌂</span><span class="label">Inicio</span>
+        </button>
+        <button class="menu-item" data-menu="Mensajes" title="Notificaciones">
+            <span class="mi">▣</span><span class="label">Notificaciones</span><span class="meta">2</span>
+        </button>
+        <button class="menu-item" id="catalogToggle" title="Gestión académica">
+            <span class="mi">⊞</span><span class="label">Gestión académica</span><span class="meta" id="catalogSign">＋</span>
+        </button>
+
+        <div class="subtree" id="catalogSub" style="display:none">
+            <button class="menu-item sub" data-menu="Cursos"><span class="mi">▤</span><span class="label">Cursos</span></button>
+            <button class="menu-item sub" data-menu="Grupos"><span class="mi">▦</span><span class="label">Grupos</span></button>
+            <button class="menu-item sub" data-menu="Periodos"><span class="mi">◷</span><span class="label">Periodos</span></button>
+        </div>
+
+        <button class="menu-item" data-menu="Usuarios" title="Usuarios">
+            <span class="mi">♙</span><span class="label">Usuarios</span>
+        </button>
+        <button class="menu-item active" id="securityToggle" title="Administración">
+            <span class="mi">▱</span><span class="label">Administración</span><span class="meta" id="securitySign">−</span>
+        </button>
+
+        <div class="subtree" id="securitySub">
+            <button class="menu-item sub active" data-menu="Usuarios"><span class="mi">♙</span><span class="label">Usuarios y roles</span></button>
+            <button class="menu-item sub" data-menu="Bitácoras"><span class="mi">▧</span><span class="label">Bitácoras</span></button>
+            <button class="menu-item sub" data-menu="Permisos"><span class="mi">◇</span><span class="label">Permisos</span></button>
+        </div>
+
+        <button class="menu-item" data-menu="Reportes" title="Reportes">
+            <span class="mi">▤</span><span class="label">Reportes</span><span class="meta">＋</span>
+        </button>
+
+        <div class="menu-footer">NUEVO AVATAR V2<br />Prototipo de diseño</div>
+    </aside>
+
+    <main class="content">
+        <header class="topbar">
+            <div class="crumb">Administración&nbsp; / &nbsp;<strong id="crumb">Usuarios</strong></div>
+            <div class="top-right">
+                <button class="round-btn" id="themeToggle" title="Cambiar tema">☾</button>
+                <button class="round-btn" id="notify" title="Notificaciones">♧</button>
+                <div class="user">
+                    <div class="avatar">AL</div>
+                    <div>
+                        <div class="user-name">Ana López</div>
+                        <div class="user-role">Administradora</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="page-head">
+            <div>
+                <h1 id="title">Mantenimiento de Usuarios</h1>
+                <p class="subtitle" id="subtitle">Administra los usuarios y sus roles en el sistema.</p>
+            </div>
+            <button class="btn btn-primary" id="newUser">＋ Nuevo usuario</button>
+        </section>
+
+        <section class="panel">
+            <div class="filters">
+                <div class="field">
+                    <label for="search">Buscar</label>
+                    <input id="search" placeholder="Identificación, nombre o email..." />
+                </div>
+                <div class="field">
+                    <label for="typeFilter">Tipo</label>
+                    <select id="typeFilter">
+                        <option value="">Todos</option>
+                        <option>Cédula</option>
+                        <option>Pasaporte</option>
+                        <option>Residencia</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="domainFilter">Dominio</label>
+                    <select id="domainFilter">
+                        <option value="">Todos</option>
+                        <option value="cuc.cr">cuc.cr</option>
+                        <option value="cuc.ac.cr">cuc.ac.cr</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="roleFilter">Rol</label>
+                    <select id="roleFilter">
+                        <option value="">Todos</option>
+                        <option>Estudiante</option>
+                        <option>Profesor</option>
+                        <option>Administrador</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="filter">⌕ Filtrar</button>
+                <button class="btn btn-soft" id="clear">↻ Limpiar</button>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Email (ID)</th>
+                            <th>Tipo de identificación</th>
+                            <th>Identificación</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+            </div>
+
+            <div class="table-foot">
+                <span id="count">Mostrando registros</span>
+                <div class="pagination">
+                    <button class="page" id="prev">‹</button>
+                    <button class="page current">1</button>
+                    <button class="page" id="next">›</button>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div class="backdrop" id="backdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+        <div class="modal-head">
+            <h2 id="modalTitle">Nuevo usuario</h2>
+            <button class="close" id="close" aria-label="Cerrar">×</button>
+        </div>
+
+        <form id="form">
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="emailUser">Email (ID) <span class="required">*</span></label>
+                        <div class="email-combo">
+                            <input id="emailUser" type="text" required placeholder="nombre.apellido" autocomplete="off" />
+                            <select id="emailDomain" aria-label="Dominio del correo" required>
+                                <option value="cuc.cr">@@cuc.cr</option>
+                                <option value="cuc.ac.cr">@@cuc.ac.cr</option>
+                            </select>
+                        </div>
+                        <div class="helper">Selecciona el dominio institucional permitido.</div>
+                    </div>
+
+                    <div class="field">
+                        <label for="idType">Tipo de identificación <span class="required">*</span></label>
+                        <select id="idType" required>
+                            <option value="">Seleccione...</option>
+                            <option>Cédula</option>
+                            <option>Pasaporte</option>
+                            <option>Residencia</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="identification">Identificación <span class="required">*</span></label>
+                        <input id="identification" required placeholder="Número de identificación" />
+                    </div>
+
+                    <div class="field">
+                        <label for="name">Nombre completo <span class="required">*</span></label>
+                        <input id="name" required placeholder="Nombre y apellidos" />
+                    </div>
+
+                    <div class="field">
+                        <label for="role">Rol <span class="required">*</span></label>
+                        <select id="role" required>
+                            <option value="">Seleccione...</option>
+                            <option>Estudiante</option>
+                            <option>Profesor</option>
+                            <option>Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Contraseña <span class="required" id="passStar">*</span></label>
+                        <input id="password" type="password" placeholder="Ingrese una contraseña" />
+                        <div class="helper" id="passHelp">Obligatoria al crear un usuario.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-soft" type="button" id="cancel">Cancelar</button>
+                <button class="btn btn-primary" type="submit">▣ Guardar usuario</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
