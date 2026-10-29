@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NuevoAvatar.Gateway.Seguridad\NuevoAvatar.Gateway.Seguridad.csproj" />
     <ProjectReference Include="..\NuevoAvatar.Autenticacion\NuevoAvatar.Autenticacion.csproj" />
   </ItemGroup>
 

@@ -26,7 +26,8 @@ class NotasServiceTest {
             mock(DesgloseRubroRepository.class),
             mock(NotaRubroRepository.class),
             mock(MatriculaRepository.class),
-            grupos
+            grupos,
+            mock(AuditoriaNotas.class)
         );
 
         ResponseStatusException error = assertThrows(
@@ -62,7 +63,8 @@ class NotasServiceTest {
             rubros,
             notas,
             mock(MatriculaRepository.class),
-            grupos
+            grupos,
+            mock(AuditoriaNotas.class)
         );
 
         ResponseStatusException error = assertThrows(

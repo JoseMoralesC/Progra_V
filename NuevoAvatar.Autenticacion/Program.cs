@@ -79,9 +79,11 @@ builder.Services.AddSingleton(new JwtSettings
           ?? throw new InvalidOperationException("Falta Jwt:Key en secrets.json")
 });
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IIdentidadSesionService, IdentidadSesionService>();
 
 builder.Services.AddIntegracion();
 var app = builder.Build();
+app.UseMiddleware<NuevoAvatarSeguridad.AuditoriaSesionMiddleware>();
 app.MapIntegracion("Autenticacion", builder.Configuration.GetConnectionString("SeguridadDb")!);
 
 // Registro los errores tecnicos no controlados en la bitacora.

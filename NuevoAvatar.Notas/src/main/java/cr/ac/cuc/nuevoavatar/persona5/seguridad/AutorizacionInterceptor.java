@@ -14,6 +14,7 @@ public class AutorizacionInterceptor implements HandlerInterceptor {
 
     public static final String TOKEN_ATTRIBUTE = "seguridad.token";
     public static final String USER_ATTRIBUTE = "seguridad.usuario";
+    public static final String SESSION_ATTRIBUTE = "seguridad.sesion";
 
     private final SeguridadClient seguridad;
 
@@ -38,8 +39,10 @@ public class AutorizacionInterceptor implements HandlerInterceptor {
             return false;
         }
 
+        SesionActual sesion = seguridad.obtenerSesion(autorizacion);
         request.setAttribute(TOKEN_ATTRIBUTE, autorizacion);
-        request.setAttribute(USER_ATTRIBUTE, JwtUsuario.obtener(autorizacion));
+        request.setAttribute(USER_ATTRIBUTE, sesion.usuarioID());
+        request.setAttribute(SESSION_ATTRIBUTE, sesion);
         return true;
     }
 }

@@ -24,16 +24,19 @@ public class NotasService {
     private final NotaRubroRepository notas;
     private final MatriculaRepository matriculas;
     private final GrupoRepository grupos;
+    private final AuditoriaNotas auditoria;
 
     public NotasService(
             DesgloseRubroRepository rubros,
             NotaRubroRepository notas,
             MatriculaRepository matriculas,
-            GrupoRepository grupos) {
+            GrupoRepository grupos,
+            AuditoriaNotas auditoria) {
         this.rubros = rubros;
         this.notas = notas;
         this.matriculas = matriculas;
         this.grupos = grupos;
+        this.auditoria = auditoria;
     }
 
     @Transactional
@@ -62,7 +65,11 @@ public class NotasService {
     }
 
     @Transactional
-    public NotaResponse asignarNota(AsignarNotaRequest request) {
+    public NotaResponse asignarNota(AsignarNotaRequest request, boolean modificar) {
+        if (request.nota() == null || request.nota().compareTo(BigDecimal.ONE) < 0 ||
+                request.nota().compareTo(CIEN) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La nota debe estar entre 1 y 100");
+        }
         Matricula matricula = matriculas.findById(request.matriculaId()).orElseThrow(() ->
             invalido("La matricula no existe")
         );
@@ -77,14 +84,28 @@ public class NotasService {
             throw invalido("El rubro no pertenece al grupo de la matricula");
         }
 
-        NotaRubro nota = notas
-            .findByMatriculaIdAndRubroId(request.matriculaId(), request.rubroId())
-            .orElseGet(NotaRubro::new);
+        var existente = notas.findByMatriculaIdAndRubroId(request.matriculaId(), request.rubroId());
+        if (!modificar && existente.isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La nota ya existe; utilice PUT");
+        if (modificar && existente.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La nota no existe; utilice POST");
+        NotaRubro nota = existente.orElseGet(NotaRubro::new);
+        NotaResponse anterior = existente.isPresent() ? NotaResponse.desde(nota, rubro) : null;
         nota.setMatriculaId(request.matriculaId());
         nota.setRubroId(request.rubroId());
         nota.setNota(request.nota());
         nota.setFechaRegistro(LocalDateTime.now());
-        return NotaResponse.desde(notas.saveAndFlush(nota), rubro);
+        NotaResponse actual = NotaResponse.desde(notas.saveAndFlush(nota), rubro);
+        auditoria.registrar(anterior, actual);
+        return actual;
+    }
+
+    @Transactional(readOnly = true)
+    public List<NotasEstudianteResponse> obtenerNotasGrupo(Integer grupoId) {
+        var grupo = grupos.findById(grupoId).orElseThrow(() -> invalido("El grupo no existe"));
+        return matriculas.findByCursoIdAndGrupoIdAndEstado(grupo.getCursoId(), grupoId, Matricula.ACTIVA)
+            .stream().map(m -> new NotasEstudianteResponse(m.getId(), m.getIdentificacionEstudiante(),
+                obtenerNotas(m.getIdentificacionEstudiante(), grupo.getCursoId(), grupoId))).toList();
     }
 
     @Transactional(readOnly = true)
