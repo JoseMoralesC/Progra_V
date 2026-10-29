@@ -28,7 +28,7 @@ que se evalua y quien responde sin deducirlo de un archivo compartido.
 
 | HU | Criterio y fuente | Responsable | Precondiciones y pasos | Esperado | Observado | Captura/registro | Version | Estado |
 |---|---|---|---|---|---|---|---|---|
-| WEB2 | C5 y condiciones comunes | Fabian | Dos estudiantes; intentar cambiar identificacion o un expediente ajeno | Rechazo en servidor; datos intactos | Por ejecutar | Pendiente | Pendiente | Pendiente |
+| WEB2 | C5 y condiciones comunes | Alejandro | Dos estudiantes; intentar cambiar identificacion o un expediente ajeno | Rechazo en servidor; datos intactos | Por ejecutar | Pendiente | Pendiente | Pendiente |
 
 La fila es un ejemplo de plan de prueba. No acredita que el rechazo ya exista.
 Usar al menos una fila por criterio; una misma captura solo cubre varios si
@@ -60,13 +60,17 @@ mock no demuestra una pantalla integrada. No registrar contrasenas, tokens o cla
 internas en capturas. Los datos de demostracion son identificables y su limpieza
 se limita a lo creado para esas pruebas.
 
-## Evidencia de subhistorias
+## Evidencia de historias completas
 
-ADM3, ADM17, MOB1 y MOB5 tienen dos unidades evaluables cada una, con criterios
-y responsables en [subhistorias](../planificacion/subhistorias.md). Registrar
-ficha, evidencia y nota por ID completo (por ejemplo ADM17-N). El padre conserva
-la cobertura del PDF y su prueba conjunta, pero no suma otros 8 puntos ni otra
-nota. Hay 45 unidades evaluables sobre 41 historias de origen.
+Reajuste del 28 de octubre de 2026: las 41 HU son indivisibles y tienen un
+responsable unico. ADM3 corresponde a Fabian, ADM17 y MOB1 a Jose, y MOB5 a
+Alejandro. Registrar ficha, evidencia y nota por el ID original, sin sufijos ni
+puntos separados. Ver [criterios completos](../planificacion/subhistorias.md).
+
+ADM1 corresponde a Alejandro: dejar explicitamente registrado que creo la
+plantilla de UI/UX. Documentar ese aporte y verificar los demas criterios de la
+historia antes de cerrarla. El apoyo tecnico previo y las revisiones conservan
+su autoria, sin convertir la HU en responsabilidad compartida.
 
 ## Revision y cierre
 
