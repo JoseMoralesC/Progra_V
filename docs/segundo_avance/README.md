@@ -25,6 +25,8 @@ La app movil es otro cliente y conserva sus historias oficiales.
 
 | Documento | Contenido que gobierna |
 |---|---|
+| [Contexto de desarrollo](contexto-desarrollo.md) | Sintesis documental para iniciar A2; no sustituye los criterios de origen. |
+| [Backend de Jose](desarrollo-jose.md) | Implementacion tecnica sin UI/UX, contratos, pruebas locales y pendientes de integracion. |
 | [Backlog unico](planificacion/backlog.md) | 45 unidades evaluables de 41 HU de origen; responsables y puntos. |
 | [Subhistorias](planificacion/subhistorias.md) | Criterios y trazabilidad de las cuatro divisiones de 8 en 5 + 3. |
 | [Historias web de estudiantes](requerimientos/web-estudiantes.md) | Criterios de las 8 HU propuestas por el equipo; no son IDs del PDF. |

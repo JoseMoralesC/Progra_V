@@ -19,6 +19,15 @@ public class ApiExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
+    @ExceptionHandler({jakarta.validation.ConstraintViolationException.class,
+        org.springframework.web.method.annotation.HandlerMethodValidationException.class,
+        org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class,
+        org.springframework.web.bind.MissingServletRequestParameterException.class,
+        org.springframework.http.converter.HttpMessageNotReadableException.class})
+    public ResponseEntity<ApiError> parametros(Exception ex, HttpServletRequest request) {
+        return respuesta(HttpStatus.BAD_REQUEST, "Solicitud invalida", request, Map.of());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> validacion(
             MethodArgumentNotValidException ex,

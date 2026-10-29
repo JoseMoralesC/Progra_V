@@ -109,6 +109,7 @@ namespace NuevoAvatar.Seguridad.DataAccess
             return new LoginResponse
             {
                 ExpiresIn = venceUtc.ToLocalTime(),
+                UsuarioID = email,
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
                 RefreshToken = refresh
             };

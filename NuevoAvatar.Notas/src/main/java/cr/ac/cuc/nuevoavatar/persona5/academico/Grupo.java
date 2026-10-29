@@ -17,8 +17,12 @@ public class Grupo {
     @Column(name = "PeriodoId", nullable = false)
     private Integer periodoId;
 
+    @Column(name = "ProfesorId", nullable = false)
+    private Integer profesorId;
+
     public Integer getId() { return id; }
     public Integer getCursoId() { return cursoId; }
     public Integer getPeriodoId() { return periodoId; }
+    public Integer getProfesorId() { return profesorId; }
 }
 
