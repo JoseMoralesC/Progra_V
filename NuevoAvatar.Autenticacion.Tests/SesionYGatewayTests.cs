@@ -17,6 +17,22 @@ namespace NuevoAvatarSeguridad.Tests;
 public class SesionYGatewayTests
 {
     [Theory]
+    [InlineData("Bearer valido", 204)]
+    [InlineData("Bearer invalido", 401)]
+    [InlineData("", 401)]
+    public void LogoutExigeTokenYConservaUsuarioParaAuditoria(string header, int status)
+    {
+        var contexto = Contexto("/logout");
+        contexto.Request.Headers.Authorization = header;
+        var controller = new SesionController(new AuthFalso(), new IdentidadFalsa()) {
+            ControllerContext = new ControllerContext { HttpContext = contexto }
+        };
+        var resultado = Assert.IsAssignableFrom<StatusCodeResult>(controller.Salir());
+        Assert.Equal(status, resultado.StatusCode);
+        if (status == 204) Assert.Equal("real@cuc.ac.cr", contexto.Items["usuario"]);
+        else Assert.False(contexto.Items.ContainsKey("usuario"));
+    }
+    [Theory]
     [InlineData("PROFESOR", "p@cuc.ac.cr", 9, null)]
     [InlineData("ESTUDIANTE", "e@cuc.cr", null, "123")]
     public async Task Identidad_VinculaPorEmailTipoEIdentificacion(string rol, string email, int? profesor, string? estudiante)

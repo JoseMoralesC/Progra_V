@@ -32,6 +32,7 @@ public class TokenYAuditoriaTests
     [InlineData("/login", "POST", 201)]
     [InlineData("/refresh", "POST", 201)]
     [InlineData("/sesion", "GET", 200)]
+    [InlineData("/logout", "POST", 204)]
     public async Task AuditoriaNoIncluyeCredenciales(string ruta, string metodo, int status)
     {
         var context = new DefaultHttpContext();

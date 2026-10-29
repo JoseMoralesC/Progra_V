@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $taskPorts = @(5158, 7452, 7192, 8082, 8084, 8085, 5255, 5227, 5256, 5262, 7082, 7264, 7257, 7253)
 $taskPorts += @(5159, 5160, 5161, 5162, 8086, 8087, 8088, 8089, 8090, 8091, 8092, 8093, 8094, 8095)
+$taskPorts += @(5080)
 try {
     # Identifico los procesos y sus padres sin mostrar argumentos ni claves.
     $taskProcesses = @{}

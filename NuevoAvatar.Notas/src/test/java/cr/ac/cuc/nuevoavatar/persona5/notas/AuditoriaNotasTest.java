@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import cr.ac.cuc.nuevoavatar.persona5.seguridad.AutorizacionInterceptor;
 import cr.ac.cuc.nuevoavatar.persona5.seguridad.SeguridadClient;
 import java.math.BigDecimal;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -22,6 +23,33 @@ class AuditoriaNotasTest {
 
     @Test void rollbackNoEnviaBitacoraDeExito() {
         verificar(true);
+    }
+
+    @Test void reemplazoDeRubrosAuditaAntesYDespuesTrasCommit() { verificarDesglose(false, false); }
+    @Test void altaDeRubrosAuditaJsonNuevoTrasCommit() { verificarDesglose(false, true); }
+    @Test void rollbackDeRubrosNoEnviaBitacoraDeExito() { verificarDesglose(true, false); }
+
+    private void verificarDesglose(boolean rollback, boolean alta) {
+        var request = new MockHttpServletRequest();
+        request.setAttribute(AutorizacionInterceptor.TOKEN_ATTRIBUTE, "Bearer prueba");
+        request.setAttribute(AutorizacionInterceptor.USER_ATTRIBUTE, "profesor@cuc.ac.cr");
+        var seguridad = mock(SeguridadClient.class);
+        try (var context = new AnnotationConfigApplicationContext()) {
+            context.registerBean(TransactionalEventListenerFactory.class);
+            context.registerBean(AuditoriaNotas.class, () -> new AuditoriaNotas(request, context, seguridad));
+            context.refresh();
+            new TransactionTemplate(new TransaccionLocalFalsa()).executeWithoutResult(status -> {
+                context.getBean(AuditoriaNotas.class).registrarDesglose(7,
+                    alta ? List.of() : List.of(new RubroResponse(1, 7, "Anterior", new BigDecimal("100"))),
+                    List.of(new RubroResponse(2, 7, "Proyecto", new BigDecimal("100"))));
+                verifyNoInteractions(seguridad);
+                if (rollback) status.setRollbackOnly();
+            });
+            if (rollback) verifyNoInteractions(seguridad);
+            else verify(seguridad).registrarBitacora(eq("Bearer prueba"), eq("profesor@cuc.ac.cr"),
+                argThat(texto -> texto.contains("desglose") && texto.contains("grupoId") && texto.contains("Proyecto")
+                    && (alta ? texto.contains("JSON nuevo:") : texto.contains("JSON anterior:") && texto.contains("Anterior") && texto.contains("JSON actual:"))));
+        }
     }
 
     private void verificar(boolean rollback) {

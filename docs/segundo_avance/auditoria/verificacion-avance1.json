@@ -2,7 +2,7 @@
   "audit_date": "2026-10-28",
   "timezone": "America/Mexico_City",
   "commit": "d5c9769dce2539aaca80525873a98450c21a2d33",
-  "evidence_type": "Resumen de ejecuciones actuales observadas; desglose Java extraido de XML Surefire. No es un log bruto ni evidencia de integracion real.",
+  "evidence_type": "Resultados de la revision inicial actualizados con el incremento de Jose; conjunto de regresion y apoyo con dobles, YARP HTTP real con propietarios simulados y navegador con API interceptada. No evidencia de integracion real con SQL.",
   "scope": {
     "delivery": 2,
     "story_count": 20,
@@ -43,18 +43,18 @@
     {
       "command": "dotnet test NuevoAvatar.Autenticacion.Tests/NuevoAvatar.Autenticacion.Tests.csproj --no-restore",
       "exit_code": 0,
-      "passed": 25,
+      "passed": 29,
       "failed": 0,
       "skipped": 0,
-      "scope": "Pruebas locales con dobles"
+      "scope": "25 casos previos y 4 de logout/auditoria; dependencias con dobles"
     },
     {
       "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am test",
       "exit_code": 0,
-      "passed": 33,
+      "passed": 37,
       "failed": 0,
       "skipped": 0,
-      "scope": "30 Notas, 3 configuracion de biblioteca Java; Mockito/MockMvc, sin SQL remoto"
+      "scope": "34 Notas y 3 configuracion de biblioteca Java; sin SQL remoto"
     },
     {
       "command": "dotnet build Usuario.ConsumoWeb/NuevoAvatar.Web/Usuario.ConsumoWeb.csproj --no-restore",
@@ -62,7 +62,8 @@
       "errors": 0,
       "warnings": 0,
       "preliminary_attempt": "NETSDK1004: assets ausentes; resuelto con dotnet restore del proyecto --ignore-failed-sources",
-      "scope": "Prototipo Razor Pages; sin verificacion visual"
+      "scope": "Prototipo Razor Pages; sin verificacion visual",
+      "verification_stage": "Revision inicial; no reejecutado en incremento"
     },
     {
       "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am package -DskipTests",
@@ -81,13 +82,58 @@
       "services": 22,
       "source_files": 290,
       "infractions_detected": 0,
-      "scope": "SQL explicito y entidades JPA; no prueba roles ni pertenencia. Reporte V1 restaurado a contenido previo."
+      "scope": "SQL explicito y entidades JPA; no prueba roles ni pertenencia. Reporte V1 restaurado a contenido previo.",
+      "verification_stage": "Revision inicial; no reejecutado en incremento"
+    },
+    {
+      "command": "dotnet test NuevoAvatar.Gateway.Tests/NuevoAvatar.Gateway.Tests.csproj --no-restore",
+      "exit_code": 0,
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "scope": "YARP y Kestrel reales; auth y propietarios simulados por HTTP"
+    },
+    {
+      "command": "npm test",
+      "workdir": "web/jose",
+      "exit_code": 0,
+      "passed": 8,
+      "failed": 0,
+      "scope": "Cliente de sesion con fetch y almacenamiento controlados"
+    },
+    {
+      "command": "npm run test:ui",
+      "workdir": "web/jose",
+      "exit_code": 0,
+      "passed": 6,
+      "failed": 0,
+      "scope": "Chromium con API interceptada; no SQL ni servicios de negocio reales"
+    },
+    {
+      "command": "npm run build",
+      "workdir": "web/jose",
+      "exit_code": 0,
+      "scope": "Bundle React con CSS reutilizado de Alejandro"
+    },
+    {
+      "command": "powershell -NoProfile -File tools/ejecutar-gateway.ps1 -Verificar",
+      "exit_code": 0,
+      "scope": "Verificacion del lanzador"
+    },
+    {
+      "command": "dotnet run --project NuevoAvatar.Gateway/NuevoAvatar.Gateway.csproj --no-build --launch-profile http",
+      "scope": "Arranque real local; proceso detenido despues de comprobar respuestas, sin llamar al negocio",
+      "responses": {
+        "/health": 200,
+        "/gateway/admin/usuario sin token": 401,
+        "/gateway/admin/usuario/%69nterno/datos": 404
+      }
     }
   ],
   "java_suites": [
     {
       "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest",
-      "tests": 2,
+      "tests": 5,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
@@ -111,7 +157,7 @@
     },
     {
       "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest",
-      "tests": 2,
+      "tests": 3,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
@@ -143,7 +189,7 @@
     }
   ],
   "totals": {
-    "local_tests_passed": 58,
+    "local_tests_passed": 96,
     "local_tests_failed": 0,
     "real_ui_gateway_service_journeys_executed": 0
   },
@@ -152,15 +198,169 @@
     "Migraciones",
     "Envio de correo",
     "Suite con bases temporales",
-    "Pruebas de navegador/dispositivos",
     "Pruebas de concurrencia SQL",
-    "Verificacion remota de tablero/PR/aprobaciones"
+    "Verificacion remota de tablero/PR/aprobaciones",
+    "Responsive en dispositivos fisicos",
+    "Recorrido interfaz-gateway-propietarios-SQL reales",
+    "Revision de apoyo y evidencia final por criterio"
   ],
   "primary_blockers": [
-    "Tecnologia web: Razor Pages frente a React/Blazor WebAssembly del PDF",
-    "Falta host proxy YARP/Ocelot y routing",
-    "Interfaces con datos de prototipo sin integracion real",
-    "Faltan permisos persistidos y operaciones propias de estudiante",
-    "Faltan criterios V2 de correo, auditoria de rubros y evidencia final"
+    "Integracion de componentes de Jose al layout y dashboards finales",
+    "Recorrido con propietarios y SQL reales; persistencia y recuperacion de bitacoras",
+    "Permisos persistidos y contratos propios de otros responsables pendientes de integracion",
+    "Concurrencia SQL y evidencia final por criterio; revision de apoyo",
+    "Resto del equipo conserva pendientes de su inspeccion inicial, incluidos layout y correo V2"
+  ],
+  "initial_snapshot": {
+    "checks": [
+      {
+        "command": "dotnet test NuevoAvatar.Autenticacion.Tests/NuevoAvatar.Autenticacion.Tests.csproj --no-restore",
+        "exit_code": 0,
+        "passed": 25,
+        "failed": 0,
+        "skipped": 0,
+        "scope": "Pruebas locales con dobles"
+      },
+      {
+        "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am test",
+        "exit_code": 0,
+        "passed": 33,
+        "failed": 0,
+        "skipped": 0,
+        "scope": "30 Notas, 3 configuracion de biblioteca Java; Mockito/MockMvc, sin SQL remoto"
+      },
+      {
+        "command": "dotnet build Usuario.ConsumoWeb/NuevoAvatar.Web/Usuario.ConsumoWeb.csproj --no-restore",
+        "exit_code": 0,
+        "errors": 0,
+        "warnings": 0,
+        "preliminary_attempt": "NETSDK1004: assets ausentes; resuelto con dotnet restore del proyecto --ignore-failed-sources",
+        "scope": "Prototipo Razor Pages; sin verificacion visual"
+      },
+      {
+        "command": ".\\NuevoAvatar.Usuario\\mvnw.cmd -B -q -o -f pom.xml -pl NuevoAvatar.Notas -am package -DskipTests",
+        "exit_code": 0,
+        "scope": "Empaquetado; no se cuentan nuevas pruebas"
+      },
+      {
+        "command": "python tools/validar-artefactos.py --servicio Notas",
+        "exit_code": 0,
+        "result": "Artefacto verificado: Notas",
+        "preliminary_attempt": "Falta un jar unico de Notas; resuelto con package"
+      },
+      {
+        "command": "python tools/auditar-limites.py",
+        "exit_code": 0,
+        "services": 22,
+        "source_files": 290,
+        "infractions_detected": 0,
+        "scope": "SQL explicito y entidades JPA; no prueba roles ni pertenencia. Reporte V1 restaurado a contenido previo."
+      }
+    ],
+    "java_suites": [
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest",
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest",
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest",
+        "tests": 2,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest",
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "NuevoAvatar.Notas/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.xml"
+      },
+      {
+        "suite": "cr.ac.cuc.nuevoavatar.integracion.ConfiguracionLocalTest",
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "report": "integracion/target/surefire-reports/TEST-cr.ac.cuc.nuevoavatar.integracion.ConfiguracionLocalTest.xml"
+      }
+    ],
+    "totals": {
+      "local_tests_passed": 58,
+      "local_tests_failed": 0,
+      "real_ui_gateway_service_journeys_executed": 0
+    },
+    "not_performed": [
+      "SQL Server remoto",
+      "Migraciones",
+      "Envio de correo",
+      "Suite con bases temporales",
+      "Pruebas de navegador/dispositivos",
+      "Pruebas de concurrencia SQL",
+      "Verificacion remota de tablero/PR/aprobaciones"
+    ],
+    "primary_blockers": [
+      "Tecnologia web: Razor Pages frente a React/Blazor WebAssembly del PDF",
+      "Falta host proxy YARP/Ocelot y routing",
+      "Interfaces con datos de prototipo sin integracion real",
+      "Faltan permisos persistidos y operaciones propias de estudiante",
+      "Faltan criterios V2 de correo, auditoria de rubros y evidencia final"
+    ]
+  },
+  "update": {
+    "date": "2026-10-28",
+    "owner": "Jose",
+    "stories": [
+      "ADM2",
+      "ADM17",
+      "GTW1",
+      "GTW2"
+    ],
+    "version": "Incremento posterior en arbol de trabajo, sin commit nuevo",
+    "evidence_source": "docs/segundo_avance/pruebas/jose-incremento-a2.md",
+    "method": "Actualizacion documental con resultados previamente ejecutados en esta sesion; sin reejecucion de pruebas durante esta edicion.",
+    "other_owners": "Conservan dictamenes de revision inicial"
+  },
+  "jose_progress": {
+    "stories_with_visible_implementation": 4,
+    "stories_with_linked_local_verification": 4,
+    "closed_stories_accredited": 0,
+    "note": "Presencia de implementacion y verificacion no equivale a porcentaje de criterios cumplidos.",
+    "assigned_stories": 4
+  },
+  "resolved_locally": [
+    "Host YARP, routing y lanzador GTW1/GTW2",
+    "Componentes React propios de ADM2/ADM17",
+    "Snapshots de rubros y auditoria de logout"
   ]
 }

@@ -26,7 +26,7 @@ La app movil es otro cliente y conserva sus historias oficiales.
 | Documento | Contenido que gobierna |
 |---|---|
 | [Contexto de desarrollo](contexto-desarrollo.md) | Sintesis documental para iniciar A2; no sustituye los criterios de origen. |
-| [Backend de Jose](desarrollo-jose.md) | Implementacion tecnica sin UI/UX, contratos, pruebas locales y pendientes de integracion. |
+| [Desarrollo de Jose](desarrollo-jose.md) | Gateway YARP, sesion, componentes React propios y notas; reutiliza la plantilla de Alejandro y documenta pendientes de integracion. |
 | [Backlog unico](planificacion/backlog.md) | 41 historias completas, con un responsable por HU; responsables y puntos. |
 | [Historias indivisibles](planificacion/subhistorias.md) | Criterios completos de ADM3, ADM17, MOB1 y MOB5; reemplaza las divisiones anteriores. |
 | [Historias web de estudiantes](requerimientos/web-estudiantes.md) | Criterios de las 8 HU propuestas por el equipo; no son IDs del PDF. |

@@ -55,7 +55,7 @@ public class BitacoraFilter extends OncePerRequestFilter {
         if (token == null || usuario == null) {
             return;
         }
-        if ("/asignarnotarubro".equals(request.getRequestURI()) && response.getStatus() < 400
+        if (("/asignarnotarubro".equals(request.getRequestURI()) || "/cargardesglose".equals(request.getRequestURI())) && response.getStatus() < 400
                 && ("POST".equals(request.getMethod()) || "PUT".equals(request.getMethod()))) {
             return; // La escritura confirmada registra el estado persistido en AuditoriaNotas.
         }
