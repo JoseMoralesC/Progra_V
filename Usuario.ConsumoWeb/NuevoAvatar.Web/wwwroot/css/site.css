@@ -103,7 +103,6 @@ body.dark .glass {
 .menu-head {
     display: flex;
     align-items: center;
-    gap: 12px;
     padding: 0 8px 22px;
     border-bottom: 1px solid var(--line);
     font-size: 23px;
@@ -112,27 +111,26 @@ body.dark .glass {
     min-height: 58px;
     white-space: nowrap;
     overflow: hidden;
-}
-
-    .menu-head .logo-star {
-        flex: 0 0 27px;
-        text-align: center;
-    }
-
-.logo-star {
-    font-size: 25px;
+    position: relative;
 }
 
 .menu-head .head-title {
     display: inline-block;
     opacity: 1;
-    transform: translateX(0);
-    transition: opacity .18s ease, transform .28s ease;
+    color: var(--text);
+    transition: opacity .18s ease, color .18s ease;
     white-space: nowrap;
 }
 
+    .menu-head:hover .head-title {
+        opacity: .78;
+        color: var(--accent);
+    }
+
 .menu-head .head-toggle {
-    margin-left: auto;
+    position: absolute;
+    left: calc(100% - 36px);
+    top: 11px;
     flex: 0 0 36px;
     width: 36px;
     height: 36px;
@@ -143,12 +141,13 @@ body.dark .glass {
     font-size: 18px;
     display: grid;
     place-items: center;
+    transition: left .32s cubic-bezier(.2,.75,.25,1), background .18s, color .18s, border-color .18s;
 }
 
     .menu-head .head-toggle:hover {
         background: var(--active);
         color: var(--active-text);
-        transform: scale(1.04);
+        border-color: var(--active);
     }
 
 .section-label {
@@ -174,6 +173,21 @@ body.dark .glass {
     text-align: left;
     font-weight: 550;
 }
+
+a.menu-item {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.menu-item-pending {
+    cursor: default;
+    opacity: .72;
+}
+
+    .menu-item-pending:hover {
+        background: transparent;
+        transform: none;
+    }
 
     .menu-item .mi {
         font-size: 20px;
@@ -227,42 +241,52 @@ body.dark .glass {
     font-size: 11px;
 }
 
+.menu-footer .privacy-link {
+    display: inline-block;
+    margin-top: 5px;
+    color: var(--muted);
+    text-decoration: underline;
+}
+
+.menu-footer .privacy-link.active {
+    color: var(--accent);
+    font-weight: 700;
+}
+
 .stage.sidebar-collapsed .menu {
     padding: 22px 11px;
 }
 
 .stage.sidebar-collapsed .menu-head {
-    justify-content: center;
     padding-left: 0;
     padding-right: 0;
 }
 
-    .stage.sidebar-collapsed .menu-head .head-title,
+    .stage.sidebar-collapsed .menu-head .head-title {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     .stage.sidebar-collapsed .menu-item .label,
     .stage.sidebar-collapsed .menu-item .meta,
-    .stage.sidebar-collapsed .subtree,
     .stage.sidebar-collapsed .menu-footer {
         display: none;
     }
 
     .stage.sidebar-collapsed .menu-head .head-toggle {
-        margin-left: 0;
-        position: fixed;
-        top: 116px;
-        left: 41px;
-        transform: translateX(-50%);
-        width: 34px;
-        height: 34px;
+        left: calc(50% - 18px);
         font-size: 16px;
-        z-index: 20;
         background: var(--glass-strong);
         border: 1px solid var(--line);
         box-shadow: 0 3px 12px #00000012;
         color: var(--text);
     }
 
-.stage.sidebar-collapsed .menu-head {
-    position: relative;
+.stage.sidebar-collapsed .subtree {
+    display: none !important;
+    border: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .stage.sidebar-collapsed .menu-item {
@@ -793,11 +817,6 @@ tbody tr {
         padding: 18px 7px;
     }
 
-    .stage.sidebar-collapsed .menu-head .head-toggle {
-        top: 82px;
-        left: 31px;
-    }
-
     .content {
         gap: 12px;
     }
@@ -850,5 +869,15 @@ tbody tr {
     .table-foot {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stage,
+    .menu,
+    .menu-head .head-title,
+    .menu-head .head-toggle,
+    .menu-item {
+        transition: none !important;
     }
 }

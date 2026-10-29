@@ -143,6 +143,7 @@ function deleteUser(email) {
     toast("Usuario eliminado en el prototipo.");
 }
 
+if ($("rows")) {
 $("newUser").addEventListener("click", createUser);
 $("close").addEventListener("click", closeModal);
 $("cancel").addEventListener("click", closeModal);
@@ -248,14 +249,20 @@ $("search").addEventListener("keydown", event => {
     $(id).addEventListener("change", renderUsers);
 });
 
+$("prev").addEventListener("click", () => toast("Ya estás en la primera página."));
+$("next").addEventListener("click", () => toast("Todos los registros caben en esta página."));
+updateRoles();
+renderUsers();
+}
+
 $("sidebarToggle").addEventListener("click", () => {
     const stage = document.querySelector(".stage");
     const collapsed = stage.classList.toggle("sidebar-collapsed");
     const button = $("sidebarToggle");
 
-    button.textContent = collapsed ? "☰" : "‹";
     button.title = collapsed ? "Expandir menú" : "Contraer menú";
     button.setAttribute("aria-label", button.title);
+    button.setAttribute("aria-expanded", String(!collapsed));
 });
 
 $("catalogToggle").addEventListener("click", () => {
@@ -264,6 +271,7 @@ $("catalogToggle").addEventListener("click", () => {
 
     subtree.style.display = open ? "none" : "grid";
     $("catalogSign").textContent = open ? "＋" : "−";
+    $("catalogToggle").setAttribute("aria-expanded", String(!open));
 });
 
 $("securityToggle").addEventListener("click", () => {
@@ -272,6 +280,7 @@ $("securityToggle").addEventListener("click", () => {
 
     subtree.style.display = open ? "none" : "grid";
     $("securitySign").textContent = open ? "＋" : "−";
+    $("securityToggle").setAttribute("aria-expanded", String(!open));
 });
 
 function setTheme() {
@@ -292,31 +301,3 @@ if (savedTheme === "dark") {
 
 $("themeToggle").addEventListener("click", setTheme);
 $("notify").addEventListener("click", () => toast("No tienes notificaciones nuevas."));
-$("prev").addEventListener("click", () => toast("Ya estás en la primera página."));
-$("next").addEventListener("click", () => toast("Todos los registros caben en esta página."));
-
-function selectSection(name) {
-    document.querySelectorAll("[data-menu]").forEach(button => {
-        button.classList.toggle("active", button.dataset.menu === name);
-    });
-
-    $("crumb").textContent = name;
-    $("title").textContent =
-        name === "Usuarios" ? "Mantenimiento de Usuarios" : name;
-
-    $("subtitle").textContent =
-        name === "Usuarios"
-            ? "Administra los usuarios y sus roles en el sistema."
-            : `Vista de demostración de ${name.toLowerCase()}.`;
-
-    if (name !== "Usuarios") {
-        toast(`La sección ${name} es una vista de demostración.`);
-    }
-}
-
-document.querySelectorAll("[data-menu]").forEach(button => {
-    button.addEventListener("click", () => selectSection(button.dataset.menu));
-});
-
-updateRoles();
-renderUsers();

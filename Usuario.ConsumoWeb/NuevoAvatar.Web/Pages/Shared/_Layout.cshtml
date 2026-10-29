@@ -1,14 +1,94 @@
-﻿
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+    var isUsersPage = string.Equals(currentPage, "/Index", StringComparison.OrdinalIgnoreCase);
+    var isPrivacyPage = string.Equals(currentPage, "/Privacy", StringComparison.OrdinalIgnoreCase);
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Nuevo Avatar V2";
+    var breadcrumbParent = ViewData["BreadcrumbParent"]?.ToString();
+    var breadcrumbCurrent = ViewData["BreadcrumbCurrent"]?.ToString() ?? pageTitle;
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Nuevo Avatar V2</title>
+    <title>@pageTitle - Nuevo Avatar V2</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    @RenderBody()
+    <div class="stage">
+        <aside class="menu glass" aria-label="Menú principal" id="sidebar">
+            <div class="menu-head">
+                <span class="head-title">Avatar</span>
+                <button class="head-toggle" id="sidebarToggle" type="button" title="Contraer menú" aria-label="Contraer menú" aria-expanded="true" aria-controls="sidebar">‹</button>
+            </div>
+
+            <span class="menu-item menu-item-pending" title="Pendiente: no existe una página de inicio independiente" aria-label="Inicio, pendiente de implementación">
+                <span class="mi">⌂</span><span class="label">Inicio</span><span class="meta">Pendiente</span>
+            </span>
+            <span class="menu-item menu-item-pending" title="Pendiente de implementación" aria-label="Notificaciones, pendiente de implementación">
+                <span class="mi">▣</span><span class="label">Notificaciones</span><span class="meta">Pendiente</span>
+            </span>
+            <button class="menu-item" id="catalogToggle" type="button" title="Gestión académica" aria-expanded="false" aria-controls="catalogSub">
+                <span class="mi">⊞</span><span class="label">Gestión académica</span><span class="meta" id="catalogSign">＋</span>
+            </button>
+
+            <div class="subtree" id="catalogSub" style="display:none">
+                <span class="menu-item sub menu-item-pending" title="Pendiente de implementación" aria-label="Cursos, pendiente de implementación"><span class="mi">▤</span><span class="label">Cursos</span><span class="meta">Pendiente</span></span>
+                <span class="menu-item sub menu-item-pending" title="Pendiente de implementación" aria-label="Grupos, pendiente de implementación"><span class="mi">▦</span><span class="label">Grupos</span><span class="meta">Pendiente</span></span>
+                <span class="menu-item sub menu-item-pending" title="Pendiente de implementación" aria-label="Periodos, pendiente de implementación"><span class="mi">◷</span><span class="label">Periodos</span><span class="meta">Pendiente</span></span>
+            </div>
+
+            <span class="menu-item menu-item-pending" title="La gestión de usuarios está en Administración > Usuarios y roles" aria-label="Usuarios, disponible en Administración, Usuarios y roles">
+                <span class="mi">♙</span><span class="label">Usuarios</span><span class="meta">Ver abajo</span>
+            </span>
+            <button class="menu-item @(isUsersPage ? "active" : string.Empty)" id="securityToggle" type="button" title="Administración" aria-expanded="true" aria-controls="securitySub">
+                <span class="mi">▱</span><span class="label">Administración</span><span class="meta" id="securitySign">−</span>
+            </button>
+
+            <div class="subtree" id="securitySub">
+                <a asp-page="/Index" class="menu-item sub @(isUsersPage ? "active" : string.Empty)" title="Mantenimiento de Usuarios" aria-current="@(isUsersPage ? "page" : null)">
+                    <span class="mi">♙</span><span class="label">Usuarios y roles</span>
+                </a>
+                <span class="menu-item sub menu-item-pending" title="Pendiente de implementación" aria-label="Bitácoras, pendiente de implementación"><span class="mi">▧</span><span class="label">Bitácoras</span><span class="meta">Pendiente</span></span>
+                <span class="menu-item sub menu-item-pending" title="Pendiente de implementación" aria-label="Permisos, pendiente de implementación"><span class="mi">◇</span><span class="label">Permisos</span><span class="meta">Pendiente</span></span>
+            </div>
+
+            <span class="menu-item menu-item-pending" title="Pendiente de implementación" aria-label="Reportes, pendiente de implementación">
+                <span class="mi">▤</span><span class="label">Reportes</span><span class="meta">Pendiente</span>
+            </span>
+
+            <div class="menu-footer">
+                NUEVO AVATAR V2<br />Prototipo de diseño<br />
+                <a asp-page="/Privacy" class="privacy-link @(isPrivacyPage ? "active" : string.Empty)" aria-current="@(isPrivacyPage ? "page" : null)">Privacy Policy</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="topbar">
+                <nav class="crumb" aria-label="Breadcrumb">
+                    @if (!string.IsNullOrWhiteSpace(breadcrumbParent))
+                    {
+                        <span>@breadcrumbParent</span><span aria-hidden="true">&nbsp; / &nbsp;</span>
+                    }
+                    <strong aria-current="page">@breadcrumbCurrent</strong>
+                </nav>
+                <div class="top-right">
+                    <button class="round-btn" id="themeToggle" type="button" title="Cambiar tema" aria-label="Cambiar tema">☾</button>
+                    <button class="round-btn" id="notify" type="button" title="Notificaciones" aria-label="Notificaciones">♧</button>
+                    <div class="user">
+                        <div class="avatar">AL</div>
+                        <div>
+                            <div class="user-name">Ana López</div>
+                            <div class="user-role">Administradora</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            @RenderBody()
+        </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
