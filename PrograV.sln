@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuevoAvatar.Seguridad.Model
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuevoAvatar.Gateway.Seguridad", "NuevoAvatar.Gateway.Seguridad\NuevoAvatar.Gateway.Seguridad.csproj", "{86BB9EE2-C249-4E4B-A981-DA847A65026F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuevoAvatar.Gateway", "NuevoAvatar.Gateway\NuevoAvatar.Gateway.csproj", "{F1C60B76-BE4A-493D-B0BE-DD6B26A5E3C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuevoAvatar.Gateway.Tests", "NuevoAvatar.Gateway.Tests\NuevoAvatar.Gateway.Tests.csproj", "{14257B45-E748-42A4-845C-7A712639ED7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -108,5 +112,13 @@ Global
 		{86BB9EE2-C249-4E4B-A981-DA847A65026F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86BB9EE2-C249-4E4B-A981-DA847A65026F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86BB9EE2-C249-4E4B-A981-DA847A65026F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1C60B76-BE4A-493D-B0BE-DD6B26A5E3C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1C60B76-BE4A-493D-B0BE-DD6B26A5E3C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1C60B76-BE4A-493D-B0BE-DD6B26A5E3C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1C60B76-BE4A-493D-B0BE-DD6B26A5E3C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14257B45-E748-42A4-845C-7A712639ED7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14257B45-E748-42A4-845C-7A712639ED7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14257B45-E748-42A4-845C-7A712639ED7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14257B45-E748-42A4-845C-7A712639ED7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,5 +1,9 @@
 # Jose: verificacion tecnica local de A2
 
+Nota de seguimiento: esta ficha conserva la etapa inicial de backend. El
+[incremento posterior](jose-incremento-a2.md) incorpora gateway ejecutable,
+componentes React propios, logout y auditoria de rubros, con resultados actuales.
+
 Fecha: 28 de octubre de 2026. Version: arbol de trabajo sin commit de esta sesion.
 Alcance autorizado: backend de Jose, sin UI/UX. Revisor de apoyo: Fabian; revision
 de apoyo pendiente. Estas pruebas no cierran historias ni constituyen capturas

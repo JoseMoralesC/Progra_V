@@ -47,6 +47,7 @@ public class NotasService {
         validarSuma(request);
 
         List<DesgloseRubro> actuales = rubros.findByGrupoId(request.grupoId());
+        List<RubroResponse> anterior = actuales.stream().map(RubroResponse::desde).toList();
         List<Integer> idsActuales = actuales.stream().map(rubro -> java.util.Objects.requireNonNull(rubro).getId()).toList();
         if (!idsActuales.isEmpty() && notas.existsByRubroIdIn(idsActuales)) {
             throw new ResponseStatusException(
@@ -61,7 +62,11 @@ public class NotasService {
         List<DesgloseRubro> nuevos = request.rubros().stream()
             .map(rubro -> crearRubro(request.grupoId(), rubro))
             .toList();
-        return rubros.saveAll(nuevos).stream().map(RubroResponse::desde).toList();
+        var guardados = rubros.saveAll(nuevos);
+        rubros.flush();
+        var resultado = guardados.stream().map(RubroResponse::desde).toList();
+        auditoria.registrarDesglose(request.grupoId(), anterior, resultado);
+        return resultado;
     }
 
     @Transactional

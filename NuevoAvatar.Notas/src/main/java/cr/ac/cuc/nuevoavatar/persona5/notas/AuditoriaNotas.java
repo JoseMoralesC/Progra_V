@@ -2,6 +2,8 @@ package cr.ac.cuc.nuevoavatar.persona5.notas;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
 import cr.ac.cuc.nuevoavatar.persona5.seguridad.AutorizacionInterceptor;
 import cr.ac.cuc.nuevoavatar.persona5.seguridad.SeguridadClient;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +26,22 @@ public class AuditoriaNotas {
     }
 
     public void registrar(NotaResponse anterior, NotaResponse actual) {
+        publicar("nota", anterior, actual);
+    }
+
+    public void registrarDesglose(Integer grupoId, List<RubroResponse> anterior, List<RubroResponse> actual) {
+        publicar("desglose", anterior.isEmpty() ? null : Map.of("grupoId", grupoId, "rubros", anterior),
+            Map.of("grupoId", grupoId, "rubros", actual));
+    }
+
+    private void publicar(String elemento, Object anterior, Object actual) {
         Object token = request.getAttribute(AutorizacionInterceptor.TOKEN_ATTRIBUTE);
         Object usuario = request.getAttribute(AutorizacionInterceptor.USER_ATTRIBUTE);
         if (token == null || usuario == null) throw new IllegalStateException("Falta identidad para auditar la nota");
         try {
             String descripcion = anterior == null
-                ? "Alta de nota. JSON nuevo: " + json.writeValueAsString(actual)
-                : "Modificacion de nota. JSON anterior: " + json.writeValueAsString(anterior)
+                ? "Alta de " + elemento + ". JSON nuevo: " + json.writeValueAsString(actual)
+                : "Modificacion de " + elemento + ". JSON anterior: " + json.writeValueAsString(anterior)
                     + ". JSON actual: " + json.writeValueAsString(actual);
             eventos.publishEvent(new NotaConfirmada(token.toString(), usuario.toString(), descripcion));
         } catch (JsonProcessingException ex) {
