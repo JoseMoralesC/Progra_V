@@ -2,7 +2,6 @@ package cr.ac.cuc.nuevoavatar.persona2.carrera;
 
 import java.util.List;
 
-import cr.ac.cuc.nuevoavatar.persona2.profesor.ProfesorRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,15 +12,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class CarreraService {
 
     private final CarreraRepository carreras;
-    private final ProfesorRepository profesores;
     private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
 
     public CarreraService(
             CarreraRepository carreras,
-            ProfesorRepository profesores,
             cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos) {
         this.carreras = carreras;
-        this.profesores = profesores;
         this.datos = datos;
     }
 
@@ -76,6 +72,10 @@ public class CarreraService {
     public void eliminar(Integer id) {
         Carrera carrera = buscarO404(id);
 
+        if (datos.referencias("Curso", "Curso", "CarreraId", id)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La carrera tiene cursos relacionados");
+        }
+
         try {
             carreras.delete(carrera);
             carreras.flush();
@@ -98,12 +98,7 @@ public class CarreraService {
     private void validarReferencias(CarreraRequest request) {
         datos.exigir("Institucion","Institucion","InstitucionId",request.institucionId());
 
-        if (!profesores.existsById(request.directorProfesorId())) {
-            throw new ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_CONTENT,
-                "El profesor director no existe"
-            );
-        }
+        datos.exigir("Profesor", "Profesor", "ProfesorId", request.directorProfesorId());
     }
 
     private void asignarDatos(Carrera carrera, CarreraRequest request) {
