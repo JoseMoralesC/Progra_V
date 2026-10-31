@@ -8,8 +8,9 @@
 .ramses .aviso { margin-top: 16px; padding: 13px; border-radius: 12px; }
 .ramses .aviso.error { background: #fce8e6; color: #842020; }
 .ramses .check { display: flex; align-items: center; gap: 9px; padding: 9px 0; }
+.ramses .filters { margin: 18px 0; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
 .ramses fieldset { border: 0; padding: 0; }
 body.modal-open { overflow: hidden; }
 .backdrop.open { display: flex; }
 .backdrop { pointer-events: auto; }
-@media (max-width: 650px) { .ramses { padding: 14px; } .ramses .page-head { align-items: stretch; } }
+@media (max-width: 650px) { .ramses { padding: 14px; } .ramses .page-head { align-items: stretch; } .ramses .filters { grid-template-columns: 1fr; } }

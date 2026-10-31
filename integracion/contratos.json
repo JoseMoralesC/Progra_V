@@ -174,22 +174,7 @@
         "readable": true
       }
     },
-    "references": [
-      {
-        "resource": "Profesor",
-        "key": "ProfesorId",
-        "service": "Carrera",
-        "dependent": "Carrera",
-        "field": "DirectorProfesorId"
-      },
-      {
-        "resource": "Profesor",
-        "key": "ProfesorId",
-        "service": "Grupo",
-        "dependent": "Grupo",
-        "field": "ProfesorId"
-      }
-    ]
+    "references": []
   },
   "Carrera": {
     "port": 8088,
