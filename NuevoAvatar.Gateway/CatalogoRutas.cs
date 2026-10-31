@@ -28,6 +28,7 @@ public static class CatalogoRutas
             ("curso", "Curso", 5255), ("profesor", "Profesor", 8087), ("periodo", "Periodo", 5262),
             ("grupo", "Grupo", 5256), ("expediente", "Expediente", 8084) })
             rutas.Add(new($"/gateway/admin/{recurso}", $"/{recurso}", servicio, puerto, Crud, Admin, true));
+        rutas.Add(new("/gateway/menu", "/modulo/menu", "Modulo", 5162, ["GET"], Todos, true));
         rutas.Add(new("/gateway/admin/user", "/usuario", "Usuario", 8082, Crud, Admin, true));
         foreach (var (recurso, servicio, puerto) in new[] {
             ("prematricula", "Prematricula", 8089), ("matricula", "Matricula", 8085),

@@ -88,7 +88,18 @@
         "table": "[seguridad].[modulo]",
         "columns": [
           "id_modulo",
-          "nombre_modulo"
+          "nombre_modulo",
+          "activo",
+          "orden"
+        ],
+        "key": "id_modulo",
+        "readable": true
+      },
+      "rol_modulo": {
+        "table": "[seguridad].[rol_modulo]",
+        "columns": [
+          "id_modulo",
+          "id_rol"
         ],
         "key": "id_modulo",
         "readable": true
