@@ -11,4 +11,5 @@ public class PeriodoRequest
     public DateTime FechaInicio { get; set; }
 
     public DateTime FechaFin { get; set; }
+    public string Estado => DateTime.Today < FechaInicio.Date ? "FUTURO" : DateTime.Today > FechaFin.Date ? "CERRADO" : "ACTIVO";
 }

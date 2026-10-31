@@ -4,7 +4,7 @@ namespace NuevoAvatar.Periodo.Nuevo.Services;
 
 public interface IPeriodoService
 {
-    Task<IEnumerable<PeriodoRequest>> ObtenerTodosAsync();
+    Task<IEnumerable<PeriodoRequest>> ObtenerTodosAsync(short? anio = null, string? estado = null);
 
     Task<PeriodoRequest?> ObtenerPorIdAsync(int periodoId);
 

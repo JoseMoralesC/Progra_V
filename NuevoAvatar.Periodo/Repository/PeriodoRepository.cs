@@ -120,4 +120,6 @@ public class PeriodoRepository : IPeriodoRepository
 
         return filasAfectadas > 0;
     }
+    public async Task<bool> ExisteDuplicadoAsync(short anio, byte numero, int? excluirId = null) { using var c=_connectionFactory.CreateConnection(); return await c.ExecuteScalarAsync<bool>("SELECT CASE WHEN EXISTS(SELECT 1 FROM academico.Periodo WHERE Anio=@anio AND NumeroPeriodo=@numero AND (@excluirId IS NULL OR PeriodoId<>@excluirId)) THEN 1 ELSE 0 END",new{anio,numero,excluirId}); }
+    public async Task<bool> ExisteSolapamientoAsync(short anio, DateTime inicio, DateTime fin, int? excluirId = null) { using var c=_connectionFactory.CreateConnection(); return await c.ExecuteScalarAsync<bool>("SELECT CASE WHEN EXISTS(SELECT 1 FROM academico.Periodo WHERE Anio=@anio AND FechaInicio<=@fin AND FechaFin>=@inicio AND (@excluirId IS NULL OR PeriodoId<>@excluirId)) THEN 1 ELSE 0 END",new{anio,inicio,fin,excluirId}); }
 }

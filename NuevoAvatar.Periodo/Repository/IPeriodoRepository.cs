@@ -15,4 +15,6 @@ public interface IPeriodoRepository
         PeriodoRequest request);
 
     Task<bool> EliminarAsync(int periodoId);
+    Task<bool> ExisteDuplicadoAsync(short anio, byte numero, int? excluirId = null);
+    Task<bool> ExisteSolapamientoAsync(short anio, DateTime inicio, DateTime fin, int? excluirId = null);
 }

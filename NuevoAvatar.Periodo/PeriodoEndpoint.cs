@@ -21,11 +21,13 @@ public static class PeriodoEndpoint
     }
 
     private static async Task<IResult> ObtenerTodosAsync(
+        short? anio,
+        string? estado,
         IPeriodoService service,
         ISeguridadService seguridadService,
         HttpContext context)
     {
-        var periodos = await service.ObtenerTodosAsync();
+        IEnumerable<PeriodoRequest> periodos; try{periodos=await service.ObtenerTodosAsync(anio,estado);}catch(ArgumentException ex){return Results.BadRequest(new{error=ex.Message});}
 
         await RegistrarBitacoraAsync(
             seguridadService,
@@ -85,6 +87,7 @@ public static class PeriodoEndpoint
         {
             return Results.BadRequest(ex.Message);
         }
+        catch (PeriodoConflictoException ex){return Results.Conflict(new{error=ex.Message});}
     }
 
     private static async Task<IResult> ModificarAsync(
@@ -122,6 +125,7 @@ public static class PeriodoEndpoint
         {
             return Results.BadRequest(ex.Message);
         }
+        catch (PeriodoConflictoException ex){return Results.Conflict(new{error=ex.Message});}
     }
 
     private static async Task<IResult> EliminarAsync(
