@@ -13,6 +13,9 @@ namespace NuevoAvatar.Seguridad.Abstract
         Task<Modulo> Crear(Modulo modulo);
         Task<Modulo> Modificar(Modulo modulo);
         Task<Modulo> Eliminar(Modulo modulo);
+        Task<List<string>> ObtenerRoles(string idModulo);
+        Task ReemplazarRoles(string idModulo, IReadOnlyCollection<string> roles);
+        Task<List<Modulo>> ObtenerMenu(string idRol);
     }
 }
 

@@ -1,0 +1,15 @@
+.ramses { max-width: 1280px; margin: auto; padding: 32px; display: grid; gap: 18px; }
+.ramses .acceso { width: min(100%, 460px); margin: 8vh auto; }
+.ramses .acceso form, .ramses .acceso .field { margin-top: 20px; }
+.ramses .panel { margin-top: 18px; overflow-x: auto; }
+.ramses table { width: 100%; border-collapse: collapse; }
+.ramses th, .ramses td { padding: 13px; text-align: left; border-bottom: 1px solid var(--line); }
+.ramses .acciones { display: flex; flex-wrap: wrap; gap: 7px; }
+.ramses .aviso { margin-top: 16px; padding: 13px; border-radius: 12px; }
+.ramses .aviso.error { background: #fce8e6; color: #842020; }
+.ramses .check { display: flex; align-items: center; gap: 9px; padding: 9px 0; }
+.ramses fieldset { border: 0; padding: 0; }
+body.modal-open { overflow: hidden; }
+.backdrop.open { display: flex; }
+.backdrop { pointer-events: auto; }
+@media (max-width: 650px) { .ramses { padding: 14px; } .ramses .page-head { align-items: stretch; } }
