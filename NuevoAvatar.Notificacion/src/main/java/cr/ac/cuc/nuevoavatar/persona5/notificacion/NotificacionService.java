@@ -1,50 +1,7 @@
 package cr.ac.cuc.nuevoavatar.persona5.notificacion;
-
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.mail.MailException;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-@Service
-public class NotificacionService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(NotificacionService.class);
-
-    private final JavaMailSender mailSender;
-    private final String remitente;
-
-    public NotificacionService(
-            JavaMailSender mailSender,
-            @Value("${notificacion.mail.from}") String remitente) {
-        this.mailSender = mailSender;
-        this.remitente = remitente;
-    }
-
-    public NotificacionResponse notificar(NotificacionRequest request) {
-        try {
-            MimeMessage mensaje = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mensaje, "UTF-8");
-            helper.setFrom(remitente);
-            helper.setTo(request.email().trim());
-            helper.setSubject(request.asunto().trim());
-            helper.setText(request.cuerpoHtml(), true);
-            mailSender.send(mensaje);
-            return new NotificacionResponse(request.email().trim(), "ENVIADA");
-        } catch (MessagingException | MailException ex) {
-            LOG.error("No fue posible enviar la notificacion por SMTP", ex);
-            throw new ResponseStatusException(
-                HttpStatus.BAD_GATEWAY,
-                "No fue posible enviar la notificacion",
-                ex
-            );
-        }
-    }
-}
-
+import cr.ac.cuc.nuevoavatar.integracion.DatosRemotos;import jakarta.mail.internet.MimeMessage;import java.util.*;import java.util.regex.Pattern;import org.jsoup.Jsoup;import org.jsoup.safety.Safelist;import org.springframework.data.domain.*;import org.springframework.data.jpa.domain.Specification;import org.springframework.http.HttpStatus;import org.springframework.mail.javamail.*;import org.springframework.stereotype.Service;import org.springframework.web.server.ResponseStatusException;
+@Service public class NotificacionService{
+private static final Pattern EMAIL=Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");private final DatosRemotos datos;private final NotificacionRepository repo;public NotificacionService(DatosRemotos d,NotificacionRepository r){datos=d;repo=r;}
+public NotificacionResponse notificar(NotificacionRequest r,String usuario){var ds=new LinkedHashSet<String>();if(r.email()!=null&&!r.email().isBlank())ds.add(r.email().trim().toLowerCase());if(r.destinatarios()!=null)r.destinatarios().stream().filter(Objects::nonNull).map(String::trim).filter(x->!x.isBlank()).map(String::toLowerCase).forEach(ds::add);if(ds.isEmpty()||ds.stream().anyMatch(x->!EMAIL.matcher(x).matches()))throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,"Destinatarios inválidos");String html=Jsoup.clean(r.cuerpoHtml(),Safelist.relaxed());Notificacion n=new Notificacion();try{var c=config();JavaMailSenderImpl s=new JavaMailSenderImpl();s.setHost(c.get("MAILHOST"));s.setPort(Integer.parseInt(c.get("MAILPORT")));s.setUsername(c.get("MAILUSER"));s.setPassword(c.get("MAILPASS"));s.getJavaMailProperties().put("mail.smtp.auth","true");s.getJavaMailProperties().put("mail.smtp.starttls.enable",c.get("MAILTLS"));MimeMessage m=s.createMimeMessage();MimeMessageHelper h=new MimeMessageHelper(m,"UTF-8");h.setFrom(c.get("MAILFROM"));h.setTo(ds.toArray(String[]::new));h.setSubject(r.asunto().trim());h.setText(html,true);s.send(m);n.datos(String.join(",",ds),r.asunto().trim(),html,usuario,"ENVIADA",null);repo.save(n);return new NotificacionResponse(String.join(",",ds),"ENVIADA");}catch(ResponseStatusException x){throw x;}catch(Exception x){n.datos(String.join(",",ds),r.asunto().trim(),html,usuario,"ERROR","No fue posible enviar la notificación");repo.save(n);throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"No fue posible enviar la notificación");}}
+private Map<String,String> config(){Map<String,String>r=new HashMap<>();for(String k:List.of("MAILHOST","MAILPORT","MAILUSER","MAILPASS","MAILFROM","MAILTLS")){var row=datos.buscar("Parametro","parametro","id_parametro",k).orElseThrow(()->new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Falta configuración SMTP"));String v=DatosRemotos.texto(row,"valor");if(v==null||v.isBlank())throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Falta configuración SMTP");r.put(k,v);}return r;}
+public Map<String,Object> historial(int page,int size,String destinatario,String estado){if(page<0||size<1||size>100)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Paginación inválida");Specification<Notificacion>s=(root,q,cb)->cb.conjunction();if(!destinatario.isBlank())s=s.and((root,q,cb)->cb.like(cb.lower(root.get("destinatarios")),"%"+destinatario.toLowerCase()+"%"));if(!estado.isBlank())s=s.and((root,q,cb)->cb.equal(root.get("estado"),estado.toUpperCase()));var p=repo.findAll(s,PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"fecha"))).map(HistorialResponse::desde);return Map.of("items",p.getContent(),"page",p.getNumber(),"size",p.getSize(),"total",p.getTotalElements());}}
