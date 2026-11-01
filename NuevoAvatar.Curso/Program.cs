@@ -63,13 +63,21 @@ app.UseExceptionHandler(handler => handler.Run(async context =>
             exception,
             "Error procesando la solicitud HTTP.");
 
-    context.Response.StatusCode = exception is DependenciaNoDisponibleException ? 503 : exception is ReferenciaUsadaException ? 409 : exception is ArgumentException ? 400 : 500;
+    context.Response.StatusCode = exception switch
+    {
+        DependenciaNoDisponibleException => 503,
+        ReferenciaUsadaException or CursoReferenciadoException => 409,
+        CarreraInexistenteException or CursoValidationException => 422,
+        ArgumentException => 400,
+        _ => 500
+    };
 
     await context.Response.WriteAsJsonAsync(
         new
         {
-            error =
-                "Ocurrió un error al procesar la solicitud."
+            error = context.Response.StatusCode >= 500
+                ? "Ocurrió un error al procesar la solicitud."
+                : exception?.Message
         });
 }));
 

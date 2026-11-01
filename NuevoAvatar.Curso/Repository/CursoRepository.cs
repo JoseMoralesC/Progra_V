@@ -23,6 +23,20 @@ public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : IC
         return cursos.AsList();
     }
 
+    public async Task<IReadOnlyList<CursoEntity>> GetFilteredAsync(int? carreraId, byte? nivel)
+    {
+        const string sql = $"""
+            SELECT {SelectColumns}
+            FROM academico.Curso
+            WHERE (@CarreraId IS NULL OR CarreraId = @CarreraId)
+              AND (@Nivel IS NULL OR Nivel = @Nivel)
+            ORDER BY Nivel, Nombre, CursoId;
+            """;
+        using var connection = connectionFactory.CreateConnection();
+        var cursos = await connection.QueryAsync<CursoEntity>(sql, new { CarreraId = carreraId, Nivel = nivel });
+        return cursos.AsList();
+    }
+
     public async Task<CursoEntity?> GetByIdAsync(int id)
     {
         const string sql = $"""

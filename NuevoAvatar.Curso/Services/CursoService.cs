@@ -11,6 +11,13 @@ public sealed class CursoService(
     public Task<IReadOnlyList<CursoEntity>> GetAllAsync() =>
         repository.GetAllAsync();
 
+    public Task<IReadOnlyList<CursoEntity>> GetFilteredAsync(int? carreraId, byte? nivel)
+    {
+        if (carreraId is <= 0) throw new CursoValidationException(["CarreraId debe ser mayor que cero."]);
+        if (nivel is < 1 or > 12) throw new CursoValidationException(["El nivel debe estar entre 1 y 12."]);
+        return repository.GetFilteredAsync(carreraId, nivel);
+    }
+
     public Task<CursoEntity?> GetByIdAsync(int id)
     {
         ValidateId(id, "Id");
@@ -29,7 +36,7 @@ public sealed class CursoService(
     public async Task<int> CreateAsync(CursoRequest? curso)
     {
         Validate(curso);
-        await datos.Exigir("Carrera","Carrera","CarreraId",curso!.CarreraId);
+        await ExigirCarrera(curso!.CarreraId);
 
         try
         {
@@ -47,7 +54,7 @@ public sealed class CursoService(
     {
         ValidateId(id, "Id");
         Validate(curso);
-        await datos.Exigir("Carrera","Carrera","CarreraId",curso!.CarreraId);
+        await ExigirCarrera(curso!.CarreraId);
 
         try
         {
@@ -63,6 +70,7 @@ public sealed class CursoService(
     {
         ValidateId(id, "Id");
 
+        await datos.SinReferencias("Curso", "Curso", id);
         try
         {
             return await repository.DeleteAsync(id);
@@ -71,6 +79,12 @@ public sealed class CursoService(
         {
             throw MapRepositoryException(exception);
         }
+    }
+
+    private async Task ExigirCarrera(int carreraId)
+    {
+        try { await datos.Exigir("Carrera", "Carrera", "CarreraId", carreraId); }
+        catch (ArgumentException) { throw new CarreraInexistenteException(carreraId); }
     }
 
     private void Validate(CursoRequest? curso)

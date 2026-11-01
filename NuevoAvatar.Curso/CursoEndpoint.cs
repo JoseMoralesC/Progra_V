@@ -14,8 +14,10 @@ public static class CursoEndpoint
 
         group.MapGet(
             "",
-            async (ICursoService service) =>
-                Results.Ok(await service.GetAllAsync()))
+            async (int? carreraId, byte? nivel, ICursoService service) =>
+                Results.Ok(carreraId is null && nivel is null
+                    ? await service.GetAllAsync()
+                    : await service.GetFilteredAsync(carreraId, nivel)))
             .WithName("GetCursos")
             .WithSummary("Obtiene todos los cursos.");
 
