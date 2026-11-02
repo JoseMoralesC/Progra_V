@@ -1,0 +1,120 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Inicio";
+    ViewData["BreadcrumbCurrent"] = "Inicio";
+    ViewData["StudentName"] = "Estudiante";
+    ViewData["StudentRole"] = "Portal estudiantil";
+    ViewData["StudentInitials"] = "ES";
+}
+
+<section class="welcome-panel">
+    <div class="welcome-content">
+        <span class="eyebrow">PORTAL ESTUDIANTIL</span>
+        <h1>¡Bienvenido!</h1>
+        <p>
+            Consulta tu información académica y gestiona tus procesos
+            estudiantiles desde un solo lugar.
+        </p>
+    </div>
+
+    <div class="welcome-decoration" aria-hidden="true">
+        <span>AV</span>
+    </div>
+</section>
+
+<section class="section-heading">
+    <div>
+        <h2>Resumen académico</h2>
+        <p class="subtitle">Una vista general de tu información estudiantil.</p>
+    </div>
+</section>
+
+<section class="card-grid dashboard-grid">
+
+    <article class="card dashboard-card">
+        <div class="dashboard-card-top">
+            <span class="dashboard-icon">▤</span>
+            <span class="card-title">Expediente</span>
+        </div>
+        <div class="card-value">Mi información</div>
+        <p class="card-description">
+            Consulta tus datos personales y académicos.
+        </p>
+        <a asp-page="/Expediente/Index" class="text-link">
+            Consultar expediente <span>→</span>
+        </a>
+    </article>
+
+    <article class="card dashboard-card">
+        <div class="dashboard-card-top">
+            <span class="dashboard-icon">▦</span>
+            <span class="card-title">Prematrícula</span>
+        </div>
+        <div class="card-value">Proceso académico</div>
+        <p class="card-description">
+            Consulta los detalles de tu prematrícula.
+        </p>
+        <a asp-page="/Prematricula/Index" class="text-link">
+            Ver prematrícula <span>→</span>
+        </a>
+    </article>
+
+    <article class="card dashboard-card">
+        <div class="dashboard-card-top">
+            <span class="dashboard-icon">◷</span>
+            <span class="card-title">Estado</span>
+        </div>
+        <div class="card-value">Portal disponible</div>
+        <p class="card-description">
+            Accede a las funcionalidades del portal estudiantil.
+        </p>
+        <span class="status status-success">● Disponible</span>
+    </article>
+
+</section>
+
+<section class="section-heading">
+    <div>
+        <h2>Accesos rápidos</h2>
+        <p class="subtitle">Continúa con tus gestiones académicas.</p>
+    </div>
+</section>
+
+<section class="quick-access-grid">
+
+    <a asp-page="/Expediente/Index" class="quick-access-card">
+        <div class="quick-icon">♙</div>
+        <div>
+            <h3>Mi expediente</h3>
+            <p>Revisa tus datos personales y académicos.</p>
+        </div>
+        <span class="quick-arrow">→</span>
+    </a>
+
+    <a asp-page="/Prematricula/Index" class="quick-access-card">
+        <div class="quick-icon">▦</div>
+        <div>
+            <h3>Mi prematrícula</h3>
+            <p>Consulta el detalle de tu proceso.</p>
+        </div>
+        <span class="quick-arrow">→</span>
+    </a>
+
+</section>
+
+<section class="panel activity-panel">
+    <div class="section-heading">
+        <div>
+            <h2>Actividad reciente</h2>
+            <p class="subtitle">Información de tus gestiones.</p>
+        </div>
+    </div>
+
+    <div class="empty">
+        <div class="empty-icon">◷</div>
+        <strong>Sin actividad reciente</strong>
+        <p>Cuando existan movimientos académicos, aparecerán aquí.</p>
+    </div>
+</section>

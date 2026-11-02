@@ -1,0 +1,212 @@
+﻿@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty;
+
+    // Identificar la página actual
+    var isHome =
+        string.Equals(currentPage, "/Index", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(currentPage, "/Inicio/Index", StringComparison.OrdinalIgnoreCase);
+
+    var isRecord = currentPage.StartsWith(
+        "/Expediente",
+        StringComparison.OrdinalIgnoreCase
+    );
+
+    var isPreEnrollment = currentPage.StartsWith(
+        "/Prematricula",
+        StringComparison.OrdinalIgnoreCase
+    );
+
+    // Información de la página
+    var pageTitle = ViewData["Title"]?.ToString() ?? "Portal estudiantil";
+
+    var breadcrumbCurrent =
+        ViewData["BreadcrumbCurrent"]?.ToString() ?? pageTitle;
+
+    // Información del usuario (temporal hasta conectar autenticación)
+    var studentName =
+        ViewData["StudentName"]?.ToString() ?? "Estudiante";
+
+    var studentRole =
+        ViewData["StudentRole"]?.ToString() ?? "Portal estudiantil";
+
+    var studentInitials =
+        ViewData["StudentInitials"]?.ToString() ?? "ES";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@pageTitle - Nuevo Avatar V2</title>
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="stage" id="stage">
+
+        <!-- SIDEBAR -->
+        <aside class="menu glass"
+               id="sidebar"
+               aria-label="Menú estudiantil">
+
+            <div class="menu-head">
+
+                <span class="head-title">
+                    Avatar
+                </span>
+
+                <button class="head-toggle"
+                        id="sidebarToggle"
+                        type="button"
+                        title="Contraer menú"
+                        aria-label="Contraer menú"
+                        aria-expanded="true"
+                        aria-controls="sidebar">
+                    ‹
+                </button>
+
+            </div>
+
+            <div class="section-label">
+                PORTAL ESTUDIANTIL
+            </div>
+
+            <!-- INICIO -->
+            <a asp-page="/Index"
+               class="menu-item @(isHome ? "active" : "")"
+               aria-current="@(isHome ? "page" : null)">
+
+                <span class="mi">⌂</span>
+                <span class="label">Inicio</span>
+
+            </a>
+
+            <!-- EXPEDIENTE -->
+            <a asp-page="/Expediente/Index"
+               class="menu-item @(isRecord ? "active" : "")"
+               aria-current="@(isRecord ? "page" : null)">
+
+                <span class="mi">▤</span>
+                <span class="label">Mi expediente</span>
+
+            </a>
+
+            <!-- PREMATRÍCULA -->
+            <a asp-page="/Prematricula/Index"
+               class="menu-item @(isPreEnrollment ? "active" : "")"
+               aria-current="@(isPreEnrollment ? "page" : null)">
+
+                <span class="mi">▦</span>
+                <span class="label">Mi prematrícula</span>
+
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <!-- PIE DEL MENÚ -->
+            <div class="menu-footer">
+
+                <span class="footer-brand">
+                    NUEVO AVATAR V2
+                </span>
+
+                <span>
+                    Portal estudiantil
+                </span>
+
+            </div>
+
+        </aside>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <main class="content">
+
+            <!-- ENCABEZADO -->
+            <header class="topbar">
+
+                <nav class="crumb" aria-label="Ruta de navegación">
+
+                    <span>Portal estudiantil</span>
+
+                    <span aria-hidden="true"> / </span>
+
+                    <strong aria-current="page">
+                        @breadcrumbCurrent
+                    </strong>
+
+                </nav>
+
+                <div class="top-right">
+
+                    <!-- CAMBIAR TEMA -->
+                    <button class="round-btn"
+                            id="themeToggle"
+                            type="button"
+                            title="Cambiar tema"
+                            aria-label="Cambiar tema">
+
+                        ☾
+
+                    </button>
+
+                    <!-- USUARIO -->
+                    <div class="user">
+
+                        <div class="avatar" aria-hidden="true">
+                            @studentInitials
+                        </div>
+
+                        <div class="user-info">
+
+                            <div class="user-name">
+                                @studentName
+                            </div>
+
+                            <div class="user-role">
+                                @studentRole
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- CONTENIDO DE CADA PÁGINA -->
+            <section class="page-content">
+
+                @RenderBody()
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- NOTIFICACIONES -->
+    <div class="toast"
+         id="toast"
+         role="status"
+         aria-live="polite">
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="~/js/site.js"
+            asp-append-version="true">
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
