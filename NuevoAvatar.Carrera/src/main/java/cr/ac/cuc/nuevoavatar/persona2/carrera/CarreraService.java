@@ -1,5 +1,6 @@
 package cr.ac.cuc.nuevoavatar.persona2.carrera;
 
+import cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilter;
 import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -29,7 +30,9 @@ public class CarreraService {
         asignarDatos(carrera, request);
 
         try {
-            return CarreraResponse.desde(carreras.saveAndFlush(carrera));
+            CarreraResponse creada = CarreraResponse.desde(carreras.saveAndFlush(carrera));
+            BitacoraFilter.auditar("Creación de carrera: " + BitacoraFilter.comoJson(creada));
+            return creada;
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT, "No se pudo crear la carrera", ex
@@ -56,11 +59,17 @@ public class CarreraService {
     @Transactional
     public CarreraResponse modificar(Integer id, CarreraRequest request) {
         Carrera carrera = buscarO404(id);
+        CarreraResponse anterior = CarreraResponse.desde(carrera);
         validarReferencias(request);
         asignarDatos(carrera, request);
 
         try {
-            return CarreraResponse.desde(carreras.saveAndFlush(carrera));
+            CarreraResponse actual = CarreraResponse.desde(carreras.saveAndFlush(carrera));
+            BitacoraFilter.auditar(
+                "Modificación de carrera. Anterior: " + BitacoraFilter.comoJson(anterior)
+                + " Actual: " + BitacoraFilter.comoJson(actual)
+            );
+            return actual;
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT, "No se pudo modificar la carrera", ex
@@ -71,6 +80,7 @@ public class CarreraService {
     @Transactional
     public void eliminar(Integer id) {
         Carrera carrera = buscarO404(id);
+        CarreraResponse eliminada = CarreraResponse.desde(carrera);
 
         if (datos.referencias("Curso", "Curso", "CarreraId", id)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "La carrera tiene cursos relacionados");
@@ -79,6 +89,7 @@ public class CarreraService {
         try {
             carreras.delete(carrera);
             carreras.flush();
+            BitacoraFilter.auditar("Eliminación de carrera: " + BitacoraFilter.comoJson(eliminada));
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
