@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+using NuevoAvatar.Curso;
 using NuevoAvatar.Curso.Entities;
 using NuevoAvatar.Curso.Repository;
 using NuevoAvatar.Curso.Services;
@@ -24,6 +26,21 @@ public class CursoFiltrosTest
     {
         var servicio = new CursoService(new RepositorioFalso(), new CursoValidator(), null!);
         await Assert.ThrowsAsync<CursoValidationException>(() => servicio.GetFilteredAsync(carrera, nivel));
+    }
+
+    [Fact]
+    public void PriorizaDetalleJsonEnBitacoraDeCurso()
+    {
+        var http = new DefaultHttpContext();
+        http.Request.Method = "PUT";
+        http.Request.Path = "/curso/4";
+        http.Items["bitacora"] = "Modificación de curso. Anterior: {\"CursoId\":4} Actual: {\"CursoId\":4}";
+        Assert.Contains("Anterior:", CursoAuthorizationFilter.ConstruirDescripcionHttp(http, null));
+
+        var consulta = new DefaultHttpContext();
+        consulta.Request.Method = "GET";
+        consulta.Request.Path = "/curso";
+        Assert.Equal("El usuario consulta /curso", CursoAuthorizationFilter.ConstruirDescripcionHttp(consulta, null));
     }
 
     private sealed class RepositorioFalso : ICursoRepository
