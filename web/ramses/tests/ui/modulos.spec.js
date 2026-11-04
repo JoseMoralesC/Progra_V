@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+test.beforeEach(async ({ page }) => {
+  await page.route('**/gateway/admin/parametro/**', route => route.fulfill({ json: { idParametro: 'TAMPAG', valor: '15' } }));
+});
 test('el modal bloquea el fondo y restaura el foco al cerrar', async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('nuevo-avatar.sesion', JSON.stringify({ access_token: 'token', refresh_token: 'refresh', usuarioID: 'admin@cuc.cr', expires_in: '2099-01-01T00:00:00Z' })));
   await page.route('**/gateway/auth/sesion', route => route.fulfill({ json: { rol: 'ADMINISTRADOR', nombre: 'Admin' } }));
