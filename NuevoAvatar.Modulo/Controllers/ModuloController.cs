@@ -75,13 +75,21 @@ namespace NuevoAvatarSeguridad.Controllers
         }
 
         [HttpGet("menu/{idRol}")]
-        public async Task<IActionResult> ObtenerMenu(string idRol) => Ok(await _service.ObtenerMenu(idRol.ToUpperInvariant()));
+        public async Task<IActionResult> ObtenerMenu(string idRol)
+        {
+            var rol = idRol.ToUpperInvariant();
+            var menu = await _service.ObtenerMenu(rol);
+            await Registrar($"El usuario consulta menu del rol {rol}");
+            return Ok(menu);
+        }
 
         [HttpGet("{idModulo}/roles")]
         public async Task<IActionResult> ObtenerRoles(string idModulo)
         {
             if (await _service.ObtenerPorId(idModulo) is null) return NotFound("El módulo no existe");
-            return Ok(await _service.ObtenerRoles(idModulo));
+            var roles = await _service.ObtenerRoles(idModulo);
+            await Registrar($"El usuario consulta roles del modulo {idModulo}");
+            return Ok(roles);
         }
 
         [HttpPut("{idModulo}/roles")]
