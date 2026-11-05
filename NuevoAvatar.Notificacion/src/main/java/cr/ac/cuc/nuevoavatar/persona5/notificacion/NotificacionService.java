@@ -1,6 +1,7 @@
 package cr.ac.cuc.nuevoavatar.persona5.notificacion;
 
 import cr.ac.cuc.nuevoavatar.integracion.DatosRemotos;
+import cr.ac.cuc.nuevoavatar.persona5.seguridad.BitacoraFilter;
 import jakarta.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -39,6 +40,8 @@ public class NotificacionService {
             String usuario) {
         LinkedHashSet<String> destinatarios = obtenerDestinatarios(request);
         String html = Jsoup.clean(request.cuerpoHtml(), Safelist.relaxed());
+        String asunto = request.asunto().trim();
+        String correos = String.join(",", destinatarios);
         Notificacion historial = new Notificacion();
 
         try {
@@ -50,33 +53,45 @@ public class NotificacionService {
 
             helper.setFrom(config.get("MAILFROM"));
             helper.setTo(destinatarios.toArray(String[]::new));
-            helper.setSubject(request.asunto().trim());
+            helper.setSubject(asunto);
             helper.setText(html, true);
             sender.send(mensaje);
-
-            String correos = String.join(",", destinatarios);
-            historial.datos(
-                correos, request.asunto().trim(), html,
-                usuario, "ENVIADA", null
-            );
-            repositorio.save(historial);
-            return new NotificacionResponse(correos, "ENVIADA");
         } catch (ResponseStatusException exception) {
+            guardarFallo(historial, correos, asunto, html, usuario,
+                exception.getReason() != null ? exception.getReason() : "Falta configuración SMTP");
             throw exception;
         } catch (Exception exception) {
-            historial.datos(
-                String.join(",", destinatarios),
-                request.asunto().trim(),
-                html,
-                usuario,
-                "ERROR",
-                "No fue posible enviar la notificación"
-            );
-            repositorio.save(historial);
+            guardarFallo(historial, correos, asunto, html, usuario,
+                "No fue posible enviar la notificación");
             throw new ResponseStatusException(
                 HttpStatus.BAD_GATEWAY,
                 "No fue posible enviar la notificación"
             );
+        }
+
+        historial.datos(correos, asunto, html, usuario, "ENVIADA", null);
+        try {
+            repositorio.save(historial);
+            BitacoraFilter.auditar("Envío de notificación: " + BitacoraFilter.comoJson(HistorialResponse.desde(historial)));
+            return new NotificacionResponse(correos, "ENVIADA");
+        } catch (Exception dbException) {
+            BitacoraFilter.auditar("Envío de notificación sin historial persistido: " + correos);
+            return new NotificacionResponse(correos, "ENVIADA_SIN_HISTORIAL");
+        }
+    }
+
+    private void guardarFallo(
+            Notificacion historial,
+            String correos,
+            String asunto,
+            String html,
+            String usuario,
+            String motivo) {
+        try {
+            historial.datos(correos, asunto, html, usuario, "ERROR", motivo);
+            repositorio.save(historial);
+        } catch (Exception ignored) {
+            // No ocultar la excepción principal si la base de historial falla simultáneamente.
         }
     }
 
@@ -140,7 +155,7 @@ public class NotificacionService {
         return resultado;
     }
 
-    private static JavaMailSenderImpl crearSender(
+    JavaMailSenderImpl crearSender(
             Map<String, String> config) {
         JavaMailSenderImpl sender = new JavaMailSenderImpl();
         sender.setHost(config.get("MAILHOST"));
