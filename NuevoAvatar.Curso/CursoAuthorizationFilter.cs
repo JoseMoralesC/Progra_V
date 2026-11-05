@@ -71,9 +71,11 @@ public sealed class CursoAuthorizationFilter(
                     usuario,
                     descripcion);
             }
-            catch
+            catch (Exception bitacoraEx)
             {
-               
+                context.HttpContext.RequestServices
+                    .GetService<ILogger<CursoAuthorizationFilter>>()
+                    ?.LogError(bitacoraEx, "No fue posible registrar la bitácora de curso.");
             }
         }
     }
@@ -131,16 +133,35 @@ public sealed class CursoAuthorizationFilter(
         return Convert.FromBase64String(base64);
     }
 
-    private static string ConstruirDescripcion(
+    public static string ConstruirDescripcion(
         EndpointFilterInvocationContext context,
         object? resultado,
         Exception? excepcion)
     {
-        var request = context.HttpContext.Request;
+        return ConstruirDescripcionHttp(context.HttpContext, excepcion);
+    }
+
+    public static string ConstruirDescripcionHttp(
+        HttpContext httpContext,
+        Exception? excepcion)
+    {
+        var request = httpContext.Request;
 
         if (excepcion is not null)
         {
             return $"{request.Method} {request.Path} - Error: {excepcion.Message}";
+        }
+
+        if (httpContext.Items.TryGetValue("bitacora", out var detalle) &&
+            detalle is string texto &&
+            !string.IsNullOrWhiteSpace(texto))
+        {
+            return texto;
+        }
+
+        if (HttpMethods.IsGet(request.Method))
+        {
+            return $"El usuario consulta {request.Path}";
         }
 
         return $"{request.Method} {request.Path}";
