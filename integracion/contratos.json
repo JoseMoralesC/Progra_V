@@ -596,23 +596,7 @@
   },
   "Notificacion": {
     "port": 8095,
-    "resources": {
-      "Notificacion": {
-        "table": "[general].[Notificacion]",
-        "columns": [
-          "NotificacionId",
-          "Destinatarios",
-          "Asunto",
-          "HtmlSanitizado",
-          "Fecha",
-          "Usuario",
-          "Estado",
-          "Error"
-        ],
-        "key": "NotificacionId",
-        "readable": true
-      }
-    },
+    "resources": {},
     "references": []
   }
 }

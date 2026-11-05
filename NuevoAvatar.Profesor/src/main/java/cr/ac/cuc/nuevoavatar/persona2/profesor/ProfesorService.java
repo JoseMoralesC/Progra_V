@@ -1,12 +1,10 @@
 package cr.ac.cuc.nuevoavatar.persona2.profesor;
 
-import cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilter;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -19,9 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class ProfesorService {
-
-    private static final Pattern TELEFONO_LOCAL =
-        Pattern.compile("^(?:\\+?506[\\s-]?)?[2-8]\\d{3}-?\\d{4}$");
 
     private final ProfesorRepository repositorio;
     private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
@@ -40,11 +35,9 @@ public class ProfesorService {
         profesor.reemplazarTelefonos(normalizarTelefonos(request.telefonos()));
 
         try {
-            ProfesorResponse creado = ProfesorResponse.desde(
+            return ProfesorResponse.desde(
                 repositorio.saveAndFlush(profesor)
             );
-            BitacoraFilter.auditar("Creación de profesor: " + BitacoraFilter.comoJson(creado));
-            return creado;
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -88,7 +81,6 @@ public class ProfesorService {
         validar(request);
 
         Profesor profesor = buscarO404(id);
-        ProfesorResponse anterior = ProfesorResponse.desde(profesor);
         asignarDatos(profesor, request);
 
         // Elimino primero los teléfonos anteriores para evitar conflictos
@@ -99,14 +91,9 @@ public class ProfesorService {
         profesor.reemplazarTelefonos(normalizarTelefonos(request.telefonos()));
 
         try {
-            ProfesorResponse actual = ProfesorResponse.desde(
+            return ProfesorResponse.desde(
                 repositorio.saveAndFlush(profesor)
             );
-            BitacoraFilter.auditar(
-                "Modificación de profesor. Anterior: " + BitacoraFilter.comoJson(anterior)
-                + " Actual: " + BitacoraFilter.comoJson(actual)
-            );
-            return actual;
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -119,7 +106,6 @@ public class ProfesorService {
     @Transactional
     public void eliminar(Integer id) {
         Profesor profesor = buscarO404(id);
-        ProfesorResponse eliminado = ProfesorResponse.desde(profesor);
 
         if (tieneGruposActivos(id, LocalDate.now())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "El profesor tiene grupos activos");
@@ -128,7 +114,6 @@ public class ProfesorService {
         try {
             repositorio.delete(profesor);
             repositorio.flush();
-            BitacoraFilter.auditar("Eliminación de profesor: " + BitacoraFilter.comoJson(eliminado));
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -190,24 +175,11 @@ public class ProfesorService {
         normalizarTelefonos(request.telefonos());
     }
 
-   List<String> normalizarTelefonos(List<String> telefonos) {
-    if (telefonos == null || telefonos.isEmpty()) {
-        throw new ResponseStatusException(
-            HttpStatus.UNPROCESSABLE_CONTENT,
-            "Debe indicar al menos un teléfono"
-        );
-    }
+   private List<String> normalizarTelefonos(List<String> telefonos) {
     List<String> numeros = new java.util.ArrayList<>();
 
     for (String telefono : telefonos) {
-        String limpio = telefono == null ? "" : telefono.trim();
-        if (!TELEFONO_LOCAL.matcher(limpio).matches()) {
-            throw new ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_CONTENT,
-                "El teléfono debe tener formato local válido (8 dígitos)"
-            );
-        }
-        numeros.add(limpio);
+        numeros.add(telefono.trim());
     }
 
     Set<String> unicos = new HashSet<>(numeros);

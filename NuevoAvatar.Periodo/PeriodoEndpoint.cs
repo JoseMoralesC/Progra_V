@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using NuevoAvatar.Periodo.Nuevo.Entities;
 using NuevoAvatar.Periodo.Nuevo.Services;
@@ -33,7 +32,7 @@ public static class PeriodoEndpoint
         await RegistrarBitacoraAsync(
             seguridadService,
             context,
-            "El usuario consulta periodos");
+            "Consulta de todos los periodos.");
 
         return Results.Ok(periodos);
     }
@@ -60,7 +59,7 @@ public static class PeriodoEndpoint
         await RegistrarBitacoraAsync(
             seguridadService,
             context,
-            $"El usuario consulta periodo {periodoId}");
+            $"Consulta del periodo {periodoId}.");
 
         return Results.Ok(periodo);
     }
@@ -74,19 +73,11 @@ public static class PeriodoEndpoint
         try
         {
             var periodoId = await service.CrearAsync(request);
-            var creado = await service.ObtenerPorIdAsync(periodoId) ?? new PeriodoRequest
-            {
-                PeriodoId = periodoId,
-                Anio = request.Anio,
-                NumeroPeriodo = request.NumeroPeriodo,
-                FechaInicio = request.FechaInicio,
-                FechaFin = request.FechaFin
-            };
 
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Creación de periodo: {JsonSerializer.Serialize(creado)}");
+                $"Creación del periodo {periodoId}.");
 
             return Results.Created(
                 $"/periodo/{periodoId}",
@@ -114,12 +105,6 @@ public static class PeriodoEndpoint
 
         try
         {
-            var anterior = await service.ObtenerPorIdAsync(periodoId);
-            if (anterior is null)
-            {
-                return Results.NotFound();
-            }
-
             var actualizado = await service.ModificarAsync(
                 periodoId,
                 request);
@@ -129,19 +114,10 @@ public static class PeriodoEndpoint
                 return Results.NotFound();
             }
 
-            var actual = await service.ObtenerPorIdAsync(periodoId) ?? new PeriodoRequest
-            {
-                PeriodoId = periodoId,
-                Anio = request.Anio,
-                NumeroPeriodo = request.NumeroPeriodo,
-                FechaInicio = request.FechaInicio,
-                FechaFin = request.FechaFin
-            };
-
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Modificación de periodo. Anterior: {JsonSerializer.Serialize(anterior)} Actual: {JsonSerializer.Serialize(actual)}");
+                $"Modificación del periodo {periodoId}.");
 
             return Results.NoContent();
         }
@@ -163,15 +139,11 @@ public static class PeriodoEndpoint
             return Results.BadRequest(
                 "El identificador del periodo debe ser mayor que cero.");
         }
+       
+
 
         try
         {
-            var existente = await service.ObtenerPorIdAsync(periodoId);
-            if (existente is null)
-            {
-                return Results.NotFound();
-            }
-
             var eliminado = await service.EliminarAsync(periodoId);
 
             if (!eliminado)
@@ -182,7 +154,7 @@ public static class PeriodoEndpoint
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Eliminación de periodo: {JsonSerializer.Serialize(existente)}");
+                $"Eliminación del periodo {periodoId}.");
 
             return Results.NoContent();
         }
