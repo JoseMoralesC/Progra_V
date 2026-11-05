@@ -10,6 +10,8 @@ import NotificationHost from './components/Notifications/NotificationHost'
 
 import './index.css'
 import './styles/portal.css'
+import './styles/sesion.css'
+import './styles/notas.css'
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>

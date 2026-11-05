@@ -51,6 +51,19 @@ public class PeriodoRepository : IPeriodoRepository
     public async Task<int> CrearAsync(PeriodoRequest request)
     {
         using var connection = _connectionFactory.CreateConnection();
+        connection.Open();
+        using var tx = connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
+
+        const string sqlSolapado = """
+            SELECT CASE WHEN EXISTS(
+                SELECT 1 FROM academico.Periodo WITH (UPDLOCK, HOLDLOCK)
+                WHERE Anio = @Anio AND FechaInicio <= @FechaFin AND FechaFin >= @FechaInicio
+            ) THEN 1 ELSE 0 END;
+            """;
+        if (await connection.ExecuteScalarAsync<bool>(sqlSolapado, request, tx))
+        {
+            throw new InvalidOperationException("El rango se solapa con otro periodo del mismo año.");
+        }
 
         const string sql = """
             INSERT INTO academico.Periodo
@@ -70,9 +83,12 @@ public class PeriodoRepository : IPeriodoRepository
             );
             """;
 
-        return await connection.ExecuteScalarAsync<int>(
+        var id = await connection.ExecuteScalarAsync<int>(
             sql,
-            request);
+            request,
+            tx);
+        tx.Commit();
+        return id;
     }
 
     public async Task<bool> ModificarAsync(
@@ -80,6 +96,27 @@ public class PeriodoRepository : IPeriodoRepository
         PeriodoRequest request)
     {
         using var connection = _connectionFactory.CreateConnection();
+        connection.Open();
+        using var tx = connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
+
+        const string sqlSolapado = """
+            SELECT CASE WHEN EXISTS(
+                SELECT 1 FROM academico.Periodo WITH (UPDLOCK, HOLDLOCK)
+                WHERE Anio = @Anio AND PeriodoId <> @PeriodoId AND FechaInicio <= @FechaFin AND FechaFin >= @FechaInicio
+            ) THEN 1 ELSE 0 END;
+            """;
+        var parametros = new
+        {
+            PeriodoId = periodoId,
+            request.Anio,
+            request.NumeroPeriodo,
+            request.FechaInicio,
+            request.FechaFin
+        };
+        if (await connection.ExecuteScalarAsync<bool>(sqlSolapado, parametros, tx))
+        {
+            throw new InvalidOperationException("El rango se solapa con otro periodo del mismo año.");
+        }
 
         const string sql = """
             UPDATE academico.Periodo
@@ -93,14 +130,9 @@ public class PeriodoRepository : IPeriodoRepository
 
         var filasAfectadas = await connection.ExecuteAsync(
             sql,
-            new
-            {
-                PeriodoId = periodoId,
-                request.Anio,
-                request.NumeroPeriodo,
-                request.FechaInicio,
-                request.FechaFin
-            });
+            parametros,
+            tx);
+        tx.Commit();
 
         return filasAfectadas > 0;
     }
@@ -120,4 +152,6 @@ public class PeriodoRepository : IPeriodoRepository
 
         return filasAfectadas > 0;
     }
+    public async Task<bool> ExisteDuplicadoAsync(short anio, byte numero, int? excluirId = null) { using var c=_connectionFactory.CreateConnection(); return await c.ExecuteScalarAsync<bool>("SELECT CASE WHEN EXISTS(SELECT 1 FROM academico.Periodo WHERE Anio=@anio AND NumeroPeriodo=@numero AND (@excluirId IS NULL OR PeriodoId<>@excluirId)) THEN 1 ELSE 0 END",new{anio,numero,excluirId}); }
+    public async Task<bool> ExisteSolapamientoAsync(short anio, DateTime inicio, DateTime fin, int? excluirId = null) { using var c=_connectionFactory.CreateConnection(); return await c.ExecuteScalarAsync<bool>("SELECT CASE WHEN EXISTS(SELECT 1 FROM academico.Periodo WHERE Anio=@anio AND FechaInicio<=@fin AND FechaFin>=@inicio AND (@excluirId IS NULL OR PeriodoId<>@excluirId)) THEN 1 ELSE 0 END",new{anio,inicio,fin,excluirId}); }
 }

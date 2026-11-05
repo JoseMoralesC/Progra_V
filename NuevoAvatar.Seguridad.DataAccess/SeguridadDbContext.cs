@@ -18,6 +18,7 @@ namespace NuevoAvatar.Seguridad.DataAccess
         public DbSet<Rol> Roles { get; set; }
         public DbSet<Parametro> Parametros { get; set; }
         public DbSet<Modulo> Modulos { get; set; }
+        public DbSet<RolModulo> RolesModulo { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<SesionToken> SesionesToken { get; set; }
         public DbSet<Bitacora> Bitacoras { get; set; }
@@ -46,6 +47,18 @@ namespace NuevoAvatar.Seguridad.DataAccess
                 entity.HasKey(e => e.IdModulo);
                 entity.Property(e => e.IdModulo).HasColumnName("id_modulo");
                 entity.Property(e => e.NombreModulo).HasColumnName("nombre_modulo");
+                entity.Property(e => e.Activo).HasColumnName("activo");
+                entity.Property(e => e.Orden).HasColumnName("orden");
+                entity.Ignore(e => e.Roles);
+            });
+
+            modelBuilder.Entity<RolModulo>(entity =>
+            {
+                entity.ToTable("rol_modulo", "seguridad");
+                entity.HasKey(e => new { e.IdModulo, e.IdRol });
+                entity.Property(e => e.IdModulo).HasColumnName("id_modulo");
+                entity.Property(e => e.IdRol).HasColumnName("id_rol");
+                entity.HasOne(e => e.Modulo).WithMany().HasForeignKey(e => e.IdModulo).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Usuario>(entity =>

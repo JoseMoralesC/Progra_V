@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using NuevoAvatar.Periodo.Nuevo.Entities;
 using NuevoAvatar.Periodo.Nuevo.Services;
@@ -21,16 +22,18 @@ public static class PeriodoEndpoint
     }
 
     private static async Task<IResult> ObtenerTodosAsync(
+        short? anio,
+        string? estado,
         IPeriodoService service,
         ISeguridadService seguridadService,
         HttpContext context)
     {
-        var periodos = await service.ObtenerTodosAsync();
+        IEnumerable<PeriodoRequest> periodos; try{periodos=await service.ObtenerTodosAsync(anio,estado);}catch(ArgumentException ex){return Results.BadRequest(new{error=ex.Message});}
 
         await RegistrarBitacoraAsync(
             seguridadService,
             context,
-            "Consulta de todos los periodos.");
+            "El usuario consulta periodos");
 
         return Results.Ok(periodos);
     }
@@ -57,7 +60,7 @@ public static class PeriodoEndpoint
         await RegistrarBitacoraAsync(
             seguridadService,
             context,
-            $"Consulta del periodo {periodoId}.");
+            $"El usuario consulta periodo {periodoId}");
 
         return Results.Ok(periodo);
     }
@@ -71,11 +74,19 @@ public static class PeriodoEndpoint
         try
         {
             var periodoId = await service.CrearAsync(request);
+            var creado = await service.ObtenerPorIdAsync(periodoId) ?? new PeriodoRequest
+            {
+                PeriodoId = periodoId,
+                Anio = request.Anio,
+                NumeroPeriodo = request.NumeroPeriodo,
+                FechaInicio = request.FechaInicio,
+                FechaFin = request.FechaFin
+            };
 
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Creación del periodo {periodoId}.");
+                $"Creación de periodo: {JsonSerializer.Serialize(creado)}");
 
             return Results.Created(
                 $"/periodo/{periodoId}",
@@ -85,6 +96,7 @@ public static class PeriodoEndpoint
         {
             return Results.BadRequest(ex.Message);
         }
+        catch (PeriodoConflictoException ex){return Results.Conflict(new{error=ex.Message});}
     }
 
     private static async Task<IResult> ModificarAsync(
@@ -102,6 +114,12 @@ public static class PeriodoEndpoint
 
         try
         {
+            var anterior = await service.ObtenerPorIdAsync(periodoId);
+            if (anterior is null)
+            {
+                return Results.NotFound();
+            }
+
             var actualizado = await service.ModificarAsync(
                 periodoId,
                 request);
@@ -111,10 +129,19 @@ public static class PeriodoEndpoint
                 return Results.NotFound();
             }
 
+            var actual = await service.ObtenerPorIdAsync(periodoId) ?? new PeriodoRequest
+            {
+                PeriodoId = periodoId,
+                Anio = request.Anio,
+                NumeroPeriodo = request.NumeroPeriodo,
+                FechaInicio = request.FechaInicio,
+                FechaFin = request.FechaFin
+            };
+
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Modificación del periodo {periodoId}.");
+                $"Modificación de periodo. Anterior: {JsonSerializer.Serialize(anterior)} Actual: {JsonSerializer.Serialize(actual)}");
 
             return Results.NoContent();
         }
@@ -122,6 +149,7 @@ public static class PeriodoEndpoint
         {
             return Results.BadRequest(ex.Message);
         }
+        catch (PeriodoConflictoException ex){return Results.Conflict(new{error=ex.Message});}
     }
 
     private static async Task<IResult> EliminarAsync(
@@ -135,11 +163,15 @@ public static class PeriodoEndpoint
             return Results.BadRequest(
                 "El identificador del periodo debe ser mayor que cero.");
         }
-       
-
 
         try
         {
+            var existente = await service.ObtenerPorIdAsync(periodoId);
+            if (existente is null)
+            {
+                return Results.NotFound();
+            }
+
             var eliminado = await service.EliminarAsync(periodoId);
 
             if (!eliminado)
@@ -150,7 +182,7 @@ public static class PeriodoEndpoint
             await RegistrarBitacoraAsync(
                 seguridadService,
                 context,
-                $"Eliminación del periodo {periodoId}.");
+                $"Eliminación de periodo: {JsonSerializer.Serialize(existente)}");
 
             return Results.NoContent();
         }

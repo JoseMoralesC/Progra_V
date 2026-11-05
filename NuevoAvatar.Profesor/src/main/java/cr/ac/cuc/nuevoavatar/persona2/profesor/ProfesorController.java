@@ -33,6 +33,16 @@ public class ProfesorController {
         return servicio.listar();
     }
 
+    @GetMapping("/buscar")
+    public PaginaResponse<ProfesorResponse> buscar(
+            @RequestParam(defaultValue = "") String texto,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "nombreCompleto") String sort,
+            @RequestParam(defaultValue = "asc") String direction) {
+        return servicio.buscar(texto, page, size, sort, direction);
+    }
+
     @GetMapping("/{id}")
     public ProfesorResponse obtener(@PathVariable Integer id) {
         return servicio.obtener(id);

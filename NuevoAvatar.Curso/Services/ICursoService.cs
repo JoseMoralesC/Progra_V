@@ -6,6 +6,7 @@ namespace NuevoAvatar.Curso.Services;
 public interface ICursoService
 {
     Task<IReadOnlyList<CursoEntity>> GetAllAsync();
+    Task<IReadOnlyList<CursoEntity>> GetFilteredAsync(int? carreraId, byte? nivel);
 
     Task<CursoEntity?> GetByIdAsync(int id);
 

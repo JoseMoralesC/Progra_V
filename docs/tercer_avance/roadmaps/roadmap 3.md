@@ -1,24 +1,24 @@
 # Roadmap del avance 3
 
-Propuesta del 23 de octubre de 2026. Entrega final de semana 14, valor academico
+Propuesta reajustada el 28 de octubre de 2026. Entrega final de semana 14, valor academico
 30% segun el PDF (p. 22); sin inferir fecha calendario ni formula de nota.
 La asignacion detallada y los puntos gobiernan desde el
 [backlog unico](../../segundo_avance/planificacion/backlog.md).
 
 ## Compromiso nuevo y acumulado
 
-El incremento nuevo comprende 23 unidades de 21 HU de origen y 120 puntos. Completa la web
+El incremento nuevo comprende 21 historias completas e indivisibles y 120 puntos. Completa la web
 administrativa, el portal estudiantil y las siete historias moviles del PDF.
 La entrega final demuestra las **41 HU acumuladas**, incluidas las 20 de A2,
 sin contabilizar sus puntos otra vez como trabajo nuevo.
 
 | Persona | Historias nuevas A3 | Puntos nuevos | Total V2 |
 |---|---|---:|---:|
-| Jose | ADM13, ADM23, MOB0, MOB1-A, MOB2, MOB3 | 30 | 60 |
+| Jose | ADM13, ADM23, MOB0, MOB1, MOB2, MOB3 | 33 | 65 |
 | Ramses | ADM18, ADM19, WEB3, WEB6, WEB7, MOB6 | 30 | 60 |
-| Alejandro | ADM15, ADM16, WEB5, MOB1-S, MOB5-C | 30 | 60 |
-| Fabian | ADM14, ADM20, ADM21, WEB8, MOB4, MOB5-S | 30 | 60 |
-| Total | 23 unidades; 21 historias de origen | 120 | 240 |
+| Alejandro | ADM15, ADM16, WEB5, MOB5 | 32 | 60 |
+| Fabian | ADM14, ADM20, ADM21, WEB8, MOB4 | 25 | 55 |
+| Total | 21 historias completas | 120 | 240 |
 
 ## Flujos que se agregan
 
@@ -39,15 +39,17 @@ esto no agrega una tercera web ni extiende al estudiante permisos de profesor.
 
 | Etapa | Trabajo y responsables | Condicion de salida |
 |---|---|---|
-| 1. Contratos y base movil | Jose MOB0/MOB1-A; Alejandro MOB1-S y escritura de matricula; Fabian finanzas/seleccion movil; Ramses consultas propias. | Sesion movil real y contratos propios para todos los clientes. Resolver destinos implicitos antes de cerrar la navegacion. |
-| 2. Gestion y autoservicio | Jose ADM13/MOB2/MOB3; Alejandro ADM15/ADM16/WEB5/MOB5-C; Fabian ADM14/ADM20/ADM21/WEB8/MOB4/MOB5-S. | Inscripcion y operaciones financieras coherentes, con datos propios y casos negativos. |
+| 1. Contratos y base movil | Jose MOB0/MOB1 completo; Alejandro escritura y flujo completo de matricula movil; Fabian finanzas/prematricula movil; Ramses consultas propias. | Sesion movil real y contratos propios para todos los clientes. Resolver destinos implicitos antes de cerrar la navegacion. |
+| 2. Gestion y autoservicio | Jose ADM13/MOB2/MOB3; Alejandro ADM15/ADM16/WEB5/MOB5; Fabian ADM14/ADM20/ADM21/WEB8/MOB4. | Inscripcion y operaciones financieras coherentes, con datos propios y casos negativos. |
 | 3. Consultas y auditoria | Ramses ADM18/ADM19/WEB3/WEB6/WEB7/MOB6; Jose ADM23. | Promedios comprobables, filtros/exportaciones y trazabilidad financiera/academica. |
 | 4. Regresion y entrega | Cada responsable y su revisor de apoyo. | Matriz de las 41 HU acumuladas, demostracion integrada y paquete documental final. |
 
 Las etapas pueden solaparse mediante contratos acordados. Las pruebas de cada
 plataforma permanecen separadas aunque se reutilicen calculos o componentes.
-MOB1 y MOB5 se dividen en 5 + 3 puntos sin perder criterios; las dos partes
-cierran en esta entrega. Ver [subhistorias](../../segundo_avance/planificacion/subhistorias.md).
+MOB1 pertenece completa a Jose y MOB5 completa a Alejandro, con 8 puntos cada
+una. Ver [criterios indivisibles](../../segundo_avance/planificacion/subhistorias.md).
+La plantilla de UI/UX creada por Alejandro se reconoce en ADM1 del avance 2;
+su reutilizacion no genera puntos adicionales en el avance 3.
 
 ## Restricciones para cerrar el alcance
 

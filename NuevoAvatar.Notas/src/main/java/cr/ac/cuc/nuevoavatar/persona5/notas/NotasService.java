@@ -24,16 +24,22 @@ public class NotasService {
     private final NotaRubroRepository notas;
     private final MatriculaRepository matriculas;
     private final GrupoRepository grupos;
+    private final AuditoriaNotas auditoria;
+    private final BloqueoGrupoNotas bloqueo;
 
     public NotasService(
             DesgloseRubroRepository rubros,
             NotaRubroRepository notas,
             MatriculaRepository matriculas,
-            GrupoRepository grupos) {
+            GrupoRepository grupos,
+            AuditoriaNotas auditoria,
+            BloqueoGrupoNotas bloqueo) {
         this.rubros = rubros;
         this.notas = notas;
         this.matriculas = matriculas;
         this.grupos = grupos;
+        this.auditoria = auditoria;
+        this.bloqueo = bloqueo;
     }
 
     @Transactional
@@ -43,7 +49,10 @@ public class NotasService {
         }
         validarSuma(request);
 
+        bloqueo.adquirir(request.grupoId());
+
         List<DesgloseRubro> actuales = rubros.findByGrupoId(request.grupoId());
+        List<RubroResponse> anterior = actuales.stream().map(RubroResponse::desde).toList();
         List<Integer> idsActuales = actuales.stream().map(rubro -> java.util.Objects.requireNonNull(rubro).getId()).toList();
         if (!idsActuales.isEmpty() && notas.existsByRubroIdIn(idsActuales)) {
             throw new ResponseStatusException(
@@ -58,11 +67,19 @@ public class NotasService {
         List<DesgloseRubro> nuevos = request.rubros().stream()
             .map(rubro -> crearRubro(request.grupoId(), rubro))
             .toList();
-        return rubros.saveAll(nuevos).stream().map(RubroResponse::desde).toList();
+        var guardados = rubros.saveAll(nuevos);
+        rubros.flush();
+        var resultado = guardados.stream().map(RubroResponse::desde).toList();
+        auditoria.registrarDesglose(request.grupoId(), anterior, resultado);
+        return resultado;
     }
 
     @Transactional
-    public NotaResponse asignarNota(AsignarNotaRequest request) {
+    public NotaResponse asignarNota(AsignarNotaRequest request, boolean modificar) {
+        if (request.nota() == null || request.nota().compareTo(BigDecimal.ONE) < 0 ||
+                request.nota().compareTo(CIEN) > 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La nota debe estar entre 1 y 100");
+        }
         Matricula matricula = matriculas.findById(request.matriculaId()).orElseThrow(() ->
             invalido("La matricula no existe")
         );
@@ -70,6 +87,9 @@ public class NotasService {
             throw invalido("La matricula no esta activa");
         }
 
+        // Adquirir antes de leer rubros/notas: si se reemplazó el desglose al
+        // esperar, el rubro antiguo debe rechazarse y nunca quedar huérfano.
+        bloqueo.adquirir(matricula.getGrupoId());
         DesgloseRubro rubro = rubros.findById(request.rubroId()).orElseThrow(() ->
             invalido("El rubro no existe")
         );
@@ -77,14 +97,28 @@ public class NotasService {
             throw invalido("El rubro no pertenece al grupo de la matricula");
         }
 
-        NotaRubro nota = notas
-            .findByMatriculaIdAndRubroId(request.matriculaId(), request.rubroId())
-            .orElseGet(NotaRubro::new);
+        var existente = notas.findByMatriculaIdAndRubroId(request.matriculaId(), request.rubroId());
+        if (!modificar && existente.isPresent())
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "La nota ya existe; utilice PUT");
+        if (modificar && existente.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "La nota no existe; utilice POST");
+        NotaRubro nota = existente.orElseGet(NotaRubro::new);
+        NotaResponse anterior = existente.isPresent() ? NotaResponse.desde(nota, rubro) : null;
         nota.setMatriculaId(request.matriculaId());
         nota.setRubroId(request.rubroId());
         nota.setNota(request.nota());
         nota.setFechaRegistro(LocalDateTime.now());
-        return NotaResponse.desde(notas.saveAndFlush(nota), rubro);
+        NotaResponse actual = NotaResponse.desde(notas.saveAndFlush(nota), rubro);
+        auditoria.registrar(anterior, actual);
+        return actual;
+    }
+
+    @Transactional(readOnly = true)
+    public List<NotasEstudianteResponse> obtenerNotasGrupo(Integer grupoId) {
+        var grupo = grupos.findById(grupoId).orElseThrow(() -> invalido("El grupo no existe"));
+        return matriculas.findByCursoIdAndGrupoIdAndEstado(grupo.getCursoId(), grupoId, Matricula.ACTIVA)
+            .stream().map(m -> new NotasEstudianteResponse(m.getId(), m.getIdentificacionEstudiante(),
+                obtenerNotas(m.getIdentificacionEstudiante(), grupo.getCursoId(), grupoId))).toList();
     }
 
     @Transactional(readOnly = true)

@@ -26,6 +26,8 @@ namespace NuevoAvatarSeguridad.Controllers
             if (respuesta == null)
                 return Unauthorized("Usuario y/o contraseña incorrectos");
 
+            HttpContext.Items["usuario"] = respuesta.UsuarioID ?? usuario.Trim();
+            Response.Headers.CacheControl = "no-store";
             return StatusCode(201, respuesta);
         }
 
@@ -39,6 +41,8 @@ namespace NuevoAvatarSeguridad.Controllers
             if (respuesta == null)
                 return Unauthorized("No autorizado");
 
+            HttpContext.Items["usuario"] = respuesta.UsuarioID;
+            Response.Headers.CacheControl = "no-store";
             return StatusCode(201, respuesta);
         }
 

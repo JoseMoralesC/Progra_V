@@ -1,0 +1,12 @@
+/* Complementos exclusivos ADM2/ADM17; diseño base: plantilla de Alejandro. */
+.modulos { max-width: 1100px; margin: auto; padding: 28px; display: grid; gap: 18px; }
+.acceso { width: min(100%, 460px); margin: 8vh auto; }
+.acceso form, .acceso .field { margin-top: 20px; }
+.aviso { background: var(--accent-soft); color: var(--text); border-radius: 12px; padding: 14px; }
+.aviso.error { background: #fce8e6; color: #842020; }
+.rubro { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: 16px; align-items: end; margin: 18px 0; }
+.acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+article { border-top: 1px solid var(--line); padding-top: 12px; margin-top: 24px; }
+@media (max-width: 650px) { .modulos { padding: 16px; } .rubro { grid-template-columns: 1fr; } .topbar { align-items: flex-start; } }

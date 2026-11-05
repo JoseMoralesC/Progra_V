@@ -1,0 +1,1 @@
+package cr.ac.cuc.nuevoavatar.persona5.notificacion;import org.springframework.data.jpa.repository.*;public interface NotificacionRepository extends JpaRepository<Notificacion,Long>,JpaSpecificationExecutor<Notificacion>{}

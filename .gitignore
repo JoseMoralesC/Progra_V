@@ -47,3 +47,9 @@ Desktop.ini
 
 # Python tools
 __pycache__/
+
+# Modulos web A2
+node_modules/
+dist/
+playwright-report/
+test-results/
