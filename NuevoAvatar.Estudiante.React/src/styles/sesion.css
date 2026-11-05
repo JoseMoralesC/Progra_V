@@ -1,0 +1,39 @@
+/* Integración ADM2 de Jose sobre la plantilla UI/UX de Alejandro. */
+.acceso-sesion {
+    width: min(100% - 32px, 480px);
+    margin: 8vh auto;
+}
+
+.acceso-sesion form,
+.acceso-sesion .field {
+    display: grid;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.acceso-sesion input {
+    width: 100%;
+    min-width: 0;
+}
+
+.acceso-sesion button {
+    margin-top: 16px;
+    padding: 12px 18px;
+}
+
+.acceso-sesion .aviso {
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    overflow-wrap: anywhere;
+}
+
+.acceso-sesion .aviso.error {
+    background: #fce8e6;
+    color: #842020;
+}
+
+.acceso-sesion button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}

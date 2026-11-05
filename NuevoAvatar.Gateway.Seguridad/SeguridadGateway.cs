@@ -12,7 +12,10 @@ namespace NuevoAvatar.Gateway.Seguridad;
 
 // GTW1 adjunta esta politica a cada ruta protegida del unico proxy.
 // Sin politica explicita, la ruta no tiene acceso. Los permisos finos son del dominio.
-public sealed record AccesoGateway(params string[] Roles);
+public sealed record AccesoGateway(string[] Roles, string? Modulo = null, bool ConsultarMenu = false)
+{
+    public AccesoGateway(string rol) : this([rol]) { }
+}
 
 public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
 {
@@ -43,6 +46,7 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
             await Error(context, 401, "No autorizado");
             return;
         }
+        AccesoGateway? acceso = null;
         try
         {
             using var client = clientes.CreateClient(ClienteAuth);
@@ -60,7 +64,7 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
                 await Error(context, 401, "No autorizado");
                 return;
             }
-            var acceso = context.GetEndpoint()?.Metadata.GetMetadata<AccesoGateway>();
+            acceso = context.GetEndpoint()?.Metadata.GetMetadata<AccesoGateway>();
             if (acceso is null || acceso.Roles.Length == 0)
             {
                 await Error(context, 403, "Ruta sin politica de acceso");
@@ -95,6 +99,24 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
             if (context.RequestAborted.IsCancellationRequested) throw;
             await Error(context, 503, "Autenticacion no disponible");
             return;
+        }
+        if (acceso!.Modulo is not null || acceso.ConsultarMenu)
+        {
+            try
+            {
+                var menu = await PermisosGateway.Obtener(clientes, bearer, context.RequestAborted);
+                context.Items[PermisosGateway.ClaveMenu] = menu;
+                if (acceso.Modulo is not null && !menu.Any(m => m.IdModulo == acceso.Modulo))
+                {
+                    await Error(context, 403, "Modulo sin permiso para esta cuenta");
+                    return;
+                }
+            }
+            catch (PermisosNoDisponiblesException)
+            {
+                await Error(context, 503, "Permisos no disponibles");
+                return;
+            }
         }
         // Fuera del catch: un fallo del destino no se atribuye a Autenticacion.
         await next(context);

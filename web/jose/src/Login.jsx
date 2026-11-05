@@ -5,7 +5,7 @@ export function Login({ cliente, onAuthenticated }) {
   const [busy, setBusy] = useState(false), [error, setError] = useState('');
   async function ingresar(event) {
     event.preventDefault(); setBusy(true); setError('');
-    try { const sesion = await cliente.login(email, password); setPassword(''); onAuthenticated(sesion); }
+    try { const sesion = await cliente.login(email, password); setPassword(''); await onAuthenticated(sesion); }
     catch (e) { setError(e.message); }
     finally { setBusy(false); }
   }

@@ -34,6 +34,7 @@ La app movil es otro cliente y conserva sus historias oficiales.
 | [Roadmap del avance 2](roadmaps/roadmap%202.md) | Corte de semana 10, dependencias, recorridos y cierre. |
 | [Roadmap del avance 3](../tercer_avance/roadmaps/roadmap%203.md) | Incremento final, movil y regresion del avance 2. |
 | [Contratos y dependencias](planificacion/contratos.md) | Adaptaciones de V1, seguridad por identidad y bloqueos que deben resolverse. |
+| [Permisos rol-modulo](planificacion/permisos-rol-modulo.md) | Contrato implementado por Jose para gateway/menu y consumo por Fabian/Ramses; preparación de asignaciones y límites. |
 | [Evidencia individual](pruebas/criterio-evidencia.md) | Registro por criterio, responsable y entrega, sin resultados ficticios. |
 
 Los roadmaps remiten al backlog; no mantienen repartos alternativos. Un cambio

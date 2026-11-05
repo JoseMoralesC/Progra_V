@@ -11,5 +11,6 @@
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"><PrivateAssets>all</PrivateAssets></PackageReference>
     <ProjectReference Include="../NuevoAvatar.Gateway/NuevoAvatar.Gateway.csproj" />
+    <ProjectReference Include="../NuevoAvatar.Modulo/NuevoAvatar.Modulo.csproj" />
   </ItemGroup>
 </Project>

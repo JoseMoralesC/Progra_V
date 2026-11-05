@@ -25,18 +25,21 @@ public class NotasService {
     private final MatriculaRepository matriculas;
     private final GrupoRepository grupos;
     private final AuditoriaNotas auditoria;
+    private final BloqueoGrupoNotas bloqueo;
 
     public NotasService(
             DesgloseRubroRepository rubros,
             NotaRubroRepository notas,
             MatriculaRepository matriculas,
             GrupoRepository grupos,
-            AuditoriaNotas auditoria) {
+            AuditoriaNotas auditoria,
+            BloqueoGrupoNotas bloqueo) {
         this.rubros = rubros;
         this.notas = notas;
         this.matriculas = matriculas;
         this.grupos = grupos;
         this.auditoria = auditoria;
+        this.bloqueo = bloqueo;
     }
 
     @Transactional
@@ -45,6 +48,8 @@ public class NotasService {
             throw invalido("El grupo no existe");
         }
         validarSuma(request);
+
+        bloqueo.adquirir(request.grupoId());
 
         List<DesgloseRubro> actuales = rubros.findByGrupoId(request.grupoId());
         List<RubroResponse> anterior = actuales.stream().map(RubroResponse::desde).toList();
@@ -82,6 +87,9 @@ public class NotasService {
             throw invalido("La matricula no esta activa");
         }
 
+        // Adquirir antes de leer rubros/notas: si se reemplazó el desglose al
+        // esperar, el rubro antiguo debe rechazarse y nunca quedar huérfano.
+        bloqueo.adquirir(matricula.getGrupoId());
         DesgloseRubro rubro = rubros.findById(request.rubroId()).orElseThrow(() ->
             invalido("El rubro no existe")
         );

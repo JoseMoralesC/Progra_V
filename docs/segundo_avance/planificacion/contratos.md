@@ -5,6 +5,13 @@ responsables reajustados el 28 de octubre de 2026. No es una
 prueba de conectividad ni una implementacion de las ampliaciones descritas.
 Se conserva la propiedad de datos de los 22 servicios y las tecnologias V1.
 
+Actualizacion del 4 de noviembre: el [contrato rol-modulo](permisos-rol-modulo.md)
+define la lectura propia de permisos, IDs, políticas del gateway y consumo por
+Fabian/Ramses. Su implementación y límites de verificación están en la
+[ficha de concurrencia y permisos de Jose](../pruebas/jose-concurrencia-permisos.md).
+Esta actualización sustituye el pendiente de definir ese contrato, sin declarar
+completas las pantallas administrativas ni su integración real.
+
 ## Lo reutilizable no equivale a un portal listo
 
 | Evidencia actual | Reutilizacion | Trabajo que debe incluir la HU V2 |

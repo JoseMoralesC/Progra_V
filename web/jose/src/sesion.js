@@ -63,7 +63,16 @@ export class ClienteSesion {
     const tokens = await this.leer(response);
     if (version !== this.generation) throw new ErrorApi('La sesión cambió. Inténtalo nuevamente.');
     this.guardar(tokens);
-    return this.actual();
+    try {
+      const sesion = await this.actual();
+      if (version !== this.generation) throw new ErrorApi('La sesión cambió. Inténtalo nuevamente.');
+      return sesion;
+    } catch (error) {
+      // El login solo está completo cuando también se obtiene la identidad.
+      // No conservar tokens de una cuenta rechazada o un ingreso incompleto.
+      if (version === this.generation) this.limpiar();
+      throw error;
+    }
   }
 
   async renovar() {

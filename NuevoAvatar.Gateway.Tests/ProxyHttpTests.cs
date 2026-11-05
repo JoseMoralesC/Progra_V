@@ -14,9 +14,19 @@ namespace NuevoAvatar.Gateway.Tests;
 // Kestrel y YARP reales en puertos efimeros; propietarios/auth simulados, sin SQL.
 public class ProxyHttpTests : IAsyncLifetime
 {
+    [Fact]
+    public void ServicioNuevoSinContratoDeModuloNoPuedeQuedarExentoAccidentalmente()
+    {
+        var ruta = new RutaGateway("/gateway/nuevo", "/nuevo", "ServicioNuevo", 9999, ["GET"], ["ADMINISTRADOR"]);
+        Assert.Throws<InvalidOperationException>(() => ruta.Modulo);
+    }
     private WebApplication backend = null!, gateway = null!;
     private HttpClient cliente = null!;
     private int negocios;
+    private readonly HashSet<string> permisos = CatalogoRutas.Todas.Where(r => r.Modulo is not null)
+        .Select(r => r.Modulo!).ToHashSet();
+    private int estadoPermisos = 200;
+    private bool moduloActivo = true, menuInvalido;
     public async Task InitializeAsync()
     {
         var builder = WebApplication.CreateBuilder();
@@ -32,6 +42,13 @@ public class ProxyHttpTests : IAsyncLifetime
         }));
         backend.MapPost("/login", () => Results.Json(new { access_token = "prueba" }, statusCode: 201));
         backend.MapPost("/refresh", () => Results.Json(new { access_token = "renovado" }, statusCode: 201));
+        backend.MapGet("/modulo/menu", (HttpContext c) => {
+            Assert.StartsWith("Bearer ", c.Request.Headers.Authorization.ToString());
+            Assert.False(c.Request.Headers.ContainsKey("X-Rol"));
+            if (estadoPermisos != 200) return Results.StatusCode(estadoPermisos);
+            if (menuInvalido) return Results.Json(new { modulos = "incorrecto" });
+            return Results.Json(permisos.Select(id => new { idModulo = id, nombreModulo = id, activo = moduloActivo, orden = 0 }));
+        });
         backend.Map("/{**path}", async (HttpContext c) =>
         {
             Interlocked.Increment(ref negocios);
@@ -137,7 +154,8 @@ public class ProxyHttpTests : IAsyncLifetime
         await using var aislado = GatewayApplication.Create([], b => {
             b.WebHost.UseUrls("http://127.0.0.1:0"); b.Logging.ClearProviders();
             b.Configuration.AddInMemoryCollection(new Dictionary<string,string?> {
-                ["Destinos:Autenticacion"] = backend.Urls.Single(), ["Destinos:Usuario"] = "http://127.0.0.1:1" });
+                ["Destinos:Autenticacion"] = backend.Urls.Single(), ["Destinos:Modulo"] = backend.Urls.Single(),
+                ["Destinos:Usuario"] = "http://127.0.0.1:1" });
         });
         await aislado.StartAsync();
         using var http = new HttpClient { BaseAddress = new Uri(aislado.Urls.Single()) };
@@ -145,6 +163,68 @@ public class ProxyHttpTests : IAsyncLifetime
         using var response = await http.GetAsync("/gateway/admin/usuario");
         Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
         Assert.Contains("Servicio destino no disponible", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task RetirarPermisoBloqueaLaSiguientePeticionInclusoParaAdministrador()
+    {
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "admin");
+        using var primera = await cliente.GetAsync("/gateway/admin/usuario");
+        Assert.Equal(HttpStatusCode.OK, primera.StatusCode);
+        permisos.Remove("ADM4");
+        using var segunda = await cliente.GetAsync("/gateway/admin/usuario");
+        Assert.Equal(HttpStatusCode.Forbidden, segunda.StatusCode);
+        Assert.Equal(1, negocios);
+        using var menu = await cliente.GetAsync("/gateway/menu");
+        Assert.DoesNotContain("ADM4", await menu.Content.ReadAsStringAsync());
+    }
+
+    [Theory]
+    [InlineData("profesor", "/gateway/admin/usuario")]
+    [InlineData("estudiante", "/gateway/mat/obtenernotas?grupoId=1")]
+    public async Task AsignacionDeModuloNoAmpliaElPerfilPermitido(string token, string path)
+    {
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", token);
+        using var respuesta = await cliente.GetAsync(path);
+        Assert.Equal(HttpStatusCode.Forbidden, respuesta.StatusCode);
+        Assert.Equal(0, negocios);
+    }
+
+    [Fact]
+    public async Task ModuloInactivoNiegaApiYSeRetiraDelMenu()
+    {
+        moduloActivo = false;
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "profesor");
+        using var respuesta = await cliente.GetAsync("/gateway/mat/profesor/grupos");
+        Assert.Equal(HttpStatusCode.Forbidden, respuesta.StatusCode);
+        using var menu = await cliente.GetAsync("/gateway/menu");
+        Assert.Equal("[]", await menu.Content.ReadAsStringAsync());
+        Assert.Equal(0, negocios);
+    }
+
+    [Theory]
+    [InlineData(503, false)] [InlineData(403, false)] [InlineData(200, true)]
+    public async Task FalloORespuestaInvalidaDePermisosNoPermiteLlegarAlNegocio(int status, bool invalido)
+    {
+        estadoPermisos = status; menuInvalido = invalido;
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "admin");
+        using var respuesta = await cliente.GetAsync("/gateway/admin/usuario");
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, respuesta.StatusCode);
+        Assert.Contains("Permisos no disponibles", await respuesta.Content.ReadAsStringAsync());
+        Assert.Equal(0, negocios);
+    }
+
+    [Fact]
+    public async Task MenuPropioNoAceptaRolDeQueryYNuncaRequierePermisoAdministrativo()
+    {
+        permisos.Clear(); permisos.Add("ADM17");
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "profesor");
+        using var respuesta = await cliente.GetAsync("/gateway/menu?idRol=ADMINISTRADOR");
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        Assert.Contains("ADM17", await respuesta.Content.ReadAsStringAsync());
+        using var otro = await cliente.GetAsync("/gateway/menu/ADMINISTRADOR");
+        Assert.Equal(HttpStatusCode.Forbidden, otro.StatusCode);
+        Assert.Equal(0, negocios);
     }
 
     public async Task DisposeAsync()
