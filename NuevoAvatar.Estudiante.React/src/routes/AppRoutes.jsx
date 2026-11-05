@@ -1,100 +1,120 @@
-
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Link, Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { Login } from '../../../web/jose/src/Login.jsx'
+import { Notas } from '../../../web/jose/src/Notas.jsx'
 import MainLayout from '../layouts/MainLayout'
+import { useSesion } from '../sesion/SesionContext'
 
-const demoUser = {
-    nombre: 'Usuario de prueba',
-    rol: 'Administrador'
+const perfiles = {
+    ADMINISTRADOR: { titulo: 'Inicio de administración', seccion: 'ADMINISTRACIÓN', pendiente: 'El dashboard administrativo y sus mantenimientos están pendientes de integración.' },
+    PROFESOR: { titulo: 'Inicio del profesor', seccion: 'PROFESOR', pendiente: 'El dashboard del profesor está pendiente de integración.' },
+    ESTUDIANTE: { titulo: 'Inicio del estudiante', seccion: 'ESTUDIANTE', pendiente: 'El inicio académico, expediente y prematrícula propios están pendientes de integración.' }
 }
 
-const adminMenu = [
-    { label: 'Inicio', path: '/inicio', icon: '⌂' },
-    { label: 'Usuarios', path: '/usuarios', icon: '♙' },
-    { label: 'Módulos', path: '/modulos', icon: '▦' },
-    { label: 'Reportes', path: '/reportes', icon: '▤' }
-]
+function Acceso() {
+    const { cliente, usuario, mensaje, autenticar } = useSesion()
+    if (usuario) return <Navigate to="/inicio" replace />
+    return (
+        <main className="acceso-sesion">
+            {mensaje && <p className="aviso" role="alert">{mensaje}</p>}
+            <Login cliente={cliente} onAuthenticated={autenticar} />
+        </main>
+    )
+}
 
-function AdminPage({ title, description }) {
+function RequiereSesion() {
+    const { usuario } = useSesion()
+    return usuario ? <Outlet /> : <Navigate to="/login" replace />
+}
+
+function PaginaSesion({ children, title, breadcrumbItems = [{ label: 'Inicio' }] }) {
+    const { usuario, salir } = useSesion()
+    const perfil = perfiles[usuario.rol]
+    const menu = [{ label: 'Inicio', path: '/inicio', icon: '⌂' }]
+    const notas = usuario.modulos.find(m => m.idModulo === 'ADM17')
+    if (usuario.rol === 'PROFESOR' && notas) menu.push({ label: notas.nombreModulo, path: '/notas', icon: '▤' })
     return (
         <MainLayout
-            pageTitle={title}
-            breadcrumbItems={[
-                { label: 'Administración' },
-                { label: title }
-            ]}
-            user={demoUser}
-            menuItems={adminMenu}
-            systemName="Nuevo Avatar"
-            sectionTitle="ADMINISTRACIÓN"
-            footerText="Sistema administrativo"
+            pageTitle={title || perfil.titulo}
+            breadcrumbItems={breadcrumbItems}
+            user={usuario}
+            menuItems={menu}
+            sectionTitle={perfil.seccion}
+            footerText="Nuevo Avatar"
+            onLogout={salir}
         >
-            <div className="page-head">
-                <div>
-                    <span className="section-label">ADMINISTRACIÓN</span>
-                    <h2>{title}</h2>
-                    <p className="subtitle">{description}</p>
-                </div>
-            </div>
-
-            <div className="panel">
-                <h3>{title}</h3>
-                <p className="subtitle">
-                    Esta pantalla es un espacio de demostración para integrar
-                    el módulo correspondiente.
-                </p>
-            </div>
+            {children}
         </MainLayout>
     )
 }
 
-function AppRoutes() {
+function InicioSesion() {
+    const { usuario, reintentar } = useSesion()
     return (
-        <Routes>
-            <Route path="/" element={<Navigate to="/inicio" replace />} />
-
-            <Route
-                path="/inicio"
-                element={
-                    <AdminPage
-                        title="Inicio"
-                        description="Panel principal del sistema administrativo."
-                    />
-                }
-            />
-
-            <Route
-                path="/usuarios"
-                element={
-                    <AdminPage
-                        title="Usuarios"
-                        description="Espacio para integrar la gestión de usuarios."
-                    />
-                }
-            />
-
-            <Route
-                path="/modulos"
-                element={
-                    <AdminPage
-                        title="Módulos"
-                        description="Espacio para integrar la gestión de módulos."
-                    />
-                }
-            />
-
-            <Route
-                path="/reportes"
-                element={
-                    <AdminPage
-                        title="Reportes"
-                        description="Espacio para integrar los reportes del sistema."
-                    />
-                }
-            />
-
-            <Route path="*" element={<Navigate to="/inicio" replace />} />
-        </Routes>
+        <PaginaSesion>
+            <section className="panel">
+                <h2>Bienvenido, {usuario.nombre}</h2>
+                <p>Tu sesión está activa como {usuario.rol}.</p>
+                <p>{perfiles[usuario.rol].pendiente}</p>
+                {usuario.rol === 'PROFESOR' && usuario.modulos.some(m => m.idModulo === 'ADM17') &&
+                    <Link to="/notas">Abrir desglose y notas</Link>}
+                <p><button type="button" onClick={reintentar}>Actualizar permisos</button></p>
+            </section>
+        </PaginaSesion>
     )
 }
 
-export default AppRoutes
+function PaginaNotas() {
+    const { usuario, cliente } = useSesion()
+    return (
+        <PaginaSesion title="Notas" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Notas' }]}>
+            <Link to="/inicio">Volver al inicio</Link>
+            {usuario.rol === 'PROFESOR' && usuario.modulos.some(m => m.idModulo === 'ADM17') ? (
+                <div className="notas-integradas"><Notas cliente={cliente} /></div>
+            ) : (
+                <section className="panel" role="alert">
+                    <h2>Acceso restringido</h2>
+                    <p>Se requiere perfil de profesor y permiso activo para el módulo de notas.</p>
+                </section>
+            )}
+        </PaginaSesion>
+    )
+}
+
+function RutaNoDisponible() {
+    return (
+        <PaginaSesion title="Página no disponible">
+            <section className="panel">
+                <h2>Esta funcionalidad aún no está integrada</h2>
+                <Link to="/inicio">Volver al inicio</Link>
+            </section>
+        </PaginaSesion>
+    )
+}
+
+export default function AppRoutes() {
+    const { estado, mensaje, reintentar, salir } = useSesion()
+    if (estado === 'cargando') {
+        return <main className="acceso-sesion"><p role="status">Comprobando sesión…</p></main>
+    }
+    if (estado === 'error') {
+        return (
+            <main className="acceso-sesion panel">
+                <h1>No se pudo comprobar tu sesión</h1>
+                <p role="alert">{mensaje}</p>
+                <button type="button" onClick={reintentar}>Reintentar</button>
+                <button type="button" onClick={salir}>Cerrar sesión</button>
+            </main>
+        )
+    }
+    return (
+        <Routes>
+            <Route path="/login" element={<Acceso />} />
+            <Route element={<RequiereSesion />}>
+                <Route path="/" element={<Navigate to="/inicio" replace />} />
+                <Route path="/inicio" element={<InicioSesion />} />
+                <Route path="/notas" element={<PaginaNotas />} />
+                <Route path="*" element={<RutaNoDisponible />} />
+            </Route>
+        </Routes>
+    )
+}

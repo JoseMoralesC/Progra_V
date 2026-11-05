@@ -80,3 +80,30 @@ test('credenciales incorrectas y respuesta incompleta no dejan una sesion nueva'
     await assert.rejects(client.login('p@cuc.ac.cr', 'secreto')); assert.equal(client.tokens, null);
   }
 });
+
+test('login sin identidad autorizada o con dependencia caida no conserva tokens parciales', async () => {
+  for (const status of [403, 503]) {
+    const client = new ClienteSesion({ storage: storage(), now: () => now,
+      fetcher: async path => path.endsWith('/login') ? json(tokens()) : json({}, status) });
+    await assert.rejects(client.login('p@cuc.ac.cr', 'secreto'), error => error.status === status);
+    assert.equal(client.tokens, null);
+    assert.equal(client.storage.getItem(client.key), null);
+  }
+});
+
+test('logout con consulta inicial de identidad en vuelo impide completar el login tardio', async () => {
+  let completar;
+  const client = new ClienteSesion({ storage: storage(), now: () => now, fetcher: async path => {
+    if (path.endsWith('/login')) return json(tokens());
+    if (path.endsWith('/sesion')) return new Promise(resolve => {
+      completar = () => resolve(json({ nombre: 'Docente', rol: 'PROFESOR' }));
+    });
+    return new Response(null, { status: 204 });
+  } });
+  const ingreso = client.login('p@cuc.ac.cr', 'secreto');
+  // Esperar a que el login haya llegado a la consulta de identidad.
+  while (!completar) await new Promise(resolve => setImmediate(resolve));
+  await client.logout(); completar();
+  await assert.rejects(ingreso);
+  assert.equal(client.tokens, null);
+});

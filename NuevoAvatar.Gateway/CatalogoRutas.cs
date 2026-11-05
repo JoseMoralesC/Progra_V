@@ -4,6 +4,17 @@ public sealed record RutaGateway(string Externa, string Interna, string Servicio
     string[] Verbos, string[] Roles, bool Subrutas = false)
 {
     public string Patron => Externa + (Subrutas ? "/{**resto}" : "");
+    // IDs estables del contrato rol-módulo; el nombre visible puede cambiar.
+    public string? Modulo => Servicio switch {
+        "Usuario" => "ADM4", "Rol" => "ADM5", "Parametro" => "ADM6", "Modulo" => "ADM7",
+        "Institucion" => "ADM8", "Carrera" => "ADM9", "Curso" => "ADM10", "Profesor" => "ADM11",
+        "Periodo" => "ADM12", "Grupo" => "ADM13", "Prematricula" => "ADM14", "Matricula" => "ADM15",
+        "Expediente" => "ADM16", "Notas" => "ADM17", "HistorialAcademico" => "ADM18",
+        "ListadoEstudiantes" => "ADM19", "Factura" => "ADM20", "Pago" => "ADM21",
+        "Notificacion" => "ADM22", "Bitacora" => "ADM23",
+        "Autenticacion" or "Direccion" => null,
+        _ => throw new InvalidOperationException($"Falta definir el modulo del servicio {Servicio}")
+    };
 }
 
 public static class CatalogoRutas
@@ -28,7 +39,9 @@ public static class CatalogoRutas
             ("curso", "Curso", 5255), ("profesor", "Profesor", 8087), ("periodo", "Periodo", 5262),
             ("grupo", "Grupo", 5256), ("expediente", "Expediente", 8084) })
             rutas.Add(new($"/gateway/admin/{recurso}", $"/{recurso}", servicio, puerto, Crud, Admin, true));
-        rutas.Add(new("/gateway/menu", "/modulo/menu", "Modulo", 5162, ["GET"], Todos, true));
+        // La variante con ID es administrativa. /gateway/menu sin ID se resuelve
+        // localmente para la identidad autenticada y nunca acepta un rol del navegador.
+        rutas.Add(new("/gateway/menu", "/modulo/menu", "Modulo", 5162, ["GET"], Admin, true));
         rutas.Add(new("/gateway/admin/user", "/usuario", "Usuario", 8082, Crud, Admin, true));
         foreach (var (recurso, servicio, puerto) in new[] {
             ("prematricula", "Prematricula", 8089), ("matricula", "Matricula", 8085),

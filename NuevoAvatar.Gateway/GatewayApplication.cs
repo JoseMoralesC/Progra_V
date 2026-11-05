@@ -12,6 +12,7 @@ public static class GatewayApplication
         configurar?.Invoke(builder);
         var auth = Destino(builder.Configuration, "Autenticacion", 5158);
         builder.Services.AddSeguridadGateway(new Uri(auth));
+        builder.Services.AddPermisosGateway(new Uri(Destino(builder.Configuration, "Modulo", 5162)));
         builder.Services.AddHttpForwarder();
         builder.Services.AddSingleton(new HttpMessageInvoker(new SocketsHttpHandler
         {
@@ -23,6 +24,10 @@ public static class GatewayApplication
         app.UseRouting();
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/gateway"), branch => branch.UseSeguridadGateway());
         app.MapGet("/health", () => Results.Ok(new { servicio = "Gateway", estado = "disponible" }));
+        app.MapGet("/gateway/menu", (HttpContext context) => {
+            context.Response.Headers.CacheControl = "no-store";
+            return Results.Ok(context.Items[PermisosGateway.ClaveMenu]);
+        }).WithMetadata(new AccesoGateway(["ADMINISTRADOR", "PROFESOR", "ESTUDIANTE"], ConsultarMenu: true));
         foreach (var ruta in CatalogoRutas.Todas)
         {
             var destino = Destino(builder.Configuration, ruta.Servicio, ruta.Puerto);
@@ -40,7 +45,7 @@ public static class GatewayApplication
                     context.Response.Headers.CacheControl = "no-store";
                     await context.Response.WriteAsJsonAsync(new { status = 502, error = "Servicio destino no disponible" });
                 }
-            }).WithMetadata(new AccesoGateway(ruta.Roles));
+            }).WithMetadata(new AccesoGateway(ruta.Roles, ruta.Modulo));
         }
         return app;
     }

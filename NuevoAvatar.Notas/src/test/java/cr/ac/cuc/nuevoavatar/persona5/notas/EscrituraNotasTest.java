@@ -20,7 +20,7 @@ class EscrituraNotasTest {
     private final NotaRubroRepository notas = mock(NotaRubroRepository.class);
     private final MatriculaRepository matriculas = mock(MatriculaRepository.class);
     private final AuditoriaNotas auditoria = mock(AuditoriaNotas.class);
-    private final NotasService servicio = new NotasService(rubros, notas, matriculas, mock(GrupoRepository.class), auditoria);
+    private final NotasService servicio = new NotasService(rubros, notas, matriculas, mock(GrupoRepository.class), auditoria, mock(BloqueoGrupoNotas.class));
 
     @ParameterizedTest @ValueSource(strings = { "0", "100.01", "-1" })
     void notaFueraDeRangoNoEscribeNiBloqueaRubros(String valor) {

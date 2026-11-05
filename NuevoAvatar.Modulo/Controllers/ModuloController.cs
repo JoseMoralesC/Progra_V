@@ -83,6 +83,23 @@ namespace NuevoAvatarSeguridad.Controllers
             return Ok(menu);
         }
 
+        // Contrato GTW2/ADM1: el ID real del rol se consulta en Usuario, nunca
+        // se confunde con el nombre canónico ADMINISTRADOR/PROFESOR/ESTUDIANTE.
+        [HttpGet("menu")]
+        public async Task<IActionResult> ObtenerMenuPropio()
+        {
+            Response.Headers.CacheControl = "no-store";
+            var email = HttpContext.Items["usuario"]?.ToString();
+            if (string.IsNullOrWhiteSpace(email)) return Unauthorized();
+            var cuentas = await _datos.Listar("Usuario", "usuario", new() { ["email"] = email });
+            if (cuentas.Count != 1) return StatusCode(403, new { error = "Cuenta sin rol autorizado" });
+            var rol = DatosRemotos.Valor(cuentas[0], "id_rol").ToString().Trim().ToUpperInvariant();
+            if (string.IsNullOrWhiteSpace(rol)) return StatusCode(403, new { error = "Cuenta sin rol autorizado" });
+            var menu = await _service.ObtenerMenu(rol);
+            await Registrar("El usuario consulta su menu de modulos");
+            return Ok(menu);
+        }
+
         [HttpGet("{idModulo}/roles")]
         public async Task<IActionResult> ObtenerRoles(string idModulo)
         {

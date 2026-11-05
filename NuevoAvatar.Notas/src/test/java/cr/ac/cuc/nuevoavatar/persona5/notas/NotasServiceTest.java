@@ -33,7 +33,7 @@ class NotasServiceTest {
         when(actual.getNombre()).thenReturn("Proyecto"); when(actual.getPorcentaje()).thenReturn(new BigDecimal("100"));
         when(rubros.findByGrupoId(1)).thenReturn(List.of(anterior));
         when(rubros.saveAll(anyList())).thenReturn(List.of(actual));
-        var servicio = new NotasService(rubros, notas, mock(MatriculaRepository.class), grupos, auditoria);
+        var servicio = new NotasService(rubros, notas, mock(MatriculaRepository.class), grupos, auditoria, mock(BloqueoGrupoNotas.class));
         var resultado = servicio.cargarDesglose(new CargarDesgloseRequest(1,
             List.of(new CargarDesgloseRequest.RubroRequest("Proyecto", new BigDecimal("100")))));
         assertEquals(20, resultado.get(0).id());
@@ -54,7 +54,8 @@ class NotasServiceTest {
             mock(NotaRubroRepository.class),
             mock(MatriculaRepository.class),
             grupos,
-            mock(AuditoriaNotas.class)
+            mock(AuditoriaNotas.class),
+            mock(BloqueoGrupoNotas.class)
         );
 
         ResponseStatusException error = assertThrows(
@@ -91,7 +92,8 @@ class NotasServiceTest {
             notas,
             mock(MatriculaRepository.class),
             grupos,
-            mock(AuditoriaNotas.class)
+            mock(AuditoriaNotas.class),
+            mock(BloqueoGrupoNotas.class)
         );
 
         ResponseStatusException error = assertThrows(

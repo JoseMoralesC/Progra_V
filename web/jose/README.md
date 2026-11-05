@@ -24,4 +24,16 @@ Playwright usa respuestas HTTP simuladas; las pruebas no escriben SQL Server.
 El envoltorio local permite ejecutar los componentes propios. El dashboard
 por perfil se integra mediante `onAuthenticated`, sin implementarlo aqui.
 
-Guia completa: [desarrollo de Jose](../../docs/segundo_avance/desarrollo-jose.md).
+La integración con la plantilla React se abre desde `NuevoAvatar.Estudiante.React`
+en `http://127.0.0.1:4175`. Este cliente de 5173 conserva la entrada aislada para
+trabajar notas. El componente también está integrado en `/notas` de la plantilla
+para el profesor; el dashboard completo sigue pendiente de ADM3.
+
+Guía y resultados: [integración de sesión y layout](../../docs/segundo_avance/pruebas/jose-integracion-sesion-layout.md).
+Ver también [integración de notas y layout](../../docs/segundo_avance/pruebas/jose-integracion-notas-layout.md).
+
+El gateway actualizado exige asignaciones activas por módulo, también para este
+cliente aislado. Preparación y consumo por el equipo:
+[contrato rol-módulo](../../docs/segundo_avance/planificacion/permisos-rol-modulo.md).
+La protección concurrente añadida al servicio Notas y su verificación se describen
+en [concurrencia y permisos](../../docs/segundo_avance/pruebas/jose-concurrencia-permisos.md).
