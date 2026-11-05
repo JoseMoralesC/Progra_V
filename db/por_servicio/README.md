@@ -27,7 +27,7 @@ Los SQL por servicio son una referencia de estructura para una base vacia. **No 
 | PrograV_Usuario | seguridad.usuario |
 | PrograV_Rol | seguridad.rol |
 | PrograV_Parametro | seguridad.parametro |
-| PrograV_Modulo | seguridad.modulo |
+| PrograV_Modulo | seguridad.modulo (más `seguridad.rol_modulo`, `activo` y `orden` en `migraciones/002_modulo_v2.sql`) |
 | PrograV_Bitacora | general.bitacora |
 | PrograV_Institucion | academico.Institucion |
 | PrograV_Profesor | academico.Profesor, academico.ProfesorTelefono |
@@ -44,7 +44,7 @@ Los SQL por servicio son una referencia de estructura para una base vacia. **No 
 | PrograV_Pago | finanzas.Pago |
 | PrograV_HistorialAcademico | Sin tablas propias |
 | PrograV_ListadoEstudiantes | Sin tablas propias |
-| PrograV_Notificacion | Sin tablas propias |
+| PrograV_Notificacion | Sin tablas en corte V1; `general.Notificacion` agregada en `migraciones/003_notificacion_historial.sql` |
 
 Se conservan las tablas vacias del origen y todos los registros exportados/actuales, incluidos historicos, anulados y de prueba. No se corrigen nombres, dominios, fechas, hashes, tokens ni montos durante la migracion.
 
