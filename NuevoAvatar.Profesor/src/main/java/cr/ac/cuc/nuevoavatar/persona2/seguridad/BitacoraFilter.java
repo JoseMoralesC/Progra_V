@@ -1,5 +1,7 @@
 package cr.ac.cuc.nuevoavatar.persona2.seguridad;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
@@ -10,11 +12,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 @Component
 public class BitacoraFilter extends OncePerRequestFilter {
+
+    public static final String DETALLE_ATTRIBUTE = "bitacora.detalle";
+    private static final ObjectMapper JSON = new ObjectMapper().findAndRegisterModules();
 
     private static final Pattern SECRETOS_JSON = Pattern.compile(
         "(\"(?:contrasena|password|password_hash|passwordHash)\"\\s*:\\s*)\"(?:\\\\.|[^\"\\\\])*\"",
@@ -29,6 +36,21 @@ public class BitacoraFilter extends OncePerRequestFilter {
 
     public BitacoraFilter(SeguridadClient seguridad) {
         this.seguridad = seguridad;
+    }
+
+    public static void auditar(String descripcion) {
+        var attrs = RequestContextHolder.getRequestAttributes();
+        if (attrs instanceof ServletRequestAttributes sra) {
+            sra.getRequest().setAttribute(DETALLE_ATTRIBUTE, descripcion);
+        }
+    }
+
+    public static String comoJson(Object valor) {
+        try {
+            return ocultarSecretos(JSON.writeValueAsString(valor));
+        } catch (JsonProcessingException ex) {
+            return String.valueOf(valor);
+        }
     }
 
     @Override
@@ -81,6 +103,10 @@ public class BitacoraFilter extends OncePerRequestFilter {
         if (response.getStatus() >= 500) {
             return "Error técnico en " + metodo + " " + ruta
                 + ". Estado: " + response.getStatus();
+        }
+        Object auditado = request.getAttribute(DETALLE_ATTRIBUTE);
+        if (auditado != null && response.getStatus() < 400) {
+            return auditado.toString();
         }
         if ("GET".equals(metodo)) {
             return "El usuario consulta " + ruta;
