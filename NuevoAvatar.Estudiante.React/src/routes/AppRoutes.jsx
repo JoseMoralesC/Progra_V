@@ -1,11 +1,10 @@
 
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-
-const demoUser = {
-    nombre: 'Usuario de prueba',
-    rol: 'Administrador'
-}
+import Login from '../pages/Login/Login'
+import ProtectedRoute from '../components/ProtectedRoute'
+import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
 
 const adminMenu = [
     { label: 'Inicio', path: '/inicio', icon: '⌂' },
@@ -15,6 +14,16 @@ const adminMenu = [
 ]
 
 function AdminPage({ title, description }) {
+    const { session, logout } = useAuth()
+    const { notify } = useNotifications()
+    const navigate = useNavigate()
+
+    function handleLogout() {
+        logout()
+        notify('Sesión cerrada en este navegador.', 'info')
+        navigate('/login', { replace: true })
+    }
+
     return (
         <MainLayout
             pageTitle={title}
@@ -22,11 +31,12 @@ function AdminPage({ title, description }) {
                 { label: 'Administración' },
                 { label: title }
             ]}
-            user={demoUser}
+            user={{ ...session.user, rol: session.user.nombreRol }}
             menuItems={adminMenu}
             systemName="Nuevo Avatar"
             sectionTitle="ADMINISTRACIÓN"
             footerText="Sistema administrativo"
+            onLogout={handleLogout}
         >
             <div className="page-head">
                 <div>
@@ -51,6 +61,9 @@ function AppRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Navigate to="/inicio" replace />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route element={<ProtectedRoute />}>
 
             <Route
                 path="/inicio"
@@ -91,6 +104,8 @@ function AppRoutes() {
                     />
                 }
             />
+
+            </Route>
 
             <Route path="*" element={<Navigate to="/inicio" replace />} />
         </Routes>

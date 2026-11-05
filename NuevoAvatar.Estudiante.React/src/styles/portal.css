@@ -1303,3 +1303,61 @@ body.dark .status-danger {
 
 
 
+.login-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: var(--bg);
+}
+
+.login-panel {
+    width: min(100%, 440px);
+    padding: 32px;
+}
+
+.login-panel h1 {
+    margin: 12px 0 6px;
+}
+
+.login-form {
+    display: grid;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.login-form label {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.login-form input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: inherit;
+    background: var(--glass-strong);
+    font: inherit;
+}
+
+.login-form input:focus-visible {
+    outline: 3px solid rgba(52, 101, 180, 0.25);
+    border-color: #3465b4;
+}
+
+.login-submit {
+    justify-self: stretch;
+    margin-top: 16px;
+}
+
+@media (max-width: 520px) {
+    .login-page {
+        padding: 16px;
+    }
+
+    .login-panel {
+        padding: 24px 20px;
+    }
+}
