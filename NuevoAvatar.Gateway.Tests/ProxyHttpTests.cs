@@ -128,12 +128,37 @@ public class ProxyHttpTests : IAsyncLifetime
     }
 
     [Theory]
+    [InlineData("GET", "/gateway/mat/prematricula/propio")]
+    [InlineData("POST", "/gateway/mat/prematricula/propio")]
+    [InlineData("PUT", "/gateway/mat/prematricula/propio/17")]
+    [InlineData("DELETE", "/gateway/mat/prematricula/propio/17")]
+    public async Task PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(string metodo, string ruta)
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(metodo), ruta);
+        request.Headers.Authorization = new("Bearer", "estudiante");
+        if (metodo is "POST" or "PUT") request.Content = new StringContent(
+            "{\"carreraId\":1,\"cursos\":[10],\"periodoId\":20}", Encoding.UTF8, "application/json");
+
+        using var response = await cliente.SendAsync(request);
+
+        Assert.Equal(metodo == "DELETE" ? HttpStatusCode.NoContent : HttpStatusCode.OK, response.StatusCode);
+        if (metodo == "DELETE") return;
+        var echo = await response.Content.ReadFromJsonAsync<Eco>();
+        Assert.StartsWith("/prematricula/propio", echo!.Path);
+        Assert.Equal("Bearer estudiante", echo.Authorization);
+        if (metodo is "POST" or "PUT") Assert.Contains("carreraId", echo.Body);
+    }
+
+    [Theory]
     [InlineData(null, "/gateway/admin/usuario", 401)]
     [InlineData(null, "/gateway/expediente/propio", 401)]
+    [InlineData(null, "/gateway/mat/prematricula/propio", 401)]
     [InlineData("invalido", "/gateway/admin/usuario", 401)]
     [InlineData("estudiante", "/gateway/admin/usuario", 403)]
     [InlineData("admin", "/gateway/expediente/propio", 403)]
     [InlineData("profesor", "/gateway/expediente/propio", 403)]
+    [InlineData("admin", "/gateway/mat/prematricula/propio", 403)]
+    [InlineData("profesor", "/gateway/mat/prematricula/propio", 403)]
     [InlineData("profesor", "/gateway/admin/expediente/123", 403)]
     [InlineData("estudiante", "/gateway/mat/obtenernotas?grupoId=1", 403)]
     [InlineData("admin", "/gateway/admin/usuario/interno/datos", 404)]

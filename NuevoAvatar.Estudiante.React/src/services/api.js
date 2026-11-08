@@ -143,3 +143,49 @@ export function obtenerDistritos(provinciaId, cantonId, accessToken) {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }
+
+const PREMATRICULA_PROPIA = '/prematricula/propio'
+
+export function obtenerPrematriculasPropias(accessToken) {
+    return request('/gateway/mat', PREMATRICULA_PROPIA, {
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
+    })
+}
+
+export function obtenerOpcionesPrematricula(accessToken) {
+    return request('/gateway/mat', `${PREMATRICULA_PROPIA}/opciones`, {
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
+    })
+}
+
+function cuerpoPrematriculaPropia(datos) {
+    return {
+        carreraId: datos.carreraId,
+        cursos: datos.cursos,
+        observaciones: datos.observaciones,
+        periodoId: datos.periodoId
+    }
+}
+
+export function crearPrematriculaPropia(datos, accessToken) {
+    return request('/gateway/mat', PREMATRICULA_PROPIA, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(cuerpoPrematriculaPropia(datos))
+    })
+}
+
+export function actualizarPrematriculaPropia(id, datos, accessToken) {
+    return request('/gateway/mat', `${PREMATRICULA_PROPIA}/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(cuerpoPrematriculaPropia(datos))
+    })
+}
+
+export function cancelarPrematriculaPropia(id, accessToken) {
+    return request('/gateway/mat', `${PREMATRICULA_PROPIA}/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}

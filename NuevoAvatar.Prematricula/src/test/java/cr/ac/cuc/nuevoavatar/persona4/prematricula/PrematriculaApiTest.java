@@ -55,8 +55,21 @@ class PrematriculaApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBas
     @BeforeEach
     void preparar() {
         when(seguridad.validar(TOKEN)).thenReturn(true);
+        when(seguridad.obtenerSesion(TOKEN)).thenReturn(
+                new SeguridadClient.SesionActual("operador@cuc.cr", "Operador", "ADMINISTRADOR",
+                        null, null, null, null));
         when(reloj.instant()).thenReturn(Instant.parse("2026-10-03T18:00:00Z"));
         when(reloj.getZone()).thenReturn(ZoneId.of("America/Costa_Rica"));
+    }
+
+    private String tokenPara(String email) {
+        return "Bearer e30." + Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(("{\"sub\":\"" + email + "\"}").getBytes(StandardCharsets.UTF_8)) + ".firma";
+    }
+
+    private SeguridadClient.SesionActual sesionEstudiante(String email, String identificacion) {
+        return new SeguridadClient.SesionActual(email, "Estudiante", "ESTUDIANTE",
+                "Cedula", identificacion, identificacion, null);
     }
 
     private ObjectNode datos() throws Exception {
@@ -304,5 +317,93 @@ class PrematriculaApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBas
         mvc.perform(delete("/prematricula/999").header("Authorization", TOKEN)).andExpect(status().isNotFound());
         mvc.perform(get("/prematricula/no-numero").header("Authorization", TOKEN)).andExpect(status().isBadRequest());
         mvc.perform(conDatos(patch("/prematricula/1"), datos())).andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    void estudiantePuedeCrearConsultarModificarYCancelarSoloConIdentidadDeSesion() throws Exception {
+        String token = tokenPara("ana@cuc.cr");
+        when(seguridad.validar(token)).thenReturn(true);
+        when(seguridad.obtenerSesion(token)).thenReturn(sesionEstudiante("ana@cuc.cr", "123"));
+        ObjectNode solicitud = datos();
+        solicitud.remove("identificacionEstudiante");
+
+        var respuesta = mvc.perform(conDatosToken(post("/prematricula/propio"), solicitud, token))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.identificacionEstudiante").value("123"))
+                .andReturn().getResponse();
+        int id = mapper.readTree(respuesta.getContentAsString()).get("id").asInt();
+        mvc.perform(get("/prematricula/propio").header("Authorization", token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$[0].id").value(id));
+        mvc.perform(get("/prematricula/propio/{id}", id).header("Authorization", token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacionEstudiante").value("123"));
+
+        ObjectNode cambio = datos();
+        cambio.remove("identificacionEstudiante");
+        cambio.put("observaciones", "Cambio propio");
+        mvc.perform(conDatosToken(put("/prematricula/propio/{id}", id), cambio, token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacionEstudiante").value("123"))
+                .andExpect(jsonPath("$.observaciones").value("Cambio propio"));
+        mvc.perform(delete("/prematricula/propio/{id}", id).header("Authorization", token))
+                .andExpect(status().isNoContent());
+        assertEquals(0, cantidad("matricula.Prematricula"));
+    }
+
+    @Test
+    void endpointsAdministrativosNoPermitenQueUnEstudianteElijaIdentidadAjena() throws Exception {
+        int id = crear();
+        String token = tokenPara("ana@cuc.cr");
+        when(seguridad.validar(token)).thenReturn(true);
+        when(seguridad.obtenerSesion(token)).thenReturn(sesionEstudiante("ana@cuc.cr", "123"));
+
+        mvc.perform(get("/prematricula").header("Authorization", token)).andExpect(status().isForbidden());
+        mvc.perform(get("/prematricula/{id}", id).header("Authorization", token)).andExpect(status().isForbidden());
+        mvc.perform(conDatosToken(put("/prematricula/{id}", id), datos().put("identificacionEstudiante", "456"), token))
+                .andExpect(status().isForbidden());
+        mvc.perform(delete("/prematricula/{id}", id).header("Authorization", token)).andExpect(status().isForbidden());
+        assertEquals("123", jdbc.queryForObject(
+                "SELECT IdentificacionEstudiante FROM matricula.Prematricula WHERE PrematriculaId=?", String.class, id));
+    }
+
+    @Test
+    void solicitudPropiaNoAceptaIdentidadElegidaYNoExponeSolicitudesDeOtroEstudiante() throws Exception {
+        int id = crear();
+        String tokenMaria = tokenPara("maria@cuc.cr");
+        when(seguridad.validar(tokenMaria)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenMaria)).thenReturn(sesionEstudiante("maria@cuc.cr", "456"));
+
+        mvc.perform(get("/prematricula/propio/{id}", id).header("Authorization", tokenMaria))
+                .andExpect(status().isNotFound());
+        ObjectNode cambio = datos();
+        cambio.remove("identificacionEstudiante");
+        mvc.perform(conDatosToken(put("/prematricula/propio/{id}", id), cambio, tokenMaria))
+                .andExpect(status().isNotFound());
+        mvc.perform(delete("/prematricula/propio/{id}", id).header("Authorization", tokenMaria))
+                .andExpect(status().isNotFound());
+        mvc.perform(get("/prematricula/propio").header("Authorization", tokenMaria))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(0));
+
+        String tokenAna = tokenPara("ana@cuc.cr");
+        when(seguridad.validar(tokenAna)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenAna)).thenReturn(sesionEstudiante("ana@cuc.cr", "123"));
+        ObjectNode identidadElegida = datos();
+        mvc.perform(conDatosToken(post("/prematricula/propio"), identidadElegida, tokenAna))
+                .andExpect(status().isBadRequest());
+        assertEquals(1, cantidad("matricula.Prematricula"));
+    }
+
+    @Test
+    void opcionesPropiasSoloIncluyenCursosDePrimerNivelYPeriodosFuturos() throws Exception {
+        String token = tokenPara("ana@cuc.cr");
+        when(seguridad.validar(token)).thenReturn(true);
+        when(seguridad.obtenerSesion(token)).thenReturn(sesionEstudiante("ana@cuc.cr", "123"));
+        mvc.perform(get("/prematricula/propio/opciones").header("Authorization", token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.cursos.length()").value(3))
+                .andExpect(jsonPath("$.periodos.length()").value(1));
+    }
+
+    private MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud,
+            ObjectNode datos, String token) {
+        return solicitud.header("Authorization", token)
+                .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
+                .content(java.util.Objects.requireNonNull(datos.toString()));
     }
 }

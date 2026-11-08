@@ -19,7 +19,8 @@ export default function StudentLayout() {
     }
 
     const pageTitle = location.pathname === '/estudiante/expediente' ? 'Mi expediente'
-        : location.pathname === '/estudiante/perfil' ? 'Mi perfil' : 'Inicio del estudiante'
+        : location.pathname === '/estudiante/perfil' ? 'Mi perfil'
+            : location.pathname === '/estudiante/prematricula' ? 'Mis prematrículas' : 'Inicio del estudiante'
     const breadcrumbItems = pageTitle === 'Inicio del estudiante'
         ? [{ label: 'Inicio' }]
         : [{ label: 'Inicio', path: '/estudiante' }, { label: pageTitle }]
@@ -32,6 +33,7 @@ export default function StudentLayout() {
             menuItems={[
                 { id: 'portal-inicio', label: 'Inicio', path: '/estudiante', icon: '⌂' },
                 { id: 'portal-expediente', label: 'Mi expediente', path: '/estudiante/expediente', icon: '▤' },
+                { id: 'portal-prematricula', label: 'Mis prematrículas', path: '/estudiante/prematricula', icon: '▧' },
                 { id: 'portal-perfil', label: 'Mi perfil', path: '/estudiante/perfil', icon: '◉' }
             ]}
             menuStatus="ready"

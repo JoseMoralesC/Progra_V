@@ -11,6 +11,7 @@ import { Roles } from '../pages/Roles/Roles.jsx'
 import { Usuarios } from '../pages/Usuarios/Usuarios.jsx'
 import InicioEstudiante from '../pages/Estudiante/InicioEstudiante'
 import Expediente from '../pages/Estudiante/Expediente'
+import Prematricula from '../pages/Estudiante/Prematricula'
 import Perfil from '../pages/Perfil/Perfil'
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../context/NotificationContext'
@@ -106,6 +107,7 @@ export default function AppRoutes() {
                 <Route path="/estudiante" element={<StudentLayout />}>
                     <Route index element={<InicioEstudiante />} />
                     <Route path="expediente" element={<Expediente />} />
+                    <Route path="prematricula" element={<Prematricula />} />
                     <Route path="perfil" element={<Perfil />} />
                 </Route>
 

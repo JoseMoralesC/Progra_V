@@ -37,6 +37,12 @@ public static class CatalogoRutas
         rutas.Add(new("/gateway/expediente/propio", "/expediente/propio", "Expediente", 8084,
             ["GET", "PUT"], ["ESTUDIANTE"], ExigeModulo: false));
 
+        // WEB4: el backend deriva la identidad del bearer y valida la propiedad.
+        rutas.Add(new("/gateway/mat/prematricula/propio", "/prematricula/propio", "Prematricula", 8089,
+            ["GET", "POST"], ["ESTUDIANTE"], ExigeModulo: false));
+        rutas.Add(new("/gateway/mat/prematricula/propio", "/prematricula/propio", "Prematricula", 8089,
+            ["GET", "PUT", "DELETE"], ["ESTUDIANTE"], Subrutas: true, ExigeModulo: false));
+
         foreach (var (recurso, servicio, puerto) in new[] {
             ("usuario", "Usuario", 8082), ("rol", "Rol", 5160), ("parametro", "Parametro", 5161),
             ("modulo", "Modulo", 5162), ("institucion", "Institucion", 8086), ("carrera", "Carrera", 8088),
