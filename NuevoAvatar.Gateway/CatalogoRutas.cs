@@ -1,11 +1,11 @@
 namespace NuevoAvatar.Gateway;
 
 public sealed record RutaGateway(string Externa, string Interna, string Servicio, int Puerto,
-    string[] Verbos, string[] Roles, bool Subrutas = false)
+    string[] Verbos, string[] Roles, bool Subrutas = false, bool ExigeModulo = true)
 {
     public string Patron => Externa + (Subrutas ? "/{**resto}" : "");
     // IDs estables del contrato rol-módulo; el nombre visible puede cambiar.
-    public string? Modulo => Servicio switch {
+    public string? Modulo => !ExigeModulo ? null : Servicio switch {
         "Usuario" => "ADM4", "Rol" => "ADM5", "Parametro" => "ADM6", "Modulo" => "ADM7",
         "Institucion" => "ADM8", "Carrera" => "ADM9", "Curso" => "ADM10", "Profesor" => "ADM11",
         "Periodo" => "ADM12", "Grupo" => "ADM13", "Prematricula" => "ADM14", "Matricula" => "ADM15",
@@ -32,6 +32,10 @@ public static class CatalogoRutas
             ("login", ["POST"]), ("refresh", ["POST"]), ("validate", ["GET"]),
             ("sesion", ["GET"]), ("logout", ["POST"]) })
             rutas.Add(new($"/gateway/auth/{path}", $"/{path}", "Autenticacion", 5158, verbos, Todos));
+
+        // WEB2: acceso acotado al expediente del estudiante autenticado.
+        rutas.Add(new("/gateway/expediente/propio", "/expediente/propio", "Expediente", 8084,
+            ["GET", "PUT"], ["ESTUDIANTE"], ExigeModulo: false));
 
         foreach (var (recurso, servicio, puerto) in new[] {
             ("usuario", "Usuario", 8082), ("rol", "Rol", 5160), ("parametro", "Parametro", 5161),

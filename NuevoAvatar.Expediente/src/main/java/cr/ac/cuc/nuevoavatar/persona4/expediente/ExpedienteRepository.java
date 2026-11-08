@@ -39,6 +39,26 @@ public class ExpedienteRepository {
         return java.util.Objects.requireNonNull(encontrados).stream().findFirst();
     }
 
+    /** Resuelve el vínculo usando las tres propiedades confirmadas por /sesion. */
+    public List<DatosExpediente> obtenerVinculados(String email, String tipoIdentificacion, String identificacion) {
+        return jdbc.query(CONSULTA + " WHERE e.Email = ? AND e.TipoIdentificacion = ? AND e.Identificacion = ? ORDER BY t.EstudianteTelefonoId",
+                (ResultSetExtractor<List<DatosExpediente>>) this::leer, email, tipoIdentificacion, identificacion);
+    }
+
+    /** Actualiza solo los datos permitidos en WEB2; identidad y datos demográficos quedan intactos. */
+    public int modificarPropio(String identificacion, ActualizacionExpedientePropio cambios) {
+        int modificados = jdbc.update("UPDATE matricula.Estudiante SET DistritoId = ?, OtrasSenas = ? WHERE Identificacion = ?",
+                cambios.distritoId(), cambios.otrasSenas(), identificacion);
+        if (modificados > 0) {
+            jdbc.update("DELETE FROM matricula.EstudianteTelefono WHERE IdentificacionEstudiante = ?", identificacion);
+            for (String telefono : cambios.telefonos()) {
+                jdbc.update("INSERT INTO matricula.EstudianteTelefono (IdentificacionEstudiante, Telefono) VALUES (?, ?)",
+                        identificacion, telefono);
+            }
+        }
+        return modificados;
+    }
+
     public boolean existe(String identificacion) {
         Integer cantidad = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM matricula.Estudiante WHERE Identificacion = ?",
