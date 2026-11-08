@@ -7,7 +7,7 @@ import {
     useRef,
     useState
 } from 'react'
-import { iniciarSesion, obtenerRol, obtenerUsuario, renovarSesion } from '../services/api'
+import { actualizarPerfil, iniciarSesion, obtenerRol, obtenerUsuario, renovarSesion } from '../services/api'
 import { useNotifications } from './NotificationContext'
 
 const AuthContext = createContext(null)
@@ -168,13 +168,24 @@ export function AuthProvider({ children }) {
     }, [session, refresh])
 
     const logout = useCallback(() => clearSession(), [clearSession])
+    const actualizarNombrePerfil = useCallback(async nombre => {
+        const respuesta = await authorizedFetch(accessToken => actualizarPerfil(nombre, accessToken))
+        if (typeof respuesta?.nombre !== 'string' || !respuesta.nombre.trim()) {
+            throw new Error('El servicio devolvió un perfil actualizado inválido.')
+        }
+        const current = sessionRef.current
+        if (!current?.user) throw new Error('La sesión ya no está activa.')
+        updateSession({ ...current, user: { ...current.user, nombre: respuesta.nombre.trim() } })
+        return respuesta.nombre.trim()
+    }, [authorizedFetch, updateSession])
     const value = useMemo(() => ({
         session,
         isAuthenticated: Boolean(session?.user),
         login,
         logout,
-        authorizedFetch
-    }), [session, login, logout, authorizedFetch])
+        authorizedFetch,
+        actualizarNombrePerfil
+    }), [session, login, logout, authorizedFetch, actualizarNombrePerfil])
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

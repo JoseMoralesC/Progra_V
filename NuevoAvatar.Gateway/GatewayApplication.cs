@@ -13,6 +13,15 @@ public static class GatewayApplication
         var auth = Destino(builder.Configuration, "Autenticacion", 5158);
         builder.Services.AddSeguridadGateway(new Uri(auth));
         builder.Services.AddPermisosGateway(new Uri(Destino(builder.Configuration, "Modulo", 5162)));
+        builder.Services.AddHttpClient("dashboard-bitacora", client => {
+            client.BaseAddress = new Uri(Destino(builder.Configuration, "Bitacora", 5159));
+            client.Timeout = TimeSpan.FromSeconds(8);
+        }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+        foreach (var (servicio, puerto) in new[] { ("Notificacion", 8095), ("Notas", 8092) })
+            builder.Services.AddHttpClient("dashboard-" + servicio, client => {
+                client.BaseAddress = new Uri(Destino(builder.Configuration, servicio, puerto));
+                client.Timeout = TimeSpan.FromSeconds(8);
+            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         builder.Services.AddHttpForwarder();
         builder.Services.AddSingleton(new HttpMessageInvoker(new SocketsHttpHandler
         {
@@ -24,8 +33,13 @@ public static class GatewayApplication
         app.UseRouting();
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/gateway"), branch => branch.UseSeguridadGateway());
         app.MapGet("/health", () => Results.Ok(new { servicio = "Gateway", estado = "disponible" }));
-        app.MapGet("/gateway/menu", (HttpContext context) => {
+        app.MapGet("/gateway/menu", async (HttpContext context, IHttpClientFactory clientes) => {
             context.Response.Headers.CacheControl = "no-store";
+            if (context.Request.Query["vista"] == "dashboard")
+            {
+                var resultado = await AuditoriaDashboard.Registrar(context, clientes);
+                if (resultado is not null) return resultado;
+            }
             return Results.Ok(context.Items[PermisosGateway.ClaveMenu]);
         }).WithMetadata(new AccesoGateway(["ADMINISTRADOR", "PROFESOR", "ESTUDIANTE"], ConsultarMenu: true));
         foreach (var ruta in CatalogoRutas.Todas)
@@ -33,10 +47,22 @@ public static class GatewayApplication
             var destino = Destino(builder.Configuration, ruta.Servicio, ruta.Puerto);
             var transformer = new TransformacionRuta(ruta.Externa, ruta.Interna);
             var config = new ForwarderRequestConfig { ActivityTimeout = TimeSpan.FromSeconds(30) };
+            var rutaResumen = ruta.Servicio switch {
+                "Bitacora" => "/gateway/admin/bitacora",
+                "Notificacion" => "/gateway/fin/notificar/historial",
+                _ => null
+            };
+            var acceso = new AccesoGateway(ruta.Roles, ruta.Modulo, RutaResumen: rutaResumen);
             app.MapMethods(ruta.Patron, ruta.Verbos, async (HttpContext context, IHttpForwarder proxy,
-                HttpMessageInvoker cliente) =>
+                HttpMessageInvoker cliente, IHttpClientFactory clientes) =>
             {
                 context.Response.Headers.CacheControl = "no-store";
+                if (acceso.EsResumen(context))
+                {
+                    var resumen = await ResumenDashboard.Obtener(context, clientes, ruta.Servicio);
+                    await resumen.ExecuteAsync(context);
+                    return;
+                }
                 var error = await proxy.SendAsync(context, destino, cliente, config, transformer);
                 if (error != ForwarderError.None && !context.Response.HasStarted && !context.RequestAborted.IsCancellationRequested)
                 {
@@ -45,7 +71,7 @@ public static class GatewayApplication
                     context.Response.Headers.CacheControl = "no-store";
                     await context.Response.WriteAsJsonAsync(new { status = 502, error = "Servicio destino no disponible" });
                 }
-            }).WithMetadata(new AccesoGateway(ruta.Roles, ruta.Modulo));
+            }).WithMetadata(acceso);
         }
         return app;
     }

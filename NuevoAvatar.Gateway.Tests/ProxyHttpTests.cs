@@ -23,6 +23,8 @@ public class ProxyHttpTests : IAsyncLifetime
     private WebApplication backend = null!, gateway = null!;
     private HttpClient cliente = null!;
     private int negocios;
+    private readonly List<NuevoAvatar.Seguridad.Models.Bitacora> visitas = [];
+    private int estadoBitacora = 201;
     private readonly HashSet<string> permisos = CatalogoRutas.Todas.Where(r => r.Modulo is not null)
         .Select(r => r.Modulo!).ToHashSet();
     private int estadoPermisos = 200;
@@ -48,6 +50,13 @@ public class ProxyHttpTests : IAsyncLifetime
             if (estadoPermisos != 200) return Results.StatusCode(estadoPermisos);
             if (menuInvalido) return Results.Json(new { modulos = "incorrecto" });
             return Results.Json(permisos.Select(id => new { idModulo = id, nombreModulo = id, activo = moduloActivo, orden = 0 }));
+        });
+        backend.MapPost("/bitacora", async (HttpContext c) => {
+            if (estadoBitacora != 201) return Results.StatusCode(estadoBitacora);
+            var registro = await c.Request.ReadFromJsonAsync<NuevoAvatar.Seguridad.Models.Bitacora>();
+            Assert.NotNull(registro);
+            visitas.Add(registro!);
+            return Results.Json(registro, statusCode: 201);
         });
         backend.Map("/{**path}", async (HttpContext c) =>
         {
@@ -225,6 +234,52 @@ public class ProxyHttpTests : IAsyncLifetime
         using var otro = await cliente.GetAsync("/gateway/menu/ADMINISTRADOR");
         Assert.Equal(HttpStatusCode.Forbidden, otro.StatusCode);
         Assert.Equal(0, negocios);
+    }
+
+    [Theory]
+    [InlineData("admin")]
+    [InlineData("profesor")]
+    public async Task DashboardRegistraIdentidadDeSesionSinAceptarUsuarioODescripcionDelCliente(string token)
+    {
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", token);
+        using var respuesta = await cliente.GetAsync("/gateway/menu?vista=dashboard&usuario=otro@cuc.cr&descripcion=falso");
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        var registro = Assert.Single(visitas);
+        Assert.Equal("persona@cuc.ac.cr", registro.Usuario);
+        Assert.Equal("El usuario consulta el dashboard", registro.Descripcion);
+        Assert.Equal("no-store", respuesta.Headers.CacheControl?.ToString());
+    }
+
+    [Fact]
+    public async Task MenuNormalNoRegistraVisitaAlDashboard()
+    {
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "profesor");
+        using var respuesta = await cliente.GetAsync("/gateway/menu");
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        Assert.Empty(visitas);
+    }
+
+    [Theory]
+    [InlineData(null, 401)]
+    [InlineData("invalido", 401)]
+    [InlineData("estudiante", 403)]
+    public async Task DashboardNoRegistraVisitasSinPerfilPermitido(string? token, int esperado)
+    {
+        if (token is not null) cliente.DefaultRequestHeaders.Authorization = new("Bearer", token);
+        using var respuesta = await cliente.GetAsync("/gateway/menu?vista=dashboard");
+        Assert.Equal(esperado, (int)respuesta.StatusCode);
+        Assert.Empty(visitas);
+    }
+
+    [Fact]
+    public async Task FalloDeBitacoraNoConfirmaElRegistroDelDashboard()
+    {
+        estadoBitacora = 500;
+        cliente.DefaultRequestHeaders.Authorization = new("Bearer", "admin");
+        using var respuesta = await cliente.GetAsync("/gateway/menu?vista=dashboard");
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, respuesta.StatusCode);
+        Assert.Contains("dashboard", await respuesta.Content.ReadAsStringAsync());
+        Assert.Empty(visitas);
     }
 
     public async Task DisposeAsync()

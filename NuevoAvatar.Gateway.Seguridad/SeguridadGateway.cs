@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +13,31 @@ namespace NuevoAvatar.Gateway.Seguridad;
 
 // GTW1 adjunta esta politica a cada ruta protegida del unico proxy.
 // Sin politica explicita, la ruta no tiene acceso. Los permisos finos son del dominio.
-public sealed record AccesoGateway(string[] Roles, string? Modulo = null, bool ConsultarMenu = false)
+public sealed record AccesoGateway(string[] Roles, string? Modulo = null, bool ConsultarMenu = false,
+    string? RutaResumen = null)
 {
     public AccesoGateway(string rol) : this([rol]) { }
+
+    public bool EsResumen(HttpContext context) => RutaResumen is not null &&
+        HttpMethods.IsGet(context.Request.Method) && context.Request.Path == RutaResumen &&
+        context.Request.Query["vista"] == "dashboard";
+
+    public bool PermiteOperacionAuxiliar(HttpContext context, List<ModuloPermitido> menu)
+    {
+        var request = context.Request;
+        bool Tiene(string id) => menu.Any(m => m.IdModulo == id);
+        if (HttpMethods.IsGet(request.Method))
+        {
+            if (Modulo == "ADM5" && request.Path == "/gateway/admin/rol") return Tiene("ADM4");
+            if (Modulo == "ADM7" && request.Path == "/gateway/admin/modulo") return Tiene("ADM5");
+            if (Modulo == "ADM6" && request.Path == "/gateway/admin/parametro/TAMPAG")
+                return Tiene("ADM4") || Tiene("ADM5") || Tiene("ADM8");
+        }
+        // La matriz de ADM5 comparte la asignación existente de roles a módulos.
+        return Modulo == "ADM7" && Tiene("ADM5") &&
+            (HttpMethods.IsGet(request.Method) || HttpMethods.IsPut(request.Method)) &&
+            Regex.IsMatch(request.Path.Value ?? "", @"^/gateway/admin/modulo/[A-Z0-9_]{2,20}/roles\z");
+    }
 }
 
 public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
@@ -82,7 +105,10 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
             var sesion = await response.Content.ReadFromJsonAsync<SesionActual>(cancellationToken: context.RequestAborted);
             if (sesion is null || string.IsNullOrWhiteSpace(sesion.UsuarioID) ||
                 string.IsNullOrWhiteSpace(sesion.Rol)) throw new JsonException("Sesion incompleta");
-            if (!acceso.Roles.Contains(sesion.Rol, StringComparer.Ordinal))
+            var rolPermitido = acceso.EsResumen(context)
+                ? sesion.Rol is "ADMINISTRADOR" or "PROFESOR"
+                : acceso.Roles.Contains(sesion.Rol, StringComparer.Ordinal);
+            if (!rolPermitido)
             {
                 await Error(context, 403, "Rol sin permiso para esta operacion");
                 return;
@@ -100,13 +126,14 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
             await Error(context, 503, "Autenticacion no disponible");
             return;
         }
-        if (acceso!.Modulo is not null || acceso.ConsultarMenu)
+        if (acceso!.Modulo is not null || acceso.ConsultarMenu || acceso.EsResumen(context))
         {
             try
             {
                 var menu = await PermisosGateway.Obtener(clientes, bearer, context.RequestAborted);
                 context.Items[PermisosGateway.ClaveMenu] = menu;
-                if (acceso.Modulo is not null && !menu.Any(m => m.IdModulo == acceso.Modulo))
+                if (!acceso.EsResumen(context) && acceso.Modulo is not null && !menu.Any(m => m.IdModulo == acceso.Modulo) &&
+                    !acceso.PermiteOperacionAuxiliar(context, menu))
                 {
                     await Error(context, 403, "Modulo sin permiso para esta cuenta");
                     return;

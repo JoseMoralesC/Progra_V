@@ -68,3 +68,78 @@ export function obtenerRol(idRol, accessToken) {
         headers: { Authorization: `Bearer ${accessToken}` }
     })
 }
+
+// Adapta el cliente esperado por las páginas administrativas al flujo de
+// renovación y autorización ya administrado por AuthContext.
+export function crearClienteAutenticado(authorizedFetch) {
+    return {
+        request(path, options = {}) {
+            return authorizedFetch(accessToken => request('', path, {
+                ...options,
+                headers: { ...options.headers, Authorization: `Bearer ${accessToken}` }
+            }))
+        }
+    }
+}
+
+export function obtenerPerfil(accessToken) {
+    return request('/gateway', '/perfil', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: 'no-store'
+    })
+}
+
+export function obtenerMenu(accessToken) {
+    return request('/gateway', '/menu', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: 'no-store'
+    })
+}
+
+export function actualizarPerfil(nombre, accessToken) {
+    return request('/gateway', '/perfil', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ nombre })
+    })
+}
+
+export function obtenerExpedientePropio(accessToken) {
+    return request('/gateway', '/expediente/propio', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: 'no-store'
+    })
+}
+
+export function actualizarExpedientePropio(cambios, accessToken) {
+    const body = {
+        telefonos: cambios.telefonos,
+        provinciaId: cambios.provinciaId,
+        cantonId: cambios.cantonId,
+        distritoId: cambios.distritoId,
+        otrasSenas: cambios.otrasSenas
+    }
+    return request('/gateway', '/expediente/propio', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify(body)
+    })
+}
+
+export function obtenerProvincias(accessToken) {
+    return request('/gateway/mat', '/provincias', {
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
+    })
+}
+
+export function obtenerCantones(provinciaId, accessToken) {
+    return request('/gateway/mat', `/cantones/${encodeURIComponent(provinciaId)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
+    })
+}
+
+export function obtenerDistritos(provinciaId, cantonId, accessToken) {
+    return request('/gateway/mat', `/distritos/${encodeURIComponent(provinciaId)}/${encodeURIComponent(cantonId)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
+    })
+}

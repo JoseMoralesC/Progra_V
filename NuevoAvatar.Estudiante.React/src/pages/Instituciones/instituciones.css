@@ -1,0 +1,14 @@
+.instituciones { display: grid; gap: 18px; }
+.instituciones-busqueda, .instituciones-formulario, .instituciones-paginas, .instituciones-acciones { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.instituciones-busqueda { margin-bottom: 18px; }
+.instituciones-busqueda input, .instituciones-formulario input, .instituciones-formulario textarea { min-height: 42px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--glass-strong); color: var(--text); }
+.instituciones-tabla { overflow-x: auto; }
+.instituciones table { width: 100%; border-collapse: collapse; }
+.instituciones th, .instituciones td { padding: 12px; text-align: left; border-bottom: 1px solid var(--line); }
+.instituciones-paginas { justify-content: flex-end; margin-top: 16px; }
+.instituciones-formulario { margin-top: 18px; }
+.instituciones-formulario .field { min-width: min(100%, 320px); }
+.instituciones-formulario input, .instituciones-formulario textarea { width: 100%; }
+.usuarios-filtros { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.usuarios-filtros .field { min-width: 160px; flex: 1 1 180px; }
+.usuarios-filtros input, .usuarios-filtros select { width: 100%; min-height: 42px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px; background: var(--glass-strong); color: var(--text); }

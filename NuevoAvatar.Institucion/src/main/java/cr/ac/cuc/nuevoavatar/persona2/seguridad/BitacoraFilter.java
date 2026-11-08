@@ -16,6 +16,23 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 @Component
 public class BitacoraFilter extends OncePerRequestFilter {
 
+    private static final String CAMBIO = BitacoraFilter.class.getName() + ".cambio";
+
+    // La descripción conserva el estado confirmado sin incluir credenciales.
+    public static void cambio(String accion, Object anterior, Object actual) {
+        var atributos = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+        if (!(atributos instanceof org.springframework.web.context.request.ServletRequestAttributes solicitud)) return;
+        try {
+            var estados = new java.util.LinkedHashMap<String, Object>();
+            estados.put("anterior", anterior);
+            estados.put("actual", actual);
+            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(estados);
+            solicitud.getRequest().setAttribute(CAMBIO, accion + ". JSON: " + json);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException ex) {
+            throw new IllegalStateException("No se pudo preparar la bitácora", ex);
+        }
+    }
+
     private static final Pattern SECRETOS_JSON = Pattern.compile(
         "(\"(?:contrasena|password|password_hash|passwordHash)\"\\s*:\\s*)\"(?:\\\\.|[^\"\\\\])*\"",
         Pattern.CASE_INSENSITIVE
@@ -82,6 +99,8 @@ public class BitacoraFilter extends OncePerRequestFilter {
             return "Error técnico en " + metodo + " " + ruta
                 + ". Estado: " + response.getStatus();
         }
+        Object cambio = request.getAttribute(CAMBIO);
+        if (response.getStatus() < 400 && cambio != null) return cambio.toString();
         if ("GET".equals(metodo)) {
             return "El usuario consulta " + ruta;
         }

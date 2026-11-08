@@ -1,0 +1,5 @@
+.dashboard { display: grid; gap: 18px; }
+.dashboard-enlaces { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; }
+.dashboard-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
+.dashboard-metricas .panel { margin: 0; }
+.dashboard-metricas strong { display: block; margin-top: 10px; font-size: 1.8rem; }

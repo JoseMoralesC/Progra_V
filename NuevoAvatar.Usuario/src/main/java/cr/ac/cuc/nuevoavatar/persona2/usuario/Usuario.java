@@ -1,8 +1,13 @@
 package cr.ac.cuc.nuevoavatar.persona2.usuario;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,6 +32,9 @@ public class Usuario {
 
     @Column(name = "password_hash", length = 255, nullable = false)
     private String passwordHash;
+
+    @Column(name = "fecha_modificacion")
+    private OffsetDateTime fechaModificacion;
 
     public Usuario() {
     }
@@ -53,5 +61,13 @@ public class Usuario {
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public OffsetDateTime getFechaModificacion() { return fechaModificacion; }
+
+    @PrePersist
+    @PreUpdate
+    void actualizarFechaModificacion() {
+        fechaModificacion = OffsetDateTime.now(ZoneOffset.UTC);
     }
 }
