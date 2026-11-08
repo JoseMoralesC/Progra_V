@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import { rolesApi, validarRol } from './roles-api'
 import '../Instituciones/instituciones.css'
@@ -8,6 +9,8 @@ export function Roles({ cliente }) {
     const [roles, setRoles] = useState([])
     const [modulos, setModulos] = useState([])
     const [seleccion, setSeleccion] = useState({})
+    const [permisosGuardados, setPermisosGuardados] = useState({})
+    const [permisosAbiertos, setPermisosAbiertos] = useState(false)
     const [estado, setEstado] = useState('Cargando roles y permisos…')
     const [error, setError] = useState('')
     const [aviso, setAviso] = useState('')
@@ -30,7 +33,9 @@ export function Roles({ cliente }) {
             setRoles(listaRoles)
             setPagina(Math.floor(Math.max(0, listaRoles.findIndex(item => item.idRol === idVisible)) / tamano))
             setModulos(listaModulos)
-            setSeleccion(Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]])))
+            const permisos = Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]]))
+            setSeleccion(permisos)
+            setPermisosGuardados(permisos)
             setEstado('')
             return true
         } catch (e) {
@@ -50,7 +55,9 @@ export function Roles({ cliente }) {
             if (asignaciones.some(item => !Array.isArray(item))) throw new Error('No se pudieron leer los permisos.')
             setRoles(listaRoles)
             setModulos(listaModulos)
-            setSeleccion(Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]])))
+            const permisos = Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]]))
+            setSeleccion(permisos)
+            setPermisosGuardados(permisos)
             setEstado('')
         }).catch(e => { if (vigente) { setEstado(''); setError(e.message) } })
         return () => { vigente = false }
@@ -87,6 +94,20 @@ export function Roles({ cliente }) {
         } catch (e) { setError(e.message) }
     }
 
+    function abrirPermisos() {
+        setSeleccion(permisosGuardados)
+        setError('')
+        setAviso('')
+        setPermisosAbiertos(true)
+    }
+
+    function cerrarPermisos() {
+        setSeleccion(permisosGuardados)
+        setError('')
+        setAviso('')
+        setPermisosAbiertos(false)
+    }
+
     function cambiar(idModulo, idRol, marcado) {
         setSeleccion(actual => ({ ...actual, [idModulo]: marcado
             ? [...actual[idModulo], idRol]
@@ -100,8 +121,10 @@ export function Roles({ cliente }) {
         setGuardando(true)
         try {
             await api.guardarAsignados(idModulo, seleccion[idModulo])
+            setPermisosGuardados(actual => ({ ...actual, [idModulo]: seleccion[idModulo] }))
             const [actualizados] = await Promise.all([api.asignados(idModulo), api.menuPropio()])
             setSeleccion(actual => ({ ...actual, [idModulo]: actualizados }))
+            setPermisosGuardados(actual => ({ ...actual, [idModulo]: actualizados }))
             setAviso(`Permisos de ${idModulo} guardados.`)
         } catch (e) { setError(e.message) }
         finally { setGuardando(false) }
@@ -111,11 +134,14 @@ export function Roles({ cliente }) {
         {pendiente && <ConfirmarEliminacion onCancelar={() => setPendiente(null)}
             onConfirmar={() => { setPendiente(null); eliminarRol(pendiente) }} />}
         <div className="page-head"><div><h1>Roles y permisos</h1><p className="subtitle">Mantenimiento de roles y acceso a módulos</p></div>
-            <button type="button" className="btn btn-primary" onClick={() => abrir()}>Nuevo rol</button></div>
-        {error && <p role="alert" className="aviso error">{error}</p>}
-        {aviso && <p role="status" className="aviso">{aviso}</p>}
+            <div className="instituciones-acciones">
+                <button type="button" className="btn btn-soft" disabled={Boolean(estado)} onClick={abrirPermisos}>Permisos de menú</button>
+                <button type="button" className="btn btn-primary" onClick={() => abrir()}>Nuevo rol</button>
+            </div></div>
+        {error && !formulario && !permisosAbiertos && <p role="alert" className="aviso error">{error}</p>}
+        {aviso && !permisosAbiertos && <p role="status" className="aviso">{aviso}</p>}
         {estado && <p role="status">{estado}</p>}
-        {!estado && <section className="panel" aria-label="Listado de roles" hidden={Boolean(formulario)}>
+        {!estado && <section className="panel" aria-label="Listado de roles">
             <div className="instituciones-tabla"><table><thead><tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr></thead>
                 <tbody>{visibles.map(item => <tr key={item.idRol}><td>{item.idRol}</td><td>{item.nombreRol}</td><td>
                     <div className="instituciones-acciones"><button type="button" className="btn btn-soft" onClick={() => abrir(item)}>Editar</button>
@@ -128,30 +154,34 @@ export function Roles({ cliente }) {
                 <button type="button" disabled={paginaActual + 1 === totalPaginas} onClick={() => setPagina(paginaActual + 1)}>Siguiente</button>
             </div>}
         </section>}
-        {formulario && <section className="panel" aria-label={formulario.existente ? 'Editar rol' : 'Nuevo rol'}>
-            <h2>{formulario.existente ? 'Editar rol' : 'Nuevo rol'}</h2>
+        {formulario && <Modal titulo={formulario.existente ? 'Editar rol' : 'Nuevo rol'} ocupado={guardando}
+            onCerrar={() => { setFormulario(null); setError('') }}>
+            {error && <p role="alert" className="aviso error">{error}</p>}
             <form className="instituciones-formulario" onSubmit={guardarRol}>
                 <div className="field"><label htmlFor="rol-id">ID</label><input id="rol-id" value={formulario.idRol}
                     disabled={formulario.existente} required onChange={e => setFormulario({ ...formulario, idRol: e.target.value.toUpperCase() })} /></div>
                 <div className="field"><label htmlFor="rol-nombre">Nombre</label><input id="rol-nombre" value={formulario.nombreRol}
                     required onChange={e => setFormulario({ ...formulario, nombreRol: e.target.value })} /></div>
                 <button type="submit" className="btn btn-primary" disabled={guardando}>Guardar</button>
-                <button type="button" className="btn btn-soft" onClick={() => setFormulario(null)}>Cancelar</button>
+                <button type="button" className="btn btn-soft" disabled={guardando} onClick={() => { setFormulario(null); setError('') }}>Cancelar</button>
             </form>
-        </section>}
-        {!estado && <section className="panel" aria-label="Matriz de permisos" hidden={Boolean(formulario)}>
-            <h2>Permisos de menú</h2>
+        </Modal>}
+        {permisosAbiertos && <Modal titulo="Permisos de menú" ocupado={guardando} onCerrar={cerrarPermisos}>
+            {error && <p role="alert" className="aviso error">{error}</p>}
+            {aviso && <p role="status" className="aviso">{aviso}</p>}
             <div className="instituciones-tabla"><table><thead><tr><th>Módulo</th>{roles.map(item => <th key={item.idRol}>{item.nombreRol}</th>)}<th>Guardar</th></tr></thead>
                 <tbody>{modulos.map(modulo => <tr key={modulo.idModulo}>
                     <td>{modulo.nombreModulo} ({modulo.idModulo})</td>
                     {roles.map(rol => <td key={rol.idRol}><label>
                         <input type="checkbox" aria-label={`${modulo.idModulo} ${rol.nombreRol}`}
+                            disabled={guardando}
                             checked={(seleccion[modulo.idModulo] || []).includes(rol.idRol)}
                             onChange={e => cambiar(modulo.idModulo, rol.idRol, e.target.checked)} />
                     </label></td>)}
                     <td><button type="button" className="btn btn-soft" disabled={guardando}
                         onClick={() => guardarPermisos(modulo.idModulo)}>Guardar {modulo.idModulo}</button></td>
                 </tr>)}</tbody></table></div>
-        </section>}
+            <button type="button" className="btn btn-soft" disabled={guardando} onClick={cerrarPermisos}>Cerrar</button>
+        </Modal>}
     </div>
 }

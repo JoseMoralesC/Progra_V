@@ -5,6 +5,7 @@ import { Instituciones } from '../pages/Instituciones/Instituciones.jsx'
 import { Parametros } from '../pages/Parametros/Parametros.jsx'
 import { Roles } from '../pages/Roles/Roles.jsx'
 import { Usuarios } from '../pages/Usuarios/Usuarios.jsx'
+import { Dashboard } from '../pages/Dashboard/Dashboard.jsx'
 import MainLayout from '../layouts/MainLayout'
 import { useSesion } from '../sesion/SesionContext'
 
@@ -60,17 +61,17 @@ function PaginaSesion({ children, title, breadcrumbItems = [{ label: 'Inicio' }]
 }
 
 function InicioSesion() {
-    const { usuario, reintentar } = useSesion()
+    const { usuario, cliente, reintentar } = useSesion()
     return (
         <PaginaSesion>
+            {(usuario.rol === 'ADMINISTRADOR' || usuario.rol === 'PROFESOR') ?
+                <Dashboard cliente={cliente} usuario={usuario} /> :
             <section className="panel">
                 <h2>Bienvenido, {usuario.nombre}</h2>
                 <p>Tu sesión está activa como {usuario.rol}.</p>
                 <p>{perfiles[usuario.rol].pendiente}</p>
-                {usuario.rol === 'PROFESOR' && usuario.modulos.some(m => m.idModulo === 'ADM17') &&
-                    <Link to="/notas">Abrir desglose y notas</Link>}
                 <p><button type="button" onClick={reintentar}>Actualizar permisos</button></p>
-            </section>
+            </section>}
         </PaginaSesion>
     )
 }

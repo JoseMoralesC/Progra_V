@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import { parametrosApi, validarParametro } from './parametros-api'
 import '../Instituciones/instituciones.css'
@@ -93,8 +94,8 @@ export function Parametros({ cliente }) {
             onConfirmar={() => { setPendiente(null); eliminar(pendiente) }} />}
         <div className="page-head"><div><h1>Parámetros</h1><p className="subtitle">Mantenimiento de parámetros del sistema</p></div>
             <button type="button" className="btn btn-primary" onClick={() => abrir()}>Nuevo parámetro</button></div>
-        <section className="panel" aria-label="Listado de parámetros" hidden={Boolean(formulario)}>
-            {error && <p role="alert" className="aviso error">{error}</p>}
+        <section className="panel" aria-label="Listado de parámetros">
+            {error && !formulario && <p role="alert" className="aviso error">{error}</p>}
             {aviso && <p role="status" className="aviso">{aviso}</p>}
             {estado && <p role="status">{estado}</p>}
             {!estado && <div className="instituciones-tabla"><table>
@@ -111,9 +112,9 @@ export function Parametros({ cliente }) {
                 <button type="button" className="btn btn-soft" disabled={paginaActual + 1 === totalPaginas} onClick={() => setPagina(paginaActual + 1)}>Siguiente</button>
             </div>}
         </section>
-        {formulario && <section className="panel" aria-label={formulario.existente ? 'Editar parámetro' : 'Nuevo parámetro'}>
+        {formulario && <Modal titulo={formulario.existente ? 'Editar parámetro' : 'Nuevo parámetro'} ocupado={guardando}
+            onCerrar={() => { setFormulario(null); setError('') }}>
             {error && <p role="alert" className="aviso error">{error}</p>}
-            <h2>{formulario.existente ? 'Editar parámetro' : 'Nuevo parámetro'}</h2>
             <form className="instituciones-formulario" onSubmit={guardar}>
                 <div className="field"><label htmlFor="parametro-id">ID</label>
                     <input id="parametro-id" required maxLength={10} disabled={formulario.existente} value={formulario.idParametro}
@@ -122,8 +123,8 @@ export function Parametros({ cliente }) {
                     <textarea id="parametro-valor" required maxLength={500} value={formulario.valor}
                         onChange={e => setFormulario({ ...formulario, valor: e.target.value })} /></div>
                 <button type="submit" className="btn btn-primary" disabled={guardando}>Guardar</button>
-                <button type="button" className="btn btn-soft" onClick={() => setFormulario(null)}>Cancelar</button>
+                <button type="button" className="btn btn-soft" disabled={guardando} onClick={() => { setFormulario(null); setError('') }}>Cancelar</button>
             </form>
-        </section>}
+        </Modal>}
     </div>
 }

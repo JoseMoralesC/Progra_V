@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import { usuariosApi, validarUsuario } from './usuarios-api'
 import '../Instituciones/instituciones.css'
@@ -78,6 +79,7 @@ export function Usuarios({ cliente }) {
     }
 
     function abrir(usuario = null) {
+        setDetalle(null)
         setFormulario(usuario ? { ...usuario, contrasena: '', existente: true } : { ...usuarioVacio, existente: false })
         setError('')
         setAviso('')
@@ -137,7 +139,7 @@ export function Usuarios({ cliente }) {
             onConfirmar={() => { setPendiente(null); eliminar(pendiente) }} />}
         <div className="page-head"><div><h1>Usuarios</h1><p className="subtitle">Mantenimiento de usuarios</p></div>
             <button type="button" className="btn btn-primary" onClick={() => abrir()}>Nuevo usuario</button></div>
-        <section className="panel" aria-label="Listado de usuarios" hidden={Boolean(formulario)}>
+        <section className="panel" aria-label="Listado de usuarios">
             <form className="usuarios-filtros" onSubmit={filtrar}>
                 {['identificacion', 'nombre', 'tipo'].map(campo => <div className="field" key={campo}>
                     <label htmlFor={`filtro-${campo}`}>{campo === 'tipo' ? 'Tipo de identificación' : campo[0].toUpperCase() + campo.slice(1)}</label>
@@ -149,7 +151,7 @@ export function Usuarios({ cliente }) {
                     <option value="">Todos</option>{roles.map(item => <option key={item.idRol} value={item.idRol}>{item.nombreRol}</option>)}</select></div>
                 <button type="submit" className="btn btn-soft">Filtrar</button>
             </form>
-            {error && <p role="alert" className="aviso error">{error}</p>}
+            {error && !formulario && <p role="alert" className="aviso error">{error}</p>}
             {aviso && <p role="status" className="aviso">{aviso}</p>}
             {estado && <p role="status">{estado}</p>}
             {!estado && <div className="instituciones-tabla"><table><thead><tr>
@@ -169,14 +171,14 @@ export function Usuarios({ cliente }) {
                 <button type="button" className="btn btn-soft" disabled={paginaActual + 1 === totalPaginas} onClick={() => setPagina(paginaActual + 1)}>Siguiente</button>
             </div>}
         </section>
-        {detalle && <section className="panel" aria-label="Detalle de usuario"><h2>{detalle.email}</h2>
+        {detalle && <Modal titulo="Detalle de usuario" onCerrar={() => setDetalle(null)}><p>{detalle.email}</p>
             <p>{detalle.nombre} · {nombreRol(detalle.idRol)}</p>
             <p>{detalle.tipoIdentificacion}: {detalle.identificacion}</p>
             <p>Última modificación: {detalle.fechaModificacion ? new Date(detalle.fechaModificacion).toLocaleString('es-CR') : 'Sin fecha registrada'}</p>
-            <button type="button" className="btn btn-soft" onClick={() => setDetalle(null)}>Cerrar</button></section>}
-        {formulario && <section className="panel" aria-label={formulario.existente ? 'Editar usuario' : 'Nuevo usuario'}>
+            <button type="button" className="btn btn-soft" onClick={() => setDetalle(null)}>Cerrar</button></Modal>}
+        {formulario && <Modal titulo={formulario.existente ? 'Editar usuario' : 'Nuevo usuario'} ocupado={guardando}
+            onCerrar={() => { setFormulario(null); setError('') }}>
             {error && <p role="alert" className="aviso error">{error}</p>}
-            <h2>{formulario.existente ? 'Editar usuario' : 'Nuevo usuario'}</h2>
             <form className="usuarios-filtros" onSubmit={guardar}>
                 {[
                     ['email', 'Correo', 'email'], ['tipoIdentificacion', 'Tipo de identificación', 'text'],
@@ -192,8 +194,8 @@ export function Usuarios({ cliente }) {
                     required={!formulario.existente} value={formulario.contrasena}
                     onChange={e => setFormulario({ ...formulario, contrasena: e.target.value })} /></div>
                 <button type="submit" className="btn btn-primary" disabled={guardando}>Guardar</button>
-                <button type="button" className="btn btn-soft" onClick={() => setFormulario(null)}>Cancelar</button>
+                <button type="button" className="btn btn-soft" disabled={guardando} onClick={() => { setFormulario(null); setError('') }}>Cancelar</button>
             </form>
-        </section>}
+        </Modal>}
     </div>
 }

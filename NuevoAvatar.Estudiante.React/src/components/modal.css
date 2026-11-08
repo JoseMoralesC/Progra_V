@@ -1,0 +1,11 @@
+.mantenimiento-modal {
+    width: min(720px, calc(100vw - 32px));
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    overflow-y: auto;
+    color: var(--text);
+    background: var(--bg);
+}
+.mantenimiento-modal::backdrop { background: rgba(0, 0, 0, .45); }
+.mantenimiento-modal h2 { margin: 0 0 18px; }
+.mantenimiento-modal .field { min-width: 0; flex: 1 1 260px; }

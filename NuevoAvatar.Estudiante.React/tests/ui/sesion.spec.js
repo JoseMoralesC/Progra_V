@@ -23,6 +23,10 @@ async function escenario(page, rol = 'PROFESOR') {
         } else if (path === '/gateway/menu') {
             status = estado.menu
             body = estado.permiso ? [{ idModulo: 'ADM17', nombreModulo: 'Notas', activo: true, orden: 1 }] : []
+        } else if (path === '/gateway/admin/bitacora' || path === '/gateway/mat/profesor/grupos') {
+            status = 200; body = []
+        } else if (path === '/gateway/fin/notificar/historial') {
+            status = 200; body = { items: [] }
         } else if (path.endsWith('/refresh')) {
             estado.renovaciones++
             status = estado.refresh
@@ -209,15 +213,15 @@ test('login móvil conserva formulario visible sin desbordamiento horizontal', a
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy()
 })
 
-test('retiro de ADM17 se refleja en el menú al actualizar permisos', async ({ page }) => {
+test('retiro de ADM17 se refleja en el menú al recargar', async ({ page }) => {
     const { estado } = await escenario(page)
     await ingresar(page)
     await expect(page.getByRole('link', { name: 'Notas', exact: true })).toBeVisible()
     estado.permiso = false
-    await page.getByRole('button', { name: 'Actualizar permisos' }).click()
-    await expect(page.getByRole('button', { name: 'Actualizar permisos' })).toBeVisible()
+    await page.reload()
+    await expect(page.getByText('Sin permiso para consultar grupos.')).toBeVisible()
     await expect(page.getByRole('link', { name: 'Notas', exact: true })).toHaveCount(0)
-    await expect(page.getByRole('link', { name: 'Abrir desglose y notas' })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Consultar y registrar notas' })).toHaveCount(0)
 })
 
 test('caída de permisos durante restauración oculta el layout y permite recuperar', async ({ page }) => {

@@ -43,6 +43,7 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
     await expect(page.getByText('DOMPROF')).toBeVisible()
 
     await page.getByRole('button', { name: 'Nuevo parámetro' }).click()
+    await expect(page.getByRole('dialog', { name: 'Nuevo parámetro' })).toBeVisible()
     await page.getByLabel('ID', { exact: true }).fill('PRUEBA')
     await page.getByLabel('Valor', { exact: true }).fill('valor de prueba')
     await page.getByRole('button', { name: 'Guardar' }).click()
@@ -52,6 +53,7 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
     await page.getByRole('button', { name: 'Anterior' }).click()
 
     await page.getByRole('row').filter({ hasText: 'TAMPAG' }).getByRole('button', { name: 'Editar' }).click()
+    await expect(page.getByRole('dialog', { name: 'Editar parámetro' })).toBeVisible()
     await page.getByLabel('Valor', { exact: true }).fill('3')
     await page.getByRole('button', { name: 'Guardar' }).click()
     expect(operaciones.some(item => item.method === 'PUT' && item.body.idParametro === 'TAMPAG' && item.body.valor === '3')).toBe(true)
