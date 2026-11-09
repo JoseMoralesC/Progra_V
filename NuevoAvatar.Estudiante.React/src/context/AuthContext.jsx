@@ -7,7 +7,16 @@ import {
     useRef,
     useState
 } from 'react'
-import { actualizarPerfil, iniciarSesion, obtenerRol, obtenerUsuario, renovarSesion } from '../services/api'
+import {
+    actualizarPerfil,
+    cambiarContrasenaPropia as cambiarContrasenaApi,
+    cerrarSesion as cerrarSesionApi,
+    iniciarSesion,
+    obtenerRol,
+    obtenerPerfil,
+    obtenerUsuario,
+    renovarSesion
+} from '../services/api'
 import { useNotifications } from './NotificationContext'
 
 const AuthContext = createContext(null)
@@ -167,7 +176,14 @@ export function AuthProvider({ children }) {
         }
     }, [session, refresh])
 
-    const logout = useCallback(() => clearSession(), [clearSession])
+    const logout = useCallback(() => {
+        const accessToken = sessionRef.current?.accessToken
+        clearSession()
+        if (!accessToken) return Promise.resolve()
+        return cerrarSesionApi(accessToken).catch(() => {
+            notify('La sesión se cerró en este navegador, pero no se pudo confirmar el registro de salida.', 'warning')
+        })
+    }, [clearSession, notify])
     const actualizarNombrePerfil = useCallback(async nombre => {
         const respuesta = await authorizedFetch(accessToken => actualizarPerfil(nombre, accessToken))
         if (typeof respuesta?.nombre !== 'string' || !respuesta.nombre.trim()) {
@@ -178,14 +194,37 @@ export function AuthProvider({ children }) {
         updateSession({ ...current, user: { ...current.user, nombre: respuesta.nombre.trim() } })
         return respuesta.nombre.trim()
     }, [authorizedFetch, updateSession])
+    const cambiarContrasena = useCallback((contrasenaActual, contrasenaNueva) =>
+        authorizedFetch(accessToken => cambiarContrasenaApi(contrasenaActual, contrasenaNueva, accessToken)),
+    [authorizedFetch])
+    const cargarPerfilPropio = useCallback(async () => {
+        const perfil = await authorizedFetch(obtenerPerfil)
+        if (!perfil?.email || !perfil?.nombre || !perfil?.idRol) {
+            throw new Error('El servicio no devolvió los datos del perfil autenticado.')
+        }
+        const current = sessionRef.current
+        if (!current?.user) throw new Error('La sesión ya no está activa.')
+        const rol = current.user.nombreRol || current.user.idRol
+        const user = {
+            ...current.user,
+            ...perfil,
+            usuarioID: perfil.email,
+            nombreRol: rol,
+            rol
+        }
+        updateSession({ ...current, email: perfil.email, user })
+        return user
+    }, [authorizedFetch, updateSession])
     const value = useMemo(() => ({
         session,
         isAuthenticated: Boolean(session?.user),
         login,
         logout,
         authorizedFetch,
-        actualizarNombrePerfil
-    }), [session, login, logout, authorizedFetch, actualizarNombrePerfil])
+        actualizarNombrePerfil,
+        cambiarContrasena,
+        cargarPerfilPropio
+    }), [session, login, logout, authorizedFetch, actualizarNombrePerfil, cambiarContrasena, cargarPerfilPropio])
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

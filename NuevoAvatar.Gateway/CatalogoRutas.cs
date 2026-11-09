@@ -33,6 +33,12 @@ public static class CatalogoRutas
             ("sesion", ["GET"]), ("logout", ["POST"]) })
             rutas.Add(new($"/gateway/auth/{path}", $"/{path}", "Autenticacion", 5158, verbos, Todos));
 
+        // ADM24: Usuario deriva la cuenta propia del Bearer validado.
+        rutas.Add(new("/gateway/perfil", "/usuario/perfil-propio", "Usuario", 8082,
+            ["GET", "PUT"], Todos, ExigeModulo: false));
+        rutas.Add(new("/gateway/perfil/contrasena", "/usuario/perfil-propio/contrasena", "Usuario", 8082,
+            ["PUT"], Todos, ExigeModulo: false));
+
         // WEB2: acceso acotado al expediente del estudiante autenticado.
         rutas.Add(new("/gateway/expediente/propio", "/expediente/propio", "Expediente", 8084,
             ["GET", "PUT"], ["ESTUDIANTE"], ExigeModulo: false));

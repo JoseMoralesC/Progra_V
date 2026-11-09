@@ -128,6 +128,29 @@ public class ProxyHttpTests : IAsyncLifetime
     }
 
     [Theory]
+    [InlineData("admin")]
+    [InlineData("profesor")]
+    [InlineData("estudiante")]
+    public async Task CambioContrasenaPerfilPropioReenviaPutYBearer(string token)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Put, "/gateway/perfil/contrasena");
+        request.Headers.Authorization = new("Bearer", token);
+        request.Content = new StringContent(
+            "{\"contrasenaActual\":\"ActualSeguro1!\",\"contrasenaNueva\":\"NuevaSegura2#\"}",
+            Encoding.UTF8, "application/json");
+
+        using var response = await cliente.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var echo = await response.Content.ReadFromJsonAsync<Eco>();
+        Assert.Equal("/usuario/perfil-propio/contrasena", echo!.Path);
+        Assert.Equal("Bearer " + token, echo.Authorization);
+        Assert.Contains("contrasenaActual", echo.Body);
+        Assert.Contains("contrasenaNueva", echo.Body);
+        Assert.False(echo.IdentidadInyectada);
+    }
+
+    [Theory]
     [InlineData("GET", "/gateway/mat/prematricula/propio")]
     [InlineData("POST", "/gateway/mat/prematricula/propio")]
     [InlineData("PUT", "/gateway/mat/prematricula/propio/17")]

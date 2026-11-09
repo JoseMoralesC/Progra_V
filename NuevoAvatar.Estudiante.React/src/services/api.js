@@ -57,6 +57,13 @@ export function renovarSesion(refreshToken) {
     })
 }
 
+export function cerrarSesion(accessToken) {
+    return request('/gateway/auth', '/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+}
+
 export function obtenerUsuario(email, accessToken) {
     return request(API_BASES.users, `/usuario/${encodeURIComponent(email)}`, {
         headers: { Authorization: `Bearer ${accessToken}` }
@@ -101,6 +108,14 @@ export function actualizarPerfil(nombre, accessToken) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
         body: JSON.stringify({ nombre })
+    })
+}
+
+export function cambiarContrasenaPropia(contrasenaActual, contrasenaNueva, accessToken) {
+    return request('/gateway', '/perfil/contrasena', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ contrasenaActual, contrasenaNueva })
     })
 }
 
