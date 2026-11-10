@@ -1,11 +1,14 @@
 package cr.ac.cuc.nuevoavatar.persona2.usuario;
 
+import java.time.OffsetDateTime;
+
 public record UsuarioResponse(
     String email,
     String tipoIdentificacion,
     String identificacion,
     String nombre,
-    String idRol
+    String idRol,
+    OffsetDateTime fechaModificacion
 ) {
     public static UsuarioResponse desde(Usuario usuario) {
         return new UsuarioResponse(
@@ -13,7 +16,8 @@ public record UsuarioResponse(
             usuario.getTipoIdentificacion(),
             usuario.getIdentificacion(),
             usuario.getNombre(),
-            usuario.getIdRol()
+            usuario.getIdRol(),
+            usuario.getFechaModificacion()
         );
     }
 }
