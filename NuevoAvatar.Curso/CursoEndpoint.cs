@@ -1,4 +1,3 @@
-using System.Text.Json;
 using NuevoAvatar.Curso.Entities;
 using NuevoAvatar.Curso.Services;
 
@@ -51,8 +50,7 @@ public static class CursoEndpoint
             "",
             async (
                 CursoRequest? curso,
-                ICursoService service,
-                HttpContext http) =>
+                ICursoService service) =>
             {
                 if (curso is null)
                 {
@@ -66,14 +64,6 @@ public static class CursoEndpoint
                 }
 
                 var id = await service.CreateAsync(curso);
-                var creado = await service.GetByIdAsync(id) ?? new Entities.Curso
-                {
-                    CursoId = id,
-                    CarreraId = curso.CarreraId,
-                    Nivel = curso.Nivel,
-                    Nombre = curso.Nombre.Trim()
-                };
-                http.Items["bitacora"] = $"Creación de curso: {JsonSerializer.Serialize(creado)}";
 
                 return Results.CreatedAtRoute(
                     "GetCursoPorId",
@@ -88,8 +78,7 @@ public static class CursoEndpoint
             async (
                 int id,
                 CursoRequest? curso,
-                ICursoService service,
-                HttpContext http) =>
+                ICursoService service) =>
             {
                 if (curso is null)
                 {
@@ -100,12 +89,6 @@ public static class CursoEndpoint
                             "El curso es requerido."
                         }
                     });
-                }
-
-                var anterior = await service.GetByIdAsync(id);
-                if (anterior is null)
-                {
-                    return Results.NotFound();
                 }
 
                 var updated =
@@ -119,13 +102,9 @@ public static class CursoEndpoint
                 var updatedCurso =
                     await service.GetByIdAsync(id);
 
-                if (updatedCurso is null)
-                {
-                    return Results.NotFound();
-                }
-
-                http.Items["bitacora"] = $"Modificación de curso. Anterior: {JsonSerializer.Serialize(anterior)} Actual: {JsonSerializer.Serialize(updatedCurso)}";
-                return Results.Ok(updatedCurso);
+                return updatedCurso is null
+                    ? Results.NotFound()
+                    : Results.Ok(updatedCurso);
             })
             .WithName("UpdateCurso")
             .WithSummary("Modifica un curso.");
@@ -134,23 +113,10 @@ public static class CursoEndpoint
             "/{id:int}",
             async (
                 int id,
-                ICursoService service,
-                HttpContext http) =>
-            {
-                var existente = await service.GetByIdAsync(id);
-                if (existente is null)
-                {
-                    return Results.NotFound();
-                }
-
-                if (!await service.DeleteAsync(id))
-                {
-                    return Results.NotFound();
-                }
-
-                http.Items["bitacora"] = $"Eliminación de curso: {JsonSerializer.Serialize(existente)}";
-                return Results.NoContent();
-            })
+                ICursoService service) =>
+                await service.DeleteAsync(id)
+                    ? Results.NoContent()
+                    : Results.NotFound())
             .WithName("DeleteCurso")
             .WithSummary("Elimina un curso.");
 
