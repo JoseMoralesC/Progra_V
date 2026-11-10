@@ -108,9 +108,80 @@ public class ProxyHttpTests : IAsyncLifetime
     }
 
     [Theory]
+    [InlineData("GET")]
+    [InlineData("PUT")]
+    public async Task ExpedientePropioRequiereEstudianteYReenviaVerboCuerpoYBearer(string metodo)
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(metodo), "/gateway/expediente/propio");
+        request.Headers.Authorization = new("Bearer", "estudiante");
+        if (metodo == "PUT") request.Content = new StringContent(
+            "{\"telefonos\":[\"777\"],\"provinciaId\":1,\"cantonId\":2,\"distritoId\":3,\"otrasSenas\":\"Casa\"}",
+            Encoding.UTF8, "application/json");
+
+        using var response = await cliente.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var echo = await response.Content.ReadFromJsonAsync<Eco>();
+        Assert.Equal("/expediente/propio", echo!.Path);
+        Assert.Equal("Bearer estudiante", echo.Authorization);
+        if (metodo == "PUT") Assert.Contains("\"distritoId\":3", echo.Body);
+    }
+
+    [Theory]
+    [InlineData("admin")]
+    [InlineData("profesor")]
+    [InlineData("estudiante")]
+    public async Task CambioContrasenaPerfilPropioReenviaPutYBearer(string token)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Put, "/gateway/perfil/contrasena");
+        request.Headers.Authorization = new("Bearer", token);
+        request.Content = new StringContent(
+            "{\"contrasenaActual\":\"ActualSeguro1!\",\"contrasenaNueva\":\"NuevaSegura2#\"}",
+            Encoding.UTF8, "application/json");
+
+        using var response = await cliente.SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var echo = await response.Content.ReadFromJsonAsync<Eco>();
+        Assert.Equal("/usuario/perfil-propio/contrasena", echo!.Path);
+        Assert.Equal("Bearer " + token, echo.Authorization);
+        Assert.Contains("contrasenaActual", echo.Body);
+        Assert.Contains("contrasenaNueva", echo.Body);
+        Assert.False(echo.IdentidadInyectada);
+    }
+
+    [Theory]
+    [InlineData("GET", "/gateway/mat/prematricula/propio")]
+    [InlineData("POST", "/gateway/mat/prematricula/propio")]
+    [InlineData("PUT", "/gateway/mat/prematricula/propio/17")]
+    [InlineData("DELETE", "/gateway/mat/prematricula/propio/17")]
+    public async Task PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(string metodo, string ruta)
+    {
+        using var request = new HttpRequestMessage(new HttpMethod(metodo), ruta);
+        request.Headers.Authorization = new("Bearer", "estudiante");
+        if (metodo is "POST" or "PUT") request.Content = new StringContent(
+            "{\"carreraId\":1,\"cursos\":[10],\"periodoId\":20}", Encoding.UTF8, "application/json");
+
+        using var response = await cliente.SendAsync(request);
+
+        Assert.Equal(metodo == "DELETE" ? HttpStatusCode.NoContent : HttpStatusCode.OK, response.StatusCode);
+        if (metodo == "DELETE") return;
+        var echo = await response.Content.ReadFromJsonAsync<Eco>();
+        Assert.StartsWith("/prematricula/propio", echo!.Path);
+        Assert.Equal("Bearer estudiante", echo.Authorization);
+        if (metodo is "POST" or "PUT") Assert.Contains("carreraId", echo.Body);
+    }
+
+    [Theory]
     [InlineData(null, "/gateway/admin/usuario", 401)]
+    [InlineData(null, "/gateway/expediente/propio", 401)]
+    [InlineData(null, "/gateway/mat/prematricula/propio", 401)]
     [InlineData("invalido", "/gateway/admin/usuario", 401)]
     [InlineData("estudiante", "/gateway/admin/usuario", 403)]
+    [InlineData("admin", "/gateway/expediente/propio", 403)]
+    [InlineData("profesor", "/gateway/expediente/propio", 403)]
+    [InlineData("admin", "/gateway/mat/prematricula/propio", 403)]
+    [InlineData("profesor", "/gateway/mat/prematricula/propio", 403)]
     [InlineData("profesor", "/gateway/admin/expediente/123", 403)]
     [InlineData("estudiante", "/gateway/mat/obtenernotas?grupoId=1", 403)]
     [InlineData("admin", "/gateway/admin/usuario/interno/datos", 404)]
@@ -130,7 +201,9 @@ public class ProxyHttpTests : IAsyncLifetime
         foreach (var ruta in CatalogoRutas.Todas.Where(r => r.Servicio != "Autenticacion"))
         {
             using var request = new HttpRequestMessage(new HttpMethod(ruta.Verbos[0]), ruta.Externa + (ruta.Subrutas ? "/7" : ""));
-            request.Headers.Authorization = new("Bearer", ruta.Roles.Contains("ADMINISTRADOR") ? "admin" : "profesor");
+            var token = ruta.Roles.Contains("ADMINISTRADOR") ? "admin" :
+                ruta.Roles.Contains("ESTUDIANTE") ? "estudiante" : "profesor";
+            request.Headers.Authorization = new("Bearer", token);
             using var response = await cliente.SendAsync(request);
             Assert.True(response.IsSuccessStatusCode, ruta.Externa + ": " + response.StatusCode);
             var echo = await response.Content.ReadFromJsonAsync<Eco>();

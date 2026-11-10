@@ -50,6 +50,34 @@ public class UsuarioController {
         return servicio.modificar(email, request);
     }
 
+    @GetMapping("/perfil-propio")
+    public UsuarioResponse obtenerPerfilPropio(
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.USER_ATTRIBUTE)
+            String usuarioAutenticado) {
+        return servicio.obtenerPerfilPropio(usuarioAutenticado);
+    }
+
+    @PutMapping("/perfil-propio")
+    public UsuarioResponse actualizarPerfilPropio(
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.TOKEN_ATTRIBUTE)
+            String bearerOriginal,
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.USER_ATTRIBUTE)
+            String usuarioAutenticado,
+            @Valid @RequestBody ActualizarPerfilPropioRequest request) {
+        return servicio.actualizarPerfilPropio(bearerOriginal, usuarioAutenticado, request);
+    }
+
+    @PutMapping("/perfil-propio/contrasena")
+    public ResponseEntity<Void> cambiarContrasenaPropia(
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.TOKEN_ATTRIBUTE)
+            String bearerOriginal,
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.USER_ATTRIBUTE)
+            String usuarioAutenticado,
+            @Valid @RequestBody CambiarContrasenaPropiaRequest request) {
+        servicio.cambiarContrasenaPropia(bearerOriginal, usuarioAutenticado, request);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> eliminar(@PathVariable String email) {
         servicio.eliminar(email);

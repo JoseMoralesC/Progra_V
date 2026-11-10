@@ -55,6 +55,29 @@ public class SeguridadClient {
         }
     }
 
+    /** Obtiene la identidad resuelta por Autenticación a partir del mismo Bearer validado. */
+    public SesionActual obtenerSesion(String autorizacion) {
+        try {
+            SesionActual sesion = cliente.get().uri("/sesion")
+                    .header(HttpHeaders.AUTHORIZATION, autorizacion)
+                    .retrieve().body(SesionActual.class);
+            if (sesion == null) {
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                        "Autenticación devolvió una sesión vacía");
+            }
+            return sesion;
+        } catch (RestClientResponseException ex) {
+            int estado = ex.getStatusCode().value();
+            if (estado == 401) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "La sesión no es válida o expiró", ex);
+            if (estado == 403) throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "La sesión no tiene permiso para esta operación", ex);
+            throw noDisponible("consultar la sesión", ex);
+        } catch (RestClientException ex) {
+            throw noDisponible("consultar la sesión", ex);
+        }
+    }
+
     public String obtenerParametro(String autorizacion, String idParametro) {
         try {
             Parametro parametro = parametros.get().uri("/parametro/{id}", idParametro)
@@ -88,6 +111,10 @@ public class SeguridadClient {
     }
 
     public record Parametro(String idParametro, String valor) {
+    }
+
+    public record SesionActual(String usuarioID, String nombre, String rol,
+            String tipoIdentificacion, String identificacion, String estudianteId) {
     }
 }
 

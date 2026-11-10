@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -55,6 +56,26 @@ public class SeguridadClient {
         }
     }
 
+    public SesionActual obtenerSesion(String autorizacion) {
+        try {
+            SesionActual sesion = cliente.get().uri("/sesion")
+                    .header(HttpHeaders.AUTHORIZATION, autorizacion)
+                    .retrieve().body(SesionActual.class);
+            if (sesion == null || sesion.usuarioID() == null || sesion.rol() == null) {
+                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                        "Identidad de sesión no disponible");
+            }
+            return sesion;
+        } catch (RestClientResponseException ex) {
+            HttpStatusCode estado = ex.getStatusCode();
+            if (estado.value() == 401) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No autorizado", ex);
+            if (estado.value() == 403) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Cuenta sin acceso autorizado", ex);
+            throw noDisponible("consultar la sesión", ex);
+        } catch (RestClientException ex) {
+            throw noDisponible("consultar la sesión", ex);
+        }
+    }
+
     public String obtenerParametro(String autorizacion, String idParametro) {
         try {
             Parametro parametro = parametros.get().uri("/parametro/{id}", idParametro)
@@ -88,6 +109,10 @@ public class SeguridadClient {
     }
 
     public record Parametro(String idParametro, String valor) {
+    }
+
+    public record SesionActual(String usuarioID, String nombre, String rol,
+            String tipoIdentificacion, String identificacion, String estudianteId, Integer profesorId) {
     }
 }
 

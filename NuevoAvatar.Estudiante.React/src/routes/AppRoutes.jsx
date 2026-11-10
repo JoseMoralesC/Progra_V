@@ -1,201 +1,130 @@
-import { Link, Navigate, Outlet, Route, Routes } from 'react-router-dom'
-import { Login } from '../../../web/jose/src/Login.jsx'
-import { Notas } from '../../../web/jose/src/Notas.jsx'
+import { useEffect, useMemo, useState } from 'react'
+import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import MainLayout from '../layouts/MainLayout'
+import StudentLayout from '../layouts/StudentLayout'
+import Login from '../pages/Login/Login'
+import ProtectedRoute from '../components/ProtectedRoute'
+import { Dashboard } from '../pages/Dashboard/Dashboard.jsx'
 import { Instituciones } from '../pages/Instituciones/Instituciones.jsx'
 import { Parametros } from '../pages/Parametros/Parametros.jsx'
 import { Roles } from '../pages/Roles/Roles.jsx'
 import { Usuarios } from '../pages/Usuarios/Usuarios.jsx'
-import { Dashboard } from '../pages/Dashboard/Dashboard.jsx'
-import MainLayout from '../layouts/MainLayout'
-import { useSesion } from '../sesion/SesionContext'
+import InicioEstudiante from '../pages/Estudiante/InicioEstudiante'
+import Expediente from '../pages/Estudiante/Expediente'
+import Prematricula from '../pages/Estudiante/Prematricula'
+import Perfil from '../pages/Perfil/Perfil'
+import { useAuth } from '../context/AuthContext'
+import { useNotifications } from '../context/NotificationContext'
+import { crearClienteAutenticado, obtenerMenu } from '../services/api'
+import { esEstudiante } from '../navigation/studentNavigation'
 
-const perfiles = {
-    ADMINISTRADOR: { titulo: 'Inicio de administración', seccion: 'ADMINISTRACIÓN', pendiente: 'El dashboard administrativo y sus mantenimientos están pendientes de integración.' },
-    PROFESOR: { titulo: 'Inicio del profesor', seccion: 'PROFESOR', pendiente: 'El dashboard del profesor está pendiente de integración.' },
-    ESTUDIANTE: { titulo: 'Inicio del estudiante', seccion: 'ESTUDIANTE', pendiente: 'El inicio académico, expediente y prematrícula propios están pendientes de integración.' }
+const adminMenu = [
+    { idModulo: 'ADM8', label: 'Instituciones', path: '/instituciones', icon: '▦' },
+    { idModulo: 'ADM6', label: 'Parámetros', path: '/parametros', icon: '▤' },
+    { idModulo: 'ADM5', label: 'Roles', path: '/roles', icon: '▧' },
+    { idModulo: 'ADM4', label: 'Usuarios', path: '/usuarios', icon: '♙' },
+    { idModulo: 'ADM7', label: 'Módulos', path: '/modulos', icon: '▦' },
+    { idModulo: 'ADM23', label: 'Reportes', path: '/reportes', icon: '▤' }
+]
+
+function roleOf(user) {
+    return String(user?.nombreRol || user?.idRol || '').trim().toLocaleUpperCase('es')
 }
 
-function Acceso() {
-    const { cliente, usuario, mensaje, autenticar } = useSesion()
-    if (usuario) return <Navigate to="/inicio" replace />
-    return (
-        <main className="acceso-sesion">
-            {mensaje && <p className="aviso" role="alert">{mensaje}</p>}
-            <Login cliente={cliente} onAuthenticated={autenticar} />
-        </main>
-    )
-}
+function AdminPage({ title, children }) {
+    const { session, logout, authorizedFetch } = useAuth()
+    const { notify } = useNotifications()
+    const navigate = useNavigate()
+    const [modulos, setModulos] = useState([])
+    const cliente = useMemo(() => crearClienteAutenticado(authorizedFetch), [authorizedFetch])
+    const user = session?.user || {}
+    const role = roleOf(user)
+    useEffect(() => {
+        let vigente = true
+        authorizedFetch(token => obtenerMenu(token))
+            .then(menu => { if (vigente && Array.isArray(menu)) setModulos(menu.filter(item => item?.activo !== false)) })
+            .catch(() => { if (vigente) setModulos([]) })
+        return () => { vigente = false }
+    }, [authorizedFetch])
+    const dashboardUser = {
+        ...user,
+        usuarioID: user.usuarioID || user.email || session?.email || '',
+        rol: role,
+        modulos: Array.isArray(user.modulos) && user.modulos.length ? user.modulos : modulos
+    }
 
-function RequiereSesion() {
-    const { usuario } = useSesion()
-    return usuario ? <Outlet /> : <Navigate to="/login" replace />
-}
+    function handleLogout() {
+        logout()
+        notify('Sesión cerrada en este navegador.', 'info')
+        navigate('/login', { replace: true })
+    }
 
-function PaginaSesion({ children, title, breadcrumbItems = [{ label: 'Inicio' }] }) {
-    const { usuario, salir } = useSesion()
-    const perfil = perfiles[usuario.rol]
-    const menu = [{ label: 'Inicio', path: '/inicio', icon: '⌂' }]
-    const notas = usuario.modulos.find(m => m.idModulo === 'ADM17')
-    if (usuario.rol === 'PROFESOR' && notas) menu.push({ label: notas.nombreModulo, path: '/notas', icon: '▤' })
-    const instituciones = usuario.modulos.find(m => m.idModulo === 'ADM8')
-    if (usuario.rol === 'ADMINISTRADOR' && instituciones) menu.push({ label: instituciones.nombreModulo, path: '/instituciones', icon: '▦' })
-    const parametros = usuario.modulos.find(m => m.idModulo === 'ADM6')
-    if (usuario.rol === 'ADMINISTRADOR' && parametros) menu.push({ label: parametros.nombreModulo, path: '/parametros', icon: '▤' })
-    const roles = usuario.modulos.find(m => m.idModulo === 'ADM5')
-    if (usuario.rol === 'ADMINISTRADOR' && roles) menu.push({ label: roles.nombreModulo, path: '/roles', icon: '▧' })
-    const usuarios = usuario.modulos.find(m => m.idModulo === 'ADM4')
-    if (usuario.rol === 'ADMINISTRADOR' && usuarios) menu.push({ label: usuarios.nombreModulo, path: '/usuarios', icon: '♙' })
     return (
         <MainLayout
-            pageTitle={title || perfil.titulo}
-            breadcrumbItems={breadcrumbItems}
-            user={usuario}
-            menuItems={menu}
-            sectionTitle={perfil.seccion}
-            footerText="Nuevo Avatar"
-            onLogout={salir}
+            pageTitle={title}
+            breadcrumbItems={[{ label: 'Administración' }, { label: title }]}
+            user={{ ...user, rol: user.nombreRol || user.idRol }}
+            menuItems={[{ label: 'Inicio', path: '/inicio', icon: '⌂' },
+                ...adminMenu.filter(item => modulos.some(modulo => modulo.idModulo === item.idModulo))]}
+            systemName="Nuevo Avatar"
+            sectionTitle="ADMINISTRACIÓN"
+            footerText="Sistema administrativo"
+            onLogout={handleLogout}
         >
-            {children}
+            {children({ cliente, usuario: dashboardUser })}
         </MainLayout>
     )
 }
 
-function InicioSesion() {
-    const { usuario, cliente, reintentar } = useSesion()
-    return (
-        <PaginaSesion>
-            {(usuario.rol === 'ADMINISTRADOR' || usuario.rol === 'PROFESOR') ?
-                <Dashboard cliente={cliente} usuario={usuario} /> :
-            <section className="panel">
-                <h2>Bienvenido, {usuario.nombre}</h2>
-                <p>Tu sesión está activa como {usuario.rol}.</p>
-                <p>{perfiles[usuario.rol].pendiente}</p>
-                <p><button type="button" onClick={reintentar}>Actualizar permisos</button></p>
-            </section>}
-        </PaginaSesion>
-    )
+function AdminRoleGate() {
+    const { session } = useAuth()
+    if (esEstudiante(session?.user)) return <Navigate to="/estudiante" replace />
+    const role = roleOf(session?.user)
+    if (!['ADMINISTRADOR', 'PROFESOR'].includes(role)) return <Navigate to="/login" replace />
+    return <Outlet />
 }
 
-function PaginaNotas() {
-    const { usuario, cliente } = useSesion()
-    return (
-        <PaginaSesion title="Notas" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Notas' }]}>
-            <Link to="/inicio">Volver al inicio</Link>
-            {usuario.rol === 'PROFESOR' && usuario.modulos.some(m => m.idModulo === 'ADM17') ? (
-                <div className="notas-integradas"><Notas cliente={cliente} /></div>
-            ) : (
-                <section className="panel" role="alert">
-                    <h2>Acceso restringido</h2>
-                    <p>Se requiere perfil de profesor y permiso activo para el módulo de notas.</p>
-                </section>
-            )}
-        </PaginaSesion>
-    )
+function AdminPlaceholder({ title, description }) {
+    return <section className="panel"><h2>{title}</h2><p>{description}</p></section>
 }
 
-function PaginaInstituciones() {
-    const { usuario, cliente } = useSesion()
-    return (
-        <PaginaSesion title="Instituciones" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Instituciones' }]}>
-            {usuario.rol === 'ADMINISTRADOR' && usuario.modulos.some(m => m.idModulo === 'ADM8') ? (
-                <Instituciones cliente={cliente} />
-            ) : (
-                <section className="panel" role="alert">
-                    <h2>Acceso restringido</h2>
-                    <p>Se requiere perfil de administrador y permiso activo para instituciones.</p>
-                </section>
-            )}
-        </PaginaSesion>
-    )
-}
-
-function PaginaParametros() {
-    const { usuario, cliente } = useSesion()
-    return (
-        <PaginaSesion title="Parámetros" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Parámetros' }]}>
-            {usuario.rol === 'ADMINISTRADOR' && usuario.modulos.some(m => m.idModulo === 'ADM6') ? (
-                <Parametros cliente={cliente} />
-            ) : (
-                <section className="panel" role="alert">
-                    <h2>Acceso restringido</h2>
-                    <p>Se requiere perfil de administrador y permiso activo para parámetros.</p>
-                </section>
-            )}
-        </PaginaSesion>
-    )
-}
-
-function PaginaRoles() {
-    const { usuario, cliente } = useSesion()
-    return (
-        <PaginaSesion title="Roles y permisos" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Roles y permisos' }]}>
-            {usuario.rol === 'ADMINISTRADOR' && usuario.modulos.some(m => m.idModulo === 'ADM5') ? (
-                <Roles cliente={cliente} />
-            ) : (
-                <section className="panel" role="alert">
-                    <h2>Acceso restringido</h2>
-                    <p>Se requiere perfil de administrador y permiso activo para roles.</p>
-                </section>
-            )}
-        </PaginaSesion>
-    )
-}
-
-function PaginaUsuarios() {
-    const { usuario, cliente } = useSesion()
-    return (
-        <PaginaSesion title="Usuarios" breadcrumbItems={[{ label: 'Inicio' }, { label: 'Usuarios' }]}>
-            {usuario.rol === 'ADMINISTRADOR' && usuario.modulos.some(m => m.idModulo === 'ADM4') ? (
-                <Usuarios cliente={cliente} />
-            ) : (
-                <section className="panel" role="alert">
-                    <h2>Acceso restringido</h2>
-                    <p>Se requiere perfil de administrador y permiso activo para usuarios.</p>
-                </section>
-            )}
-        </PaginaSesion>
-    )
-}
-
-function RutaNoDisponible() {
-    return (
-        <PaginaSesion title="Página no disponible">
-            <section className="panel">
-                <h2>Esta funcionalidad aún no está integrada</h2>
-                <Link to="/inicio">Volver al inicio</Link>
-            </section>
-        </PaginaSesion>
-    )
+function DashboardRoute() {
+    const { session } = useAuth()
+    if (esEstudiante(session?.user)) return <Navigate to="/estudiante" replace />
+    return <AdminPage title="Inicio">{({ cliente, usuario }) => <Dashboard cliente={cliente} usuario={usuario} />}</AdminPage>
 }
 
 export default function AppRoutes() {
-    const { estado, mensaje, reintentar, salir } = useSesion()
-    if (estado === 'cargando') {
-        return <main className="acceso-sesion"><p role="status">Comprobando sesión…</p></main>
-    }
-    if (estado === 'error') {
-        return (
-            <main className="acceso-sesion panel">
-                <h1>No se pudo comprobar tu sesión</h1>
-                <p role="alert">{mensaje}</p>
-                <button type="button" onClick={reintentar}>Reintentar</button>
-                <button type="button" onClick={salir}>Cerrar sesión</button>
-            </main>
-        )
-    }
+    const { session } = useAuth()
+    const home = esEstudiante(session?.user) ? '/estudiante' : '/inicio'
+
     return (
         <Routes>
-            <Route path="/login" element={<Acceso />} />
-            <Route element={<RequiereSesion />}>
-                <Route path="/" element={<Navigate to="/inicio" replace />} />
-                <Route path="/inicio" element={<InicioSesion />} />
-                <Route path="/notas" element={<PaginaNotas />} />
-                <Route path="/instituciones" element={<PaginaInstituciones />} />
-                <Route path="/parametros" element={<PaginaParametros />} />
-                <Route path="/roles" element={<PaginaRoles />} />
-                <Route path="/usuarios" element={<PaginaUsuarios />} />
-                <Route path="*" element={<RutaNoDisponible />} />
+            <Route path="/" element={<Navigate to={home} replace />} />
+            <Route path="/login" element={<Login />} />
+
+            <Route element={<ProtectedRoute />}>
+                <Route path="/estudiante" element={<StudentLayout />}>
+                    <Route index element={<InicioEstudiante />} />
+                    <Route path="expediente" element={<Expediente />} />
+                    <Route path="prematricula" element={<Prematricula />} />
+                    <Route path="perfil" element={<Perfil />} />
+                </Route>
+
+                <Route element={<AdminRoleGate />}>
+                    <Route path="/inicio" element={<DashboardRoute />} />
+                    <Route path="/instituciones" element={<AdminPage title="Instituciones">{({ cliente }) => <Instituciones cliente={cliente} />}</AdminPage>} />
+                    <Route path="/parametros" element={<AdminPage title="Parámetros">{({ cliente }) => <Parametros cliente={cliente} />}</AdminPage>} />
+                    <Route path="/roles" element={<AdminPage title="Roles y permisos">{({ cliente }) => <Roles cliente={cliente} />}</AdminPage>} />
+                    <Route path="/usuarios" element={<AdminPage title="Usuarios">{({ cliente }) => <Usuarios cliente={cliente} />}</AdminPage>} />
+                    <Route path="/notas" element={<AdminPage title="Notas">{() => <AdminPlaceholder title="Notas" description="La pantalla de notas requiere integrar su servicio con la sesión autenticada actual." />}</AdminPage>} />
+                    <Route path="/perfil" element={<AdminPage title="Perfil">{() => <Perfil />}</AdminPage>} />
+                    <Route path="/modulos" element={<AdminPage title="Módulos">{() => <AdminPlaceholder title="Módulos" description="Espacio para integrar la gestión de módulos." />}</AdminPage>} />
+                    <Route path="/reportes" element={<AdminPage title="Reportes">{() => <AdminPlaceholder title="Reportes" description="Espacio para integrar los reportes del sistema." />}</AdminPage>} />
+                </Route>
             </Route>
+
+            <Route path="*" element={<Navigate to={home} replace />} />
         </Routes>
     )
 }

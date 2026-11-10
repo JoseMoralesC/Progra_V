@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.nio.charset.StandardCharsets;
 import cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilter;
+import cr.ac.cuc.nuevoavatar.persona2.seguridad.SeguridadClient;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,17 +19,22 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class UsuarioService {
 
+    private static final int MAX_BCRYPT_PASSWORD_BYTES = 72;
+
     private final UsuarioRepository usuarios;
     private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
     private final BCryptPasswordEncoder encoder;
+    private final SeguridadClient seguridad;
 
     public UsuarioService(
             UsuarioRepository usuarios,
             cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos,
-            BCryptPasswordEncoder encoder) {
+            BCryptPasswordEncoder encoder,
+            SeguridadClient seguridad) {
         this.usuarios = usuarios;
         this.datos = datos;
         this.encoder = encoder;
+        this.seguridad = seguridad;
     }
 
     @Transactional
@@ -65,6 +72,11 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public UsuarioResponse obtener(String email) {
         return UsuarioResponse.desde(buscarO404(email));
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioResponse obtenerPerfilPropio(String sujetoAutenticado) {
+        return UsuarioResponse.desde(buscarO404(sujetoAutenticado));
     }
 
     @Transactional(readOnly = true)
@@ -134,6 +146,92 @@ public class UsuarioService {
                 HttpStatus.CONFLICT, "No se pudo modificar el usuario", ex
             );
         }
+    }
+
+    @Transactional
+    public UsuarioResponse actualizarPerfilPropio(
+            String bearerOriginal,
+            String sujetoAutenticado,
+            ActualizarPerfilPropioRequest request) {
+        if (request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre es requerido");
+        }
+        Usuario usuario = buscarO404(sujetoAutenticado);
+        usuario.setNombre(request.nombre().trim());
+        UsuarioResponse actual = UsuarioResponse.desde(usuarios.saveAndFlush(usuario));
+        seguridad.registrarBitacoraConfirmada(bearerOriginal, sujetoAutenticado,
+                "Actualización del perfil propio. Campo modificado: nombre");
+        BitacoraFilter.marcarRegistroConfirmado();
+        return actual;
+    }
+
+    @Transactional
+    public void cambiarContrasenaPropia(
+            String bearerOriginal,
+            String sujetoAutenticado,
+            CambiarContrasenaPropiaRequest request) {
+        if (request == null || request.contrasenaActual() == null || request.contrasenaActual().isBlank()
+                || request.contrasenaNueva() == null || request.contrasenaNueva().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Completa ambas contraseñas");
+        }
+        validarPoliticaContrasena(request.contrasenaNueva());
+        validarLimiteBcrypt(request.contrasenaNueva());
+
+        Usuario usuario = buscarO404(sujetoAutenticado);
+        boolean actualCoincide;
+        try {
+            actualCoincide = encoder.matches(request.contrasenaActual(), usuario.getPasswordHash());
+        } catch (IllegalArgumentException ex) {
+            actualCoincide = false;
+        }
+        if (!actualCoincide) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La contraseña actual no es correcta");
+        }
+
+        usuario.setPasswordHash(encoder.encode(request.contrasenaNueva()));
+        usuarios.saveAndFlush(usuario);
+        seguridad.registrarBitacoraConfirmada(bearerOriginal, sujetoAutenticado,
+                "Cambio de contraseña del perfil propio. Campo modificado: contrasena");
+        BitacoraFilter.marcarRegistroConfirmado();
+    }
+
+    private void validarLimiteBcrypt(String contrasena) {
+        int bytesUtf8 = contrasena.getBytes(StandardCharsets.UTF_8).length;
+        if (bytesUtf8 > MAX_BCRYPT_PASSWORD_BYTES) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La contraseña no puede superar 72 bytes en UTF-8 al usar BCrypt");
+        }
+    }
+
+    private void validarPoliticaContrasena(String contrasena) {
+        int longitud = contrasena.codePointCount(0, contrasena.length());
+        boolean mayuscula = contrasena.codePoints().anyMatch(c ->
+                Character.getType(c) == Character.UPPERCASE_LETTER);
+        boolean minuscula = contrasena.codePoints().anyMatch(c ->
+                Character.getType(c) == Character.LOWERCASE_LETTER);
+        boolean numero = contrasena.codePoints().anyMatch(c ->
+                Character.getType(c) == Character.DECIMAL_DIGIT_NUMBER);
+        boolean especial = contrasena.codePoints().anyMatch(this::esCaracterEspecial);
+        if (longitud < 8 || !mayuscula || !minuscula || !numero || !especial) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, "
+                    + "una minúscula, un número y un carácter especial");
+        }
+    }
+
+    private boolean esCaracterEspecial(int caracter) {
+        int tipo = Character.getType(caracter);
+        return tipo == Character.CONNECTOR_PUNCTUATION
+                || tipo == Character.DASH_PUNCTUATION
+                || tipo == Character.START_PUNCTUATION
+                || tipo == Character.END_PUNCTUATION
+                || tipo == Character.INITIAL_QUOTE_PUNCTUATION
+                || tipo == Character.FINAL_QUOTE_PUNCTUATION
+                || tipo == Character.OTHER_PUNCTUATION
+                || tipo == Character.MATH_SYMBOL
+                || tipo == Character.CURRENCY_SYMBOL
+                || tipo == Character.MODIFIER_SYMBOL
+                || tipo == Character.OTHER_SYMBOL;
     }
 
     @Transactional

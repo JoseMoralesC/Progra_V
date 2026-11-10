@@ -3,100 +3,31 @@
 Plantilla frontend reutilizable desarrollada con React y Vite para el sistema Nuevo Avatar.
 
 ## Tecnologías
+
 - React
 - Vite
 - React Router DOM
 - JavaScript
 - CSS
 
-## Requisitos
-- Node.js
-- npm
+## Requisitos e instalación
 
-## Instalación
+Se requiere Node.js y npm.
 
 ```bash
 npm ci
 ```
 
-## Ejecución
+## Ejecución y verificación
 
 ```bash
 npm run dev
-```
-
-Abrir `http://127.0.0.1:4175`. La aplicación comparte el formulario `Login` y
-`ClienteSesion` de `web/jose`, por lo que se ejecuta desde el repositorio completo.
-El proxy `/gateway` apunta al gateway local del puerto 5080.
-
-## Integración de sesión (ADM2)
-
-La plantilla UI/UX es aporte de Alejandro. La integración de login/sesión es parte
-de ADM2 de Jose y utiliza una única instancia de `ClienteSesion`, disponible en
-`useSesion()` para los componentes que se incorporen después.
-
-- Sin sesión, las rutas redirigen a `/login`.
-- Después del login se consulta `/gateway/auth/sesion` y se abre `/inicio` con
-  nombre y rol reales. No se utilizan usuarios de demostración.
-- Al recargar se comprueba la sesión almacenada. Si una dependencia falla,
-  se ofrece reintentar o salir sin mostrar el layout como autenticado.
-- Se renueva el token antes de vencer, también mientras se permanece en el inicio.
-  Si falla la renovación se limpian los tokens y se regresa al login.
-- “Salir” retira identidad y tokens antes de esperar la confirmación del servidor.
-  Una renovación o consulta tardía no restaura la cuenta cerrada.
-
-El inicio distingue administrador, profesor y estudiante e identifica las funciones
-pendientes. Los dashboards de ADM3, el contenido académico WEB1 y la integración
-de las pantallas administrativas se mantienen como trabajo pendiente. Se habilitan Inicio y,
-para el profesor, Notas;
-una URL de un módulo todavía no integrado muestra un mensaje y permite regresar.
-Las restricciones de API siguen siendo responsabilidad del gateway y del servicio.
-
-Los permisos ya se consultan con `GET /gateway/menu` al ingresar, restaurar,
-navegar y renovar. Notas requiere perfil de profesor y módulo ADM17 activo
-asignado a su rol. Inicio permite actualizar permisos explícitamente. Antes de
-usar cuentas reales, preparar/verificar las asignaciones según el
-[contrato rol-módulo](../docs/segundo_avance/planificacion/permisos-rol-modulo.md).
-El gateway no concede acceso por el solo perfil administrador ni usa permisos
-de ejemplo si el servicio de módulos no responde.
-
-Para usar cuentas reales deben estar configurados y activos gateway, Autenticación,
-Usuario, Rol, Parámetro y Bitácora, además de Profesor o Expediente cuando la
-identidad consultada lo requiera. Los lanzadores del repositorio están en `tools/`.
-La aplicación no inicia esos servicios ni crea cuentas/datos.
-
-## Notas dentro de la plantilla (ADM17)
-
-El profesor dispone de `/notas`, accesible desde el menú y desde el inicio.
-Se monta el componente `Notas` de Jose con la misma instancia de `ClienteSesion`:
-consulta de grupos propios, carga de desglose y asignación/modificación de notas.
-La pantalla conserva identidad, salida, ruta activa y breadcrumbs; permite volver
-al inicio. Administrador y estudiante no ven el acceso y una URL directa muestra
-acceso restringido sin montar el componente ni consultar sus API.
-
-Esta integración no sustituye las restricciones del gateway/servicio ni entrega
-el dashboard completo de ADM3. Además de las dependencias de sesión, deben estar
-activos Notas y sus propietarios de datos, incluidos Grupo, Curso, Periodo y
-Matrícula. Ver [alcance y verificación de ADM17](../docs/segundo_avance/pruebas/jose-integracion-notas-layout.md).
-
-## Verificación local de ADM2
-
-```bash
 npm run lint
 npm run build
-npx playwright install chromium
-npm run test:ui
 ```
 
-Las pruebas de navegador interceptan las API y no escriben SQL ni envían correos.
-La regresión del cliente compartido se ejecuta con `npm test` desde `web/jose`.
-Ver [alcance y resultados de integración](../docs/segundo_avance/pruebas/jose-integracion-sesion-layout.md).
-
-## Compilación
-
-```bash
-npm run build
-```
+Vite sirve la aplicación en `http://127.0.0.1:4175`. El puerto queda fijo para
+que coincida con la configuración del proyecto.
 
 ## Estructura principal
 
@@ -115,23 +46,67 @@ src/
 └── styles/
 ```
 
+`MainLayout` compone Sidebar, Header, Breadcrumb y Footer. Las notificaciones
+se comparten mediante `NotificationContext`. Las pantallas administrativas
+se integran mediante las rutas de `src/routes/AppRoutes.jsx`.
+
+## Autenticación ADM1
+
+El login de `src/pages/Login` consume los microservicios existentes mediante
+`src/services/api.js` y el estado centralizado de `src/context/AuthContext.jsx`:
+
+- `POST /login`, enviando `usuario` y `contrasena` en headers.
+- `GET /usuario/{email}` y `GET /rol/{idRol}`, con bearer access token.
+- `POST /refresh`, enviando `refresh_token` en el body JSON.
+
+En desarrollo, `vite.config.js` reenvía `/api/auth` al puerto 5158, `/api/users`
+al 8082 y `/api/roles` al 5160, eliminando el prefijo antes de reenviar cada
+ruta. El proxy solo aplica al servidor de desarrollo. Para otros despliegues,
+`VITE_AUTH_API_BASE_URL`, `VITE_USERS_API_BASE_URL` y
+`VITE_ROLES_API_BASE_URL` pueden apuntar a URLs accesibles desde el navegador;
+el servidor de producción debe resolver CORS si los servicios tienen otro
+origen.
+
+Los access y refresh tokens se mantienen en memoria: no se guardan en
+`localStorage` ni `sessionStorage`, por lo que al recargar se solicita iniciar
+sesión de nuevo. Esto no protege los tokens mientras la aplicación está en uso
+ni frente a XSS; el despliegue debe usar HTTPS. El backend no ofrece en esta
+integración un endpoint de logout/revocación remota, así que Salir limpia el
+estado local. `ProtectedRoute` comprueba que exista una sesión cargada; no es
+autorización por rol o módulo. La protección efectiva de recursos corresponde
+al backend.
+
+## Proxy compartido de gateway
+
+Se conserva el proxy `/gateway` hacia `http://localhost:5080` y el permiso de
+Vite para importar módulos dentro del repositorio. `resolve.dedupe` mantiene una
+sola instancia de React al consumir código compartido. Estos ajustes permiten
+que otras integraciones del repositorio usen el gateway desde este servidor;
+las rutas ADM1 descritas arriba continúan usando sus servicios directos.
+
+`web/jose/src/sesion.js` y `src/sesion/SesionProvider.jsx` conservan el flujo de
+sesión basado en rutas `/gateway/auth/*`, `sessionStorage` y consulta del menú
+del gateway. Ese contrato y almacenamiento son independientes de
+`AuthContext` de ADM1. El proveedor de gateway no se monta globalmente: en el
+código actual no hay componentes con `useSesion` ni una ruta de Notas activa en
+`AppRoutes`.
+
+Cuando el equipo incorpore una ruta real que consuma gateway, debe envolver
+solo esa rama de rutas con `SesionProvider` y usar allí su propio flujo de login,
+estado y logout. ADM1 debe permanecer bajo `AuthProvider` y `ProtectedRoute`.
+No transferir tokens entre clientes ni usar un proveedor para renovar o cerrar
+la sesión del otro. La pantalla ADM17 Notas documentada por `origin/dev` queda
+pendiente de reincorporar a una ruta; no se considera integrada por conservar
+el cliente y el proveedor.
+
 ## Componentes compartidos
 
-- MainLayout: estructura principal.
-- Sidebar: menú lateral.
-- Header: encabezado.
-- Breadcrumb: navegación jerárquica.
-- Notifications: sistema de notificaciones.
-- NotificationContext: gestión global de notificaciones.
+- `MainLayout`: estructura administrativa.
+- `Sidebar`: navegación lateral.
+- `Header`: título, breadcrumbs, usuario y salida.
+- `Breadcrumb`: navegación jerárquica.
+- `Notifications` y `NotificationContext`: mensajes globales.
 
-## Integración de nuevos módulos
-
-Las pantallas deben integrarse mediante las rutas de la aplicación y reutilizar el layout principal.
-
-Los componentes compartidos deben mantenerse independientes de la lógica particular de cada módulo.
-
-## Consideraciones
-
-La visibilidad de opciones del menú no sustituye la autorización del backend.
-
-La integración de permisos, autenticación y auditoría debe utilizar los servicios correspondientes del sistema.
+La visibilidad del menú no sustituye la autorización del backend. La
+integración de permisos reales, CRUD, auditoría y módulos de negocio queda
+sujeta a los contratos y servicios correspondientes.

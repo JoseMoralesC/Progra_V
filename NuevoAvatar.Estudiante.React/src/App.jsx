@@ -1,9 +1,8 @@
 ﻿
 import AppRoutes from './routes/AppRoutes'
-import { SesionProvider } from './sesion/SesionProvider'
 
 function App() {
-    return <SesionProvider><AppRoutes /></SesionProvider>
+    return <AppRoutes />
 }
 
 export default App

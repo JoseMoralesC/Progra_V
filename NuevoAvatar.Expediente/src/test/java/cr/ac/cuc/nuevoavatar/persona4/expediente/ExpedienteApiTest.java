@@ -70,6 +70,30 @@ class ExpedienteApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBase 
         mvc.perform(conDatos(post("/expediente"), datos())).andExpect(status().isCreated());
     }
 
+    private SeguridadClient.SesionActual sesion(String email, String identificacion, String tipo, String rol) {
+        return new SeguridadClient.SesionActual(email, "Ana Maria", rol, tipo, identificacion, identificacion);
+    }
+
+    private String tokenPara(String email) {
+        String payload = Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(("{\"sub\":\"" + email + "\"}").getBytes(StandardCharsets.UTF_8));
+        return "Bearer e30." + payload + ".firma";
+    }
+
+    private String tokenAna() { return tokenPara("ana@cuc.cr"); }
+
+    private MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud, ObjectNode datos, String token) {
+        return solicitud.header("Authorization", token).contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
+                .content(java.util.Objects.requireNonNull(datos.toString()));
+    }
+
+    private ObjectNode cambiosPropios() throws Exception {
+        return (ObjectNode) mapper.readTree("""
+                {"telefonos":["777", "888"],"provinciaId":1,"cantonId":2,
+                 "distritoId":3,"otrasSenas":"Casa verde"}
+                """);
+    }
+
     private int cantidad(String tabla) {
         return java.util.Objects.requireNonNull(jdbc.queryForObject("SELECT COUNT(*) FROM " + tabla, Integer.class));
     }
@@ -270,6 +294,134 @@ class ExpedienteApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBase 
         crear();
         mvc.perform(get("/expediente/{identificacion}", "' OR '1'='1").header("Authorization", TOKEN))
                 .andExpect(status().isNotFound());
+        assertEquals(1, cantidad("matricula.Estudiante"));
+    }
+
+    @Test
+    void consultaYActualizaSoloSuExpedienteConPersistenciaYBitacoraMinima() throws Exception {
+        crear();
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        clearInvocations(seguridad);
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenA))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacion").value("123"))
+                .andExpect(jsonPath("$.email").value("ana@cuc.cr"));
+        mvc.perform(conDatosToken(put("/expediente/propio"), cambiosPropios(), tokenA))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.telefonos.length()").value(2))
+                .andExpect(jsonPath("$.otrasSenas").value("Casa verde"));
+        assertEquals("Ana Maria", jdbc.queryForObject("SELECT NombreCompleto FROM matricula.Estudiante WHERE Identificacion='123'", String.class));
+        assertEquals("ana@cuc.cr", jdbc.queryForObject("SELECT Email FROM matricula.Estudiante WHERE Identificacion='123'", String.class));
+        assertEquals("Casa verde", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante WHERE Identificacion='123'", String.class));
+        assertEquals(List.of("777", "888"), jdbc.queryForList(
+                "SELECT Telefono FROM matricula.EstudianteTelefono WHERE IdentificacionEstudiante='123' ORDER BY Telefono", String.class));
+        verify(seguridad, times(2)).obtenerSesion(tokenA);
+        var logs = org.mockito.ArgumentCaptor.forClass(String.class);
+        verify(seguridad, times(2)).registrarBitacora(eq(tokenA), eq("ana@cuc.cr"), logs.capture());
+        assertEquals("El usuario consulta expediente propio", logs.getAllValues().get(0));
+        assertTrue(logs.getAllValues().get(1).contains("Casa verde"));
+        assertFalse(logs.getAllValues().get(1).contains("ana@cuc.cr"));
+        assertFalse(logs.getAllValues().get(1).contains("Ana Maria"));
+    }
+
+    @Test
+    void estudiantesDiferentesSoloVenYActualizanSuPropioRegistro() throws Exception {
+        crear();
+        ObjectNode segundo = datos().put("identificacion", "456").put("email", "luis@cuc.cr").put("nombreCompleto", "Luis Mora");
+        mvc.perform(conDatos(post("/expediente"), segundo)).andExpect(status().isCreated());
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        String tokenB = tokenPara("luis@cuc.cr");
+        when(seguridad.validar(tokenB)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenB)).thenReturn(sesion("luis@cuc.cr", "456", "Cedula", "ESTUDIANTE"));
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenA))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacion").value("123"));
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenB))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacion").value("456"));
+        mvc.perform(conDatosToken(put("/expediente/propio"), cambiosPropios(), tokenB))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.identificacion").value("456"));
+        assertEquals("Casa azul", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante WHERE Identificacion='123'", String.class));
+        assertEquals("Casa verde", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante WHERE Identificacion='456'", String.class));
+    }
+
+    @Test
+    void rechazaCualquierCampoProtegidoAunqueElRestoSeaValido() throws Exception {
+        crear();
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        ObjectNode solicitud = cambiosPropios().put("identificacion", "456").put("nombreCompleto", "Cambio indebido");
+        mvc.perform(conDatosToken(put("/expediente/propio"), solicitud, tokenA)).andExpect(status().isBadRequest());
+        assertEquals("Ana Maria", jdbc.queryForObject("SELECT NombreCompleto FROM matricula.Estudiante", String.class));
+        assertEquals("Casa azul", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante", String.class));
+    }
+
+    @Test
+    void rechazaRolIncorrectoVinculoAusenteYAmbiguo() throws Exception {
+        crear();
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(TOKEN)).thenReturn(sesion("operador@cuc.cr", "123", "Cedula", "ADMINISTRADOR"));
+        mvc.perform(get("/expediente/propio").header("Authorization", TOKEN)).andExpect(status().isForbidden());
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "999", "Cedula", "ESTUDIANTE"));
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenA)).andExpect(status().isNotFound());
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        doReturn(List.of(new DatosExpediente("Cedula", "123", "ana@cuc.cr", "Ana Maria",
+                java.time.LocalDate.parse("2012-05-10"), 1, 2, 3, "Casa azul", List.of("111")),
+                new DatosExpediente("Cedula", "123", "ana@cuc.cr", "Ana Maria",
+                java.time.LocalDate.parse("2012-05-10"), 1, 2, 3, "Casa azul", List.of("222"))))
+                .when(repositorio).obtenerVinculados("ana@cuc.cr", "Cedula", "123");
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenA)).andExpect(status().isConflict());
+    }
+
+    @Test
+    void rechazaDireccionIncoherenteYTokenInvalido() throws Exception {
+        crear();
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Direccion invalida"))
+                .when(direcciones).validar(tokenA, 1, 2, 3);
+        mvc.perform(conDatosToken(put("/expediente/propio"), cambiosPropios(), tokenA)).andExpect(status().isBadRequest());
+        clearInvocations(seguridad);
+        when(seguridad.validar("Bearer vencido")).thenReturn(false);
+        mvc.perform(get("/expediente/propio").header("Authorization", "Bearer vencido"))
+                .andExpect(status().isUnauthorized());
+        verify(seguridad, never()).obtenerSesion(anyString());
+        assertEquals("Casa azul", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante", String.class));
+    }
+
+    @Test
+    void dependenciasDeAutenticacionNoDisponiblesDevuelven503() throws Exception {
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenThrow(new ResponseStatusException(
+                HttpStatus.SERVICE_UNAVAILABLE, "Autenticación no disponible"));
+        mvc.perform(get("/expediente/propio").header("Authorization", tokenA))
+                .andExpect(status().isServiceUnavailable());
+    }
+
+    @Test
+    void camposEditablesObligatoriosSeValidanAntesDePersistir() throws Exception {
+        crear();
+        String tokenA = tokenAna();
+        when(seguridad.validar(tokenA)).thenReturn(true);
+        when(seguridad.obtenerSesion(tokenA)).thenReturn(sesion("ana@cuc.cr", "123", "Cedula", "ESTUDIANTE"));
+        mvc.perform(conDatosToken(put("/expediente/propio"), cambiosPropios().put("otrasSenas", "  "), tokenA))
+                .andExpect(status().isBadRequest());
+        ObjectNode sinTelefonos = cambiosPropios();
+        sinTelefonos.putArray("telefonos");
+        mvc.perform(conDatosToken(put("/expediente/propio"), sinTelefonos, tokenA))
+                .andExpect(status().isBadRequest());
+        assertEquals("Casa azul", jdbc.queryForObject("SELECT OtrasSenas FROM matricula.Estudiante", String.class));
+    }
+
+    @Test
+    void identidadEnQueryNoCambiaElExpedientePropio() throws Exception {
+        crear();
+        mvc.perform(get("/expediente/propio?identificacion=456").header("Authorization", TOKEN))
+                .andExpect(status().isBadRequest());
         assertEquals(1, cantidad("matricula.Estudiante"));
     }
 }

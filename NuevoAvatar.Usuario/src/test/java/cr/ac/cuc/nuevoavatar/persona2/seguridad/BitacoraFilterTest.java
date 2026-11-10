@@ -52,6 +52,14 @@ class BitacoraFilterTest {
     }
 
     @Test
+    void ocultaLasTresCredencialesDelCambioDeContrasena() {
+        assertEquals(
+            "{\"contrasenaActual\":\"[OCULTA]\",\"contrasenaNueva\":\"[OCULTA]\",\"confirmacionContrasena\":\"[OCULTA]\"}",
+            BitacoraFilter.ocultarSecretos("{\"contrasenaActual\":\"actual\",\"contrasenaNueva\":\"nueva\",\"confirmacionContrasena\":\"repetida\"}")
+        );
+    }
+
+    @Test
     void conservaJsonSinSecretos() {
         String json = "{\"nombre\":\"Institucion\",\"id\":1}";
         assertEquals(json, BitacoraFilter.ocultarSecretos(json));

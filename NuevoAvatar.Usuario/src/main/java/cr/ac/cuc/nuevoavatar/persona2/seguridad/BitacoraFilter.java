@@ -17,6 +17,14 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 public class BitacoraFilter extends OncePerRequestFilter {
 
     private static final String CAMBIO = BitacoraFilter.class.getName() + ".cambio";
+    private static final String REGISTRO_CONFIRMADO = BitacoraFilter.class.getName() + ".registroConfirmado";
+
+    public static void marcarRegistroConfirmado() {
+        var atributos = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+        if (atributos instanceof org.springframework.web.context.request.ServletRequestAttributes solicitud) {
+            solicitud.getRequest().setAttribute(REGISTRO_CONFIRMADO, Boolean.TRUE);
+        }
+    }
 
     // La descripción conserva el estado confirmado sin incluir credenciales.
     public static void cambio(String accion, Object anterior, Object actual) {
@@ -34,7 +42,7 @@ public class BitacoraFilter extends OncePerRequestFilter {
     }
 
     private static final Pattern SECRETOS_JSON = Pattern.compile(
-        "(\"(?:contrasena|password|password_hash|passwordHash)\"\\s*:\\s*)\"(?:\\\\.|[^\"\\\\])*\"",
+        "(\"(?:contrasena(?:actual|nueva|confirmacion)?|confirmacionContrasena|password(?:actual|nueva|confirmation)?|currentPassword|newPassword|confirmPassword|password_hash|passwordHash)\"\\s*:\\s*)\"(?:\\\\.|[^\"\\\\])*\"",
         Pattern.CASE_INSENSITIVE
     );
 
@@ -73,6 +81,7 @@ public class BitacoraFilter extends OncePerRequestFilter {
     private void registrar(
             ContentCachingRequestWrapper request,
             HttpServletResponse response) {
+        if (Boolean.TRUE.equals(request.getAttribute(REGISTRO_CONFIRMADO))) return;
         Object token = request.getAttribute(AutorizacionInterceptor.TOKEN_ATTRIBUTE);
         Object usuario = request.getAttribute(AutorizacionInterceptor.USER_ATTRIBUTE);
         if (token == null || usuario == null) {

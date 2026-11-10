@@ -3,9 +3,11 @@ package cr.ac.cuc.nuevoavatar.persona4.prematricula;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -38,6 +40,57 @@ public class PrematriculaRepository {
                 CONSULTA + " WHERE p.PrematriculaId = ? ORDER BY pc.PrematriculaCursoId",
                 (ResultSetExtractor<List<PrematriculaResponse>>) this::leer, id);
         return java.util.Objects.requireNonNull(encontrados).stream().findFirst();
+    }
+
+    public List<PrematriculaResponse> obtenerPropios(String identificacion) {
+        return jdbc.query(CONSULTA + " WHERE p.IdentificacionEstudiante = ? ORDER BY p.PrematriculaId, pc.PrematriculaCursoId",
+                (ResultSetExtractor<List<PrematriculaResponse>>) this::leer, identificacion);
+    }
+
+    public Optional<PrematriculaResponse> obtenerPropio(Integer id, String identificacion) {
+        List<PrematriculaResponse> encontrados = jdbc.query(
+                CONSULTA + " WHERE p.PrematriculaId = ? AND p.IdentificacionEstudiante = ? ORDER BY pc.PrematriculaCursoId",
+                (ResultSetExtractor<List<PrematriculaResponse>>) this::leer, id, identificacion);
+        return java.util.Objects.requireNonNull(encontrados).stream().findFirst();
+    }
+
+    public int modificarPropio(Integer id, String identificacion, PrematriculaPropiaRequest cambios) {
+        int cantidad = jdbc.update("""
+                UPDATE matricula.Prematricula SET CarreraId = ?, PeriodoId = ?, Observaciones = ?
+                WHERE PrematriculaId = ? AND IdentificacionEstudiante = ?
+                """, cambios.carreraId(), cambios.periodoId(), cambios.observaciones(), id, identificacion);
+        if (cantidad > 0) {
+            jdbc.update("DELETE FROM matricula.PrematriculaCurso WHERE PrematriculaId = ?", id);
+            guardarCursos(id, cambios.cursos());
+        }
+        return cantidad;
+    }
+
+    public int eliminarPropio(Integer id, String identificacion) {
+        return jdbc.update("DELETE FROM matricula.Prematricula WHERE PrematriculaId = ? AND IdentificacionEstudiante = ?",
+                id, identificacion);
+    }
+
+    public OpcionesPrematriculaResponse opciones(LocalDate fechaActual) {
+        var carreras = datos.listar("Carrera", "Carrera", Map.of()).stream()
+                .map(row -> new OpcionesPrematriculaResponse.CarreraOpcion(
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(row, "CarreraId"),
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.texto(row, "Nombre")))
+                .toList();
+        var cursos = datos.listar("Curso", "Curso", Map.of()).stream()
+                .filter(row -> cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(row, "Nivel") == 1)
+                .map(row -> new OpcionesPrematriculaResponse.CursoOpcion(
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(row, "CursoId"),
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(row, "CarreraId"),
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.texto(row, "Nombre")))
+                .toList();
+        var periodos = datos.listar("Periodo", "Periodo", Map.of()).stream()
+                .filter(row -> cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.fecha(row, "FechaInicio").isAfter(fechaActual))
+                .map(row -> new OpcionesPrematriculaResponse.PeriodoOpcion(
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(row, "PeriodoId"),
+                        cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.fecha(row, "FechaInicio")))
+                .toList();
+        return new OpcionesPrematriculaResponse(carreras, cursos, periodos);
     }
 
     public boolean existeCarrera(Integer id) { return datos.buscar("Carrera","Carrera","CarreraId",id).isPresent(); }
