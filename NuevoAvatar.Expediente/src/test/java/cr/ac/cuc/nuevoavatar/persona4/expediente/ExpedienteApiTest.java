@@ -82,7 +82,7 @@ class ExpedienteApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBase 
 
     private String tokenAna() { return tokenPara("ana@cuc.cr"); }
 
-    private MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud, ObjectNode datos, String token) {
+    private @org.springframework.lang.NonNull MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud, ObjectNode datos, String token) {
         return solicitud.header("Authorization", token).contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
                 .content(java.util.Objects.requireNonNull(datos.toString()));
     }

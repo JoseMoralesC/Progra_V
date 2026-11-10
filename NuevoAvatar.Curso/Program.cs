@@ -47,6 +47,7 @@ builder.Services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 builder.Services.AddScoped<ICursoRepository, CursoRepository>();
 builder.Services.AddScoped<ICursoService, CursoService>();
 builder.Services.AddScoped<CursoValidator>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIntegracion();
 var app = builder.Build();

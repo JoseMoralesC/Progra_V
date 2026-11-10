@@ -6,7 +6,8 @@ namespace NuevoAvatar.Curso.Services;
 
 public sealed class CursoService(
     ICursoRepository repository,
-    CursoValidator validator, NuevoAvatar.Integracion.DatosRemotos datos) : ICursoService
+    CursoValidator validator, NuevoAvatar.Integracion.DatosRemotos datos,
+    IHttpContextAccessor? http = null) : ICursoService
 {
     public Task<IReadOnlyList<CursoEntity>> GetAllAsync() =>
         repository.GetAllAsync();
@@ -40,7 +41,9 @@ public sealed class CursoService(
 
         try
         {
-            return await repository.CreateAsync(curso!);
+            var id = await repository.CreateAsync(curso!);
+            Auditar("Creación de curso", null, await repository.GetByIdAsync(id));
+            return id;
         }
         catch (CursoRepositoryException exception)
         {
@@ -54,11 +57,16 @@ public sealed class CursoService(
     {
         ValidateId(id, "Id");
         Validate(curso);
+        var anterior = await repository.GetByIdAsync(id);
+        if (anterior is null) return false;
+        var anteriorJson = System.Text.Json.JsonSerializer.Serialize(anterior);
         await ExigirCarrera(curso!.CarreraId);
 
         try
         {
-            return await repository.UpdateAsync(id, curso!);
+            var actualizado = await repository.UpdateAsync(id, curso!);
+            if (actualizado) Auditar("Modificación de curso", anteriorJson, await repository.GetByIdAsync(id));
+            return actualizado;
         }
         catch (CursoRepositoryException exception)
         {
@@ -70,15 +78,26 @@ public sealed class CursoService(
     {
         ValidateId(id, "Id");
 
+        var anterior = await repository.GetByIdAsync(id);
+        if (anterior is null) return false;
         await datos.SinReferencias("Curso", "Curso", id);
         try
         {
-            return await repository.DeleteAsync(id);
+            var eliminado = await repository.DeleteAsync(id);
+            if (eliminado) Auditar("Eliminación de curso", System.Text.Json.JsonSerializer.Serialize(anterior), null);
+            return eliminado;
         }
         catch (CursoRepositoryException exception)
         {
             throw MapRepositoryException(exception);
         }
+    }
+
+    private void Auditar(string accion, string? anterior, object? actual)
+    {
+        if (http?.HttpContext is { } contexto)
+            contexto.Items["curso.cambio"] = accion + ". Anterior: " + (anterior ?? "null") +
+                " Actual: " + System.Text.Json.JsonSerializer.Serialize(actual);
     }
 
     private async Task ExigirCarrera(int carreraId)

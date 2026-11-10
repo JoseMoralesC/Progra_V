@@ -23,6 +23,10 @@ async function escenario(page, rol = 'PROFESOR') {
         } else if (path === '/gateway/menu') {
             status = estado.menu
             body = estado.permiso ? [{ idModulo: 'ADM17', nombreModulo: 'Notas', activo: true, orden: 1 }] : []
+        } else if (path === '/gateway/expediente/propio') {
+            status = 404; body = { error: 'No hay expediente vinculado' }
+        } else if (path === '/gateway/mat/prematricula/propio') {
+            status = 200; body = []
         } else if (path === '/gateway/admin/bitacora' || path === '/gateway/mat/profesor/grupos') {
             status = 200; body = []
         } else if (path === '/gateway/fin/notificar/historial') {
@@ -58,12 +62,12 @@ for (const [rol, titulo] of [
     test(`login ${rol} llega al layout con identidad real y restaura al recargar`, async ({ page }) => {
         const { errores } = await escenario(page, rol)
         await ingresar(page, rol === 'ESTUDIANTE' ? 'ana@cuc.cr' : 'ana@cuc.ac.cr')
-        await expect(page).toHaveURL(/\/inicio$/)
-        await expect(page.getByRole('heading', { name: titulo, exact: true })).toBeVisible()
+        await expect(page).toHaveURL(rol === 'ESTUDIANTE' ? /\/estudiante$/ : /\/inicio$/)
+        await expect(page.locator('.header-page-title')).toHaveText(rol === 'ESTUDIANTE' ? titulo : 'Inicio')
         await expect(page.locator('.user-name')).toHaveText('Ana Mora')
         await expect(page.locator('.user-role')).toHaveText(rol)
         await expect(page.getByRole('button', { name: 'Salir', exact: true })).toBeEnabled()
-        await expect(page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link')).toHaveCount(rol === 'PROFESOR' ? 2 : 1)
+        await expect(page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link')).toHaveCount(rol === 'ESTUDIANTE' ? 4 : rol === 'PROFESOR' ? 2 : 1)
         expect(await page.evaluate(k => sessionStorage.getItem(k), key)).not.toContain('clave-de-prueba')
         await page.reload()
         await expect(page.locator('.user-name')).toHaveText('Ana Mora')
@@ -195,14 +199,14 @@ test('perfil no reconocido en la identidad no accede al layout', async ({ page }
     expect(await page.evaluate(k => sessionStorage.getItem(k), key)).toBeNull()
 })
 
-test('ruta estudiantil pendiente no se presenta como un trámite disponible', async ({ page }) => {
+test('el estudiante no abre una ruta administrativa de notas', async ({ page }) => {
     await escenario(page, 'ESTUDIANTE')
     await ingresar(page, 'ana@cuc.cr')
     await expect(page.locator('.user-name')).toBeVisible()
-    await page.goto('/expediente')
-    await expect(page.getByRole('heading', { name: 'Esta funcionalidad aún no está integrada' })).toBeVisible()
-    await page.getByRole('link', { name: 'Volver al inicio' }).click()
-    await expect(page).toHaveURL(/\/inicio$/)
+    await page.goto('/notas')
+    await expect(page).toHaveURL(/\/estudiante$/)
+    await expect(page.getByRole('heading', { name: 'Inicio del estudiante', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Desglose y notas', exact: true })).toHaveCount(0)
 })
 
 test('login móvil conserva formulario visible sin desbordamiento horizontal', async ({ page }) => {

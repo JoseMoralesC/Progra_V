@@ -14,6 +14,10 @@ async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
             body = { nombre: 'Docente de prueba', rol, profesorId: rol === 'PROFESOR' ? 1 : null }
         } else if (path === '/gateway/menu') {
             body = estado.permiso ? [{ idModulo: 'ADM17', nombreModulo: 'Notas', activo: true, orden: 1 }] : []
+        } else if (path === '/gateway/expediente/propio') {
+            status = 404; body = { error: 'No hay expediente vinculado' }
+        } else if (path === '/gateway/mat/prematricula/propio') {
+            body = []
         } else if (path === '/gateway/admin/bitacora') {
             body = []
         } else if (path === '/gateway/fin/notificar/historial') {
@@ -25,7 +29,7 @@ async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
         } else {
             expect(request.headers().authorization).toBe('Bearer prueba-acceso')
             estado.consultas.push(path)
-            if (estado.expirar) { status = 401; body = {} }
+            if (estado.expirar && !path.endsWith('/profesor/grupos')) { status = 401; body = {} }
             else if (estado.caida) { status = 503; body = {} }
             else if (path.endsWith('/profesor/grupos')) {
                 body = estado.sinGrupos ? [] : [{ grupoId: 1, numeroGrupo: 1, curso: 'Programación', horario: 'Lunes 18:00' }]
@@ -46,7 +50,7 @@ async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
     await page.getByLabel('Correo institucional').fill(rol === 'ESTUDIANTE' ? 'estudiante@cuc.cr' : 'docente@cuc.ac.cr')
     await page.getByLabel('Contraseña', { exact: true }).fill('clave-de-prueba')
     await page.getByRole('button', { name: 'Ingresar', exact: true }).click()
-    await expect(page).toHaveURL(/\/inicio$/)
+    await expect(page).toHaveURL(rol === 'ESTUDIANTE' ? /\/estudiante$/ : /\/inicio$/)
     if (rol === 'PROFESOR') await expect(page.getByText('Grupo 1: Programación', { exact: true })).toBeVisible()
     return estado
 }
@@ -66,7 +70,7 @@ test('profesor navega a notas con layout, ruta activa, breadcrumbs y regreso', a
     await expect(page.getByText('Sin notas registradas.')).toBeVisible()
     await page.screenshot({ path: testInfo.outputPath('notas-en-layout.png'), fullPage: true })
     await page.getByRole('link', { name: 'Volver al inicio', exact: true }).click()
-    await expect(page.getByRole('heading', { name: 'Inicio del profesor', exact: true })).toBeVisible()
+    await expect(page.locator('.header-page-title')).toHaveText('Inicio')
     await page.getByRole('link', { name: 'Consultar y registrar notas', exact: true }).click()
     await expect(page).toHaveURL(/\/notas$/)
     await page.reload()
@@ -79,7 +83,8 @@ for (const rol of ['ADMINISTRADOR', 'ESTUDIANTE']) {
         await expect(page.getByRole('link', { name: 'Notas', exact: true })).toHaveCount(0)
         await expect(page.getByRole('link', { name: 'Consultar y registrar notas' })).toHaveCount(0)
         await page.goto('/notas')
-        await expect(page.getByRole('heading', { name: 'Acceso restringido' })).toBeVisible()
+        if (rol === 'ESTUDIANTE') await expect(page).toHaveURL(/\/estudiante$/)
+        else await expect(page.getByRole('heading', { name: 'Acceso restringido' })).toBeVisible()
         await expect(page.getByLabel('Grupo del periodo activo')).toHaveCount(0)
         expect(estado.consultas).toEqual([])
     })
@@ -145,6 +150,7 @@ test('sesión rechazada al consultar notas abandona el layout y limpia credencia
     const estado = await escenario(page)
     estado.expirar = true
     await page.getByRole('link', { name: 'Consultar y registrar notas', exact: true }).click()
+    await page.getByLabel('Grupo del periodo activo').selectOption('1')
     await expect(page).toHaveURL(/\/login$/)
     await expect(page.getByRole('alert')).toContainText('La sesión venció')
     await expect(page.getByRole('heading', { name: 'Desglose y notas' })).toHaveCount(0)

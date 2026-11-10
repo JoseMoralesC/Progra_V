@@ -1,9 +1,3 @@
-const API_BASES = {
-    auth: import.meta.env.VITE_AUTH_API_BASE_URL || '/api/auth',
-    users: import.meta.env.VITE_USERS_API_BASE_URL || '/api/users',
-    roles: import.meta.env.VITE_ROLES_API_BASE_URL || '/api/roles'
-}
-
 export class ApiError extends Error {
     constructor(message, status = 0) {
         super(message)
@@ -17,17 +11,26 @@ async function request(base, path, { headers = {}, ...options } = {}) {
     try {
         response = await fetch(`${base.replace(/\/+$/, '')}${path}`, {
             ...options,
-            headers: { Accept: 'application/json', ...headers }
+            headers: { Accept: 'application/json', ...headers },
+            cache: 'no-store',
+            credentials: 'omit'
         })
     } catch {
         throw new ApiError('No fue posible conectar con el servicio.')
     }
 
     if (!response.ok) {
-        let message = `La solicitud falló (${response.status}).`
+        let message = response.status === 401 ? 'La sesión venció. Inicia sesión nuevamente.'
+            : response.status === 403 ? 'No tienes permiso para esta operación.'
+                : response.status >= 500 ? 'El servicio no está disponible.' : `La solicitud falló (${response.status}).`
         try {
             const detail = await response.text()
-            if (detail) message = detail
+            if (detail && ![401, 403].includes(response.status) && response.status < 500) {
+                try {
+                    const body = JSON.parse(detail)
+                    message = body.detail || body.message || body.error || detail
+                } catch { message = detail }
+            }
         } catch {
             // Conserva el mensaje HTTP si el cuerpo no se puede leer.
         }
@@ -43,14 +46,14 @@ async function request(base, path, { headers = {}, ...options } = {}) {
 }
 
 export function iniciarSesion(usuario, contrasena) {
-    return request(API_BASES.auth, '/login', {
+    return request('/gateway/auth', '/login', {
         method: 'POST',
         headers: { usuario, contrasena }
     })
 }
 
 export function renovarSesion(refreshToken) {
-    return request(API_BASES.auth, '/refresh', {
+    return request('/gateway/auth', '/refresh', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refresh_token: refreshToken })
@@ -64,14 +67,8 @@ export function cerrarSesion(accessToken) {
     })
 }
 
-export function obtenerUsuario(email, accessToken) {
-    return request(API_BASES.users, `/usuario/${encodeURIComponent(email)}`, {
-        headers: { Authorization: `Bearer ${accessToken}` }
-    })
-}
-
-export function obtenerRol(idRol, accessToken) {
-    return request(API_BASES.roles, `/rol/${encodeURIComponent(idRol)}`, {
+export function obtenerSesion(accessToken) {
+    return request('/gateway/auth', '/sesion', {
         headers: { Authorization: `Bearer ${accessToken}` }
     })
 }
@@ -81,6 +78,7 @@ export function obtenerRol(idRol, accessToken) {
 export function crearClienteAutenticado(authorizedFetch) {
     return {
         request(path, options = {}) {
+            if (!path.startsWith('/gateway/')) throw new ApiError('Ruta de servicio no permitida.')
             return authorizedFetch(accessToken => request('', path, {
                 ...options,
                 headers: { ...options.headers, Authorization: `Bearer ${accessToken}` }

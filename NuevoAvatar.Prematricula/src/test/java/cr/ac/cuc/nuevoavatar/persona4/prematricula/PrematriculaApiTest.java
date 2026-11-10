@@ -400,7 +400,7 @@ class PrematriculaApiTest extends cr.ac.cuc.nuevoavatar.persona4.PruebaRemotaBas
                 .andExpect(jsonPath("$.periodos.length()").value(1));
     }
 
-    private MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud,
+    private @org.springframework.lang.NonNull MockHttpServletRequestBuilder conDatosToken(MockHttpServletRequestBuilder solicitud,
             ObjectNode datos, String token) {
         return solicitud.header("Authorization", token)
                 .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
