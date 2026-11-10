@@ -1,0 +1,24 @@
+.ramses-integradas { display: grid; gap: 18px; min-width: 0; }
+.ramses-integradas .panel { margin-top: 18px; overflow-x: auto; }
+.ramses-integradas table { width: 100%; border-collapse: collapse; }
+.ramses-integradas th, .ramses-integradas td { padding: 13px; text-align: left; border-bottom: 1px solid var(--line); }
+.ramses-integradas .acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.ramses-integradas .filters { margin: 18px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ramses-integradas .aviso { margin: 16px 0; padding: 13px; border-radius: 12px; background: var(--accent-soft); }
+.ramses-integradas .aviso.error { background: #fce8e6; color: #842020; }
+.ramses-integradas .check { display: flex; align-items: center; gap: 9px; padding: 9px 0; }
+.ramses-integradas fieldset { border: 0; padding: 0; min-width: 0; }
+.ramses-integradas .backdrop { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: #0008; z-index: 1000; }
+.ramses-integradas .modal { width: min(100%, 760px); max-height: 90dvh; overflow: auto; border-radius: 20px; background: var(--glass-strong, #fff); color: inherit; box-shadow: 0 18px 60px #0005; }
+.ramses-integradas .modal-head, .ramses-integradas .modal-body, .ramses-integradas .modal-actions { padding: 20px; }
+.ramses-integradas .modal-head, .ramses-integradas .modal-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.ramses-integradas .modal-head h2 { margin: 0; }
+.ramses-integradas .modal-actions { justify-content: flex-end; flex-wrap: wrap; }
+.ramses-integradas .modal .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.ramses-integradas .modal .field { min-width: 0; }
+.ramses-integradas .modal input, .ramses-integradas .modal select, .ramses-integradas .modal textarea { max-width: 100%; }
+@media (max-width: 650px) {
+    .ramses-integradas .filters, .ramses-integradas .modal .form-grid { grid-template-columns: minmax(0, 1fr); }
+    .ramses-integradas .backdrop { padding: 10px; }
+    .ramses-integradas .modal-head, .ramses-integradas .modal-body, .ramses-integradas .modal-actions { padding: 14px; }
+}

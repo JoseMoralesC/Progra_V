@@ -143,6 +143,7 @@ public sealed class CursoAuthorizationFilter(
             return $"{request.Method} {request.Path} - Error: {excepcion.Message}";
         }
 
-        return $"{request.Method} {request.Path}";
+        if (HttpMethods.IsGet(request.Method)) return "El usuario consulta cursos";
+        return context.HttpContext.Items["curso.cambio"]?.ToString() ?? $"{request.Method} {request.Path}";
     }
 }

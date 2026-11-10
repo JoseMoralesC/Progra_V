@@ -28,10 +28,13 @@ public sealed record AccesoGateway(string[] Roles, string? Modulo = null, bool C
         bool Tiene(string id) => menu.Any(m => m.IdModulo == id);
         if (HttpMethods.IsGet(request.Method))
         {
-            if (Modulo == "ADM5" && request.Path == "/gateway/admin/rol") return Tiene("ADM4");
+            if (Modulo == "ADM5" && request.Path == "/gateway/admin/rol") return Tiene("ADM4") || Tiene("ADM7");
             if (Modulo == "ADM7" && request.Path == "/gateway/admin/modulo") return Tiene("ADM5");
+            if (Modulo == "ADM8" && request.Path == "/gateway/admin/institucion") return Tiene("ADM9");
+            if (Modulo == "ADM11" && request.Path == "/gateway/admin/profesor/buscar") return Tiene("ADM9");
+            if (Modulo == "ADM9" && request.Path == "/gateway/admin/carrera") return Tiene("ADM10");
             if (Modulo == "ADM6" && request.Path == "/gateway/admin/parametro/TAMPAG")
-                return Tiene("ADM4") || Tiene("ADM5") || Tiene("ADM8");
+                return new[] { "ADM4", "ADM5", "ADM7", "ADM8", "ADM9", "ADM10", "ADM11", "ADM12", "ADM22" }.Any(Tiene);
         }
         // La matriz de ADM5 comparte la asignación existente de roles a módulos.
         return Modulo == "ADM7" && Tiene("ADM5") &&

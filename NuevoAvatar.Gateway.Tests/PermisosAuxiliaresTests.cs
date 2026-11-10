@@ -73,6 +73,16 @@ public class PermisosAuxiliaresTests : IAsyncLifetime
     [InlineData("ADM5", "GET", "/gateway/admin/modulo/ADM8/roles")]
     [InlineData("ADM5", "GET", "/gateway/admin/parametro/TAMPAG")]
     [InlineData("ADM8", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM7", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM9", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM10", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM11", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM12", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM22", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM9", "GET", "/gateway/admin/institucion")]
+    [InlineData("ADM7", "GET", "/gateway/admin/rol")]
+    [InlineData("ADM9", "GET", "/gateway/admin/profesor/buscar")]
+    [InlineData("ADM10", "GET", "/gateway/admin/carrera")]
     public async Task PermiteDependenciasExactasDelMantenimiento(string modulo, string metodo, string ruta)
     {
         permiso = modulo;
@@ -116,7 +126,11 @@ public class PermisosAuxiliaresTests : IAsyncLifetime
     [InlineData("ADM5", "DELETE", "/gateway/admin/modulo/ADM8/roles")]
     [InlineData("ADM8", "GET", "/gateway/admin/rol")]
     [InlineData("ADM8", "PUT", "/gateway/admin/modulo/ADM8/roles")]
-    [InlineData("ADM9", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM17", "GET", "/gateway/admin/parametro/TAMPAG")]
+    [InlineData("ADM9", "POST", "/gateway/admin/institucion")]
+    [InlineData("ADM9", "PUT", "/gateway/admin/profesor/1")]
+    [InlineData("ADM9", "GET", "/gateway/admin/profesor")]
+    [InlineData("ADM10", "DELETE", "/gateway/admin/carrera/1")]
     public async Task NoConcedeOtrasOperaciones(string modulo, string metodo, string ruta)
     {
         permiso = modulo;

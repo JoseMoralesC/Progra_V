@@ -164,7 +164,7 @@ public class ProxyHttpTests : IAsyncLifetime
 
         using var response = await cliente.SendAsync(request);
 
-        Assert.Equal(metodo == "DELETE" ? HttpStatusCode.NoContent : HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal(metodo == "DELETE" ? HttpStatusCode.NoContent : metodo == "POST" ? HttpStatusCode.Created : HttpStatusCode.OK, response.StatusCode);
         if (metodo == "DELETE") return;
         var echo = await response.Content.ReadFromJsonAsync<Eco>();
         Assert.StartsWith("/prematricula/propio", echo!.Path);

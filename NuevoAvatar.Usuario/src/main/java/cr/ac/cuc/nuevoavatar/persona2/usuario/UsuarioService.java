@@ -261,7 +261,7 @@ public class UsuarioService {
     private void validarRolYDominio(String email, String rol) {
         var registro = datos.buscar("Rol", "rol", "id_rol", rol)
             .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.UNPROCESSABLE_ENTITY, "El rol no existe"));
+                HttpStatus.UNPROCESSABLE_CONTENT, "El rol no existe"));
         String perfil = cr.ac.cuc.nuevoavatar.integracion.DatosRemotos
             .texto(registro, "nombre_rol").trim().toUpperCase(Locale.ROOT);
 

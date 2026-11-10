@@ -50,31 +50,26 @@ src/
 se comparten mediante `NotificationContext`. Las pantallas administrativas
 se integran mediante las rutas de `src/routes/AppRoutes.jsx`.
 
-## Autenticación ADM1
+## Autenticación ADM2
 
-El login de `src/pages/Login` consume los microservicios existentes mediante
+El login de `src/pages/Login` consume el gateway mediante
 `src/services/api.js` y el estado centralizado de `src/context/AuthContext.jsx`:
 
-- `POST /login`, enviando `usuario` y `contrasena` en headers.
-- `GET /usuario/{email}` y `GET /rol/{idRol}`, con bearer access token.
-- `POST /refresh`, enviando `refresh_token` en el body JSON.
+- `POST /gateway/auth/login`, enviando `usuario` y `contrasena` en headers.
+- `GET /gateway/auth/sesion` y `GET /gateway/menu`, con bearer access token.
+- `POST /gateway/auth/refresh`, enviando `refresh_token` en el body JSON.
+- `POST /gateway/auth/logout`, conservando la salida local aunque falle el registro remoto.
 
-En desarrollo, `vite.config.js` reenvía `/api/auth` al puerto 5158, `/api/users`
-al 8082 y `/api/roles` al 5160, eliminando el prefijo antes de reenviar cada
-ruta. El proxy solo aplica al servidor de desarrollo. Para otros despliegues,
-`VITE_AUTH_API_BASE_URL`, `VITE_USERS_API_BASE_URL` y
-`VITE_ROLES_API_BASE_URL` pueden apuntar a URLs accesibles desde el navegador;
-el servidor de producción debe resolver CORS si los servicios tienen otro
-origen.
+En desarrollo, `vite.config.js` reenvía `/gateway` al puerto 5080. El despliegue
+debe resolver ese mismo prefijo hacia el gateway; el navegador no necesita
+direcciones de los microservicios ni claves internas.
 
-Los access y refresh tokens se mantienen en memoria: no se guardan en
-`localStorage` ni `sessionStorage`, por lo que al recargar se solicita iniciar
-sesión de nuevo. Esto no protege los tokens mientras la aplicación está en uso
-ni frente a XSS; el despliegue debe usar HTTPS. El backend no ofrece en esta
-integración un endpoint de logout/revocación remota, así que Salir limpia el
-estado local. `ProtectedRoute` comprueba que exista una sesión cargada; no es
-autorización por rol o módulo. La protección efectiva de recursos corresponde
-al backend.
+La sesión conserva los tokens en memoria y en `sessionStorage`, sin contraseña.
+Al recargar se comprueban identidad y permisos antes de mostrar el contenido.
+Un fallo de dependencia muestra Reintentar; un rechazo de identidad retira la
+sesión. El refresh se comparte entre peticiones y las respuestas de una cuenta
+cerrada no restauran su sesión. Salir limpia primero el cliente. El gateway y
+cada servicio conservan la autorización efectiva de los datos.
 
 ## Proxy compartido de gateway
 
@@ -82,22 +77,18 @@ Se conserva el proxy `/gateway` hacia `http://localhost:5080` y el permiso de
 Vite para importar módulos dentro del repositorio. `resolve.dedupe` mantiene una
 sola instancia de React al consumir código compartido. Estos ajustes permiten
 que otras integraciones del repositorio usen el gateway desde este servidor;
-las rutas ADM1 descritas arriba continúan usando sus servicios directos.
+las operaciones del navegador utilizan las rutas públicas del gateway.
 
-`web/jose/src/sesion.js` y `src/sesion/SesionProvider.jsx` conservan el flujo de
-sesión basado en rutas `/gateway/auth/*`, `sessionStorage` y consulta del menú
-del gateway. Ese contrato y almacenamiento son independientes de
-`AuthContext` de ADM1. El proveedor de gateway no se monta globalmente: en el
-código actual no hay componentes con `useSesion` ni una ruta de Notas activa en
-`AppRoutes`.
+`AuthProvider` es el proveedor activo de la aplicación principal. Sus páginas
+conservan `useAuth`, incluyendo perfil y portal estudiantil. Notas y los seis
+mantenimientos de Ramses reciben el adaptador `crearClienteAutenticado`, por lo
+que comparten renovación y salida con el resto de la aplicación.
 
-Cuando el equipo incorpore una ruta real que consuma gateway, debe envolver
-solo esa rama de rutas con `SesionProvider` y usar allí su propio flujo de login,
-estado y logout. ADM1 debe permanecer bajo `AuthProvider` y `ProtectedRoute`.
-No transferir tokens entre clientes ni usar un proveedor para renovar o cerrar
-la sesión del otro. La pantalla ADM17 Notas documentada por `origin/dev` queda
-pendiente de reincorporar a una ruta; no se considera integrada por conservar
-el cliente y el proveedor.
+Las rutas integradas son `/notas`, `/modulos`, `/carreras`, `/cursos`,
+`/profesores`, `/periodos` y `/notificaciones`; requieren su perfil y módulo.
+Las aplicaciones aisladas en `web/jose` y `web/ramses` conservan
+`ClienteSesion` para comprobaciones independientes. No se monta un segundo
+proveedor de sesión en las rutas de la aplicación principal.
 
 ## Componentes compartidos
 

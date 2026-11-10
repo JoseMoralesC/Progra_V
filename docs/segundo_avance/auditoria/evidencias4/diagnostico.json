@@ -1,0 +1,309 @@
+{
+  "base": "http://127.0.0.1:4177",
+  "limite": "API interceptada, sin SQL ni SMTP",
+  "casos": [
+    {
+      "id": "D-login-ADMINISTRADOR",
+      "responsable": "Jose",
+      "titulo": "Ingreso con respuestas del contrato actual: ADMINISTRADOR",
+      "estado": "aprobada",
+      "observado": {
+        "ruta": "/inicio",
+        "llamadas": [
+          {
+            "path": "/api/auth/login",
+            "method": "POST"
+          },
+          {
+            "path": "/api/users/usuario/ana%40cuc.ac.cr",
+            "method": "GET"
+          },
+          {
+            "path": "/api/roles/rol/ROL_PRUEBA",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/usuario",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/carrera",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/curso",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/periodo",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/usuario",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/carrera",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/curso",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/periodo",
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "id": "D-login-PROFESOR",
+      "responsable": "Jose",
+      "titulo": "Ingreso con respuestas del contrato actual: PROFESOR",
+      "estado": "aprobada",
+      "observado": {
+        "ruta": "/inicio",
+        "llamadas": [
+          {
+            "path": "/api/auth/login",
+            "method": "POST"
+          },
+          {
+            "path": "/api/users/usuario/ana%40cuc.ac.cr",
+            "method": "GET"
+          },
+          {
+            "path": "/api/roles/rol/ROL_PRUEBA",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/menu",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/mat/profesor/grupos",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/admin/bitacora",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/fin/notificar/historial",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/mat/profesor/grupos",
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "id": "D-login-ESTUDIANTE",
+      "responsable": "Jose",
+      "titulo": "Ingreso con respuestas del contrato actual: ESTUDIANTE",
+      "estado": "aprobada",
+      "observado": {
+        "ruta": "/estudiante",
+        "llamadas": [
+          {
+            "path": "/api/auth/login",
+            "method": "POST"
+          },
+          {
+            "path": "/api/users/usuario/ana%40cuc.cr",
+            "method": "GET"
+          },
+          {
+            "path": "/api/roles/rol/ROL_PRUEBA",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/expediente/propio",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/mat/prematricula/propio",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/expediente/propio",
+            "method": "GET"
+          },
+          {
+            "path": "/gateway/mat/prematricula/propio",
+            "method": "GET"
+          }
+        ]
+      }
+    },
+    {
+      "id": "D-recarga",
+      "responsable": "Jose",
+      "titulo": "Conservar la sesión al recargar una cuenta ingresada",
+      "estado": "fallida",
+      "observado": "La recarga envía a /login: AuthContext mantiene la sesión solamente en memoria."
+    },
+    {
+      "id": "D-formato-login",
+      "responsable": "Jose",
+      "titulo": "Rechazar un correo sin formato institucional antes de llamar a login",
+      "estado": "fallida",
+      "observado": "El formulario envía texto-sin-correo a /api/auth/login."
+    },
+    {
+      "id": "D-notas",
+      "responsable": "Jose",
+      "titulo": "Abrir la pantalla funcional de Notas desde el portal del profesor",
+      "estado": "fallida",
+      "observado": "La ruta /notas muestra un mensaje provisional en lugar del componente Notas."
+    },
+    {
+      "id": "D-inicio-estudiante",
+      "responsable": "Alejandro",
+      "titulo": "Inicio muestra expediente y cantidad de solicitudes simuladas",
+      "estado": "aprobada",
+      "observado": "Estado disponible y dos solicitudes"
+    },
+    {
+      "id": "D-confirmar-expediente",
+      "responsable": "Alejandro",
+      "titulo": "Guardar expediente exige confirmación antes de enviar PUT",
+      "estado": "fallida",
+      "observado": "Guardar cambios envió PUT de inmediato, sin confirmación."
+    },
+    {
+      "id": "D-confirmar-cancelacion",
+      "responsable": "Alejandro",
+      "titulo": "Cancelar una prematrícula exige confirmación antes de DELETE",
+      "estado": "fallida",
+      "observado": "Cancelar solicitud envió DELETE de inmediato, sin confirmación."
+    },
+    {
+      "id": "D-paginacion-prematricula",
+      "responsable": "Alejandro",
+      "titulo": "Mostrar como máximo 15 solicitudes por página",
+      "estado": "fallida",
+      "observado": "Se muestran 16 solicitudes simultáneamente; no hay paginación."
+    },
+    {
+      "id": "D-cambio-clave-salida",
+      "responsable": "Alejandro",
+      "titulo": "Cambio de contraseña retira la sesión y solicita login",
+      "estado": "fallida",
+      "observado": "Tras cambiar contraseña permanece abierta /estudiante/perfil con la sesión activa."
+    },
+    {
+      "id": "D-admin-sin-permiso-ui",
+      "responsable": "Fabian",
+      "titulo": "Una URL administrativa sin permiso de módulo bloquea sus controles",
+      "estado": "fallida",
+      "observado": "El profesor abre /usuarios y ve Nuevo usuario; AdminRoleGate solo distingue el perfil general y no el permiso del módulo. El gateway real conserva su rechazo 403."
+    },
+    {
+      "id": "D-mantenimiento-usuarios",
+      "responsable": "Fabian",
+      "titulo": "Abrir formulario administrativo con sesión actual: /usuarios",
+      "estado": "aprobada",
+      "observado": "Formulario disponible con catálogos simulados; no se guardaron datos."
+    },
+    {
+      "id": "D-mantenimiento-roles",
+      "responsable": "Fabian",
+      "titulo": "Abrir formulario administrativo con sesión actual: /roles",
+      "estado": "aprobada",
+      "observado": "Formulario disponible con catálogos simulados; no se guardaron datos."
+    },
+    {
+      "id": "D-mantenimiento-parametros",
+      "responsable": "Fabian",
+      "titulo": "Abrir formulario administrativo con sesión actual: /parametros",
+      "estado": "aprobada",
+      "observado": "Formulario disponible con catálogos simulados; no se guardaron datos."
+    },
+    {
+      "id": "D-mantenimiento-instituciones",
+      "responsable": "Fabian",
+      "titulo": "Abrir formulario administrativo con sesión actual: /instituciones",
+      "estado": "aprobada",
+      "observado": "Formulario disponible con catálogos simulados; no se guardaron datos."
+    },
+    {
+      "id": "D-layout-compartido",
+      "responsable": "Alejandro",
+      "titulo": "Las dos experiencias reutilizan el layout y no desbordan en 390 px",
+      "estado": "fallida",
+      "observado": "Desbordamiento horizontal: {\"administracion\":{\"ancho\":390,\"contenido\":429},\"estudiante\":{\"ancho\":390,\"contenido\":421}}"
+    }
+  ]
+}

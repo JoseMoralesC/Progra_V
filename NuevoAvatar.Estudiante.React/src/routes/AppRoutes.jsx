@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import StudentLayout from '../layouts/StudentLayout'
 import Login from '../pages/Login/Login'
@@ -14,9 +14,16 @@ import Expediente from '../pages/Estudiante/Expediente'
 import Prematricula from '../pages/Estudiante/Prematricula'
 import Perfil from '../pages/Perfil/Perfil'
 import { useAuth } from '../context/AuthContext'
-import { useNotifications } from '../context/NotificationContext'
 import { crearClienteAutenticado, obtenerMenu } from '../services/api'
 import { esEstudiante } from '../navigation/studentNavigation'
+import { Notas } from '../../../web/jose/src/Notas.jsx'
+import { Modulos } from '../../../web/ramses/src/Modulos.jsx'
+import { Carreras } from '../../../web/ramses/src/Carreras.jsx'
+import { Cursos } from '../../../web/ramses/src/Cursos.jsx'
+import { Profesores } from '../../../web/ramses/src/Profesores.jsx'
+import { Periodos } from '../../../web/ramses/src/Periodos.jsx'
+import { Notificaciones } from '../../../web/ramses/src/Notificaciones.jsx'
+import '../styles/mantenimientos.css'
 
 const adminMenu = [
     { idModulo: 'ADM8', label: 'Instituciones', path: '/instituciones', icon: '▦' },
@@ -24,54 +31,71 @@ const adminMenu = [
     { idModulo: 'ADM5', label: 'Roles', path: '/roles', icon: '▧' },
     { idModulo: 'ADM4', label: 'Usuarios', path: '/usuarios', icon: '♙' },
     { idModulo: 'ADM7', label: 'Módulos', path: '/modulos', icon: '▦' },
-    { idModulo: 'ADM23', label: 'Reportes', path: '/reportes', icon: '▤' }
+    { idModulo: 'ADM9', label: 'Carreras', path: '/carreras', icon: '▤' },
+    { idModulo: 'ADM10', label: 'Cursos', path: '/cursos', icon: '▤' },
+    { idModulo: 'ADM11', label: 'Profesores', path: '/profesores', icon: '♙' },
+    { idModulo: 'ADM12', label: 'Periodos', path: '/periodos', icon: '▤' },
+    { idModulo: 'ADM22', label: 'Notificaciones', path: '/notificaciones', icon: '▤' },
+    { idModulo: 'ADM17', label: 'Notas', path: '/notas', icon: '▤' }
 ]
 
 function roleOf(user) {
     return String(user?.nombreRol || user?.idRol || '').trim().toLocaleUpperCase('es')
 }
 
-function AdminPage({ title, children }) {
+function AdminPage({ title, children, modulo, perfil }) {
     const { session, logout, authorizedFetch } = useAuth()
-    const { notify } = useNotifications()
     const navigate = useNavigate()
-    const [modulos, setModulos] = useState([])
+    const [modulos, setModulos] = useState(session?.user?.modulos || [])
+    const [errorMenu, setErrorMenu] = useState('')
     const cliente = useMemo(() => crearClienteAutenticado(authorizedFetch), [authorizedFetch])
     const user = session?.user || {}
     const role = roleOf(user)
     useEffect(() => {
         let vigente = true
         authorizedFetch(token => obtenerMenu(token))
-            .then(menu => { if (vigente && Array.isArray(menu)) setModulos(menu.filter(item => item?.activo !== false)) })
-            .catch(() => { if (vigente) setModulos([]) })
+            .then(menu => { if (vigente && Array.isArray(menu)) {
+                const activos = menu.filter(item => item?.activo !== false)
+                setModulos(actuales => JSON.stringify(actuales) === JSON.stringify(activos) ? actuales : activos)
+                setErrorMenu('')
+            } })
+            .catch(error => { if (vigente) { setModulos([]); setErrorMenu(error.message) } })
         return () => { vigente = false }
     }, [authorizedFetch])
-    const dashboardUser = {
+    const dashboardUser = useMemo(() => ({
         ...user,
         usuarioID: user.usuarioID || user.email || session?.email || '',
         rol: role,
-        modulos: Array.isArray(user.modulos) && user.modulos.length ? user.modulos : modulos
-    }
+        modulos
+    }), [user, session?.email, role, modulos])
 
     function handleLogout() {
         logout()
-        notify('Sesión cerrada en este navegador.', 'info')
         navigate('/login', { replace: true })
     }
 
     return (
         <MainLayout
             pageTitle={title}
-            breadcrumbItems={[{ label: 'Administración' }, { label: title }]}
+            breadcrumbItems={[{ label: 'Inicio', path: '/inicio' }, { label: title }]}
             user={{ ...user, rol: user.nombreRol || user.idRol }}
             menuItems={[{ label: 'Inicio', path: '/inicio', icon: '⌂' },
-                ...adminMenu.filter(item => modulos.some(modulo => modulo.idModulo === item.idModulo))]}
+                ...adminMenu.filter(item => (item.idModulo === 'ADM17' ? role === 'PROFESOR' : role === 'ADMINISTRADOR') &&
+                    modulos.some(modulo => modulo.idModulo === item.idModulo))
+                    .map(item => ({ ...item, label: modulos.find(m => m.idModulo === item.idModulo)?.nombreModulo || item.label }))
+                    .sort((a, b) => (modulos.find(m => m.idModulo === a.idModulo)?.orden ?? 0) - (modulos.find(m => m.idModulo === b.idModulo)?.orden ?? 0))]}
             systemName="Nuevo Avatar"
             sectionTitle="ADMINISTRACIÓN"
             footerText="Sistema administrativo"
             onLogout={handleLogout}
         >
-            {children({ cliente, usuario: dashboardUser })}
+            {errorMenu ? <section className="panel" role="alert"><h2>No se pudieron comprobar los permisos</h2><p>{errorMenu}</p><Link to="/inicio">Volver al inicio</Link></section>
+                : modulo && (role !== perfil || !modulos.some(m => m.idModulo === modulo))
+                    ? <section className="panel"><h2>Acceso restringido</h2><p>No tienes permiso para esta pantalla.</p><Link to="/inicio">Volver al inicio</Link></section>
+                    : <>{modulo && <Link to="/inicio">Volver al inicio</Link>}
+                        <div className={modulo === 'ADM17' ? 'notas-integradas' : modulo ? 'ramses-integradas' : undefined}>
+                            {children({ cliente, usuario: dashboardUser })}
+                        </div></>}
         </MainLayout>
     )
 }
@@ -82,10 +106,6 @@ function AdminRoleGate() {
     const role = roleOf(session?.user)
     if (!['ADMINISTRADOR', 'PROFESOR'].includes(role)) return <Navigate to="/login" replace />
     return <Outlet />
-}
-
-function AdminPlaceholder({ title, description }) {
-    return <section className="panel"><h2>{title}</h2><p>{description}</p></section>
 }
 
 function DashboardRoute() {
@@ -117,10 +137,14 @@ export default function AppRoutes() {
                     <Route path="/parametros" element={<AdminPage title="Parámetros">{({ cliente }) => <Parametros cliente={cliente} />}</AdminPage>} />
                     <Route path="/roles" element={<AdminPage title="Roles y permisos">{({ cliente }) => <Roles cliente={cliente} />}</AdminPage>} />
                     <Route path="/usuarios" element={<AdminPage title="Usuarios">{({ cliente }) => <Usuarios cliente={cliente} />}</AdminPage>} />
-                    <Route path="/notas" element={<AdminPage title="Notas">{() => <AdminPlaceholder title="Notas" description="La pantalla de notas requiere integrar su servicio con la sesión autenticada actual." />}</AdminPage>} />
+                    <Route path="/notas" element={<AdminPage title="Notas" modulo="ADM17" perfil="PROFESOR">{({ cliente }) => <Notas cliente={cliente} />}</AdminPage>} />
                     <Route path="/perfil" element={<AdminPage title="Perfil">{() => <Perfil />}</AdminPage>} />
-                    <Route path="/modulos" element={<AdminPage title="Módulos">{() => <AdminPlaceholder title="Módulos" description="Espacio para integrar la gestión de módulos." />}</AdminPage>} />
-                    <Route path="/reportes" element={<AdminPage title="Reportes">{() => <AdminPlaceholder title="Reportes" description="Espacio para integrar los reportes del sistema." />}</AdminPage>} />
+                    <Route path="/modulos" element={<AdminPage title="Módulos" modulo="ADM7" perfil="ADMINISTRADOR">{({ cliente }) => <Modulos cliente={cliente} />}</AdminPage>} />
+                    <Route path="/carreras" element={<AdminPage title="Carreras" modulo="ADM9" perfil="ADMINISTRADOR">{({ cliente }) => <Carreras cliente={cliente} />}</AdminPage>} />
+                    <Route path="/cursos" element={<AdminPage title="Cursos" modulo="ADM10" perfil="ADMINISTRADOR">{({ cliente }) => <Cursos cliente={cliente} />}</AdminPage>} />
+                    <Route path="/profesores" element={<AdminPage title="Profesores" modulo="ADM11" perfil="ADMINISTRADOR">{({ cliente }) => <Profesores cliente={cliente} />}</AdminPage>} />
+                    <Route path="/periodos" element={<AdminPage title="Periodos" modulo="ADM12" perfil="ADMINISTRADOR">{({ cliente }) => <Periodos cliente={cliente} />}</AdminPage>} />
+                    <Route path="/notificaciones" element={<AdminPage title="Notificaciones" modulo="ADM22" perfil="ADMINISTRADOR">{({ cliente }) => <Notificaciones cliente={cliente} />}</AdminPage>} />
                 </Route>
             </Route>
 

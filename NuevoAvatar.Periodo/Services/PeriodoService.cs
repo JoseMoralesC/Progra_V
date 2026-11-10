@@ -1,4 +1,4 @@
-﻿using NuevoAvatar.Periodo.Nuevo.Entities;
+using NuevoAvatar.Periodo.Nuevo.Entities;
 using NuevoAvatar.Periodo.Nuevo.Repository;
 using Microsoft.Data.SqlClient;
 using NuevoAvatar.Integracion;
@@ -10,6 +10,7 @@ public class PeriodoService : IPeriodoService
     private readonly IPeriodoRepository _repository;
     private readonly IPeriodoValidator _validator;
     private readonly DatosRemotos? _datos;
+    private readonly SemaphoreSlim _semaforo = new(1, 1);
 
     public PeriodoService(
         IPeriodoRepository repository,
@@ -37,7 +38,24 @@ public class PeriodoService : IPeriodoService
     public async Task<int> CrearAsync(PeriodoRequest request)
     {
         _validator.Validar(request);
-        await ValidarConflictos(request,null); try{return await _repository.CrearAsync(request);}catch(SqlException ex)when(ex.Number is 2601 or 2627){throw new PeriodoConflictoException("Ya existe el año y número de periodo.",ex);}
+        await _semaforo.WaitAsync();
+        try
+        {
+            await ValidarConflictos(request, null);
+            return await _repository.CrearAsync(request);
+        }
+        catch (SqlException ex) when (ex.Number is 2601 or 2627)
+        {
+            throw new PeriodoConflictoException("Ya existe el año y número de periodo.", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("solapa"))
+        {
+            throw new PeriodoConflictoException(ex.Message, ex);
+        }
+        finally
+        {
+            _semaforo.Release();
+        }
     }
 
     public async Task<bool> ModificarAsync(
@@ -49,7 +67,24 @@ public class PeriodoService : IPeriodoService
                 "El identificador del periodo debe ser mayor que cero.");
 
         _validator.Validar(request);
-        await ValidarConflictos(request,periodoId);try{return await _repository.ModificarAsync(periodoId,request);}catch(SqlException ex)when(ex.Number is 2601 or 2627){throw new PeriodoConflictoException("Ya existe el año y número de periodo.",ex);}
+        await _semaforo.WaitAsync();
+        try
+        {
+            await ValidarConflictos(request, periodoId);
+            return await _repository.ModificarAsync(periodoId, request);
+        }
+        catch (SqlException ex) when (ex.Number is 2601 or 2627)
+        {
+            throw new PeriodoConflictoException("Ya existe el año y número de periodo.", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("solapa"))
+        {
+            throw new PeriodoConflictoException(ex.Message, ex);
+        }
+        finally
+        {
+            _semaforo.Release();
+        }
     }
 
     public async Task<bool> EliminarAsync(int periodoId)
@@ -60,6 +95,12 @@ public class PeriodoService : IPeriodoService
 
         if(_datos is null)throw new InvalidOperationException("Integración no configurada.");await _datos.SinReferencias("Periodo","Periodo",periodoId);return await _repository.EliminarAsync(periodoId);
     }
-    private async Task ValidarConflictos(PeriodoRequest r,int? excluir){if(await _repository.ExisteDuplicadoAsync(r.Anio,r.NumeroPeriodo,excluir))throw new PeriodoConflictoException("Ya existe el año y número de periodo.");if(await _repository.ExisteSolapamientoAsync(r.Anio,r.FechaInicio,r.FechaFin,excluir))throw new PeriodoConflictoException("El rango se solapa con otro periodo del mismo año.");}
+    private async Task ValidarConflictos(PeriodoRequest r, int? excluir)
+    {
+        if (await _repository.ExisteDuplicadoAsync(r.Anio, r.NumeroPeriodo, excluir))
+            throw new PeriodoConflictoException("Ya existe el año y número de periodo.");
+        if (await _repository.ExisteSolapamientoAsync(r.Anio, r.NumeroPeriodo, r.FechaInicio, r.FechaFin, excluir))
+            throw new PeriodoConflictoException("El rango se solapa con otro periodo del mismo año y número.");
+    }
 }
 public sealed class PeriodoConflictoException(string message,Exception? inner=null):Exception(message,inner);
