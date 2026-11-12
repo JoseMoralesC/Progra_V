@@ -20,16 +20,18 @@ Las pruebas de interfaz interceptan las llamadas de red y utilizan datos en memo
 
 Se conserva `db/por_servicio/configuracion/parametro_tampag.sql`. Crea TAMPAG con valor 15 únicamente si falta, conserva cualquier valor existente y protege la comprobación con una transacción. Quince coincide con el máximo y respaldo usado por los mantenimientos administrativos. El script apunta a `PrograV_Parametro`.
 
-No se aplicó durante esta comprobación: Tailscale informa `NoState` y SQL Server agotó el tiempo de conexión. El consumo de TAMPAG en WEB4 sigue correspondiendo a Alejandro; preparar el parámetro no sustituye ese consumo.
+Después de restablecer Tailscale, se aplicó el script y se confirmó `TAMPAG=15` en SQL Server compartido. El consumo de TAMPAG en WEB4 sigue correspondiendo a Alejandro; preparar el parámetro no sustituye ese consumo.
 
 ## Verificación real pendiente
 
 La evidencia anterior está en `resultado_pruebas_reales.md` y corresponde a su fecha y datos. No se considera repetida después de la limpieza de datos comunicada por el equipo.
 
-- Comprobar la coincidencia de correo, tipo e identificación entre la nueva cuenta estudiantil y su expediente. No se alteraron las cuentas preparadas por José.
+- La consulta real confirmó que `fabian@cuc.cr` coincide con su expediente en correo, tipo e identificación. No se alteraron las cuentas preparadas por José. Falta comprobar el recorrido desde el navegador con esa cuenta.
 - Repetir permisos/revocación con dos cuentas sobre la versión integrada, conservando las asignaciones originales.
-- Confirmar TAMPAG y aplicar el script guardado solo si falta.
+- TAMPAG confirmado en la base compartida con valor 15 después de aplicar el script guardado.
 - Completar la aceptación real de filtros, orden, paginación, errores y bitácoras con la versión final de los servicios.
 - Coordinar con el equipo el menú de presentación de las veinte historias y el paquete documental común.
 
 El PDF de ADM6 repite el texto de cambios de permisos al hablar de parámetros. Se conserva el detalle anterior/actual de parámetros normales y se registra la operación de MAILPASS mediante su identificador, sin serializar la contraseña. No se cambiaron endpoints ni la lectura interna de SMTP.
+
+La comprobación HTTP posterior no llegó a ejecutarse por un bloqueo del entorno de ejecución. No se presenta como prueba aprobada ni como fallo del sistema. Se conserva la aceptación real pendiente indicada arriba.
