@@ -1,0 +1,1574 @@
+{
+  "applied_at_utc": "2026-11-12T20:07:06.167963+00:00",
+  "committed": true,
+  "native_backups": [
+    {
+      "database": "PrograV",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_antes_datos_realistas_20261112_135147.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Autenticacion",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Autenticacion_antes_datos_realistas_20261112_135147.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Bitacora",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Bitacora_antes_datos_realistas_20261112_135148.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Carrera",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Carrera_antes_datos_realistas_20261112_135148.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Curso",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Curso_antes_datos_realistas_20261112_135148.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Direccion",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Direccion_antes_datos_realistas_20261112_135149.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Expediente",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Expediente_antes_datos_realistas_20261112_135149.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Factura",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Factura_antes_datos_realistas_20261112_135149.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Grupo",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Grupo_antes_datos_realistas_20261112_135150.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_HistorialAcademico",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_HistorialAcademico_antes_datos_realistas_20261112_135150.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Institucion",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Institucion_antes_datos_realistas_20261112_135150.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_ListadoEstudiantes",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_ListadoEstudiantes_antes_datos_realistas_20261112_135150.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Matricula",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Matricula_antes_datos_realistas_20261112_135151.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Modulo",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Modulo_antes_datos_realistas_20261112_135151.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Notas",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Notas_antes_datos_realistas_20261112_135151.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Notificacion",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Notificacion_antes_datos_realistas_20261112_135152.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Pago",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Pago_antes_datos_realistas_20261112_135152.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Parametro",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Parametro_antes_datos_realistas_20261112_135152.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Periodo",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Periodo_antes_datos_realistas_20261112_135153.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Prematricula",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Prematricula_antes_datos_realistas_20261112_135153.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Profesor",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Profesor_antes_datos_realistas_20261112_135153.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Rol",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Rol_antes_datos_realistas_20261112_135154.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    },
+    {
+      "database": "PrograV_Usuario",
+      "path_on_server": "C:\\Program Files\\Microsoft SQL Server\\MSSQL17.MSSQLSERVER\\MSSQL\\Backup\\PrograV_Usuario_antes_datos_realistas_20261112_135154.bak",
+      "copy_only": true,
+      "checksum": true,
+      "restore_verifyonly": true
+    }
+  ],
+  "tables": [
+    {
+      "database": "PrograV",
+      "table": "matricula.NotaRubro",
+      "deleted": 2,
+      "created": 3800,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Notas",
+      "table": "matricula.NotaRubro",
+      "deleted": 4,
+      "created": 3800,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Pago",
+      "table": "finanzas.OperacionPago",
+      "deleted": 4,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "finanzas.Pago",
+      "deleted": 1,
+      "created": 1600,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Pago",
+      "table": "finanzas.Pago",
+      "deleted": 3,
+      "created": 1600,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "finanzas.FacturaDetalle",
+      "deleted": 1,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Factura",
+      "table": "finanzas.FacturaDetalle",
+      "deleted": 3,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "finanzas.Factura",
+      "deleted": 1,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Factura",
+      "table": "finanzas.Factura",
+      "deleted": 3,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.DesgloseRubro",
+      "deleted": 2,
+      "created": 1728,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Notas",
+      "table": "matricula.DesgloseRubro",
+      "deleted": 4,
+      "created": 1728,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Matricula",
+      "deleted": 2,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Matricula",
+      "table": "matricula.Matricula",
+      "deleted": 6,
+      "created": 1920,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.PrematriculaCurso",
+      "deleted": 0,
+      "created": 328,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Prematricula",
+      "table": "matricula.PrematriculaCurso",
+      "deleted": 3,
+      "created": 328,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Prematricula",
+      "deleted": 0,
+      "created": 82,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Prematricula",
+      "table": "matricula.Prematricula",
+      "deleted": 2,
+      "created": 82,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Grupo",
+      "deleted": 3,
+      "created": 576,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Grupo",
+      "table": "academico.Grupo",
+      "deleted": 3,
+      "created": 576,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Curso",
+      "deleted": 2,
+      "created": 192,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Curso",
+      "table": "academico.Curso",
+      "deleted": 6,
+      "created": 192,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Carrera",
+      "deleted": 2,
+      "created": 8,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Carrera",
+      "table": "academico.Carrera",
+      "deleted": 7,
+      "created": 8,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.ProfesorTelefono",
+      "deleted": 1,
+      "created": 32,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Profesor",
+      "table": "academico.ProfesorTelefono",
+      "deleted": 4,
+      "created": 32,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Profesor",
+      "deleted": 2,
+      "created": 32,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Profesor",
+      "table": "academico.Profesor",
+      "deleted": 4,
+      "created": 32,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.EstudianteTelefono",
+      "deleted": 0,
+      "created": 240,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Expediente",
+      "table": "matricula.EstudianteTelefono",
+      "deleted": 3,
+      "created": 240,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Estudiante",
+      "deleted": 4,
+      "created": 240,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Expediente",
+      "table": "matricula.Estudiante",
+      "deleted": 7,
+      "created": 240,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Periodo",
+      "deleted": 2,
+      "created": 3,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Periodo",
+      "table": "academico.Periodo",
+      "deleted": 4,
+      "created": 3,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "academico.Institucion",
+      "deleted": 2,
+      "created": 1,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Institucion",
+      "table": "academico.Institucion",
+      "deleted": 4,
+      "created": 1,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Distrito",
+      "deleted": 1,
+      "created": 494,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Direccion",
+      "table": "matricula.Distrito",
+      "deleted": 1,
+      "created": 494,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Canton",
+      "deleted": 1,
+      "created": 84,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Direccion",
+      "table": "matricula.Canton",
+      "deleted": 1,
+      "created": 84,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "matricula.Provincia",
+      "deleted": 1,
+      "created": 7,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Direccion",
+      "table": "matricula.Provincia",
+      "deleted": 1,
+      "created": 7,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "seguridad.refresh_token",
+      "deleted": 144,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Autenticacion",
+      "table": "seguridad.refresh_token",
+      "deleted": 599,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "seguridad.usuario",
+      "deleted": 5,
+      "created": 276,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Usuario",
+      "table": "seguridad.usuario",
+      "deleted": 12,
+      "created": 276,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "seguridad.rol",
+      "deleted": 0,
+      "created": 1,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Rol",
+      "table": "seguridad.rol",
+      "deleted": 0,
+      "created": 1,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "general.bitacora",
+      "deleted": 185,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV",
+      "table": "seguridad.modulo",
+      "deleted": 0,
+      "created": 0,
+      "updated": 1
+    },
+    {
+      "database": "PrograV",
+      "table": "seguridad.parametro",
+      "deleted": 0,
+      "created": 0,
+      "updated": 1
+    },
+    {
+      "database": "PrograV_Bitacora",
+      "table": "general.bitacora",
+      "deleted": 5199,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Modulo",
+      "table": "seguridad.modulo",
+      "deleted": 0,
+      "created": 0,
+      "updated": 1
+    },
+    {
+      "database": "PrograV_Modulo",
+      "table": "seguridad.rol_modulo",
+      "deleted": 0,
+      "created": 3,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Notificacion",
+      "table": "general.Notificacion",
+      "deleted": 1,
+      "created": 0,
+      "updated": 0
+    },
+    {
+      "database": "PrograV_Parametro",
+      "table": "seguridad.parametro",
+      "deleted": 0,
+      "created": 0,
+      "updated": 1
+    }
+  ],
+  "checks": [
+    {
+      "check": "distributed/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "distributed/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/cupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/rubros",
+      "violations": 0
+    },
+    {
+      "check": "distributed/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/pagos",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.OperacionPago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/seguridad.usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "source/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/cupo",
+      "violations": 0
+    },
+    {
+      "check": "source/rubros",
+      "violations": 0
+    },
+    {
+      "check": "source/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/pagos",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/count/seguridad.usuario",
+      "violations": 0
+    }
+  ],
+  "remaining_test_rows": {
+    "PrograV/academico.Carrera": 0,
+    "PrograV/academico.Curso": 0,
+    "PrograV/academico.Grupo": 0,
+    "PrograV/academico.Institucion": 0,
+    "PrograV/academico.Periodo": 0,
+    "PrograV/academico.Profesor": 0,
+    "PrograV/academico.ProfesorTelefono": 0,
+    "PrograV/finanzas.Factura": 0,
+    "PrograV/finanzas.FacturaDetalle": 0,
+    "PrograV/finanzas.Pago": 0,
+    "PrograV/general.bitacora": 0,
+    "PrograV/matricula.Canton": 0,
+    "PrograV/matricula.DesgloseRubro": 0,
+    "PrograV/matricula.Distrito": 0,
+    "PrograV/matricula.Estudiante": 0,
+    "PrograV/matricula.EstudianteTelefono": 0,
+    "PrograV/matricula.Matricula": 0,
+    "PrograV/matricula.NotaRubro": 0,
+    "PrograV/matricula.Prematricula": 0,
+    "PrograV/matricula.PrematriculaCurso": 0,
+    "PrograV/matricula.Provincia": 0,
+    "PrograV/seguridad.modulo": 0,
+    "PrograV/seguridad.refresh_token": 0,
+    "PrograV/seguridad.rol": 0,
+    "PrograV/seguridad.usuario": 0,
+    "PrograV_Autenticacion/seguridad.refresh_token": 0,
+    "PrograV_Bitacora/general.bitacora": 0,
+    "PrograV_Carrera/academico.Carrera": 0,
+    "PrograV_Curso/academico.Curso": 0,
+    "PrograV_Direccion/matricula.Canton": 0,
+    "PrograV_Direccion/matricula.Distrito": 0,
+    "PrograV_Direccion/matricula.Provincia": 0,
+    "PrograV_Expediente/matricula.Estudiante": 0,
+    "PrograV_Expediente/matricula.EstudianteTelefono": 0,
+    "PrograV_Factura/finanzas.Factura": 0,
+    "PrograV_Factura/finanzas.FacturaDetalle": 0,
+    "PrograV_Grupo/academico.Grupo": 0,
+    "PrograV_Institucion/academico.Institucion": 0,
+    "PrograV_Matricula/matricula.Matricula": 0,
+    "PrograV_Modulo/seguridad.modulo": 0,
+    "PrograV_Modulo/seguridad.rol_modulo": 0,
+    "PrograV_Notas/matricula.DesgloseRubro": 0,
+    "PrograV_Notas/matricula.NotaRubro": 0,
+    "PrograV_Notificacion/general.Notificacion": 0,
+    "PrograV_Pago/finanzas.OperacionPago": 0,
+    "PrograV_Pago/finanzas.Pago": 0,
+    "PrograV_Periodo/academico.Periodo": 0,
+    "PrograV_Prematricula/matricula.Prematricula": 0,
+    "PrograV_Prematricula/matricula.PrematriculaCurso": 0,
+    "PrograV_Profesor/academico.Profesor": 0,
+    "PrograV_Profesor/academico.ProfesorTelefono": 0,
+    "PrograV_Rol/seguridad.rol": 0,
+    "PrograV_Usuario/seguridad.usuario": 0
+  },
+  "personal_records_preserved": 2,
+  "credentials_in_report": false,
+  "notes": [
+    "Ramsés y Alejandro conservan identificación y nombre existentes; cuentas anteriores sustituidas por las ocho solicitadas.",
+    "No se cambia el esquema ni se reinician contadores de identidad. La base histórica PrograV recibe los mismos datos de dominio.",
+    "SMTP y demás parámetros técnicos conservados; DOMPROF se normaliza a cuc.cr.",
+    "Se archivan mediante respaldo y se eliminan solo bitácoras y notificaciones que contienen marcas explícitas de datos de ensayo.",
+    "El modelo Curso no tiene columna de contenidos: se documentan los contenidos fuera de la base sin alterar el esquema."
+  ],
+  "independent_postcommit_checks": [
+    {
+      "check": "distributed/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "distributed/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/cupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/rubros",
+      "violations": 0
+    },
+    {
+      "check": "distributed/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/pagos",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.OperacionPago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/seguridad.usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "source/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/cupo",
+      "violations": 0
+    },
+    {
+      "check": "source/rubros",
+      "violations": 0
+    },
+    {
+      "check": "source/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/pagos",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/count/seguridad.usuario",
+      "violations": 0
+    }
+  ]
+}
