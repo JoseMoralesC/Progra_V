@@ -117,6 +117,21 @@ export function cambiarContrasenaPropia(contrasenaActual, contrasenaNueva, acces
     })
 }
 
+export function obtenerPoliticaContrasena(accessToken) {
+    return request('/gateway', '/perfil/politica-contrasena', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        cache: 'no-store'
+    })
+}
+
+export function registrarEventoInterfaz(tipo, ruta, accessToken) {
+    return request('/gateway', '/auditoria/interfaz', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ tipo, ruta })
+    })
+}
+
 export function obtenerExpedientePropio(accessToken) {
     return request('/gateway', '/expediente/propio', {
         headers: { Authorization: `Bearer ${accessToken}` },

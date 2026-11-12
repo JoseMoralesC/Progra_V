@@ -18,6 +18,16 @@ function MainLayout({
     onLogout
 }) {
     const [collapsed, setCollapsed] = useState(false)
+    const [mobile, setMobile] = useState(() =>
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches)
+
+    useEffect(() => {
+        const media = window.matchMedia('(max-width: 600px)')
+        const actualizar = evento => setMobile(evento.matches)
+        setMobile(media.matches)
+        media.addEventListener('change', actualizar)
+        return () => media.removeEventListener('change', actualizar)
+    }, [])
 
     const [dark, setDark] = useState(() => {
         try {
@@ -38,10 +48,10 @@ function MainLayout({
     }, [dark])
 
     return (
-        <div className={`stage ${collapsed ? 'sidebar-collapsed' : ''}`}>
+        <div className={`stage ${mobile || collapsed ? 'sidebar-collapsed' : ''}`}>
             <Sidebar
-                collapsed={collapsed}
-                onToggle={() => setCollapsed(current => !current)}
+                collapsed={mobile || collapsed}
+                onToggle={() => { if (!mobile) setCollapsed(current => !current) }}
                 permissions={permissions}
                 menuItems={menuItems}
                 systemName={systemName}

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import StudentLayout from '../layouts/StudentLayout'
 import Login from '../pages/Login/Login'
@@ -14,7 +14,8 @@ import Expediente from '../pages/Estudiante/Expediente'
 import Prematricula from '../pages/Estudiante/Prematricula'
 import Perfil from '../pages/Perfil/Perfil'
 import { useAuth } from '../context/AuthContext'
-import { crearClienteAutenticado, obtenerMenu } from '../services/api'
+import { useNotifications } from '../context/NotificationContext'
+import { crearClienteAutenticado, obtenerMenu, registrarEventoInterfaz } from '../services/api'
 import { esEstudiante } from '../navigation/studentNavigation'
 import { Notas } from '../../../web/jose/src/Notas.jsx'
 import { Modulos } from '../../../web/ramses/src/Modulos.jsx'
@@ -38,6 +39,90 @@ const adminMenu = [
     { idModulo: 'ADM22', label: 'Notificaciones', path: '/notificaciones', icon: '▤' },
     { idModulo: 'ADM17', label: 'Notas', path: '/notas', icon: '▤' }
 ]
+
+const rutasCriticas = new Set([
+    '/inicio', '/instituciones', '/parametros', '/roles', '/usuarios', '/modulos',
+    '/carreras', '/cursos', '/profesores', '/periodos', '/notificaciones', '/notas',
+    '/estudiante', '/estudiante/expediente', '/estudiante/prematricula', '/estudiante/perfil', '/perfil'
+])
+
+function AuditoriaInterfaz() {
+    const { session, authorizedFetch } = useAuth()
+    const { notifications } = useNotifications()
+    const location = useLocation()
+    const ultimaRuta = useRef('')
+    const erroresRegistrados = useRef(new Set())
+    const alertasRegistradas = useRef(new WeakSet())
+    const ultimoErrorUi = useRef({ ruta: '', momento: 0 })
+
+    const registrarErrorUi = useCallback(ruta => {
+        const momento = Date.now()
+        if (ultimoErrorUi.current.ruta === ruta && momento - ultimoErrorUi.current.momento < 1200) return
+        ultimoErrorUi.current = { ruta, momento }
+        authorizedFetch(token => registrarEventoInterfaz('error-ui', ruta, token)).catch(() => {
+            // El texto del error no se envía ni se crea un aviso recursivo por fallar Bitácora.
+        })
+    }, [authorizedFetch])
+
+    useEffect(() => {
+        if (session?.user) return
+        ultimaRuta.current = ''
+        erroresRegistrados.current.clear()
+        alertasRegistradas.current = new WeakSet()
+        ultimoErrorUi.current = { ruta: '', momento: 0 }
+    }, [session?.user])
+
+    useEffect(() => {
+        const ruta = location.pathname
+        if (!session?.user || !rutasCriticas.has(ruta) || ruta === '/inicio' || ultimaRuta.current === ruta) return
+        ultimaRuta.current = ruta
+        authorizedFetch(token => registrarEventoInterfaz('navegacion', ruta, token)).catch(() => {
+            // La falta de Bitácora no debe generar bucles ni alterar la navegación original.
+        })
+    }, [authorizedFetch, location.pathname, session?.user])
+
+    useEffect(() => {
+        if (!session?.user || !rutasCriticas.has(location.pathname)) return
+        for (const notification of notifications) {
+            if (notification.type !== 'error' || erroresRegistrados.current.has(notification.id)) continue
+            erroresRegistrados.current.add(notification.id)
+            if (erroresRegistrados.current.size > 200) {
+                const masAntiguo = erroresRegistrados.current.values().next().value
+                erroresRegistrados.current.delete(masAntiguo)
+            }
+            registrarErrorUi(location.pathname)
+        }
+    }, [location.pathname, notifications, registrarErrorUi, session?.user])
+
+    useEffect(() => {
+        if (!session?.user || !rutasCriticas.has(location.pathname)) return undefined
+        const registrarAlerta = elemento => {
+            if (!(elemento instanceof HTMLElement) || elemento.getAttribute('role') !== 'alert' ||
+                !elemento.textContent?.trim() || alertasRegistradas.current.has(elemento)) return
+            alertasRegistradas.current.add(elemento)
+            registrarErrorUi(location.pathname)
+        }
+        const revisarNodo = nodo => {
+            if (!(nodo instanceof HTMLElement)) return
+            registrarAlerta(nodo)
+            nodo.querySelectorAll('[role="alert"]').forEach(registrarAlerta)
+        }
+        const observer = new MutationObserver(registros => {
+            for (const registro of registros) {
+                if (registro.type === 'characterData') {
+                    revisarNodo(registro.target.parentElement)
+                    continue
+                }
+                registro.addedNodes.forEach(revisarNodo)
+            }
+        })
+        observer.observe(document.body, { childList: true, characterData: true, subtree: true })
+        revisarNodo(document.body)
+        return () => observer.disconnect()
+    }, [location.pathname, registrarErrorUi, session?.user])
+
+    return null
+}
 
 function roleOf(user) {
     return String(user?.nombreRol || user?.idRol || '').trim().toLocaleUpperCase('es')
@@ -119,6 +204,8 @@ export default function AppRoutes() {
     const home = esEstudiante(session?.user) ? '/estudiante' : '/inicio'
 
     return (
+        <>
+        <AuditoriaInterfaz />
         <Routes>
             <Route path="/" element={<Navigate to={home} replace />} />
             <Route path="/login" element={<Login />} />
@@ -150,5 +237,6 @@ export default function AppRoutes() {
 
             <Route path="*" element={<Navigate to={home} replace />} />
         </Routes>
+        </>
     )
 }

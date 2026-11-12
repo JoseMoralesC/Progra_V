@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationContext'
+import { Modal } from '../../components/Modal'
 import {
     actualizarExpedientePropio,
     obtenerCantones,
@@ -59,6 +60,7 @@ export default function Expediente() {
     const [distritosCargadosPara, setDistritosCargadosPara] = useState('')
     const [editando, setEditando] = useState(false)
     const [guardando, setGuardando] = useState(false)
+    const [cambiosPendientes, setCambiosPendientes] = useState(null)
     const [errorCarga, setErrorCarga] = useState('')
     const [errores, setErrores] = useState({})
     const [intentoCarga, setIntentoCarga] = useState(0)
@@ -195,18 +197,24 @@ export default function Expediente() {
         setErrores(nuevosErrores)
         if (Object.keys(nuevosErrores).length) return
 
+        setCambiosPendientes({
+            telefonos,
+            provinciaId: Number(formulario.provinciaId),
+            cantonId: Number(formulario.cantonId),
+            distritoId: Number(formulario.distritoId),
+            otrasSenas: formulario.otrasSenas.trim()
+        })
+    }
+
+    async function confirmarGuardado() {
+        if (guardando || !cambiosPendientes) return
         setGuardando(true)
         try {
-            const actualizado = await authorizedFetch(token => actualizarExpedientePropio({
-                telefonos,
-                provinciaId: Number(formulario.provinciaId),
-                cantonId: Number(formulario.cantonId),
-                distritoId: Number(formulario.distritoId),
-                otrasSenas: formulario.otrasSenas.trim()
-            }, token))
+            const actualizado = await authorizedFetch(token => actualizarExpedientePropio(cambiosPendientes, token))
             setExpediente(actualizado)
             setFormulario(crearFormulario(actualizado))
             setEditando(false)
+            setCambiosPendientes(null)
             setErrores({})
             notify('Tu expediente se guardó correctamente.', 'success')
         } catch (error) {
@@ -338,7 +346,7 @@ export default function Expediente() {
                 {editando && (
                     <div className="profile-actions">
                         <button className="btn btn-primary" type="submit" disabled={guardando || cargandoCantones || cargandoDistritos}>
-                            {guardando ? 'Guardando…' : 'Guardar cambios'}
+                            Revisar cambios
                         </button>
                         <button className="btn btn-soft" type="button" disabled={guardando} onClick={cancelarEdicion}>
                             Cancelar
@@ -346,6 +354,20 @@ export default function Expediente() {
                     </div>
                 )}
             </form>
+            {cambiosPendientes && (
+                <Modal titulo="Confirmar actualización del expediente" ocupado={guardando}
+                    onCerrar={() => setCambiosPendientes(null)}>
+                    <p>Se guardarán tus teléfonos y dirección. Los datos personales permanecerán sin cambios.</p>
+                    <div className="profile-actions">
+                        <button className="btn btn-primary" type="button" onClick={confirmarGuardado} disabled={guardando}>
+                            {guardando ? 'Guardando…' : 'Confirmar y guardar'}
+                        </button>
+                        <button className="btn btn-soft" type="button" onClick={() => setCambiosPendientes(null)} disabled={guardando}>
+                            Volver al formulario
+                        </button>
+                    </div>
+                </Modal>
+            )}
         </>
     )
 }

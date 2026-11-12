@@ -10,7 +10,7 @@ const camposPerfil = [
 ]
 
 function Perfil() {
-    const { cargarPerfilPropio, actualizarNombrePerfil, cambiarContrasena } = useAuth()
+    const { cargarPerfilPropio, actualizarNombrePerfil, cambiarContrasena, cargarPoliticaContrasena } = useAuth()
     const { notify } = useNotifications()
     const [usuario, setUsuario] = useState(null)
     const [cargando, setCargando] = useState(true)
@@ -25,18 +25,27 @@ function Perfil() {
     const [confirmacionContrasena, setConfirmacionContrasena] = useState('')
     const [guardandoContrasena, setGuardandoContrasena] = useState(false)
     const [errorContrasena, setErrorContrasena] = useState('')
+    const [politicaContrasena, setPoliticaContrasena] = useState(null)
+    const [cargandoPolitica, setCargandoPolitica] = useState(true)
+    const [errorPolitica, setErrorPolitica] = useState('')
+    const [intentoPolitica, setIntentoPolitica] = useState(0)
 
-    function validarContrasena(valor) {
-        const caracteres = [...valor]
-        return caracteres.length >= 8
-            && /\p{Lu}/u.test(valor)
-            && /\p{Ll}/u.test(valor)
-            && /\p{Nd}/u.test(valor)
-            && /[\p{P}\p{S}]/u.test(valor)
+    function validarContrasena(valor, politica) {
+        const longitud = [...valor].length
+        if (longitud < politica.minLength || longitud > politica.maxLength) {
+            return `La contraseña debe tener entre ${politica.minLength} y ${politica.maxLength} caracteres.`
+        }
+        if (politica.requireUppercase && !/\p{Lu}/u.test(valor)) {
+            return 'La contraseña debe incluir al menos una letra mayúscula.'
+        }
+        if (politica.requireNumber && !/\p{Nd}/u.test(valor)) {
+            return 'La contraseña debe incluir al menos un número.'
+        }
+        return ''
     }
 
-    function superaLimiteBcrypt(valor) {
-        return new TextEncoder().encode(valor).length > 72
+    function superaLimiteBcrypt(valor, maxBcryptUtf8Bytes) {
+        return new TextEncoder().encode(valor).length > maxBcryptUtf8Bytes
     }
 
     async function cargar() {
@@ -61,6 +70,31 @@ function Perfil() {
             .finally(() => { if (activo) setCargando(false) })
         return () => { activo = false }
     }, [cargarPerfilPropio])
+
+    useEffect(() => {
+        let activo = true
+        setCargandoPolitica(true)
+        setPoliticaContrasena(null)
+        setErrorPolitica('')
+        cargarPoliticaContrasena()
+            .then(politica => {
+                if (!Number.isInteger(politica?.minLength) || !Number.isInteger(politica?.maxLength) ||
+                    politica.minLength < 1 || politica.maxLength < politica.minLength ||
+                    typeof politica.requireUppercase !== 'boolean' || typeof politica.requireNumber !== 'boolean' ||
+                    politica.maxBcryptUtf8Bytes !== 72) {
+                    throw new Error('El servicio devolvió una política de contraseña inválida.')
+                }
+                if (activo) setPoliticaContrasena(politica)
+            })
+            .catch(error => {
+                if (activo) {
+                    setPoliticaContrasena(null)
+                    setErrorPolitica(error.message || 'No fue posible cargar la política institucional de contraseña.')
+                }
+            })
+            .finally(() => { if (activo) setCargandoPolitica(false) })
+        return () => { activo = false }
+    }, [cargarPoliticaContrasena, intentoPolitica])
 
     if (cargando) return <section className="panel" role="status">Cargando tu perfil…</section>
     if (errorCarga || !usuario) return (
@@ -120,12 +154,17 @@ function Perfil() {
             setErrorContrasena('Ingresa tu contraseña actual.')
             return
         }
-        if (!validarContrasena(contrasenaNueva)) {
-            setErrorContrasena('La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.')
+        if (!politicaContrasena) {
+            setErrorContrasena('No se puede cambiar la contraseña sin cargar la política institucional vigente.')
             return
         }
-        if (superaLimiteBcrypt(contrasenaNueva)) {
-            setErrorContrasena('La nueva contraseña no puede superar 72 bytes en UTF-8 por el límite de BCrypt.')
+        const errorPoliticaContrasena = validarContrasena(contrasenaNueva, politicaContrasena)
+        if (errorPoliticaContrasena) {
+            setErrorContrasena(errorPoliticaContrasena)
+            return
+        }
+        if (superaLimiteBcrypt(contrasenaNueva, politicaContrasena.maxBcryptUtf8Bytes)) {
+            setErrorContrasena(`La contraseña no puede superar ${politicaContrasena.maxBcryptUtf8Bytes} bytes UTF-8 por el límite de BCrypt.`)
             return
         }
         if (contrasenaNueva !== confirmacionContrasena) {
@@ -152,6 +191,7 @@ function Perfil() {
                 // Mantiene el mensaje HTTP devuelto por la API.
             }
             if (error.status === 401) mensaje = 'La sesión expiró. Inicia sesión nuevamente.'
+            if (error.status === 503) mensaje = 'No fue posible obtener o aplicar la política institucional desde Parámetro. El cambio no se realizó; inténtalo de nuevo más tarde.'
             setErrorContrasena(mensaje)
             notify(mensaje, 'error')
         } finally {
@@ -217,7 +257,18 @@ function Perfil() {
         </section>
         <section className="panel" aria-labelledby="contrasena-heading">
             <h2 id="contrasena-heading">Cambiar contraseña</h2>
-            <p>Usa al menos 8 caracteres e incluye mayúsculas, minúsculas, números y un carácter especial. Máximo 72 bytes en UTF-8.</p>
+            {cargandoPolitica && <p role="status">Cargando la política institucional de contraseña…</p>}
+            {!cargandoPolitica && errorPolitica && <div className="status status-danger" role="alert">
+                <p>No fue posible cargar la política institucional desde Parámetro. El cambio de contraseña está bloqueado.</p>
+                <p>{errorPolitica}</p>
+                <button className="btn btn-primary" type="button" onClick={() => setIntentoPolitica(intento => intento + 1)}>
+                    Reintentar
+                </button>
+            </div>}
+            {politicaContrasena && <p>La contraseña debe tener entre {politicaContrasena.minLength} y {politicaContrasena.maxLength} caracteres
+                {politicaContrasena.requireUppercase ? ', incluir una mayúscula' : ''}
+                {politicaContrasena.requireNumber ? ', incluir un número' : ''}.
+                {' '}Máximo técnico de BCrypt: {politicaContrasena.maxBcryptUtf8Bytes} bytes UTF-8.</p>}
             <form onSubmit={guardarContrasena} noValidate>
                 <div className="form-grid">
                     <div className="field">
@@ -241,7 +292,7 @@ function Perfil() {
                 </div>
                 {errorContrasena && <p className="status status-danger" role="alert">{errorContrasena}</p>}
                 <div className="profile-actions">
-                    <button className="btn btn-primary" type="submit" disabled={guardandoContrasena}>
+                    <button className="btn btn-primary" type="submit" disabled={guardandoContrasena || cargandoPolitica || !politicaContrasena}>
                         {guardandoContrasena ? 'Actualizando…' : 'Actualizar contraseña'}
                     </button>
                 </div>

@@ -20,6 +20,10 @@ import org.springframework.web.server.ResponseStatusException;
 public class UsuarioService {
 
     private static final int MAX_BCRYPT_PASSWORD_BYTES = 72;
+    private static final String PARAMETRO_PASSMIN = "PASSMIN";
+    private static final String PARAMETRO_PASSMAX = "PASSMAX";
+    private static final String PARAMETRO_PASSMAY = "PASSMAY";
+    private static final String PARAMETRO_PASSNUM = "PASSNUM";
 
     private final UsuarioRepository usuarios;
     private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
@@ -157,10 +161,14 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre es requerido");
         }
         Usuario usuario = buscarO404(sujetoAutenticado);
+        String nombreAnterior = usuario.getNombre();
         usuario.setNombre(request.nombre().trim());
         UsuarioResponse actual = UsuarioResponse.desde(usuarios.saveAndFlush(usuario));
-        seguridad.registrarBitacoraConfirmada(bearerOriginal, sujetoAutenticado,
-                "Actualización del perfil propio. Campo modificado: nombre");
+        String descripcion = BitacoraFilter.descripcionCambio(
+                "Actualización del perfil propio",
+                java.util.Map.of("nombre", nombreAnterior),
+                java.util.Map.of("nombre", actual.nombre()));
+        seguridad.registrarBitacoraConfirmada(bearerOriginal, sujetoAutenticado, descripcion);
         BitacoraFilter.marcarRegistroConfirmado();
         return actual;
     }
@@ -174,7 +182,8 @@ public class UsuarioService {
                 || request.contrasenaNueva() == null || request.contrasenaNueva().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Completa ambas contraseñas");
         }
-        validarPoliticaContrasena(request.contrasenaNueva());
+        PoliticaContrasenaResponse politica = leerPoliticaContrasena();
+        validarPoliticaContrasena(request.contrasenaNueva(), politica);
         validarLimiteBcrypt(request.contrasenaNueva());
 
         Usuario usuario = buscarO404(sujetoAutenticado);
@@ -203,35 +212,78 @@ public class UsuarioService {
         }
     }
 
-    private void validarPoliticaContrasena(String contrasena) {
+    public PoliticaContrasenaResponse obtenerPoliticaContrasena(String usuarioAutenticado) {
+        if (usuarioAutenticado == null || usuarioAutenticado.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No hay una sesión autenticada");
+        }
+        return leerPoliticaContrasena();
+    }
+
+    private PoliticaContrasenaResponse leerPoliticaContrasena() {
+        int minimo = enteroParametro(PARAMETRO_PASSMIN);
+        int maximo = enteroParametro(PARAMETRO_PASSMAX);
+        boolean requiereMayuscula = booleanoParametro(PARAMETRO_PASSMAY);
+        boolean requiereNumero = booleanoParametro(PARAMETRO_PASSNUM);
+        if (minimo > maximo) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "La política institucional de contraseña tiene límites incompatibles");
+        }
+        return new PoliticaContrasenaResponse(minimo, maximo, requiereMayuscula,
+                requiereNumero, MAX_BCRYPT_PASSWORD_BYTES);
+    }
+
+    private int enteroParametro(String id) {
+        String valor = requerirParametro(id);
+        try {
+            int numero = Integer.parseInt(valor);
+            if (numero > 0) return numero;
+        } catch (NumberFormatException ignored) {
+            // Se informa como política incompleta o inválida, sin aplicar valores predeterminados.
+        }
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                "El parámetro institucional " + id + " no contiene un entero positivo válido");
+    }
+
+    private boolean booleanoParametro(String id) {
+        String valor = requerirParametro(id);
+        if ("true".equalsIgnoreCase(valor)) return true;
+        if ("false".equalsIgnoreCase(valor)) return false;
+        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                "El parámetro institucional " + id + " debe ser true o false");
+    }
+
+    private String requerirParametro(String id) {
+        Map<String, Object> parametro = datos.buscar("Parametro", "parametro", "id_parametro", id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                        "Falta el parámetro institucional requerido " + id));
+        String valor = cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.texto(parametro, "valor");
+        if (valor == null || valor.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "Falta el parámetro institucional requerido " + id);
+        }
+        return valor;
+    }
+
+    private void validarPoliticaContrasena(String contrasena, PoliticaContrasenaResponse politica) {
         int longitud = contrasena.codePointCount(0, contrasena.length());
         boolean mayuscula = contrasena.codePoints().anyMatch(c ->
                 Character.getType(c) == Character.UPPERCASE_LETTER);
-        boolean minuscula = contrasena.codePoints().anyMatch(c ->
-                Character.getType(c) == Character.LOWERCASE_LETTER);
         boolean numero = contrasena.codePoints().anyMatch(c ->
                 Character.getType(c) == Character.DECIMAL_DIGIT_NUMBER);
-        boolean especial = contrasena.codePoints().anyMatch(this::esCaracterEspecial);
-        if (longitud < 8 || !mayuscula || !minuscula || !numero || !especial) {
+        if (longitud < politica.minLength() || longitud > politica.maxLength()
+                || (politica.requireUppercase() && !mayuscula)
+                || (politica.requireNumber() && !numero)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, "
-                    + "una minúscula, un número y un carácter especial");
+                    mensajePoliticaInvalida(politica));
         }
     }
 
-    private boolean esCaracterEspecial(int caracter) {
-        int tipo = Character.getType(caracter);
-        return tipo == Character.CONNECTOR_PUNCTUATION
-                || tipo == Character.DASH_PUNCTUATION
-                || tipo == Character.START_PUNCTUATION
-                || tipo == Character.END_PUNCTUATION
-                || tipo == Character.INITIAL_QUOTE_PUNCTUATION
-                || tipo == Character.FINAL_QUOTE_PUNCTUATION
-                || tipo == Character.OTHER_PUNCTUATION
-                || tipo == Character.MATH_SYMBOL
-                || tipo == Character.CURRENCY_SYMBOL
-                || tipo == Character.MODIFIER_SYMBOL
-                || tipo == Character.OTHER_SYMBOL;
+    private String mensajePoliticaInvalida(PoliticaContrasenaResponse politica) {
+        StringBuilder mensaje = new StringBuilder("La nueva contraseña debe tener entre ")
+                .append(politica.minLength()).append(" y ").append(politica.maxLength()).append(" caracteres");
+        if (politica.requireUppercase()) mensaje.append(", al menos una mayúscula");
+        if (politica.requireNumber()) mensaje.append(", al menos un número");
+        return mensaje.toString();
     }
 
     @Transactional

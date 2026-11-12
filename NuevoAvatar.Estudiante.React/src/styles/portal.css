@@ -755,7 +755,7 @@ body.dark .status-danger {
 @media (max-width: 600px) {
     .stage {
         padding: 10px;
-        grid-template-columns: var(--sidebar-width, 230px) minmax(0, 1fr);
+        grid-template-columns: 62px minmax(0, 1fr);
         gap: 9px;
     }
 
@@ -775,12 +775,35 @@ body.dark .status-danger {
         padding: 18px 7px;
     }
 
+    .head-toggle {
+        display: none;
+    }
+
+    .header-heading,
+    .top-right,
+    .user,
+    .page-head > div {
+        min-width: 0;
+    }
+
+    .header-heading {
+        overflow-wrap: anywhere;
+    }
+
     .content {
         gap: 12px;
     }
 
     .topbar {
+        align-items: flex-start;
         padding: 8px 2px 12px;
+        min-width: 0;
+    }
+
+    .top-right {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
     }
 
     .user-info {
@@ -791,6 +814,12 @@ body.dark .status-danger {
         align-items: flex-start;
         flex-direction: column;
         padding: 18px;
+    }
+
+    .page-head .btn,
+    .profile-actions .btn {
+        max-width: 100%;
+        white-space: normal;
     }
 
     h1 {
@@ -806,6 +835,30 @@ body.dark .status-danger {
     .card {
         padding: 15px;
         border-radius: 20px;
+    }
+
+    .table-wrap,
+    .instituciones-tabla,
+    .ramses-integradas .panel,
+    .notas-integradas .panel {
+        max-width: 100%;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+    }
+
+    .page-content > *,
+    .page-content .panel,
+    .page-content .card {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .form-grid > *,
+    .field,
+    .field input,
+    .field select,
+    .field textarea {
+        min-width: 0;
     }
 }
 

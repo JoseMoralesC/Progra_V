@@ -14,6 +14,7 @@ import {
     iniciarSesion,
     obtenerMenu,
     obtenerPerfil,
+    obtenerPoliticaContrasena as obtenerPoliticaContrasenaApi,
     obtenerSesion,
     renovarSesion
 } from '../services/api'
@@ -21,14 +22,24 @@ import {
 const AuthContext = createContext(null)
 const REFRESH_EARLY_MS = 30_000
 const STORAGE_KEY = 'nuevo-avatar.sesion'
+const LOGOUT_EPOCH_KEY = 'nuevo-avatar.auth.logout-epoch'
 const PERFILES = ['ADMINISTRADOR', 'PROFESOR', 'ESTUDIANTE']
+
+function logoutEpochActual() {
+    try { return localStorage.getItem(LOGOUT_EPOCH_KEY) || '' } catch { return '' }
+}
+
+function nuevoLogoutEpoch() {
+    return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`
+}
 
 function guardarTokens(session) {
     try {
         if (!session) sessionStorage.removeItem(STORAGE_KEY)
         else sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
             access_token: session.accessToken, refresh_token: session.refreshToken,
-            usuarioID: session.email, expires_in: new Date(session.expiresAt).toISOString()
+            usuarioID: session.email, expires_in: new Date(session.expiresAt).toISOString(),
+            logoutEpoch: session.logoutEpoch || ''
         }))
     } catch { /* La sesión sigue disponible en memoria si el almacenamiento está bloqueado. */ }
 }
@@ -77,6 +88,7 @@ export function AuthProvider({ children }) {
     const sessionVersion = useRef(0)
     const refreshPromise = useRef(null)
     const expiryTimer = useRef(null)
+    const pendingLogoutEpoch = useRef(null)
 
     const updateSession = useCallback(value => {
         sessionRef.current = value
@@ -89,9 +101,26 @@ export function AuthProvider({ children }) {
         if (expiryTimer.current) window.clearTimeout(expiryTimer.current)
         expiryTimer.current = null
         refreshPromise.current = null
+        pendingLogoutEpoch.current = null
         updateSession(null)
         setEstado('sin-sesion')
     }, [updateSession])
+
+    useEffect(() => {
+        function onStorage(event) {
+            if (event.key !== LOGOUT_EPOCH_KEY || !event.newValue ||
+                event.newValue !== logoutEpochActual()) return
+
+            const currentEpoch = sessionRef.current?.logoutEpoch ?? pendingLogoutEpoch.current
+            if (currentEpoch == null || currentEpoch === event.newValue) return
+
+            clearSession()
+            setMensaje('La sesión se cerró en otra pestaña. Inicia sesión nuevamente.')
+        }
+
+        window.addEventListener('storage', onStorage)
+        return () => window.removeEventListener('storage', onStorage)
+    }, [clearSession])
 
     const refresh = useCallback(() => {
         if (refreshPromise.current) return refreshPromise.current
@@ -171,6 +200,8 @@ export function AuthProvider({ children }) {
         }
         clearSession()
         setMensaje('')
+        const loginLogoutEpoch = logoutEpochActual()
+        pendingLogoutEpoch.current = loginLogoutEpoch
         const version = sessionVersion.current
         let tokens
         try {
@@ -189,6 +220,7 @@ export function AuthProvider({ children }) {
             accessToken: tokens.access_token,
             refreshToken: tokens.refresh_token,
             expiresAt: expirationTime(tokens.expires_in),
+            logoutEpoch: loginLogoutEpoch,
             user: null
         }
         updateSession(next)
@@ -201,6 +233,7 @@ export function AuthProvider({ children }) {
                 user: { ...user, email: user.email || next.email, usuarioID: user.usuarioID || next.email }
             }
             updateSession(next)
+            pendingLogoutEpoch.current = null
             setEstado('autenticado')
             return next
         } catch (error) {
@@ -223,12 +256,16 @@ export function AuthProvider({ children }) {
                     clearSession(); return
                 }
                 const version = sessionVersion.current
+                const savedLogoutEpoch = saved.logoutEpoch ?? ''
+                pendingLogoutEpoch.current = savedLogoutEpoch
                 updateSession({ email: saved.usuarioID, accessToken: saved.access_token,
-                    refreshToken: saved.refresh_token, expiresAt: Date.parse(saved.expires_in), user: null })
+                    refreshToken: saved.refresh_token, expiresAt: Date.parse(saved.expires_in),
+                    logoutEpoch: savedLogoutEpoch, user: null })
                 try {
                     const user = await authorizedFetch(identidad)
                     if (version !== sessionVersion.current) return
                     updateSession({ ...sessionRef.current, user: { ...user, email: user.email || saved.usuarioID } })
+                    pendingLogoutEpoch.current = null
                     setEstado('autenticado'); setMensaje('')
                 } catch (error) {
                     if (version !== sessionVersion.current) return
@@ -254,6 +291,11 @@ export function AuthProvider({ children }) {
 
     const logout = useCallback(() => {
         const accessToken = sessionRef.current?.accessToken
+        if (accessToken) {
+            try { localStorage.setItem(LOGOUT_EPOCH_KEY, nuevoLogoutEpoch()) } catch {
+                // La limpieza local sigue funcionando si el almacenamiento compartido está bloqueado.
+            }
+        }
         clearSession()
         if (!accessToken) return Promise.resolve()
         return cerrarSesionApi(accessToken).catch(() => {
@@ -273,6 +315,8 @@ export function AuthProvider({ children }) {
     const cambiarContrasena = useCallback((contrasenaActual, contrasenaNueva) =>
         authorizedFetch(accessToken => cambiarContrasenaApi(contrasenaActual, contrasenaNueva, accessToken)),
     [authorizedFetch])
+    const cargarPoliticaContrasena = useCallback(() =>
+        authorizedFetch(obtenerPoliticaContrasenaApi), [authorizedFetch])
     const cargarPerfilPropio = useCallback(async () => {
         const perfil = await authorizedFetch(obtenerPerfil)
         if (!perfil?.email || !perfil?.nombre || !perfil?.idRol) {
@@ -302,8 +346,10 @@ export function AuthProvider({ children }) {
         authorizedFetch,
         actualizarNombrePerfil,
         cambiarContrasena,
+        cargarPoliticaContrasena,
         cargarPerfilPropio
-    }), [session, estado, mensaje, login, logout, authorizedFetch, actualizarNombrePerfil, cambiarContrasena, cargarPerfilPropio])
+    }), [session, estado, mensaje, login, logout, authorizedFetch, actualizarNombrePerfil,
+        cambiarContrasena, cargarPoliticaContrasena, cargarPerfilPropio])
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
