@@ -29,3 +29,21 @@ Evidencias:
 - `ADM7-modulos-modal-real.png`.
 
 Esta evidencia usa Autenticación, Usuario, Gateway y Bitácora del flujo integrado. Únicamente la base de Módulo se ejecuta localmente como alternativa temporal hasta que la migración se aplique en el servidor compartido.
+
+## Alternativa local para ADM22
+
+También preparé `PrograV_Notificacion` en `.\SQLEXPRESS` usando el script oficial `db/por_servicio/Notificacion.sql`. El servicio Notificación se ejecutó contra esa base local, mientras Autenticación, Parámetro, Bitácora y Gateway conservaron el flujo integrado.
+
+Resultados comprobados:
+
+- Menú con permiso ADM22: HTTP `200`.
+- `GET /gateway/fin/notificar/historial`: HTTP `200`.
+- Historial persistente disponible, inicialmente con cero registros.
+- Pantalla ADM22 y modal de composición accesibles mediante el Gateway.
+
+Evidencias:
+
+- `ADM22-notificaciones-historial-real.png`.
+- `ADM22-notificaciones-modal-real.png`.
+
+No se realizó un envío SMTP real. Esa prueba requiere revisar los parámetros `MAILHOST`, `MAILPORT`, `MAILUSER`, `MAILPASS`, `MAILFROM` y `MAILTLS`, además de confirmar un destinatario autorizado. Ningún secreto aparece en las capturas.
