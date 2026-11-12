@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { cerrarBienvenida } from './interacciones-administracion'
 
 test('ADM3 incluye facturas pendientes de períodos cerrados en el indicador', async ({ page }) => {
     let visitas = 0
@@ -36,13 +37,15 @@ test('ADM3 incluye facturas pendientes de períodos cerrados en el indicador', a
         await route.fulfill({ contentType: 'application/json', body: JSON.stringify(respuestas[url.pathname]) })
     })
     await page.goto('/inicio')
+    await cerrarBienvenida(page)
     await expect(page.getByRole('heading', { name: 'Bienvenido, Ana' })).toBeVisible()
     const metricas = page.getByRole('region', { name: 'Indicadores administrativos' })
     await expect(metricas.getByRole('heading', { name: 'Usuarios' }).locator('..')).toContainText('2')
     await expect(metricas.getByRole('heading', { name: 'Períodos activos' }).locator('..')).toContainText('1')
     await expect(metricas.getByRole('heading', { name: 'Facturas pendientes' }).locator('..')).toContainText('2')
     await expect(page.getByText('Aviso académico', { exact: false })).toBeVisible()
-    await expect(page.getByRole('region', { name: 'Bitácoras recientes' })).toContainText('Consulta · Usuarios')
+    await expect(page.getByRole('region', { name: 'Bitácoras recientes' }).getByRole('cell', { name: 'Consulta', exact: true })).toBeVisible()
+    await expect(page.getByRole('region', { name: 'Bitácoras recientes' }).getByRole('cell', { name: 'Usuarios', exact: true })).toBeVisible()
     expect(visitas).toBe(1)
     await expect(page.getByRole('link', { name: 'Ayuda/soporte' })).toHaveAttribute('href', 'mailto:soportenuevoavatar@gmail.com')
     await expect(page.getByRole('link', { name: 'Mi perfil' })).toHaveAttribute('href', '/perfil')
@@ -66,6 +69,7 @@ test('ADM3 presenta los grupos activos del profesor', async ({ page }) => {
         await route.fulfill({ contentType: 'application/json', body: JSON.stringify(respuestas[path]) })
     })
     await page.goto('/inicio')
+    await cerrarBienvenida(page)
     await expect(page.getByText('Grupo 2: Programación V', { exact: true })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Consultar y registrar notas' })).toHaveAttribute('href', '/notas')
     await expect(page.getByText('No hay notificaciones recientes.')).toBeVisible()
@@ -96,6 +100,7 @@ test('ADM3 informa el fallo de auditoría y de grupos sin ocultar soporte', asyn
         await route.fulfill({ contentType: 'application/json', body: JSON.stringify(respuestas[url.pathname]) })
     })
     await page.goto('/inicio')
+    await cerrarBienvenida(page)
     await expect(page.getByRole('alert').filter({ hasText: 'No se pudo registrar la visualización del dashboard.' })).toBeVisible()
     await expect(page.getByRole('alert').filter({ hasText: 'El servicio no está disponible.' })).toHaveCount(3)
     await expect(page.getByText('Cargando grupos…')).toHaveCount(0)
@@ -126,9 +131,10 @@ test('ADM3 muestra al profesor los resúmenes del servidor sin controles de filt
         await route.fulfill({ contentType: 'application/json', body: JSON.stringify(respuestas[url.pathname]) })
     })
     await page.goto('/inicio')
+    await cerrarBienvenida(page)
     const bitacoras = page.getByRole('region', { name: 'Bitácoras recientes' })
     const notificaciones = page.getByRole('region', { name: 'Notificaciones recientes' })
-    await expect(bitacoras.getByRole('listitem')).toHaveCount(10)
+    await expect(bitacoras.locator('tbody tr')).toHaveCount(10)
     await expect(notificaciones).toContainText('Aviso para el profesor')
     await expect(bitacoras.locator('input, select, button')).toHaveCount(0)
     await expect(notificaciones.locator('input, select, button')).toHaveCount(0)

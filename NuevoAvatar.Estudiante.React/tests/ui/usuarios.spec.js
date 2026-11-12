@@ -1,12 +1,13 @@
 import { test, expect } from '@playwright/test'
+import { cerrarBienvenida, accionar } from './interacciones-administracion'
 
 test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) => {
     const usuarios = [
-        { email: 'ana@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '101',
+        { email: 'ana@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '101230456',
             nombre: 'Ana Mora', idRol: 'ROL_ESTUDIANTE_01', fechaModificacion: '2026-11-05T12:00:00Z' },
-        { email: 'beto@cuc.ac.cr', tipoIdentificacion: 'Cédula', identificacion: '102',
+        { email: 'beto@cuc.ac.cr', tipoIdentificacion: 'Cédula', identificacion: '202340567',
             nombre: 'Beto Rojas', idRol: 'ROL_DOCENTE_02', fechaModificacion: '2026-11-05T12:00:00Z' },
-        { email: 'carla@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '103',
+        { email: 'carla@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '303450678',
             nombre: 'Carla Ruiz', idRol: 'ROL_ESTUDIANTE_01', fechaModificacion: '2026-11-05T12:00:00Z' }
     ]
     const operaciones = []
@@ -48,6 +49,8 @@ test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) =>
     })
 
     await page.goto('/usuarios')
+
+    await cerrarBienvenida(page)
     await expect(page.getByRole('row').filter({ hasText: 'ana@cuc.cr' })).toBeVisible()
     await expect(page.getByText('Página 1 de 2')).toBeVisible()
     await page.getByRole('button', { name: 'Siguiente' }).click()
@@ -67,8 +70,8 @@ test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) =>
     await page.getByRole('button', { name: 'Nuevo usuario' }).click()
     await expect(page.getByRole('dialog', { name: 'Nuevo usuario' })).toBeVisible()
     await page.getByLabel('Correo', { exact: true }).fill('profesor@cuc.ac.cr')
-    await page.getByLabel('Tipo de identificación', { exact: true }).last().fill('Cédula')
-    await page.getByLabel('Identificación', { exact: true }).last().fill('202')
+    await page.getByLabel('Tipo de identificación', { exact: true }).last().selectOption('Cédula')
+    await page.getByLabel('Identificación', { exact: true }).last().fill('404560789')
     await page.getByLabel('Nombre', { exact: true }).last().fill('Luis Pérez')
     await page.getByLabel('Rol', { exact: true }).last().selectOption('ROL_DOCENTE_02')
     await page.getByLabel('Contraseña', { exact: true }).fill('clave-de-prueba')
@@ -77,14 +80,14 @@ test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) =>
     expect(operaciones[0].datos.idRol).toBe('ROL_DOCENTE_02')
     expect(operaciones[0].datos.contrasena).toBe('clave-de-prueba')
 
-    await page.getByRole('row').filter({ hasText: 'profesor@cuc.ac.cr' }).getByRole('button', { name: 'Editar' }).click()
+    await accionar(page, page.getByRole('row').filter({ hasText: 'profesor@cuc.ac.cr' }), 'Editar')
     await expect(page.getByRole('dialog', { name: 'Editar usuario' })).toBeVisible()
     await page.getByLabel('Nombre', { exact: true }).last().fill('Luis Morales')
     await page.getByRole('button', { name: 'Guardar' }).click()
     expect(operaciones[1].datos).not.toHaveProperty('contrasena')
     await expect(page.getByRole('row').filter({ hasText: 'Luis Morales' })).toBeVisible()
-    await page.getByRole('row').filter({ hasText: 'Luis Morales' }).getByRole('button', { name: 'Detalle' }).click()
-    await expect(page.getByRole('dialog', { name: 'Detalle de usuario' })).toContainText('202')
+    await accionar(page, page.getByRole('row').filter({ hasText: 'Luis Morales' }), 'Detalle')
+    await expect(page.getByRole('dialog', { name: 'Detalle de usuario' })).toContainText('404560789')
     await page.getByRole('button', { name: 'Cerrar', exact: true }).click()
     await expect(page.getByRole('dialog')).toHaveCount(0)
     expect(operaciones.at(-1).method).toBe('GET')

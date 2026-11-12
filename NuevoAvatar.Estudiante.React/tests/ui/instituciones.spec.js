@@ -1,4 +1,17 @@
 import { test, expect } from '@playwright/test'
+import { cerrarBienvenida, accionar } from './interacciones-administracion'
+
+test('ADM8 informa la dependencia caída y permite volver a consultar', async ({ page }) => {
+    await preparar(page)
+    await page.route('**/gateway/admin/institucion', route => route.fulfill({ status: 503, json: { mensaje: 'Servicio no disponible' } }))
+    await page.goto('/instituciones')
+    await cerrarBienvenida(page)
+    await expect(page.getByRole('alert')).toBeVisible()
+    await expect(page.getByText('Colegio Central', { exact: true })).toHaveCount(0)
+    await page.unroute('**/gateway/admin/institucion')
+    await page.getByRole('button', { name: 'Buscar', exact: true }).click()
+    await expect(page.getByText('Colegio Central', { exact: true })).toBeVisible()
+})
 
 async function preparar(page, conPermiso = true) {
     const registros = [
@@ -51,6 +64,7 @@ async function preparar(page, conPermiso = true) {
 test('ADM8 permite buscar y mantener instituciones desde la sesión', async ({ page }) => {
     const llamadas = await preparar(page)
     await page.goto('/instituciones')
+    await cerrarBienvenida(page)
     await expect(page.locator('.page-head').getByRole('heading', { name: 'Instituciones' })).toBeVisible()
     await expect(page.getByRole('row')).toHaveCount(3)
     await page.getByRole('button', { name: 'Siguiente' }).click()
@@ -68,10 +82,11 @@ test('ADM8 permite buscar y mantener instituciones desde la sesión', async ({ p
     await page.getByLabel('Buscar por nombre').fill('Nuevo')
     await page.getByRole('button', { name: 'Buscar' }).click()
     await expect(page.getByText('Instituto Nuevo')).toBeVisible()
-    await page.getByRole('button', { name: 'Editar' }).click()
+    await accionar(page, page, 'Editar')
     await expect(page.getByRole('dialog', { name: 'Editar institución' })).toBeVisible()
     await page.getByLabel('Nombre', { exact: true }).fill('Instituto Mejorado')
     await page.getByRole('button', { name: 'Guardar' }).click()
+    await expect(page.getByRole('status').filter({ hasText: 'Institución guardada' })).toBeVisible()
     await page.getByLabel('Buscar por nombre').fill('Mejorado')
     await page.getByRole('button', { name: 'Buscar' }).click()
     await expect(page.getByText('Instituto Mejorado')).toBeVisible()
@@ -81,7 +96,8 @@ test('ADM8 muestra dependencia y no abre la pantalla sin permiso', async ({ page
     await preparar(page)
     page.on('dialog', dialog => dialog.accept())
     await page.goto('/instituciones')
-    await page.getByRole('row').filter({ hasText: 'Instituto Norte' }).getByRole('button', { name: 'Eliminar' }).click()
+    await cerrarBienvenida(page)
+    await accionar(page, page.getByRole('row').filter({ hasText: 'Instituto Norte' }), 'Eliminar')
     await page.getByRole('dialog').getByRole('button', { name: 'Sí', exact: true }).click()
     await expect(page.getByRole('alert')).toContainText('La institución tiene carreras relacionadas')
     await preparar(page, false)
@@ -94,6 +110,7 @@ test('ADM8 muestra dependencia y no abre la pantalla sin permiso', async ({ page
 test('ADM8 mantiene el listado detrás del modal, valida y cancela sin guardar', async ({ page }) => {
     const llamadas = await preparar(page)
     await page.goto('/instituciones')
+    await cerrarBienvenida(page)
     const nuevo = page.getByRole('button', { name: 'Nueva institución' })
     await nuevo.click()
     const modal = page.getByRole('dialog', { name: 'Nueva institución' })

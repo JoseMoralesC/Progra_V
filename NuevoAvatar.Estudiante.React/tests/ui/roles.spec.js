@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { cerrarBienvenida, accionar } from './interacciones-administracion'
 
 test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', async ({ page }) => {
     const guardados = []
@@ -48,6 +49,8 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     })
 
     await page.goto('/roles')
+
+    await cerrarBienvenida(page)
     const listado = page.getByRole('region', { name: 'Listado de roles' })
     await expect(listado.getByText('ROL_ADMIN', { exact: true })).toBeVisible()
     await listado.getByRole('button', { name: 'Siguiente' }).click()
@@ -62,7 +65,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     await expect(profesor).not.toBeChecked()
     await admin.uncheck()
     await profesor.check()
-    await permisos.getByRole('button', { name: 'Cerrar' }).click()
+    await permisos.getByRole('button', { name: 'Cerrar', exact: true }).click()
     await expect(permisos).toHaveCount(0)
     expect(guardados).toEqual([])
     await page.getByRole('button', { name: 'Permisos de menú' }).click()
@@ -71,7 +74,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     await admin.uncheck()
     await profesor.check()
     await permisos.getByRole('button', { name: 'Guardar ADM8' }).click()
-    await expect(permisos.getByRole('button', { name: 'Cerrar' })).toBeDisabled()
+    await expect(permisos.getByRole('button', { name: 'Cerrar', exact: true })).toBeDisabled()
     await expect(admin).toBeDisabled()
     await page.keyboard.press('Escape')
     await expect(permisos).toBeVisible()
@@ -89,7 +92,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     await expect(admin).not.toBeChecked()
     await expect(profesor).toBeChecked()
     expect(guardados).toEqual([['ROL_DOCENTE']])
-    await permisos.getByRole('button', { name: 'Cerrar' }).click()
+    await permisos.getByRole('button', { name: 'Cerrar', exact: true }).click()
     await page.getByRole('button', { name: 'Nuevo rol' }).click()
     const nuevo = page.getByRole('dialog', { name: 'Nuevo rol' })
     await expect(nuevo).toBeVisible()
@@ -98,7 +101,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     await nuevo.getByRole('button', { name: 'Guardar', exact: true }).click()
     await expect(nuevo).toHaveCount(0)
     await expect(listado.getByText('Consulta', { exact: true })).toBeVisible()
-    await listado.getByRole('button', { name: 'Editar' }).click()
+    await accionar(page, listado, 'Editar')
     const editar = page.getByRole('dialog', { name: 'Editar rol' })
     await expect(editar.getByLabel('Nombre', { exact: true })).toHaveValue('Consulta')
     await editar.getByLabel('Nombre', { exact: true }).fill('Consulta General')

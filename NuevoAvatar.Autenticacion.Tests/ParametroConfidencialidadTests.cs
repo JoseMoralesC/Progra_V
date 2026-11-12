@@ -39,6 +39,26 @@ public class ParametroConfidencialidadTests
         Assert.DoesNotContain("********", bitacora.UltimaDescripcion);
     }
 
+    [Fact]
+    public async Task ParametroNormalConservaDetalleDeCambiosEnBitacora()
+    {
+        var servicio = new ParametrosFalsos(null);
+        var bitacora = new BitacoraFalsa();
+        var controller = CrearController(servicio, bitacora);
+
+        await controller.Crear(new Parametro { IdParametro = "TAMPAG", Valor = "10" });
+        Assert.Contains("\"Valor\":\"10\"", bitacora.UltimaDescripcion);
+
+        await controller.Modificar("TAMPAG", new Parametro { IdParametro = "TAMPAG", Valor = "15" });
+        Assert.Contains("Anterior:", bitacora.UltimaDescripcion);
+        Assert.Contains("\"Valor\":\"10\"", bitacora.UltimaDescripcion);
+        Assert.Contains("Actual:", bitacora.UltimaDescripcion);
+        Assert.Contains("\"Valor\":\"15\"", bitacora.UltimaDescripcion);
+
+        await controller.Eliminar("TAMPAG");
+        Assert.Contains("\"Valor\":\"15\"", bitacora.UltimaDescripcion);
+    }
+
     private static ParametroController CrearController(IParametroService servicio, IBitacoraService bitacora) =>
         new(servicio, bitacora)
         {

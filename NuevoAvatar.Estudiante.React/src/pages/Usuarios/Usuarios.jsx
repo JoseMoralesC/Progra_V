@@ -17,6 +17,8 @@ export function Usuarios({ cliente }) {
     const [aplicados, setAplicados] = useState(filtrosVacios)
     const [tamano, setTamano] = useState(15)
     const [pagina, setPagina] = useState(0)
+    const [orden, setOrden] = useState('email')
+    const [ascendente, setAscendente] = useState(true)
     const [estado, setEstado] = useState('Cargando usuarios…')
     const [error, setError] = useState('')
     const [aviso, setAviso] = useState('')
@@ -57,9 +59,14 @@ export function Usuarios({ cliente }) {
     const filtrados = usuarios.filter(item =>
         (!aplicados.dominio || item.email.toLowerCase().endsWith(`@${aplicados.dominio}`)) &&
         (!aplicados.rol || item.idRol === aplicados.rol))
-    const totalPaginas = Math.max(1, Math.ceil(filtrados.length / tamano))
+    function comparar(a, b) {
+        const valor = item => String(orden === 'idRol' ? roles.find(rol => rol.idRol === item.idRol)?.nombreRol || item.idRol : item[orden] || '')
+        return (ascendente ? 1 : -1) * valor(a).localeCompare(valor(b), 'es', { sensitivity: 'base' })
+    }
+    const ordenados = [...filtrados].sort(comparar)
+    const totalPaginas = Math.max(1, Math.ceil(ordenados.length / tamano))
     const paginaActual = Math.min(pagina, totalPaginas - 1)
-    const visibles = filtrados.slice(paginaActual * tamano, (paginaActual + 1) * tamano)
+    const visibles = ordenados.slice(paginaActual * tamano, (paginaActual + 1) * tamano)
     const nombreRol = id => roles.find(item => item.idRol === id)?.nombreRol || id
     const opcionesTipoIdentificacion = useMemo(() => {
         const opciones = new Set(tiposIdentificacion)
@@ -73,6 +80,12 @@ export function Usuarios({ cliente }) {
         setAplicados(filtros)
         setAviso('')
         await cargar(filtros)
+    }
+
+    function ordenar(campo) {
+        if (orden === campo) setAscendente(actual => !actual)
+        else { setOrden(campo); setAscendente(true) }
+        setPagina(0)
     }
 
     function abrir(usuario = null) {
@@ -118,7 +131,7 @@ export function Usuarios({ cliente }) {
             setAplicados(filtrosVacios)
             const lista = await cargar(filtrosVacios)
             if (lista) {
-                const posicion = lista.findIndex(item => item.email === datos.email)
+                const posicion = [...lista].sort(comparar).findIndex(item => item.email === datos.email)
                 setPagina(Math.floor(Math.max(0, posicion) / tamano))
                 setAviso('Usuario guardado correctamente.')
             }
@@ -156,8 +169,10 @@ export function Usuarios({ cliente }) {
             {aviso && <p role="status" className="aviso">{aviso}</p>}
             {estado && <p role="status">{estado}</p>}
             {!estado && <div className="instituciones-tabla"><table><thead><tr>
-                {['Email (ID)', 'Tipo de identificación', 'Identificación', 'Nombre', 'Rol']
-                    .map(titulo => <th key={titulo} scope="col">{titulo}</th>)}
+                {[['email', 'Email (ID)'], ['tipoIdentificacion', 'Tipo de identificación'], ['identificacion', 'Identificación'], ['nombre', 'Nombre'], ['idRol', 'Rol']]
+                    .map(([campo, titulo]) => <th key={campo} scope="col" aria-sort={orden === campo ? (ascendente ? 'ascending' : 'descending') : 'none'}>
+                        <button type="button" className="btn btn-soft" onClick={() => ordenar(campo)}>{titulo}</button>
+                    </th>)}
                 <th>Acciones</th></tr></thead><tbody>{visibles.map(item => <tr key={item.email}>
                     <td>{item.email}</td><td>{item.tipoIdentificacion}</td><td>{item.identificacion}</td><td>{item.nombre}</td><td>{nombreRol(item.idRol)}</td>
                     <td><RowActionsMenu rowLabel={item.email} actions={[
