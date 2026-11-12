@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f2476cd0-5e46-4ed9-9b4e-e876e5056f20" name="Personal@TACHER-THR 2026-11-12 00:02:50" runUser="TACHER-THR\CodexSandboxOffline" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-12T00:02:50.3738383-06:00" queuing="2026-11-12T00:02:50.3738385-06:00" start="2026-11-12T00:02:45.6229572-06:00" finish="2026-11-12T00:02:50.5096850-06:00" />
+  <TestSettings name="default" id="bfcd8abd-7df9-4503-b00c-016cb4665454">
+    <Deployment runDeploymentRoot="Personal_TACHER-THR_2026-11-12_00_02_50" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="f3a822e2-12ab-43fc-a087-04586cd2dae1" testId="7e71761b-14e1-624d-bf3c-99c52d35dd49" testName="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 13, nombre: &quot;Programación&quot;)" computerName="TACHER-THR" duration="00:00:00.0000156" startTime="2026-11-12T00:02:50.3446216-06:00" endTime="2026-11-12T00:02:50.3446217-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f3a822e2-12ab-43fc-a087-04586cd2dae1" />
+    <UnitTestResult executionId="00caf911-bd3e-4e54-b1d4-7a820a3c3946" testId="8187fbc5-617f-67f0-137b-b7ebdee8d4c4" testName="PeriodoServiceTest.ContratoActualPermiteFechasIguales" computerName="TACHER-THR" duration="00:00:00.0001959" startTime="2026-11-12T00:02:50.3441191-06:00" endTime="2026-11-12T00:02:50.3441193-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00caf911-bd3e-4e54-b1d4-7a820a3c3946" />
+    <UnitTestResult executionId="e5f2587f-3e1a-48f3-a40b-3f45244a2fa0" testId="8fd107ea-cd0e-bdae-2e3a-74f9c1b5979d" testName="CursoAuditoriaTest.AltaConservaElRegistroPersistidoEnJson" computerName="TACHER-THR" duration="00:00:00.0020867" startTime="2026-11-12T00:02:50.4220601-06:00" endTime="2026-11-12T00:02:50.4220605-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e5f2587f-3e1a-48f3-a40b-3f45244a2fa0" />
+    <UnitTestResult executionId="cbb8df09-607e-4e7d-8027-70c3c8b6c10d" testId="c1c8590c-d11a-6386-6a0b-c3026781d69c" testName="PeriodoReglasTest.EstadoSeDerivaDeFechas" computerName="TACHER-THR" duration="00:00:00.0021602" startTime="2026-11-12T00:02:50.3739003-06:00" endTime="2026-11-12T00:02:50.3739007-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cbb8df09-607e-4e7d-8027-70c3c8b6c10d" />
+    <UnitTestResult executionId="ca2d255a-5338-4890-b73f-502cfb794b2a" testId="07d83e60-2868-2c77-37ce-07e7f2560b41" testName="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 0, nombre: &quot;Programación&quot;)" computerName="TACHER-THR" duration="00:00:00.0004651" startTime="2026-11-12T00:02:50.3444443-06:00" endTime="2026-11-12T00:02:50.3444445-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ca2d255a-5338-4890-b73f-502cfb794b2a" />
+    <UnitTestResult executionId="53009123-59df-4edc-85ff-f67dd5c44d85" testId="85b07fd4-380d-aa48-98d5-d8cfd92bbfb8" testName="NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 1, nivel: 13)" computerName="TACHER-THR" duration="00:00:00.0004940" startTime="2026-11-12T00:02:50.1535621-06:00" endTime="2026-11-12T00:02:50.1535623-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="53009123-59df-4edc-85ff-f67dd5c44d85" />
+    <UnitTestResult executionId="677ac427-c1eb-4f29-82d5-fd60cc15d17f" testId="8049206b-1fa7-7ae1-dad4-1d9eef556840" testName="NuevoAvatar.Academico.Tests.CursoFiltrosTest.CombinaCarreraYNivelEnRepositorio" computerName="TACHER-THR" duration="00:00:00.1637963" startTime="2026-11-12T00:02:50.3099635-06:00" endTime="2026-11-12T00:02:50.3099638-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="677ac427-c1eb-4f29-82d5-fd60cc15d17f" />
+    <UnitTestResult executionId="3deb2604-e4b4-46b4-a725-b886c3630b85" testId="aa6533a6-9881-3c0e-949f-048d2000fa28" testName="CursoAuditoriaTest.EliminacionConservaElRegistroEliminado" computerName="TACHER-THR" duration="00:00:00.7652918" startTime="2026-11-12T00:02:50.4061728-06:00" endTime="2026-11-12T00:02:50.4061731-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3deb2604-e4b4-46b4-a725-b886c3630b85" />
+    <UnitTestResult executionId="6af12dc6-8d10-4d6a-a88e-cd6d9a38fdb3" testId="547f58b2-1ca7-f3d9-c967-73a98994aace" testName="PeriodoReglasTest.DosAltasEnLaMismaInstanciaNoDuplicanElPeriodo" computerName="TACHER-THR" duration="00:00:00.7009115" startTime="2026-11-12T00:02:50.3446885-06:00" endTime="2026-11-12T00:02:50.3446886-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6af12dc6-8d10-4d6a-a88e-cd6d9a38fdb3" />
+    <UnitTestResult executionId="c6baf3cc-38d6-440f-81da-375425a20c29" testId="f378141d-6dc2-6511-7c74-c916b740c433" testName="ValidacionesRequestTest.GrupoExigeIdentificadoresHorarioYCupo" computerName="TACHER-THR" duration="00:00:00.0049529" startTime="2026-11-12T00:02:50.3442149-06:00" endTime="2026-11-12T00:02:50.3442150-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c6baf3cc-38d6-440f-81da-375425a20c29" />
+    <UnitTestResult executionId="b56b7195-2e2b-47c6-98bc-ff7104ab6f4f" testId="e5eebf52-a1a5-ea47-1baf-0f85731fbe21" testName="ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 1)" computerName="TACHER-THR" duration="00:00:00.6693440" startTime="2026-11-12T00:02:50.3108236-06:00" endTime="2026-11-12T00:02:50.3108241-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b56b7195-2e2b-47c6-98bc-ff7104ab6f4f" />
+    <UnitTestResult executionId="c81f8f02-646b-4d5a-a196-8a2f661dd343" testId="67786a43-685d-5829-58fc-4d538c970d32" testName="PeriodoServiceTest.RechazaFechaFinalAnteriorAlInicioAntesDeGuardar" computerName="TACHER-THR" duration="00:00:00.6737834" startTime="2026-11-12T00:02:50.3155022-06:00" endTime="2026-11-12T00:02:50.3155036-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c81f8f02-646b-4d5a-a196-8a2f661dd343" />
+    <UnitTestResult executionId="c7b3b65f-3125-45fb-a35c-5e1edc0bdcce" testId="c822d24a-a4a6-000a-de9c-7f04cb843324" testName="PeriodoReglasTest.EditarExcluyeElRegistroPropioYConservaOtrosNumeros" computerName="TACHER-THR" duration="00:00:00.0038476" startTime="2026-11-12T00:02:50.3464650-06:00" endTime="2026-11-12T00:02:50.3464654-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c7b3b65f-3125-45fb-a35c-5e1edc0bdcce" />
+    <UnitTestResult executionId="4576375d-5da0-422b-8d3c-2c4c45130345" testId="1e7d7ad1-7f6a-82e9-e223-3d9f6f936f77" testName="ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 12)" computerName="TACHER-THR" duration="00:00:00.0006313" startTime="2026-11-12T00:02:50.3115850-06:00" endTime="2026-11-12T00:02:50.3115852-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4576375d-5da0-422b-8d3c-2c4c45130345" />
+    <UnitTestResult executionId="36567303-9669-4e30-ad96-6eedb341e2b5" testId="e7604c9f-b698-79f7-1493-cc53336fec2a" testName="NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 0, nivel: 1)" computerName="TACHER-THR" duration="00:00:00.4983354" startTime="2026-11-12T00:02:50.1465118-06:00" endTime="2026-11-12T00:02:50.1465637-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36567303-9669-4e30-ad96-6eedb341e2b5" />
+    <UnitTestResult executionId="9a821d44-0a86-4616-969b-c1f673113f7b" testId="ef4b2af3-d832-3a38-8d1f-28d64f75e7ae" testName="ValidacionesRequestTest.PeriodoExigeDatos" computerName="TACHER-THR" duration="00:00:00.0007214" startTime="2026-11-12T00:02:50.3443332-06:00" endTime="2026-11-12T00:02:50.3443334-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a821d44-0a86-4616-969b-c1f673113f7b" />
+    <UnitTestResult executionId="053d3325-4f4a-441f-864d-db7245577ba5" testId="9dfbdca0-2dfe-7d2a-734b-e62d4fc59107" testName="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 1, nombre: &quot;Programación 5&quot;)" computerName="TACHER-THR" duration="00:00:00.0002959" startTime="2026-11-12T00:02:50.3445255-06:00" endTime="2026-11-12T00:02:50.3445255-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="053d3325-4f4a-441f-864d-db7245577ba5" />
+    <UnitTestResult executionId="5ad8b700-6679-431e-8be0-a6a6f463f13e" testId="ba0551b4-6ee0-94b6-217a-62fb885cb361" testName="PeriodoReglasTest.PermiteFechasSuperpuestasSiElNumeroEsDistinto" computerName="TACHER-THR" duration="00:00:00.0057545" startTime="2026-11-12T00:02:50.3659967-06:00" endTime="2026-11-12T00:02:50.3659972-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5ad8b700-6679-431e-8be0-a6a6f463f13e" />
+    <UnitTestResult executionId="3047e6c3-5597-4ca8-a022-c4311a80f86d" testId="5539fa4f-e0b3-e33b-c7b4-27507a3389b0" testName="CursoAuditoriaTest.ModificacionConservaAnteriorYActual" computerName="TACHER-THR" duration="00:00:00.0134898" startTime="2026-11-12T00:02:50.4198278-06:00" endTime="2026-11-12T00:02:50.4198283-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3047e6c3-5597-4ca8-a022-c4311a80f86d" />
+    <UnitTestResult executionId="4d2a763d-97e4-416f-83e7-a120bcacf5d6" testId="809c9e3e-e5e0-eec3-b5a3-43f54b788f4d" testName="GrupoServiceTest.RechazaCursoInexistenteAntesDeGuardar" computerName="TACHER-THR" duration="00:00:00.7596716" startTime="2026-11-12T00:02:50.4013057-06:00" endTime="2026-11-12T00:02:50.4013062-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4d2a763d-97e4-416f-83e7-a120bcacf5d6" />
+    <UnitTestResult executionId="cb029c3d-3d6c-444d-8fa0-cd0147192bf7" testId="262c43b9-1b3b-b4ef-a36e-57bb6910bc6b" testName="PeriodoReglasTest.DuplicadoProduceConflicto" computerName="TACHER-THR" duration="00:00:00.0016213" startTime="2026-11-12T00:02:50.3482494-06:00" endTime="2026-11-12T00:02:50.3482499-06:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cb029c3d-3d6c-444d-8fa0-cd0147192bf7" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="CursoAuditoriaTest.ModificacionConservaAnteriorYActual" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="5539fa4f-e0b3-e33b-c7b4-27507a3389b0">
+      <Execution id="3047e6c3-5597-4ca8-a022-c4311a80f86d" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CursoAuditoriaTest" name="ModificacionConservaAnteriorYActual" />
+    </UnitTest>
+    <UnitTest name="GrupoServiceTest.RechazaCursoInexistenteAntesDeGuardar" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="809c9e3e-e5e0-eec3-b5a3-43f54b788f4d">
+      <Execution id="4d2a763d-97e4-416f-83e7-a120bcacf5d6" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="GrupoServiceTest" name="RechazaCursoInexistenteAntesDeGuardar" />
+    </UnitTest>
+    <UnitTest name="PeriodoReglasTest.PermiteFechasSuperpuestasSiElNumeroEsDistinto" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="ba0551b4-6ee0-94b6-217a-62fb885cb361">
+      <Execution id="5ad8b700-6679-431e-8be0-a6a6f463f13e" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoReglasTest" name="PermiteFechasSuperpuestasSiElNumeroEsDistinto" />
+    </UnitTest>
+    <UnitTest name="CursoAuditoriaTest.EliminacionConservaElRegistroEliminado" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="aa6533a6-9881-3c0e-949f-048d2000fa28">
+      <Execution id="3deb2604-e4b4-46b4-a725-b886c3630b85" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CursoAuditoriaTest" name="EliminacionConservaElRegistroEliminado" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 1, nombre: &quot;Programación 5&quot;)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="9dfbdca0-2dfe-7d2a-734b-e62d4fc59107">
+      <Execution id="053d3325-4f4a-441f-864d-db7245577ba5" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="CursoRechazaNivelONombreInvalidos" />
+    </UnitTest>
+    <UnitTest name="NuevoAvatar.Academico.Tests.CursoFiltrosTest.CombinaCarreraYNivelEnRepositorio" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="8049206b-1fa7-7ae1-dad4-1d9eef556840">
+      <Execution id="677ac427-c1eb-4f29-82d5-fd60cc15d17f" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="NuevoAvatar.Academico.Tests.CursoFiltrosTest" name="CombinaCarreraYNivelEnRepositorio" />
+    </UnitTest>
+    <UnitTest name="PeriodoServiceTest.ContratoActualPermiteFechasIguales" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="8187fbc5-617f-67f0-137b-b7ebdee8d4c4">
+      <Execution id="00caf911-bd3e-4e54-b1d4-7a820a3c3946" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoServiceTest" name="ContratoActualPermiteFechasIguales" />
+    </UnitTest>
+    <UnitTest name="PeriodoReglasTest.DuplicadoProduceConflicto" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="262c43b9-1b3b-b4ef-a36e-57bb6910bc6b">
+      <Execution id="cb029c3d-3d6c-444d-8fa0-cd0147192bf7" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoReglasTest" name="DuplicadoProduceConflicto" />
+    </UnitTest>
+    <UnitTest name="PeriodoReglasTest.EstadoSeDerivaDeFechas" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="c1c8590c-d11a-6386-6a0b-c3026781d69c">
+      <Execution id="cbb8df09-607e-4e7d-8027-70c3c8b6c10d" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoReglasTest" name="EstadoSeDerivaDeFechas" />
+    </UnitTest>
+    <UnitTest name="CursoAuditoriaTest.AltaConservaElRegistroPersistidoEnJson" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="8fd107ea-cd0e-bdae-2e3a-74f9c1b5979d">
+      <Execution id="e5f2587f-3e1a-48f3-a40b-3f45244a2fa0" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CursoAuditoriaTest" name="AltaConservaElRegistroPersistidoEnJson" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 13, nombre: &quot;Programación&quot;)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="7e71761b-14e1-624d-bf3c-99c52d35dd49">
+      <Execution id="f3a822e2-12ab-43fc-a087-04586cd2dae1" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="CursoRechazaNivelONombreInvalidos" />
+    </UnitTest>
+    <UnitTest name="PeriodoReglasTest.EditarExcluyeElRegistroPropioYConservaOtrosNumeros" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="c822d24a-a4a6-000a-de9c-7f04cb843324">
+      <Execution id="c7b3b65f-3125-45fb-a35c-5e1edc0bdcce" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoReglasTest" name="EditarExcluyeElRegistroPropioYConservaOtrosNumeros" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 1)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="e5eebf52-a1a5-ea47-1baf-0f85731fbe21">
+      <Execution id="b56b7195-2e2b-47c6-98bc-ff7104ab6f4f" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="CursoAceptaLimitesDelNivel" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.PeriodoExigeDatos" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="ef4b2af3-d832-3a38-8d1f-28d64f75e7ae">
+      <Execution id="9a821d44-0a86-4616-969b-c1f673113f7b" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="PeriodoExigeDatos" />
+    </UnitTest>
+    <UnitTest name="PeriodoServiceTest.RechazaFechaFinalAnteriorAlInicioAntesDeGuardar" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="67786a43-685d-5829-58fc-4d538c970d32">
+      <Execution id="c81f8f02-646b-4d5a-a196-8a2f661dd343" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoServiceTest" name="RechazaFechaFinalAnteriorAlInicioAntesDeGuardar" />
+    </UnitTest>
+    <UnitTest name="PeriodoReglasTest.DosAltasEnLaMismaInstanciaNoDuplicanElPeriodo" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="547f58b2-1ca7-f3d9-c967-73a98994aace">
+      <Execution id="6af12dc6-8d10-4d6a-a88e-cd6d9a38fdb3" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="PeriodoReglasTest" name="DosAltasEnLaMismaInstanciaNoDuplicanElPeriodo" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 12)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="1e7d7ad1-7f6a-82e9-e223-3d9f6f936f77">
+      <Execution id="4576375d-5da0-422b-8d3c-2c4c45130345" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="CursoAceptaLimitesDelNivel" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 0, nombre: &quot;Programación&quot;)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="07d83e60-2868-2c77-37ce-07e7f2560b41">
+      <Execution id="ca2d255a-5338-4890-b73f-502cfb794b2a" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="CursoRechazaNivelONombreInvalidos" />
+    </UnitTest>
+    <UnitTest name="ValidacionesRequestTest.GrupoExigeIdentificadoresHorarioYCupo" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="f378141d-6dc2-6511-7c74-c916b740c433">
+      <Execution id="c6baf3cc-38d6-440f-81da-375425a20c29" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="ValidacionesRequestTest" name="GrupoExigeIdentificadoresHorarioYCupo" />
+    </UnitTest>
+    <UnitTest name="NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 0, nivel: 1)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="e7604c9f-b698-79f7-1493-cc53336fec2a">
+      <Execution id="36567303-9669-4e30-ad96-6eedb341e2b5" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="NuevoAvatar.Academico.Tests.CursoFiltrosTest" name="RechazaFiltrosFueraDeRango" />
+    </UnitTest>
+    <UnitTest name="NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 1, nivel: 13)" storage="c:\users\personal\desktop\prograv\nuevoavatar.academico.tests\bin\debug\net8.0\nuevoavatar.academico.tests.dll" id="85b07fd4-380d-aa48-98d5-d8cfd92bbfb8">
+      <Execution id="53009123-59df-4edc-85ff-f67dd5c44d85" />
+      <TestMethod codeBase="C:\Users\Personal\Desktop\PrograV\NuevoAvatar.Academico.Tests\bin\Debug\net8.0\NuevoAvatar.Academico.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="NuevoAvatar.Academico.Tests.CursoFiltrosTest" name="RechazaFiltrosFueraDeRango" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7e71761b-14e1-624d-bf3c-99c52d35dd49" executionId="f3a822e2-12ab-43fc-a087-04586cd2dae1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8187fbc5-617f-67f0-137b-b7ebdee8d4c4" executionId="00caf911-bd3e-4e54-b1d4-7a820a3c3946" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8fd107ea-cd0e-bdae-2e3a-74f9c1b5979d" executionId="e5f2587f-3e1a-48f3-a40b-3f45244a2fa0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c1c8590c-d11a-6386-6a0b-c3026781d69c" executionId="cbb8df09-607e-4e7d-8027-70c3c8b6c10d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="07d83e60-2868-2c77-37ce-07e7f2560b41" executionId="ca2d255a-5338-4890-b73f-502cfb794b2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="85b07fd4-380d-aa48-98d5-d8cfd92bbfb8" executionId="53009123-59df-4edc-85ff-f67dd5c44d85" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8049206b-1fa7-7ae1-dad4-1d9eef556840" executionId="677ac427-c1eb-4f29-82d5-fd60cc15d17f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aa6533a6-9881-3c0e-949f-048d2000fa28" executionId="3deb2604-e4b4-46b4-a725-b886c3630b85" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="547f58b2-1ca7-f3d9-c967-73a98994aace" executionId="6af12dc6-8d10-4d6a-a88e-cd6d9a38fdb3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f378141d-6dc2-6511-7c74-c916b740c433" executionId="c6baf3cc-38d6-440f-81da-375425a20c29" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e5eebf52-a1a5-ea47-1baf-0f85731fbe21" executionId="b56b7195-2e2b-47c6-98bc-ff7104ab6f4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="67786a43-685d-5829-58fc-4d538c970d32" executionId="c81f8f02-646b-4d5a-a196-8a2f661dd343" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c822d24a-a4a6-000a-de9c-7f04cb843324" executionId="c7b3b65f-3125-45fb-a35c-5e1edc0bdcce" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1e7d7ad1-7f6a-82e9-e223-3d9f6f936f77" executionId="4576375d-5da0-422b-8d3c-2c4c45130345" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e7604c9f-b698-79f7-1493-cc53336fec2a" executionId="36567303-9669-4e30-ad96-6eedb341e2b5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ef4b2af3-d832-3a38-8d1f-28d64f75e7ae" executionId="9a821d44-0a86-4616-969b-c1f673113f7b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9dfbdca0-2dfe-7d2a-734b-e62d4fc59107" executionId="053d3325-4f4a-441f-864d-db7245577ba5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ba0551b4-6ee0-94b6-217a-62fb885cb361" executionId="5ad8b700-6679-431e-8be0-a6a6f463f13e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5539fa4f-e0b3-e33b-c7b4-27507a3389b0" executionId="3047e6c3-5597-4ca8-a022-c4311a80f86d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="809c9e3e-e5e0-eec3-b5a3-43f54b788f4d" executionId="4d2a763d-97e4-416f-83e7-a120bcacf5d6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="262c43b9-1b3b-b4ef-a36e-57bb6910bc6b" executionId="cb029c3d-3d6c-444d-8fa0-cd0147192bf7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="21" executed="21" passed="21" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.34)&#xD;
+[xUnit.net 00:00:01.72]   Discovering: NuevoAvatar.Academico.Tests&#xD;
+[xUnit.net 00:00:01.83]   Discovered:  NuevoAvatar.Academico.Tests&#xD;
+[xUnit.net 00:00:01.84]   Starting:    NuevoAvatar.Academico.Tests&#xD;
+[xUnit.net 00:00:02.70]   Finished:    NuevoAvatar.Academico.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

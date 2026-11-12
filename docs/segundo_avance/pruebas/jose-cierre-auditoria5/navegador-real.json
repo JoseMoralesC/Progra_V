@@ -1,0 +1,61 @@
+{
+  "respuestas_controladas": false,
+  "resultados": [
+    {
+      "prueba": "Ingreso desde la web ADMINISTRADOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Restauración desde la web ADMINISTRADOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "URL de notas restringida ADMINISTRADOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Salida limpia el cliente ADMINISTRADOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Ingreso desde la web ESTUDIANTE",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Restauración desde la web ESTUDIANTE",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "URL de notas restringida ESTUDIANTE",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Salida limpia el cliente ESTUDIANTE",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Ingreso desde la web PROFESOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Restauración desde la web PROFESOR",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Dashboard conduce a notas del profesor",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Modificar nota real desde la plantilla",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Notas permite regresar al dashboard",
+      "estado": "aprobada"
+    },
+    {
+      "prueba": "Salida limpia el cliente PROFESOR",
+      "estado": "aprobada"
+    }
+  ]
+}

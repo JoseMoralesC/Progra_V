@@ -9,7 +9,8 @@ async function escenario(page, rol = 'PROFESOR') {
         usuarioID: rol === 'ESTUDIANTE' ? 'ana@cuc.cr' : 'ana@cuc.ac.cr',
         expires_in: new Date(ahora + 60000).toISOString(),
     }
-    const estado = { login: 201, sesion: 200, refresh: 200, logout: 204, menu: 200, permiso: true, renovaciones: 0, consultas: 0 }
+    const estado = { login: 201, sesion: 200, refresh: 200, logout: 204, menu: 200,
+        permiso: true, renovaciones: 0, consultas: 0, auditorias: [] }
     const errores = []
     page.on('pageerror', error => errores.push(error.message))
     await page.route('**/gateway/**', async route => {
@@ -23,6 +24,13 @@ async function escenario(page, rol = 'PROFESOR') {
         } else if (path === '/gateway/menu') {
             status = estado.menu
             body = estado.permiso ? [{ idModulo: 'ADM17', nombreModulo: 'Notas', activo: true, orden: 1 }] : []
+        } else if (path === '/gateway/auditoria/interfaz') {
+            expect(route.request().method()).toBe('POST')
+            expect(route.request().headers().authorization).toMatch(/^Bearer (token-inicial|token-renovado)$/)
+            const evento = route.request().postDataJSON()
+            expect(['navegacion', 'error-ui']).toContain(evento.tipo)
+            estado.auditorias.push(evento)
+            status = 204
         } else if (path === '/gateway/expediente/propio') {
             status = 404; body = { error: 'No hay expediente vinculado' }
         } else if (path === '/gateway/mat/prematricula/propio') {
@@ -60,7 +68,7 @@ for (const [rol, titulo] of [
     ['ESTUDIANTE', 'Inicio del estudiante'],
 ]) {
     test(`login ${rol} llega al layout con identidad real y restaura al recargar`, async ({ page }) => {
-        const { errores } = await escenario(page, rol)
+        const { errores, estado } = await escenario(page, rol)
         await ingresar(page, rol === 'ESTUDIANTE' ? 'ana@cuc.cr' : 'ana@cuc.ac.cr')
         await expect(page).toHaveURL(rol === 'ESTUDIANTE' ? /\/estudiante$/ : /\/inicio$/)
         await expect(page.locator('.header-page-title')).toHaveText(rol === 'ESTUDIANTE' ? titulo : 'Inicio')
@@ -68,6 +76,8 @@ for (const [rol, titulo] of [
         await expect(page.locator('.user-role')).toHaveText(rol)
         await expect(page.getByRole('button', { name: 'Salir', exact: true })).toBeEnabled()
         await expect(page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link')).toHaveCount(rol === 'ESTUDIANTE' ? 4 : rol === 'PROFESOR' ? 2 : 1)
+        if (rol === 'ESTUDIANTE') await expect.poll(() => estado.auditorias.some(evento =>
+            evento.tipo === 'navegacion' && evento.ruta === '/estudiante')).toBeTruthy()
         expect(await page.evaluate(k => sessionStorage.getItem(k), key)).not.toContain('clave-de-prueba')
         await page.reload()
         await expect(page.locator('.user-name')).toHaveText('Ana Mora')

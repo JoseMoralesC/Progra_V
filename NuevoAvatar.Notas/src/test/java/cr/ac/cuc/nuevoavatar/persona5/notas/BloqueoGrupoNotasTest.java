@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Statement;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +19,9 @@ class BloqueoGrupoNotasTest {
         DataSource ds = mock(DataSource.class);
         Connection connection = mock(Connection.class);
         CallableStatement statement = mock(CallableStatement.class);
+        Statement inicio = mock(Statement.class);
         when(ds.getConnection()).thenReturn(connection);
+        when(connection.createStatement()).thenReturn(inicio);
         when(connection.prepareCall(anyString())).thenReturn(statement);
         when(statement.getInt(1)).thenReturn(resultado);
         var bloqueo = new BloqueoGrupoNotas(new JdbcTemplate(ds));
