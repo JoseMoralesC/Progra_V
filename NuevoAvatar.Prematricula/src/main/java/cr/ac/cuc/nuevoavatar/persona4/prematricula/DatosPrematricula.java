@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-/** Datos internos con el nivel y la fecha recuperados de la oferta academica. */
+/** Datos internos con la carrera, el nivel y la fecha recuperados de la oferta academica. */
 public record DatosPrematricula(
         @NotBlank String identificacionEstudiante,
         @NotNull Integer carreraId,
@@ -15,7 +15,7 @@ public record DatosPrematricula(
         String observaciones,
         @NotNull @Valid Periodo periodo) {
 
-    public record Curso(@NotNull Integer cursoId, @NotNull Integer nivel) {
+    public record Curso(@NotNull Integer cursoId, @NotNull Integer carreraId, @NotNull Integer nivel) {
     }
 
     public record Periodo(@NotNull Integer periodoId, @NotNull LocalDate fechaInicio) {

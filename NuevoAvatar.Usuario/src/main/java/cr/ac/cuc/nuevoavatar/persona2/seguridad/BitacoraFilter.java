@@ -30,12 +30,16 @@ public class BitacoraFilter extends OncePerRequestFilter {
     public static void cambio(String accion, Object anterior, Object actual) {
         var atributos = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
         if (!(atributos instanceof org.springframework.web.context.request.ServletRequestAttributes solicitud)) return;
+        solicitud.getRequest().setAttribute(CAMBIO, descripcionCambio(accion, anterior, actual));
+    }
+
+    public static String descripcionCambio(String accion, Object anterior, Object actual) {
         try {
             var estados = new java.util.LinkedHashMap<String, Object>();
             estados.put("anterior", anterior);
             estados.put("actual", actual);
             String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(estados);
-            solicitud.getRequest().setAttribute(CAMBIO, accion + ". JSON: " + json);
+            return accion + ". JSON: " + json;
         } catch (com.fasterxml.jackson.core.JsonProcessingException ex) {
             throw new IllegalStateException("No se pudo preparar la bitácora", ex);
         }

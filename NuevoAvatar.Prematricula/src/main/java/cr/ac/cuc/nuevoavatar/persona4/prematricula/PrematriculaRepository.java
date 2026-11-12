@@ -95,7 +95,10 @@ public class PrematriculaRepository {
 
     public boolean existeCarrera(Integer id) { return datos.buscar("Carrera","Carrera","CarreraId",id).isPresent(); }
     public Optional<DatosPrematricula.Curso> obtenerCurso(Integer id) {
-        return datos.buscar("Curso","Curso","CursoId",id).map(r -> new DatosPrematricula.Curso(id,cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(r,"Nivel")));
+        return datos.buscar("Curso","Curso","CursoId",id).map(r -> new DatosPrematricula.Curso(
+                id,
+                cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(r, "CarreraId"),
+                cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.entero(r, "Nivel")));
     }
     public Optional<DatosPrematricula.Periodo> obtenerPeriodo(Integer id) {
         return datos.buscar("Periodo","Periodo","PeriodoId",id).map(r -> new DatosPrematricula.Periodo(id,cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.fecha(r,"FechaInicio")));
