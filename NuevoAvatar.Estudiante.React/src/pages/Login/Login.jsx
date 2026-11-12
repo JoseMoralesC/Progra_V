@@ -40,7 +40,7 @@ function Login() {
                 <span className="section-label">NUEVO AVATAR</span>
                 <h1>Iniciar sesión</h1>
                 <p className="subtitle">Ingresa con tus credenciales institucionales.</p>
-                {(errorIngreso || mensaje) && <p role="alert">{errorIngreso || mensaje}</p>}
+                {(errorIngreso || mensaje) && <p role="alert" className="status status-danger">{errorIngreso || mensaje}</p>}
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label htmlFor="login-user">Correo institucional</label>
                     <input id="login-user" name="usuario" type="email" autoComplete="username" value={usuario} onChange={event => setUsuario(event.target.value)} required disabled={submitting} />
