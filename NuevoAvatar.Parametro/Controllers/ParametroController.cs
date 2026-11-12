@@ -46,7 +46,9 @@ namespace NuevoAvatarSeguridad.Controllers
                 return Conflict("Ya existe un parámetro con ese identificador");
 
             var creado = await _service.Crear(parametro);
-            await Registrar($"Creación de parametro: {creado.IdParametro}");
+            await Registrar(EsSecreto(creado.IdParametro)
+                ? $"Creación de parametro: {creado.IdParametro}"
+                : $"Creación de parametro: {ComoJson(creado)}");
             return CreatedAtAction(nameof(ObtenerPorId), new { idParametro = creado.IdParametro }, OcultarSecreto(creado));
         }
 
@@ -60,13 +62,16 @@ namespace NuevoAvatarSeguridad.Controllers
             var existente = await _service.ObtenerPorId(idParametro);
             if (existente == null) return NotFound("El parámetro no existe");
 
+            var anterior = EsSecreto(idParametro) ? null : ComoJson(existente);
             // La máscara que recibe la interfaz significa "conservar el secreto".
             // Un valor nuevo sí reemplaza la clave, pero nunca se devuelve ni audita.
             if (!EsSecreto(idParametro) || parametro.Valor != ValorOculto)
                 existente.Valor = parametro.Valor;
             var actual = await _service.Modificar(existente);
 
-            await Registrar($"Modificación de parametro: {idParametro}");
+            await Registrar(EsSecreto(idParametro)
+                ? $"Modificación de parametro: {idParametro}"
+                : $"Modificación de parametro. Anterior: {anterior} Actual: {ComoJson(actual)}");
             return Ok(OcultarSecreto(actual));
         }
 
@@ -77,7 +82,9 @@ namespace NuevoAvatarSeguridad.Controllers
             if (existente == null) return NotFound("El parámetro no existe");
 
             var eliminado = await _service.Eliminar(existente);
-            await Registrar($"Eliminación de parametro: {idParametro}");
+            await Registrar(EsSecreto(idParametro)
+                ? $"Eliminación de parametro: {idParametro}"
+                : $"Eliminación de parametro: {ComoJson(eliminado)}");
             return Ok(OcultarSecreto(eliminado));
         }
 
