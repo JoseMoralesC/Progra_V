@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { obtenerExpedientePropio, obtenerPrematriculasPropias } from '../../services/api'
-import { ADMINISTRATIVE_CONTACT_EMAIL } from '../../config/administrativeContact'
 
 const estadoInicial = { status: 'loading', error: null }
 
@@ -15,14 +14,6 @@ function mensajeError(error) {
         return 'El servicio no está disponible en este momento. Intenta nuevamente más tarde.'
     }
     return 'No fue posible consultar esta información. Intenta nuevamente.'
-}
-
-function EstadoCarga({ children }) {
-    return <span className="status status-warning" role="status">{children}</span>
-}
-
-function EstadoError({ children }) {
-    return <span className="status status-danger" role="alert">{children}</span>
 }
 
 export default function InicioEstudiante() {
@@ -106,24 +97,12 @@ export default function InicioEstudiante() {
                 </div>
             </section>
 
-            <section className="card-grid dashboard-grid" aria-label="Estado de mis gestiones">
+            <section className="card-grid dashboard-grid student-dashboard-grid" aria-label="Estado de mis gestiones">
                 <article className="card dashboard-card" aria-label="Mi expediente" aria-busy={expediente.status === 'loading'}>
                     <div className="dashboard-card-top">
                         <span className="dashboard-icon" aria-hidden="true">▤</span>
                         <span className="card-title">Mi expediente</span>
                     </div>
-                    {expediente.status === 'loading' && <><div className="card-value">Consultando</div><EstadoCarga>Cargando estado…</EstadoCarga></>}
-                    {expediente.status === 'available' && <><div className="card-value">Disponible</div><span className="status status-success">Expediente vinculado</span></>}
-                    {expediente.status === 'missing' && (
-                        <>
-                            <div className="card-value">Sin vínculo</div>
-                            <p className="card-description">No encontramos un expediente asociado a tu sesión. Contacta al área administrativa para revisar el vínculo.</p>
-                            {ADMINISTRATIVE_CONTACT_EMAIL && <a className="text-link" href={`mailto:${ADMINISTRATIVE_CONTACT_EMAIL}`}>Contactar al área administrativa</a>}
-                        </>
-                    )}
-                    {expediente.status === 'inconsistent' && <><div className="card-value">Requiere revisión</div><p className="card-description">No fue posible confirmar un vínculo único con tu expediente. Contacta al área administrativa.</p>{ADMINISTRATIVE_CONTACT_EMAIL && <a className="text-link" href={`mailto:${ADMINISTRATIVE_CONTACT_EMAIL}`}>Contactar al área administrativa</a>}</>}
-                    {expediente.status === 'error' && <><div className="card-value">No disponible</div><EstadoError>{expediente.error}</EstadoError><button className="btn btn-soft" type="button" onClick={cargarExpediente}>Reintentar</button></>}
-                    <p className="card-description">Consulta tus datos y actualiza tus teléfonos y dirección.</p>
                     <Link className="text-link" to="/estudiante/expediente">
                         Abrir mi expediente <span aria-hidden="true">→</span>
                     </Link>
@@ -134,13 +113,6 @@ export default function InicioEstudiante() {
                         <span className="dashboard-icon" aria-hidden="true">▧</span>
                         <span className="card-title">Mis prematrículas</span>
                     </div>
-                    {prematriculas.status === 'loading' && <><div className="card-value">Consultando</div><EstadoCarga>Cargando solicitudes…</EstadoCarga></>}
-                    {prematriculas.status === 'ready' && <>
-                        <div className="card-value">{prematriculas.count} {prematriculas.count === 1 ? 'solicitud' : 'solicitudes'}</div>
-                        <p className="card-description">{prematriculas.count === 0 ? 'Aún no tienes solicitudes de prematrícula.' : 'Cantidad de solicitudes propias registradas.'}</p>
-                    </>}
-                    {prematriculas.status === 'error' && <><div className="card-value">No disponible</div><EstadoError>{prematriculas.error}</EstadoError><button className="btn btn-soft" type="button" onClick={cargarPrematriculas}>Reintentar</button></>}
-                    <p className="card-description">Crea, revisa, modifica o cancela tus solicitudes.</p>
                     <Link className="text-link" to="/estudiante/prematricula">
                         Abrir mis prematrículas <span aria-hidden="true">→</span>
                     </Link>

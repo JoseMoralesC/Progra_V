@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
+import { RowActionsMenu } from '../../components/RowActionsMenu'
 import { rolesApi, validarRol } from './roles-api'
 import '../Instituciones/instituciones.css'
 
@@ -145,8 +146,10 @@ export function Roles({ cliente, onPermisosActualizados }) {
         {!estado && <section className="panel" aria-label="Listado de roles">
             <div className="instituciones-tabla"><table><thead><tr><th>ID</th><th>Nombre</th><th>Acciones</th></tr></thead>
                 <tbody>{visibles.map(item => <tr key={item.idRol}><td>{item.idRol}</td><td>{item.nombreRol}</td><td>
-                    <div className="instituciones-acciones"><button type="button" className="btn btn-soft" onClick={() => abrir(item)}>Editar</button>
-                    <button type="button" className="btn btn-danger" onClick={() => setPendiente(item)}>Eliminar</button></div>
+                    <RowActionsMenu rowLabel={item.nombreRol} actions={[
+                        { label: 'Editar', onSelect: () => abrir(item) },
+                        { label: 'Eliminar', danger: true, onSelect: () => setPendiente(item) }
+                    ]} />
                 </td></tr>)}</tbody></table></div>
             {!roles.length && <p>No hay roles registrados.</p>}
             {roles.length > tamano && <div className="instituciones-paginas">

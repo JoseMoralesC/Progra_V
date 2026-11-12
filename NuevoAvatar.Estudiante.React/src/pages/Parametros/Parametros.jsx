@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
+import { RowActionsMenu } from '../../components/RowActionsMenu'
 import { parametrosApi, validarParametro } from './parametros-api'
 import '../Instituciones/instituciones.css'
 
@@ -101,10 +102,10 @@ export function Parametros({ cliente }) {
             {!estado && <div className="instituciones-tabla"><table>
                 <thead><tr><th>ID</th><th>Valor</th><th>Acciones</th></tr></thead>
                 <tbody>{visibles.map(item => <tr key={item.idParametro}><td>{item.idParametro}</td><td>{item.valor}</td>
-                    <td><div className="instituciones-acciones">
-                        <button type="button" className="btn btn-soft" onClick={() => abrir(item)}>Editar</button>
-                        <button type="button" className="btn btn-danger" onClick={() => setPendiente(item)}>Eliminar</button>
-                    </div></td></tr>)}</tbody>
+                    <td><RowActionsMenu rowLabel={item.idParametro} actions={[
+                        { label: 'Editar', onSelect: () => abrir(item) },
+                        { label: 'Eliminar', danger: true, onSelect: () => setPendiente(item) }
+                    ]} /></td></tr>)}</tbody>
             </table></div>}
             {registros.length > tamano && <div className="instituciones-paginas">
                 <button type="button" className="btn btn-soft" disabled={paginaActual === 0} onClick={() => setPagina(paginaActual - 1)}>Anterior</button>

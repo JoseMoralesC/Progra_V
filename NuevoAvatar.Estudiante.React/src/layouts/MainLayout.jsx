@@ -15,6 +15,7 @@ function MainLayout({
     systemName = 'Nuevo Avatar',
     sectionTitle = 'ADMINISTRACIÓN',
     footerText = 'Sistema administrativo',
+    mostrarFooter = true,
     onLogout
 }) {
     const [collapsed, setCollapsed] = useState(false)
@@ -73,10 +74,7 @@ function MainLayout({
                     {children}
                 </section>
 
-                <Footer
-                    systemName={`${systemName} V2`}
-                    text={footerText}
-                />
+                {mostrarFooter && <Footer systemName={`${systemName} V2`} text={footerText} />}
             </main>
         </div>
     )

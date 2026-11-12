@@ -33,13 +33,18 @@ function nuevoLogoutEpoch() {
     return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`
 }
 
+function nuevoIdSesionBienvenida() {
+    return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`
+}
+
 function guardarTokens(session) {
     try {
         if (!session) sessionStorage.removeItem(STORAGE_KEY)
         else sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
             access_token: session.accessToken, refresh_token: session.refreshToken,
             usuarioID: session.email, expires_in: new Date(session.expiresAt).toISOString(),
-            logoutEpoch: session.logoutEpoch || ''
+            logoutEpoch: session.logoutEpoch || '',
+            welcomeSessionId: session.welcomeSessionId || ''
         }))
     } catch { /* La sesión sigue disponible en memoria si el almacenamiento está bloqueado. */ }
 }
@@ -221,6 +226,7 @@ export function AuthProvider({ children }) {
             refreshToken: tokens.refresh_token,
             expiresAt: expirationTime(tokens.expires_in),
             logoutEpoch: loginLogoutEpoch,
+            welcomeSessionId: nuevoIdSesionBienvenida(),
             user: null
         }
         updateSession(next)
@@ -257,10 +263,12 @@ export function AuthProvider({ children }) {
                 }
                 const version = sessionVersion.current
                 const savedLogoutEpoch = saved.logoutEpoch ?? ''
+                const welcomeSessionId = typeof saved.welcomeSessionId === 'string' && saved.welcomeSessionId
+                    ? saved.welcomeSessionId : nuevoIdSesionBienvenida()
                 pendingLogoutEpoch.current = savedLogoutEpoch
                 updateSession({ email: saved.usuarioID, accessToken: saved.access_token,
                     refreshToken: saved.refresh_token, expiresAt: Date.parse(saved.expires_in),
-                    logoutEpoch: savedLogoutEpoch, user: null })
+                    logoutEpoch: savedLogoutEpoch, welcomeSessionId, user: null })
                 try {
                     const user = await authorizedFetch(identidad)
                     if (version !== sessionVersion.current) return

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
+import { RowActionsMenu } from '../../components/RowActionsMenu'
 import { institucionesApi, validarNombre } from './instituciones-api'
 import './instituciones.css'
 
@@ -128,10 +129,10 @@ export function Instituciones({ cliente }) {
                     <thead><tr><th>Nombre</th><th>Acciones</th></tr></thead>
                     <tbody>{visibles.map(item => <tr key={item.id}>
                         <td>{item.nombre}</td>
-                        <td><div className="instituciones-acciones">
-                            <button type="button" className="btn btn-soft" onClick={() => abrir(item)}>Editar</button>
-                            <button type="button" className="btn btn-danger" onClick={() => setPendiente(item)}>Eliminar</button>
-                        </div></td>
+                        <td><RowActionsMenu rowLabel={item.nombre} actions={[
+                            { label: 'Editar', onSelect: () => abrir(item) },
+                            { label: 'Eliminar', danger: true, onSelect: () => setPendiente(item) }
+                        ]} /></td>
                     </tr>)}</tbody>
                 </table>
             </div>}

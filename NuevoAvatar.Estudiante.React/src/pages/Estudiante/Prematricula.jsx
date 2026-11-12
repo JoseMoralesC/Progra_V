@@ -193,17 +193,20 @@ export default function Prematricula() {
                             </select>
                             {errores.carreraId && <p className="status status-danger" role="alert">{errores.carreraId}</p>}
                         </div>
-                        <fieldset className="field">
+                        <fieldset className="field course-fieldset">
                             <legend>Cursos de primer nivel</legend>
                             {!formulario.carreraId && <p>Selecciona primero una carrera.</p>}
                             {formulario.carreraId && !cursosDisponibles.length && <p>No hay cursos de primer nivel disponibles.</p>}
-                            {cursosDisponibles.map(curso => (
-                                <label key={curso.id} className="field-inline">
-                                    <input type="checkbox" value={curso.id} checked={formulario.cursos.includes(String(curso.id))}
-                                        disabled={guardando} onChange={event => cambiarCursos(String(curso.id), event.target.checked)} />
-                                    {curso.nombre}
-                                </label>
-                            ))}
+                            {Boolean(cursosDisponibles.length) && <div className="course-options">
+                                {cursosDisponibles.map(curso => (
+                                    <label key={curso.id} className="course-option">
+                                        <input className="course-option__checkbox" type="checkbox" value={curso.id}
+                                            checked={formulario.cursos.includes(String(curso.id))}
+                                            disabled={guardando} onChange={event => cambiarCursos(String(curso.id), event.target.checked)} />
+                                        <span>{curso.nombre}</span>
+                                    </label>
+                                ))}
+                            </div>}
                             {errores.cursos && <p className="status status-danger" role="alert">{errores.cursos}</p>}
                         </fieldset>
                         <div className="field">
