@@ -40,10 +40,16 @@ tmp/
 *.ndf
 *.ldf
 
-# OS files
+# OS and Office temp files
 .DS_Store
 Thumbs.db
 Desktop.ini
+~$*
+
+# Local outputs, legacy folders and external assignments
+outputs/
+services/
+tarea-corta-3-llms-agentes/
 
 # Python tools
 __pycache__/
