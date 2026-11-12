@@ -40,6 +40,7 @@ export default function StudentLayout() {
             systemName="Nuevo Avatar"
             sectionTitle="PORTAL ESTUDIANTIL"
             footerText="Portal estudiantil"
+            mostrarFooter={!['/estudiante/perfil', '/estudiante/expediente'].includes(location.pathname)}
             onLogout={handleLogout}
         >
             <Outlet />

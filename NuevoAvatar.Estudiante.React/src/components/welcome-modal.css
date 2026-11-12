@@ -1,0 +1,71 @@
+.welcome-modal-content {
+    display: grid;
+    justify-items: start;
+    gap: 12px;
+    max-width: 520px;
+}
+
+.welcome-modal-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    place-items: center;
+    border-radius: 16px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 24px;
+}
+
+.welcome-modal-content h3,
+.welcome-modal-content p {
+    margin: 0;
+}
+
+.welcome-modal-content h3 {
+    font-size: clamp(20px, 4vw, 26px);
+}
+
+.welcome-modal-content p {
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.welcome-modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.welcome-modal-skip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    padding: 10px 12px;
+    background: transparent;
+    color: var(--text);
+    font-weight: 700;
+}
+
+.welcome-modal-skip:hover span {
+    transform: translateX(3px);
+}
+
+.welcome-modal-skip span {
+    transition: transform .18s ease;
+}
+
+@media (max-width: 480px) {
+    .welcome-modal-actions {
+        align-items: stretch;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .welcome-modal-actions .btn,
+    .welcome-modal-skip {
+        justify-content: center;
+    }
+}

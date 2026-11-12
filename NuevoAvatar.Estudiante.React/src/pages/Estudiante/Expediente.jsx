@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationContext'
 import { Modal } from '../../components/Modal'
@@ -17,6 +17,8 @@ const formularioVacio = {
     distritoId: '',
     otrasSenas: ''
 }
+
+const catalogoInactivo = { clave: '', estado: 'idle', error: '' }
 
 function textoError(error, accion) {
     if (error?.status === 401) return 'Tu sesión expiró. Inicia sesión nuevamente.'
@@ -55,27 +57,28 @@ export default function Expediente() {
     const [provincias, setProvincias] = useState([])
     const [cantones, setCantones] = useState([])
     const [distritos, setDistritos] = useState([])
+    const [estadoProvincias, setEstadoProvincias] = useState('loading')
+    const [errorProvincias, setErrorProvincias] = useState('')
+    const [estadoCantones, setEstadoCantones] = useState(catalogoInactivo)
+    const [estadoDistritos, setEstadoDistritos] = useState(catalogoInactivo)
     const [cargando, setCargando] = useState(true)
-    const [cantonesCargadosPara, setCantonesCargadosPara] = useState('')
-    const [distritosCargadosPara, setDistritosCargadosPara] = useState('')
     const [editando, setEditando] = useState(false)
     const [guardando, setGuardando] = useState(false)
     const [cambiosPendientes, setCambiosPendientes] = useState(null)
+    const [errorGuardado, setErrorGuardado] = useState('')
     const [errorCarga, setErrorCarga] = useState('')
     const [errores, setErrores] = useState({})
     const [intentoCarga, setIntentoCarga] = useState(0)
+    const [intentoProvincias, setIntentoProvincias] = useState(0)
+    const [intentoCantones, setIntentoCantones] = useState(0)
+    const [intentoDistritos, setIntentoDistritos] = useState(0)
 
     useEffect(() => {
         let vigente = true
-        Promise.all([
-            authorizedFetch(token => obtenerExpedientePropio(token)),
-            authorizedFetch(token => obtenerProvincias(token))
-        ]).then(([datos, listaProvincias]) => {
+        authorizedFetch(token => obtenerExpedientePropio(token)).then(datos => {
             if (!vigente) return
             setExpediente(datos)
             setFormulario(crearFormulario(datos))
-            setProvincias(Array.isArray(listaProvincias) ? listaProvincias : [])
-            setErrorCarga('')
         }).catch(error => {
             if (!vigente) return
             const mensaje = textoError(error, 'cargar tu expediente')
@@ -88,48 +91,85 @@ export default function Expediente() {
     }, [authorizedFetch, intentoCarga, notify])
 
     useEffect(() => {
-        if (!formulario.provinciaId) return undefined
         let vigente = true
-        authorizedFetch(token => obtenerCantones(formulario.provinciaId, token))
-            .then(datos => {
-                if (!vigente) return
-                setCantones(Array.isArray(datos) ? datos : [])
-                setCantonesCargadosPara(formulario.provinciaId)
-            })
-            .catch(error => {
-                if (!vigente) return
-                setCantones([])
-                setCantonesCargadosPara(formulario.provinciaId)
-                notify(textoError(error, 'cargar los cantones'), 'error')
-            })
+        authorizedFetch(token => obtenerProvincias(token)).then(datos => {
+            if (!vigente) return
+            if (!Array.isArray(datos)) throw new Error('El servicio devolvió una lista de provincias inválida.')
+            setProvincias(datos)
+            setEstadoProvincias('success')
+        }).catch(error => {
+            if (!vigente) return
+            const mensaje = textoError(error, 'cargar las provincias')
+            setErrorProvincias(mensaje)
+            setEstadoProvincias('error')
+            notify(mensaje, 'error')
+        })
         return () => { vigente = false }
-    }, [authorizedFetch, formulario.provinciaId, notify])
+    }, [authorizedFetch, intentoProvincias, notify])
 
     useEffect(() => {
-        if (!formulario.provinciaId || !formulario.cantonId) return undefined
+        const provinciaId = formulario.provinciaId
+        if (!provinciaId) {
+            return undefined
+        }
         let vigente = true
-        const claveTerritorial = `${formulario.provinciaId}:${formulario.cantonId}`
-        authorizedFetch(token => obtenerDistritos(formulario.provinciaId, formulario.cantonId, token))
+        authorizedFetch(token => obtenerCantones(provinciaId, token))
             .then(datos => {
                 if (!vigente) return
-                setDistritos(Array.isArray(datos) ? datos : [])
-                setDistritosCargadosPara(claveTerritorial)
+                if (!Array.isArray(datos)) throw new Error('El servicio devolvió una lista de cantones inválida.')
+                setCantones(datos)
+                setEstadoCantones({ clave: provinciaId, estado: 'success', error: '' })
             })
             .catch(error => {
                 if (!vigente) return
-                setDistritos([])
-                setDistritosCargadosPara(claveTerritorial)
-                notify(textoError(error, 'cargar los distritos'), 'error')
+                const mensaje = textoError(error, 'cargar los cantones')
+                setEstadoCantones({ clave: provinciaId, estado: 'error', error: mensaje })
+                notify(mensaje, 'error')
             })
         return () => { vigente = false }
-    }, [authorizedFetch, formulario.cantonId, formulario.provinciaId, notify])
+    }, [authorizedFetch, formulario.provinciaId, intentoCantones, notify])
 
-    const provinciaActual = useMemo(() => provincias.find(item =>
-        String(item.provinciaId) === String(expediente?.provinciaId)), [expediente, provincias])
-    const cantonActual = useMemo(() => cantones.find(item =>
-        String(item.cantonId) === String(expediente?.cantonId)), [cantones, expediente])
-    const distritoActual = useMemo(() => distritos.find(item =>
-        String(item.distritoId) === String(expediente?.distritoId)), [distritos, expediente])
+    useEffect(() => {
+        const provinciaId = formulario.provinciaId
+        const cantonId = formulario.cantonId
+        const claveTerritorial = provinciaId && cantonId ? `${provinciaId}:${cantonId}` : ''
+        if (!claveTerritorial) {
+            return undefined
+        }
+        let vigente = true
+        authorizedFetch(token => obtenerDistritos(provinciaId, cantonId, token))
+            .then(datos => {
+                if (!vigente) return
+                if (!Array.isArray(datos)) throw new Error('El servicio devolvió una lista de distritos inválida.')
+                setDistritos(datos)
+                setEstadoDistritos({ clave: claveTerritorial, estado: 'success', error: '' })
+            })
+            .catch(error => {
+                if (!vigente) return
+                const mensaje = textoError(error, 'cargar los distritos')
+                setEstadoDistritos({ clave: claveTerritorial, estado: 'error', error: mensaje })
+                notify(mensaje, 'error')
+            })
+        return () => { vigente = false }
+    }, [authorizedFetch, formulario.cantonId, formulario.provinciaId, intentoDistritos, notify])
+
+    const claveProvinciaActual = formulario.provinciaId
+    const claveTerritorial = `${formulario.provinciaId}:${formulario.cantonId}`
+    const estadoCantonesActual = estadoCantones.clave === claveProvinciaActual
+        ? estadoCantones.estado : formulario.provinciaId ? 'loading' : 'idle'
+    const estadoDistritosActual = estadoDistritos.clave === claveTerritorial
+        ? estadoDistritos.estado : formulario.provinciaId && formulario.cantonId ? 'loading' : 'idle'
+    const cargandoCantones = estadoCantonesActual === 'loading'
+    const cargandoDistritos = estadoDistritosActual === 'loading'
+    const cantonesActuales = estadoCantones.clave === formulario.provinciaId ? cantones : []
+    const distritosActuales = estadoDistritos.clave === claveTerritorial ? distritos : []
+
+    const provinciaActual = provincias.find(item =>
+        String(item.provinciaId) === String(expediente?.provinciaId))
+    const cantonActual = cantonesActuales.find(item =>
+        String(item.cantonId) === String(expediente?.cantonId))
+    const distritoActual = distritosActuales.find(item =>
+        String(item.distritoId) === String(expediente?.distritoId))
 
     function cambiarTelefono(indice, valor) {
         setFormulario(actual => ({
@@ -138,20 +178,18 @@ export default function Expediente() {
         }))
     }
 
-    const cargandoCantones = Boolean(formulario.provinciaId) && cantonesCargadosPara !== formulario.provinciaId
-    const claveTerritorial = `${formulario.provinciaId}:${formulario.cantonId}`
-    const cargandoDistritos = Boolean(formulario.provinciaId && formulario.cantonId) &&
-        distritosCargadosPara !== claveTerritorial
-
     function cambiarProvincia(evento) {
         setCantones([])
         setDistritos([])
+        setEstadoCantones(catalogoInactivo)
+        setEstadoDistritos(catalogoInactivo)
         setFormulario(actual => ({ ...actual, provinciaId: evento.target.value, cantonId: '', distritoId: '' }))
         setErrores(actual => ({ ...actual, provinciaId: '', cantonId: '', distritoId: '' }))
     }
 
     function cambiarCanton(evento) {
         setDistritos([])
+        setEstadoDistritos(catalogoInactivo)
         setFormulario(actual => ({ ...actual, cantonId: evento.target.value, distritoId: '' }))
         setErrores(actual => ({ ...actual, cantonId: '', distritoId: '' }))
     }
@@ -159,12 +197,19 @@ export default function Expediente() {
     function iniciarEdicion() {
         setFormulario(crearFormulario(expediente))
         setErrores({})
+        setErrorGuardado('')
         setEditando(true)
     }
 
     function cancelarEdicion() {
         setFormulario(crearFormulario(expediente))
+        setCantones([])
+        setDistritos([])
+        setEstadoCantones(catalogoInactivo)
+        setEstadoDistritos(catalogoInactivo)
         setErrores({})
+        setCambiosPendientes(null)
+        setErrorGuardado('')
         setEditando(false)
     }
 
@@ -172,6 +217,24 @@ export default function Expediente() {
         setErrorCarga('')
         setCargando(true)
         setIntentoCarga(valor => valor + 1)
+    }
+
+    function reintentarProvincias() {
+        setEstadoProvincias('loading')
+        setErrorProvincias('')
+        setIntentoProvincias(valor => valor + 1)
+    }
+
+    function reintentarCantones() {
+        setEstadoCantones({ clave: formulario.provinciaId, estado: 'loading', error: '' })
+        setCantones([])
+        setIntentoCantones(valor => valor + 1)
+    }
+
+    function reintentarDistritos() {
+        setEstadoDistritos({ clave: claveTerritorial, estado: 'loading', error: '' })
+        setDistritos([])
+        setIntentoDistritos(valor => valor + 1)
     }
 
     async function guardar(evento) {
@@ -186,11 +249,11 @@ export default function Expediente() {
         if (!formulario.cantonId) nuevosErrores.cantonId = 'Selecciona un cantón.'
         if (!formulario.distritoId) nuevosErrores.distritoId = 'Selecciona un distrito.'
         if (!formulario.otrasSenas.trim()) nuevosErrores.otrasSenas = 'Ingresa otras señas.'
-        if (!cantones.some(item => String(item.cantonId) === formulario.cantonId &&
+        if (!cantonesActuales.some(item => String(item.cantonId) === formulario.cantonId &&
             String(item.provinciaId) === formulario.provinciaId)) {
             nuevosErrores.cantonId = 'El cantón no corresponde a la provincia seleccionada.'
         }
-        if (!distritos.some(item => String(item.distritoId) === formulario.distritoId &&
+        if (!distritosActuales.some(item => String(item.distritoId) === formulario.distritoId &&
             String(item.cantonId) === formulario.cantonId)) {
             nuevosErrores.distritoId = 'El distrito no corresponde al cantón seleccionado.'
         }
@@ -218,7 +281,9 @@ export default function Expediente() {
             setErrores({})
             notify('Tu expediente se guardó correctamente.', 'success')
         } catch (error) {
-            notify(textoError(error, 'guardar los cambios del expediente'), 'error')
+            const mensaje = textoError(error, 'guardar los cambios del expediente')
+            setErrorGuardado(mensaje)
+            notify(mensaje, 'error')
         } finally {
             setGuardando(false)
         }
@@ -245,15 +310,11 @@ export default function Expediente() {
                     <h2>Mi expediente</h2>
                     <p className="subtitle">Consulta tus datos y actualiza tus teléfonos y dirección.</p>
                 </div>
-                {!editando && (
-                    <button className="btn btn-primary" type="button" onClick={iniciarEdicion}>
-                        Editar contacto y dirección
-                    </button>
-                )}
+                <button className="btn btn-primary" type="button" onClick={iniciarEdicion}>Editar contacto y dirección</button>
             </section>
 
             <section className="panel" aria-labelledby="datos-personales-title">
-                <h2 id="datos-personales-title">Datos personales · solo lectura</h2>
+                <h2 id="datos-personales-title">Datos personales</h2>
                 <div className="form-grid" style={{ marginTop: 18 }}>
                     <CampoLectura etiqueta="Nombre completo" valor={expediente.nombreCompleto} />
                     <CampoLectura etiqueta="Correo electrónico" valor={expediente.email} />
@@ -263,106 +324,93 @@ export default function Expediente() {
                 </div>
             </section>
 
-            <form className="panel" onSubmit={guardar} aria-labelledby="contacto-direccion-title">
+            <section className="panel" aria-labelledby="contacto-direccion-title">
                 <div className="section-heading">
                     <div>
                         <h2 id="contacto-direccion-title">Teléfonos y dirección</h2>
-                        <p className="subtitle">Estos son los únicos datos que puedes editar.</p>
                     </div>
-                    {!editando && <span className="status status-success">Solo lectura</span>}
                 </div>
-
                 <div className="form-grid" style={{ marginTop: 18 }}>
-                    <div className="field">
-                        {editando
-                            ? <label htmlFor="expediente-telefonos">Teléfonos</label>
-                            : <span className="helper">Teléfonos</span>}
-                        {editando ? (
-                            <>
-                                {formulario.telefonos.map((telefono, indice) => (
-                                    <div key={`telefono-${indice}`} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
-                                        <input
-                                            id={indice === 0 ? 'expediente-telefonos' : `expediente-telefono-${indice}`}
-                                            aria-label={`Teléfono ${indice + 1}`}
-                                            value={telefono}
-                                            disabled={guardando}
-                                            onChange={evento => cambiarTelefono(indice, evento.target.value)}
-                                        />
-                                        <button className="btn btn-soft" type="button" disabled={guardando || formulario.telefonos.length < 2}
-                                            onClick={() => setFormulario(actual => ({ ...actual,
-                                                telefonos: actual.telefonos.filter((_, posicion) => posicion !== indice) }))}>
-                                            Quitar
-                                        </button>
-                                    </div>
-                                ))}
-                                <button className="btn btn-soft" type="button" disabled={guardando}
-                                    onClick={() => setFormulario(actual => ({ ...actual, telefonos: [...actual.telefonos, ''] }))}>
-                                    Agregar teléfono
-                                </button>
-                            </>
-                        ) : (
-                            (expediente.telefonos || []).length
-                                ? <ul>{expediente.telefonos.map((telefono, indice) => <li key={`${telefono}-${indice}`}>{telefono}</li>)}</ul>
-                                : <p>No hay teléfonos registrados.</p>
-                        )}
-                        {errores.telefonos && <p className="status status-danger" role="alert">{errores.telefonos}</p>}
-                    </div>
+                    <div className="field"><span className="helper">Teléfonos</span>
+                        {(expediente.telefonos || []).length
+                            ? <ul>{expediente.telefonos.map((telefono, indice) => <li key={`${telefono}-${indice}`}>{telefono}</li>)}</ul>
+                            : <p>No hay teléfonos registrados.</p>}</div>
+                    <CampoLectura etiqueta="Provincia" valor={provinciaActual?.nombre} />
+                    <CampoLectura etiqueta="Cantón" valor={cantonActual?.nombre} />
+                    <CampoLectura etiqueta="Distrito" valor={distritoActual?.nombre} />
+                    <CampoLectura etiqueta="Otras señas" valor={expediente.otrasSenas} />
+                </div>
+                {estadoProvincias === 'error' && <div className="status status-danger" role="alert"><p>{errorProvincias}</p>
+                    <button className="btn btn-soft" type="button" onClick={reintentarProvincias}>Reintentar provincias</button></div>}
+                {estadoCantonesActual === 'error' && <div className="status status-danger" role="alert"><p>{estadoCantones.error}</p>
+                    <button className="btn btn-soft" type="button" onClick={reintentarCantones}>Reintentar cantones</button></div>}
+                {estadoDistritosActual === 'error' && <div className="status status-danger" role="alert"><p>{estadoDistritos.error}</p>
+                    <button className="btn btn-soft" type="button" onClick={reintentarDistritos}>Reintentar distritos</button></div>}
+            </section>
 
-                    {[
-                        ['provinciaId', 'Provincia', provincias, 'provinciaId', cambiarProvincia, cargandoCantones],
-                        ['cantonId', 'Cantón', cantones, 'cantonId', cambiarCanton, cargandoCantones],
-                        ['distritoId', 'Distrito', distritos, 'distritoId', evento => setFormulario(actual => ({ ...actual, distritoId: evento.target.value })), cargandoDistritos]
-                    ].map(([campo, etiqueta, opciones, clave, alCambiar, cargandoOpciones]) => {
-                        const valor = editando ? formulario[campo] : String(expediente[campo] ?? '')
-                        const actual = campo === 'provinciaId' ? provinciaActual
-                            : campo === 'cantonId' ? cantonActual : distritoActual
-                        return (
+            {editando && <Modal titulo="Editar contacto y dirección" ocupado={guardando} onCerrar={cancelarEdicion}>
+                <form className="expediente-modal-form" onSubmit={guardar}>
+                    <p className="subtitle">Solo puedes actualizar teléfonos y dirección.</p>
+                    <div className="form-grid">
+                        <div className="field expediente-modal-telefonos"><label htmlFor="expediente-telefonos">Teléfonos</label>
+                            {formulario.telefonos.map((telefono, indice) => <div className="expediente-telefono" key={`telefono-${indice}`}>
+                                <input id={indice === 0 ? 'expediente-telefonos' : `expediente-telefono-${indice}`}
+                                    aria-label={`Teléfono ${indice + 1}`} value={telefono} disabled={guardando}
+                                    onChange={evento => cambiarTelefono(indice, evento.target.value)} />
+                                <button className="btn btn-soft" type="button" disabled={guardando || formulario.telefonos.length < 2}
+                                    onClick={() => setFormulario(actual => ({ ...actual, telefonos: actual.telefonos.filter((_, posicion) => posicion !== indice) }))}>Quitar</button>
+                            </div>)}
+                            <button className="btn btn-soft" type="button" disabled={guardando}
+                                onClick={() => setFormulario(actual => ({ ...actual, telefonos: [...actual.telefonos, ''] }))}>Agregar teléfono</button>
+                            {errores.telefonos && <p className="status status-danger" role="alert">{errores.telefonos}</p>}
+                        </div>
+                        {[
+                            ['provinciaId', 'Provincia', provincias, 'provinciaId', cambiarProvincia, estadoProvincias === 'loading'],
+                            ['cantonId', 'Cantón', cantonesActuales, 'cantonId', cambiarCanton, cargandoCantones],
+                            ['distritoId', 'Distrito', distritosActuales, 'distritoId', evento => setFormulario(actual => ({ ...actual, distritoId: evento.target.value })), cargandoDistritos]
+                        ].map(([campo, etiqueta, opciones, clave, alCambiar, cargandoOpciones]) => (
                             <div className="field" key={campo}>
                                 <label htmlFor={`expediente-${campo}`}>{etiqueta}</label>
-                                {editando ? (
-                                    <select id={`expediente-${campo}`} value={valor} onChange={alCambiar}
-                                        disabled={guardando || cargandoOpciones || (campo !== 'provinciaId' && !opciones.length)}>
-                                        <option value="">Selecciona {etiqueta.toLocaleLowerCase('es')}</option>
-                                        {opciones.map(opcion => (
-                                            <option key={opcion[clave]} value={opcion[clave]}>{opcion.nombre}</option>
-                                        ))}
-                                    </select>
-                                ) : <p>{actual?.nombre || 'No disponible'}</p>}
+                                <select id={`expediente-${campo}`} value={formulario[campo]} onChange={alCambiar}
+                                    disabled={guardando || cargandoOpciones || (campo !== 'provinciaId' && !opciones.length)}>
+                                    <option value="">Selecciona {etiqueta.toLocaleLowerCase('es')}</option>
+                                    {opciones.map(opcion => <option key={opcion[clave]} value={opcion[clave]}>{opcion.nombre}</option>)}
+                                </select>
+                                {campo === 'provinciaId' && estadoProvincias === 'error' && <div className="status status-danger" role="alert">
+                                    <p>{errorProvincias}</p><button className="btn btn-soft" type="button" onClick={reintentarProvincias}>Reintentar provincias</button></div>}
+                                {campo === 'provinciaId' && estadoProvincias === 'loading' && <p className="helper" role="status">Cargando provincias…</p>}
+                                {campo === 'cantonId' && estadoCantonesActual === 'error' && <div className="status status-danger" role="alert">
+                                    <p>{estadoCantones.error}</p><button className="btn btn-soft" type="button" onClick={reintentarCantones}>Reintentar cantones</button></div>}
+                                {campo === 'cantonId' && cargandoCantones && <p className="helper" role="status">Cargando cantones…</p>}
+                                {campo === 'distritoId' && estadoDistritosActual === 'error' && <div className="status status-danger" role="alert">
+                                    <p>{estadoDistritos.error}</p><button className="btn btn-soft" type="button" onClick={reintentarDistritos}>Reintentar distritos</button></div>}
+                                {campo === 'distritoId' && cargandoDistritos && <p className="helper" role="status">Cargando distritos…</p>}
+                                {campo === 'cantonId' && estadoCantonesActual === 'success' && !opciones.length && <p className="helper">No hay cantones disponibles para esta provincia.</p>}
+                                {campo === 'distritoId' && estadoDistritosActual === 'success' && !opciones.length && <p className="helper">No hay distritos disponibles para este cantón.</p>}
                                 {errores[campo] && <p className="status status-danger" role="alert">{errores[campo]}</p>}
                             </div>
-                        )
-                    })}
-
-                    <div className="field" style={{ gridColumn: '1 / -1' }}>
-                        <label htmlFor="expediente-otras-senas">Otras señas</label>
-                        {editando ? (
+                        ))}
+                        <div className="field" style={{ gridColumn: '1 / -1' }}><label htmlFor="expediente-otras-senas">Otras señas</label>
                             <textarea id="expediente-otras-senas" value={formulario.otrasSenas} disabled={guardando}
                                 onChange={evento => setFormulario(actual => ({ ...actual, otrasSenas: evento.target.value }))} />
-                        ) : <p>{expediente.otrasSenas}</p>}
-                        {errores.otrasSenas && <p className="status status-danger" role="alert">{errores.otrasSenas}</p>}
+                            {errores.otrasSenas && <p className="status status-danger" role="alert">{errores.otrasSenas}</p>}
+                        </div>
                     </div>
-                </div>
-
-                {editando && (
-                    <div className="profile-actions">
-                        <button className="btn btn-primary" type="submit" disabled={guardando || cargandoCantones || cargandoDistritos}>
-                            Revisar cambios
-                        </button>
-                        <button className="btn btn-soft" type="button" disabled={guardando} onClick={cancelarEdicion}>
-                            Cancelar
-                        </button>
-                    </div>
-                )}
-            </form>
+                    <div className="profile-actions"><button className="btn btn-primary" type="submit"
+                        disabled={guardando || cargandoCantones || cargandoDistritos || estadoProvincias !== 'success'}>Guardar cambios</button>
+                        <button className="btn btn-soft" type="button" disabled={guardando} onClick={cancelarEdicion}>Cancelar</button></div>
+                </form>
+            </Modal>}
             {cambiosPendientes && (
                 <Modal titulo="Confirmar actualización del expediente" ocupado={guardando}
-                    onCerrar={() => setCambiosPendientes(null)}>
+                    onCerrar={() => { if (!guardando) { setCambiosPendientes(null); setErrorGuardado('') } }}>
                     <p>Se guardarán tus teléfonos y dirección. Los datos personales permanecerán sin cambios.</p>
+                    {errorGuardado && <p className="status status-danger" role="alert">{errorGuardado}</p>}
                     <div className="profile-actions">
                         <button className="btn btn-primary" type="button" onClick={confirmarGuardado} disabled={guardando}>
                             {guardando ? 'Guardando…' : 'Confirmar y guardar'}
                         </button>
-                        <button className="btn btn-soft" type="button" onClick={() => setCambiosPendientes(null)} disabled={guardando}>
+                        <button className="btn btn-soft" type="button" onClick={() => { setCambiosPendientes(null); setErrorGuardado('') }} disabled={guardando}>
                             Volver al formulario
                         </button>
                     </div>

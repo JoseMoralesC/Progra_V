@@ -1,5 +1,16 @@
 .dashboard { display: grid; gap: 18px; }
 .dashboard-enlaces { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; }
+.dashboard-quick-link { min-height: 40px; padding: 9px 15px; font-size: 13px; }
+.dashboard-table-wrap { width: 100%; overflow-x: auto; }
+.dashboard-activity-table { width: 100%; min-width: 560px; border-collapse: collapse; }
+.dashboard-activity-table th, .dashboard-activity-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+.dashboard-activity-table tbody tr:hover { background: var(--pill); }
+.dashboard-activity-table td:nth-child(2) { max-width: 420px; }
 .dashboard-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
 .dashboard-metricas .panel { margin: 0; }
 .dashboard-metricas strong { display: block; margin-top: 10px; font-size: 1.8rem; }
+
+@media (max-width: 600px) {
+    .dashboard-enlaces { gap: 9px; }
+    .dashboard-quick-link { flex: 1 1 145px; white-space: normal; }
+}

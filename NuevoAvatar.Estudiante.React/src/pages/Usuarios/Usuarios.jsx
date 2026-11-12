@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
+import { RowActionsMenu } from '../../components/RowActionsMenu'
 import { usuariosApi, validarUsuario } from './usuarios-api'
 import '../Instituciones/instituciones.css'
 
@@ -10,13 +11,12 @@ const usuarioVacio = { email: '', tipoIdentificacion: '', identificacion: '', no
 export function Usuarios({ cliente }) {
     const api = useMemo(() => usuariosApi(cliente), [cliente])
     const [usuarios, setUsuarios] = useState([])
+    const [tiposIdentificacion, setTiposIdentificacion] = useState([])
     const [roles, setRoles] = useState([])
     const [filtros, setFiltros] = useState(filtrosVacios)
     const [aplicados, setAplicados] = useState(filtrosVacios)
     const [tamano, setTamano] = useState(15)
     const [pagina, setPagina] = useState(0)
-    const [orden, setOrden] = useState('email')
-    const [ascendente, setAscendente] = useState(true)
     const [estado, setEstado] = useState('Cargando usuarios…')
     const [error, setError] = useState('')
     const [aviso, setAviso] = useState('')
@@ -44,6 +44,9 @@ export function Usuarios({ cliente }) {
             if (!vigente) return
             if (!Array.isArray(datos) || !Array.isArray(listaRoles)) throw new Error('No se pudieron leer usuarios y roles.')
             setUsuarios(datos)
+            setTiposIdentificacion([...new Set(datos
+                .map(item => item.tipoIdentificacion?.trim())
+                .filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es')))
             setRoles(listaRoles)
             setTamano(tam)
             setEstado(datos.length ? '' : 'No hay usuarios para mostrar.')
@@ -54,28 +57,22 @@ export function Usuarios({ cliente }) {
     const filtrados = usuarios.filter(item =>
         (!aplicados.dominio || item.email.toLowerCase().endsWith(`@${aplicados.dominio}`)) &&
         (!aplicados.rol || item.idRol === aplicados.rol))
-    function comparar(a, b) {
-        const valorA = String(orden === 'idRol' ? roles.find(rol => rol.idRol === a.idRol)?.nombreRol || a.idRol : a[orden] || '').toLocaleLowerCase()
-        const valorB = String(orden === 'idRol' ? roles.find(rol => rol.idRol === b.idRol)?.nombreRol || b.idRol : b[orden] || '').toLocaleLowerCase()
-        return (ascendente ? 1 : -1) * valorA.localeCompare(valorB, 'es')
-    }
-    const ordenados = [...filtrados].sort(comparar)
-    const totalPaginas = Math.max(1, Math.ceil(ordenados.length / tamano))
+    const totalPaginas = Math.max(1, Math.ceil(filtrados.length / tamano))
     const paginaActual = Math.min(pagina, totalPaginas - 1)
-    const visibles = ordenados.slice(paginaActual * tamano, (paginaActual + 1) * tamano)
+    const visibles = filtrados.slice(paginaActual * tamano, (paginaActual + 1) * tamano)
     const nombreRol = id => roles.find(item => item.idRol === id)?.nombreRol || id
+    const opcionesTipoIdentificacion = useMemo(() => {
+        const opciones = new Set(tiposIdentificacion)
+        const valorActual = formulario?.tipoIdentificacion?.trim()
+        if (valorActual) opciones.add(valorActual)
+        return [...opciones].sort((a, b) => a.localeCompare(b, 'es'))
+    }, [formulario?.tipoIdentificacion, tiposIdentificacion])
 
     async function filtrar(evento) {
         evento.preventDefault()
         setAplicados(filtros)
         setAviso('')
         await cargar(filtros)
-    }
-
-    function ordenar(campo) {
-        if (orden === campo) setAscendente(actual => !actual)
-        else { setOrden(campo); setAscendente(true) }
-        setPagina(0)
     }
 
     function abrir(usuario = null) {
@@ -98,6 +95,10 @@ export function Usuarios({ cliente }) {
         const datos = { ...formulario, email: formulario.email.trim().toLowerCase(),
             nombre: formulario.nombre.trim(), identificacion: formulario.identificacion.trim(),
             tipoIdentificacion: formulario.tipoIdentificacion.trim() }
+        if (!opcionesTipoIdentificacion.includes(datos.tipoIdentificacion)) {
+            setError('Selecciona un tipo de identificación existente.')
+            return
+        }
         const mensaje = validarUsuario(datos, roles, !formulario.existente)
         if (mensaje) return setError(mensaje)
         setGuardando(true)
@@ -117,7 +118,7 @@ export function Usuarios({ cliente }) {
             setAplicados(filtrosVacios)
             const lista = await cargar(filtrosVacios)
             if (lista) {
-                const posicion = [...lista].sort(comparar).findIndex(item => item.email === datos.email)
+                const posicion = lista.findIndex(item => item.email === datos.email)
                 setPagina(Math.floor(Math.max(0, posicion) / tamano))
                 setAviso('Usuario guardado correctamente.')
             }
@@ -155,17 +156,17 @@ export function Usuarios({ cliente }) {
             {aviso && <p role="status" className="aviso">{aviso}</p>}
             {estado && <p role="status">{estado}</p>}
             {!estado && <div className="instituciones-tabla"><table><thead><tr>
-                {[
-                    ['email', 'Email (ID)'], ['tipoIdentificacion', 'Tipo de identificación'],
-                    ['identificacion', 'Identificación'], ['nombre', 'Nombre'], ['idRol', 'Rol']
-                ].map(([campo, titulo]) => <th key={campo}><button type="button" className="btn btn-soft" onClick={() => ordenar(campo)}>{titulo}</button></th>)}
+                {['Email (ID)', 'Tipo de identificación', 'Identificación', 'Nombre', 'Rol']
+                    .map(titulo => <th key={titulo} scope="col">{titulo}</th>)}
                 <th>Acciones</th></tr></thead><tbody>{visibles.map(item => <tr key={item.email}>
                     <td>{item.email}</td><td>{item.tipoIdentificacion}</td><td>{item.identificacion}</td><td>{item.nombre}</td><td>{nombreRol(item.idRol)}</td>
-                    <td><div className="instituciones-acciones"><button type="button" className="btn btn-soft" onClick={() => verDetalle(item)}>Detalle</button>
-                        <button type="button" className="btn btn-soft" onClick={() => abrir(item)}>Editar</button>
-                        <button type="button" className="btn btn-danger" onClick={() => setPendiente(item)}>Eliminar</button></div></td>
+                    <td><RowActionsMenu rowLabel={item.email} actions={[
+                        { label: 'Detalle', onSelect: () => verDetalle(item) },
+                        { label: 'Editar', onSelect: () => abrir(item) },
+                        { label: 'Eliminar', danger: true, onSelect: () => setPendiente(item) }
+                    ]} /></td>
                 </tr>)}</tbody></table></div>}
-            {ordenados.length > tamano && <div className="instituciones-paginas">
+            {filtrados.length > tamano && <div className="instituciones-paginas">
                 <button type="button" className="btn btn-soft" disabled={paginaActual === 0} onClick={() => setPagina(paginaActual - 1)}>Anterior</button>
                 <span>Página {paginaActual + 1} de {totalPaginas}</span>
                 <button type="button" className="btn btn-soft" disabled={paginaActual + 1 === totalPaginas} onClick={() => setPagina(paginaActual + 1)}>Siguiente</button>
@@ -181,7 +182,20 @@ export function Usuarios({ cliente }) {
             {error && <p role="alert" className="aviso error">{error}</p>}
             <form className="usuarios-filtros" onSubmit={guardar}>
                 {[
-                    ['email', 'Correo', 'email'], ['tipoIdentificacion', 'Tipo de identificación', 'text'],
+                    ['email', 'Correo', 'email']
+                ].map(([campo, titulo, tipo]) => <div className="field" key={campo}><label htmlFor={`usuario-${campo}`}>{titulo}</label>
+                    <input id={`usuario-${campo}`} type={tipo} required value={formulario[campo]}
+                        disabled={campo === 'email' && formulario.existente}
+                        onChange={e => setFormulario({ ...formulario, [campo]: e.target.value })} /></div>)}
+                <div className="field"><label htmlFor="usuario-tipo-identificacion">Tipo de identificación</label>
+                    <select id="usuario-tipo-identificacion" required value={formulario.tipoIdentificacion}
+                        onChange={e => setFormulario({ ...formulario, tipoIdentificacion: e.target.value })}>
+                        <option value="">Seleccione</option>
+                        {opcionesTipoIdentificacion.map(tipo => <option key={tipo} value={tipo}>{tipo}</option>)}
+                    </select>
+                    {!opcionesTipoIdentificacion.length && <p className="helper" role="status">No hay tipos registrados para seleccionar.</p>}
+                </div>
+                {[
                     ['identificacion', 'Identificación', 'text'], ['nombre', 'Nombre', 'text']
                 ].map(([campo, titulo, tipo]) => <div className="field" key={campo}><label htmlFor={`usuario-${campo}`}>{titulo}</label>
                     <input id={`usuario-${campo}`} type={tipo} required value={formulario[campo]}

@@ -9,6 +9,13 @@ const indicadores = [
     { id: 'ADM12', nombre: 'Períodos activos', ruta: '/gateway/admin/periodo?estado=ACTIVO' }
 ]
 
+function presentarBitacora(descripcion) {
+    const texto = String(descripcion || '')
+    const separador = texto.lastIndexOf(' · ')
+    if (separador < 0) return { accion: texto || '—', modulo: '—' }
+    return { accion: texto.slice(0, separador) || '—', modulo: texto.slice(separador + 3) || '—' }
+}
+
 export function Dashboard({ cliente, usuario }) {
     const [metricas, setMetricas] = useState({})
     const [grupos, setGrupos] = useState(null)
@@ -105,8 +112,8 @@ export function Dashboard({ cliente, usuario }) {
                 </li>)}</ul>}
                 {usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <Link to="/notas">Consultar y registrar notas</Link>}
                 <div className="dashboard-enlaces">
-                    <a href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
-                    <Link to="/perfil">Mi perfil</Link>
+                    <a className="btn btn-primary dashboard-quick-link" href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
+                    <Link className="btn btn-primary dashboard-quick-link" to="/perfil">Mi perfil</Link>
                 </div>
             </section>
             <ActividadReciente key={claveActividad} cliente={cliente} usuario={usuario} />
@@ -125,9 +132,9 @@ export function Dashboard({ cliente, usuario }) {
                         ['ADM4', 'Usuarios', '/usuarios'], ['ADM5', 'Roles y permisos', '/roles'],
                         ['ADM6', 'Parámetros', '/parametros'], ['ADM8', 'Instituciones', '/instituciones']
                     ].filter(([id]) => usuario.modulos.some(modulo => modulo.idModulo === id))
-                        .map(([id, nombre, ruta]) => <Link key={id} to={ruta}>{nombre}</Link>)}
-                    <a href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
-                    <Link to="/perfil">Mi perfil</Link>
+                        .map(([id, nombre, ruta]) => <Link className="btn btn-primary dashboard-quick-link" key={id} to={ruta}>{nombre}</Link>)}
+                    <a className="btn btn-primary dashboard-quick-link" href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
+                    <Link className="btn btn-primary dashboard-quick-link" to="/perfil">Mi perfil</Link>
                 </nav>
             </section>
             {errorMetricas && <p role="alert">{errorMetricas}</p>}
@@ -180,9 +187,18 @@ function ActividadReciente({ cliente, usuario }) {
             {errorBitacoras && <p role="alert">{errorBitacoras}</p>}
             {bitacoras === null && !errorBitacoras && <p role="status">Cargando bitácoras…</p>}
             {bitacoras?.length === 0 && <p>No hay bitácoras recientes.</p>}
-            {bitacoras?.length > 0 && <ul>{bitacoras.map(item => <li key={item.idBitacora}>
-                {item.descripcion} · {item.usuario} · {new Date(item.fechaHora).toLocaleString('es-CR')}
-            </li>)}</ul>}
+            {bitacoras?.length > 0 && <div className="dashboard-table-wrap">
+                <table className="dashboard-activity-table">
+                    <thead><tr><th>Módulo</th><th>Acción</th><th>Usuario</th><th>Fecha</th></tr></thead>
+                    <tbody>{bitacoras.map(item => {
+                        const { accion, modulo } = presentarBitacora(item.descripcion)
+                        return <tr key={item.idBitacora}>
+                            <td>{modulo}</td><td>{accion}</td><td>{item.usuario}</td>
+                            <td>{item.fechaHora ? new Date(item.fechaHora).toLocaleString('es-CR') : '—'}</td>
+                        </tr>
+                    })}</tbody>
+                </table>
+            </div>}
         </section>
     </>
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Link, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
 import StudentLayout from '../layouts/StudentLayout'
 import Login from '../pages/Login/Login'
@@ -9,6 +9,8 @@ import { Instituciones } from '../pages/Instituciones/Instituciones.jsx'
 import { Parametros } from '../pages/Parametros/Parametros.jsx'
 import { Roles } from '../pages/Roles/Roles.jsx'
 import { Usuarios } from '../pages/Usuarios/Usuarios.jsx'
+import { Expedientes } from '../pages/Expedientes/Expedientes.jsx'
+import { BackToHomeButton } from '../components/BackToHomeButton'
 import InicioEstudiante from '../pages/Estudiante/InicioEstudiante'
 import Expediente from '../pages/Estudiante/Expediente'
 import Prematricula from '../pages/Estudiante/Prematricula'
@@ -24,6 +26,7 @@ import { Cursos } from '../../../web/ramses/src/Cursos.jsx'
 import { Profesores } from '../../../web/ramses/src/Profesores.jsx'
 import { Periodos } from '../../../web/ramses/src/Periodos.jsx'
 import { Notificaciones } from '../../../web/ramses/src/Notificaciones.jsx'
+import { WelcomeModal } from '../components/WelcomeModal'
 import '../styles/mantenimientos.css'
 
 const adminMenu = [
@@ -31,6 +34,7 @@ const adminMenu = [
     { idModulo: 'ADM6', label: 'Parámetros', path: '/parametros', icon: '▤' },
     { idModulo: 'ADM5', label: 'Roles', path: '/roles', icon: '▧' },
     { idModulo: 'ADM4', label: 'Usuarios', path: '/usuarios', icon: '♙' },
+    { idModulo: 'ADM16', label: 'Expedientes', path: '/expedientes', icon: '▤' },
     { idModulo: 'ADM7', label: 'Módulos', path: '/modulos', icon: '▦' },
     { idModulo: 'ADM9', label: 'Carreras', path: '/carreras', icon: '▤' },
     { idModulo: 'ADM10', label: 'Cursos', path: '/cursos', icon: '▤' },
@@ -41,7 +45,7 @@ const adminMenu = [
 ]
 
 const rutasCriticas = new Set([
-    '/inicio', '/instituciones', '/parametros', '/roles', '/usuarios', '/modulos',
+    '/inicio', '/instituciones', '/parametros', '/roles', '/usuarios', '/expedientes', '/modulos',
     '/carreras', '/cursos', '/profesores', '/periodos', '/notificaciones', '/notas',
     '/estudiante', '/estudiante/expediente', '/estudiante/prematricula', '/estudiante/perfil', '/perfil'
 ])
@@ -131,8 +135,9 @@ function roleOf(user) {
 function AdminPage({ title, children, modulo, perfil }) {
     const { session, logout, authorizedFetch } = useAuth()
     const navigate = useNavigate()
-    const [modulos, setModulos] = useState(session?.user?.modulos || [])
+    const [modulos, setModulos] = useState([])
     const [errorMenu, setErrorMenu] = useState('')
+    const [permisosCargados, setPermisosCargados] = useState(false)
     const cliente = useMemo(() => crearClienteAutenticado(authorizedFetch), [authorizedFetch])
     const user = session?.user || {}
     const role = roleOf(user)
@@ -142,6 +147,7 @@ function AdminPage({ title, children, modulo, perfil }) {
         const activos = menu.filter(item => item?.activo !== false)
         setModulos(activos)
         setErrorMenu('')
+        setPermisosCargados(true)
         return activos
     }, [authorizedFetch])
     useEffect(() => {
@@ -150,7 +156,7 @@ function AdminPage({ title, children, modulo, perfil }) {
             .then(menu => { if (vigente && Array.isArray(menu)) {
                 setModulos(actuales => JSON.stringify(actuales) === JSON.stringify(menu) ? actuales : menu)
             } })
-            .catch(error => { if (vigente) { setModulos([]); setErrorMenu(error.message) } })
+            .catch(error => { if (vigente) { setModulos([]); setErrorMenu(error.message); setPermisosCargados(true) } })
         return () => { vigente = false }
     }, [actualizarMenu])
     const dashboardUser = useMemo(() => ({
@@ -180,10 +186,12 @@ function AdminPage({ title, children, modulo, perfil }) {
             footerText="Sistema administrativo"
             onLogout={handleLogout}
         >
-            {errorMenu ? <section className="panel" role="alert"><h2>No se pudieron comprobar los permisos</h2><p>{errorMenu}</p><Link to="/inicio">Volver al inicio</Link></section>
+            {errorMenu ? <section className="panel" role="alert"><h2>No se pudieron comprobar los permisos</h2><p>{errorMenu}</p>
+                <button type="button" className="btn btn-soft" onClick={() => actualizarMenu().catch(() => {})}>Reintentar</button> <BackToHomeButton /></section>
+                : !permisosCargados ? <section className="panel" role="status">Comprobando permisos…</section>
                 : modulo && (role !== perfil || !modulos.some(m => m.idModulo === modulo))
-                    ? <section className="panel" role="alert"><h2>Acceso restringido</h2><p>No tienes permiso para esta pantalla.</p><Link to="/inicio">Volver al inicio</Link></section>
-                    : <>{modulo && <Link to="/inicio">Volver al inicio</Link>}
+                    ? <section className="panel" role="alert"><h2>Acceso restringido</h2><p>No tienes permiso para esta pantalla.</p><BackToHomeButton /></section>
+                    : <>{modulo && <BackToHomeButton />}
                         <div className={modulo === 'ADM17' ? 'notas-integradas' : modulo ? 'ramses-integradas' : undefined}>
                             {children({ cliente, usuario: dashboardUser, actualizarMenu })}
                         </div></>}
@@ -205,6 +213,65 @@ function DashboardRoute() {
     return <AdminPage title="Inicio">{({ cliente, usuario }) => <Dashboard cliente={cliente} usuario={usuario} />}</AdminPage>
 }
 
+async function huellaUsuarioBienvenida(usuario) {
+    const identidad = String(usuario?.usuarioID || usuario?.email || '').trim().toLocaleLowerCase('es')
+    try {
+        const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(identidad))
+        return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('')
+    } catch {
+        let hash = 2166136261
+        for (const caracter of identidad) hash = Math.imul(hash ^ caracter.charCodeAt(0), 16777619)
+        return (hash >>> 0).toString(16)
+    }
+}
+
+function WelcomeCoordinator() {
+    const { session } = useAuth()
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [bienvenida, setBienvenida] = useState(null)
+    const procesada = useRef('')
+    const usuario = session?.user
+    const rol = roleOf(usuario)
+
+    useEffect(() => {
+        if (!usuario || location.pathname === '/login' || !['ADMINISTRADOR', 'ESTUDIANTE'].includes(rol)) return undefined
+        const control = new AbortController()
+
+        huellaUsuarioBienvenida(usuario).then(huella => {
+            if (control.signal.aborted) return
+            const sessionId = session?.welcomeSessionId || 'inicio'
+            const clave = `nuevo-avatar.welcome.v1:${sessionId}:${huella}`
+            if (procesada.current === clave) return
+            procesada.current = clave
+            try {
+                if (sessionStorage.getItem(clave)) return
+                sessionStorage.setItem(clave, 'mostrada')
+            } catch {
+                // La referencia en memoria evita reaperturas por render mientras la app siga montada.
+            }
+            setBienvenida({ clave, sessionId, identidad: String(usuario.usuarioID || usuario.email || '').trim().toLocaleLowerCase('es'),
+                nombre: String(usuario.nombre || '').trim(), esEstudiante: rol === 'ESTUDIANTE' })
+        })
+        return () => control.abort()
+    }, [location.pathname, rol, session?.welcomeSessionId, usuario])
+
+    const identidadActual = String(usuario?.usuarioID || usuario?.email || '').trim().toLocaleLowerCase('es')
+    if (location.pathname === '/login' || !['ADMINISTRADOR', 'ESTUDIANTE'].includes(rol) || !bienvenida ||
+        bienvenida.sessionId !== (session?.welcomeSessionId || 'inicio') || bienvenida.identidad !== identidadActual) return null
+
+    function continuar() {
+        const rutaActualEsDelPortal = bienvenida.esEstudiante
+            ? location.pathname === '/estudiante' || location.pathname.startsWith('/estudiante/')
+            : location.pathname !== '/login' && !location.pathname.startsWith('/estudiante/')
+        if (!rutaActualEsDelPortal) navigate(bienvenida.esEstudiante ? '/estudiante' : '/inicio')
+        setBienvenida(null)
+    }
+
+    return <WelcomeModal nombre={bienvenida.nombre} esEstudiante={bienvenida.esEstudiante}
+        onCerrar={() => setBienvenida(null)} onContinuar={continuar} />
+}
+
 export default function AppRoutes() {
     const { session } = useAuth()
     const home = esEstudiante(session?.user) ? '/estudiante' : '/inicio'
@@ -212,6 +279,7 @@ export default function AppRoutes() {
     return (
         <>
         <AuditoriaInterfaz />
+        <WelcomeCoordinator />
         <Routes>
             <Route path="/" element={<Navigate to={home} replace />} />
             <Route path="/login" element={<Login />} />
@@ -230,6 +298,7 @@ export default function AppRoutes() {
                     <Route path="/parametros" element={<AdminPage title="Parámetros" modulo="ADM6" perfil="ADMINISTRADOR">{({ cliente }) => <Parametros cliente={cliente} />}</AdminPage>} />
                     <Route path="/roles" element={<AdminPage title="Roles y permisos" modulo="ADM5" perfil="ADMINISTRADOR">{({ cliente, actualizarMenu }) => <Roles cliente={cliente} onPermisosActualizados={actualizarMenu} />}</AdminPage>} />
                     <Route path="/usuarios" element={<AdminPage title="Usuarios" modulo="ADM4" perfil="ADMINISTRADOR">{({ cliente }) => <Usuarios cliente={cliente} />}</AdminPage>} />
+                    <Route path="/expedientes" element={<AdminPage title="Expedientes" modulo="ADM16" perfil="ADMINISTRADOR">{({ cliente }) => <Expedientes cliente={cliente} />}</AdminPage>} />
                     <Route path="/notas" element={<AdminPage title="Notas" modulo="ADM17" perfil="PROFESOR">{({ cliente }) => <Notas cliente={cliente} />}</AdminPage>} />
                     <Route path="/perfil" element={<AdminPage title="Perfil">{() => <Perfil />}</AdminPage>} />
                     <Route path="/modulos" element={<AdminPage title="Módulos" modulo="ADM7" perfil="ADMINISTRADOR">{({ cliente }) => <Modulos cliente={cliente} />}</AdminPage>} />

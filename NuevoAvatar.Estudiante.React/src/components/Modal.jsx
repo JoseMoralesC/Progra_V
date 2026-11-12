@@ -20,7 +20,11 @@ export function Modal({ titulo, onCerrar, ocupado = false, children }) {
             evento.preventDefault()
             if (!ocupado) onCerrar()
         }}>
-        <h2 id={tituloId}>{titulo}</h2>
-        {children}
+        <div className="mantenimiento-modal__header">
+            <h2 id={tituloId}>{titulo}</h2>
+            <button type="button" className="mantenimiento-modal__close" aria-label="Cerrar ventana"
+                onClick={onCerrar} disabled={ocupado}>×</button>
+        </div>
+        <div className="mantenimiento-modal__content">{children}</div>
     </dialog>
 }

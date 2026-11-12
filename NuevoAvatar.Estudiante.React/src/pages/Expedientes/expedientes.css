@@ -1,0 +1,20 @@
+.expedientes-filtros { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.expedientes-filtros .field { flex: 1 1 280px; }
+.expedientes-filtros input, .expedientes-formulario input, .expedientes-formulario select, .expedientes-formulario textarea {
+    width: 100%; min-height: 42px; border: 1px solid var(--line); border-radius: 14px; padding: 8px 12px;
+    background: var(--glass-strong); color: var(--text); font: inherit;
+}
+.expedientes-formulario { display: grid; gap: 16px; }
+.expedientes-formulario .subtitle { grid-column: 1 / -1; margin: 0; }
+.expedientes-formulario .field { min-width: 0; }
+.expedientes-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.expedientes-formulario textarea { min-height: 84px; resize: vertical; }
+.expedientes-telefono { display: flex; gap: 8px; margin-bottom: 8px; }
+.expedientes-telefono input { min-width: 0; flex: 1; }
+.expedientes-detalle { display: grid; grid-template-columns: minmax(150px, 1fr) 2fr; gap: 10px 16px; }
+.expedientes-detalle dt { font-weight: 700; }
+.expedientes-detalle dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+    .expedientes-form-grid, .expedientes-detalle { grid-template-columns: minmax(0, 1fr); }
+    .expedientes-detalle dt { margin-top: 8px; }
+}
