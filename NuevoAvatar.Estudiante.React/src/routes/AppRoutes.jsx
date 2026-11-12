@@ -136,17 +136,23 @@ function AdminPage({ title, children, modulo, perfil }) {
     const cliente = useMemo(() => crearClienteAutenticado(authorizedFetch), [authorizedFetch])
     const user = session?.user || {}
     const role = roleOf(user)
+    const actualizarMenu = useCallback(async () => {
+        const menu = await authorizedFetch(token => obtenerMenu(token))
+        if (!Array.isArray(menu)) throw new Error('No se pudieron comprobar los permisos.')
+        const activos = menu.filter(item => item?.activo !== false)
+        setModulos(activos)
+        setErrorMenu('')
+        return activos
+    }, [authorizedFetch])
     useEffect(() => {
         let vigente = true
-        authorizedFetch(token => obtenerMenu(token))
+        actualizarMenu()
             .then(menu => { if (vigente && Array.isArray(menu)) {
-                const activos = menu.filter(item => item?.activo !== false)
-                setModulos(actuales => JSON.stringify(actuales) === JSON.stringify(activos) ? actuales : activos)
-                setErrorMenu('')
+                setModulos(actuales => JSON.stringify(actuales) === JSON.stringify(menu) ? actuales : menu)
             } })
             .catch(error => { if (vigente) { setModulos([]); setErrorMenu(error.message) } })
         return () => { vigente = false }
-    }, [authorizedFetch])
+    }, [actualizarMenu])
     const dashboardUser = useMemo(() => ({
         ...user,
         usuarioID: user.usuarioID || user.email || session?.email || '',
@@ -176,10 +182,10 @@ function AdminPage({ title, children, modulo, perfil }) {
         >
             {errorMenu ? <section className="panel" role="alert"><h2>No se pudieron comprobar los permisos</h2><p>{errorMenu}</p><Link to="/inicio">Volver al inicio</Link></section>
                 : modulo && (role !== perfil || !modulos.some(m => m.idModulo === modulo))
-                    ? <section className="panel"><h2>Acceso restringido</h2><p>No tienes permiso para esta pantalla.</p><Link to="/inicio">Volver al inicio</Link></section>
+                    ? <section className="panel" role="alert"><h2>Acceso restringido</h2><p>No tienes permiso para esta pantalla.</p><Link to="/inicio">Volver al inicio</Link></section>
                     : <>{modulo && <Link to="/inicio">Volver al inicio</Link>}
                         <div className={modulo === 'ADM17' ? 'notas-integradas' : modulo ? 'ramses-integradas' : undefined}>
-                            {children({ cliente, usuario: dashboardUser })}
+                            {children({ cliente, usuario: dashboardUser, actualizarMenu })}
                         </div></>}
         </MainLayout>
     )
@@ -220,10 +226,10 @@ export default function AppRoutes() {
 
                 <Route element={<AdminRoleGate />}>
                     <Route path="/inicio" element={<DashboardRoute />} />
-                    <Route path="/instituciones" element={<AdminPage title="Instituciones">{({ cliente }) => <Instituciones cliente={cliente} />}</AdminPage>} />
-                    <Route path="/parametros" element={<AdminPage title="Parámetros">{({ cliente }) => <Parametros cliente={cliente} />}</AdminPage>} />
-                    <Route path="/roles" element={<AdminPage title="Roles y permisos">{({ cliente }) => <Roles cliente={cliente} />}</AdminPage>} />
-                    <Route path="/usuarios" element={<AdminPage title="Usuarios">{({ cliente }) => <Usuarios cliente={cliente} />}</AdminPage>} />
+                    <Route path="/instituciones" element={<AdminPage title="Instituciones" modulo="ADM8" perfil="ADMINISTRADOR">{({ cliente }) => <Instituciones cliente={cliente} />}</AdminPage>} />
+                    <Route path="/parametros" element={<AdminPage title="Parámetros" modulo="ADM6" perfil="ADMINISTRADOR">{({ cliente }) => <Parametros cliente={cliente} />}</AdminPage>} />
+                    <Route path="/roles" element={<AdminPage title="Roles y permisos" modulo="ADM5" perfil="ADMINISTRADOR">{({ cliente, actualizarMenu }) => <Roles cliente={cliente} onPermisosActualizados={actualizarMenu} />}</AdminPage>} />
+                    <Route path="/usuarios" element={<AdminPage title="Usuarios" modulo="ADM4" perfil="ADMINISTRADOR">{({ cliente }) => <Usuarios cliente={cliente} />}</AdminPage>} />
                     <Route path="/notas" element={<AdminPage title="Notas" modulo="ADM17" perfil="PROFESOR">{({ cliente }) => <Notas cliente={cliente} />}</AdminPage>} />
                     <Route path="/perfil" element={<AdminPage title="Perfil">{() => <Perfil />}</AdminPage>} />
                     <Route path="/modulos" element={<AdminPage title="Módulos" modulo="ADM7" perfil="ADMINISTRADOR">{({ cliente }) => <Modulos cliente={cliente} />}</AdminPage>} />
