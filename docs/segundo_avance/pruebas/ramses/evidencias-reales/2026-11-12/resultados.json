@@ -1,0 +1,25 @@
+{
+  "version": "fb76dbe",
+  "fecha": "2026-11-12T02:02:58-06:00",
+  "crud": {
+    "marca": "RPQGSB",
+    "aprobadas": 26,
+    "total": 26,
+    "bitacoras": 9,
+    "limpiezaVerificada": true
+  },
+  "concurrenciaPeriodo": {
+    "respuestas": [201, 409],
+    "consultaGanador": 200,
+    "limpieza": 204,
+    "correcto": true
+  },
+  "notificacionSinSmtp": {
+    "respuesta": 503,
+    "historialEncontrado": true,
+    "estado": "ERROR",
+    "htmlSanitizado": true,
+    "errorControlado": true,
+    "correcto": true
+  }
+}
