@@ -18,7 +18,8 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
         let body, status = 200
         if (path === '/gateway/auth/sesion') body = { usuarioID: 'admin@cuc.ac.cr', nombre: 'Ana Mora', rol: 'ADMINISTRADOR' }
         else if (path === '/gateway/menu') body = [
-            { idModulo: 'ADM5', nombreModulo: 'Roles', activo: true, orden: 5 }
+            { idModulo: 'ADM5', nombreModulo: 'Roles', activo: true, orden: 5 },
+            ...(guardados.length ? [{ idModulo: 'ADM8', nombreModulo: 'Instituciones', activo: true, orden: 8 }] : [])
         ]
         else if (path === '/gateway/admin/rol' && method === 'GET') body = roles
         else if (path === '/gateway/admin/rol' && method === 'POST') {
@@ -75,6 +76,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
     await expect(permisos).toBeVisible()
     completarGuardado()
     await expect(permisos.getByRole('status')).toHaveText('Permisos de ADM8 guardados.')
+    await expect(page.getByRole('link', { name: 'Instituciones' })).toBeVisible()
     expect(guardados).toEqual([['ROL_DOCENTE']])
     await expect(admin).not.toBeChecked()
     await expect(profesor).toBeChecked()

@@ -4,7 +4,7 @@ import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import { rolesApi, validarRol } from './roles-api'
 import '../Instituciones/instituciones.css'
 
-export function Roles({ cliente }) {
+export function Roles({ cliente, onPermisosActualizados }) {
     const api = useMemo(() => rolesApi(cliente), [cliente])
     const [roles, setRoles] = useState([])
     const [modulos, setModulos] = useState([])
@@ -122,7 +122,8 @@ export function Roles({ cliente }) {
         try {
             await api.guardarAsignados(idModulo, seleccion[idModulo])
             setPermisosGuardados(actual => ({ ...actual, [idModulo]: seleccion[idModulo] }))
-            const [actualizados] = await Promise.all([api.asignados(idModulo), api.menuPropio()])
+            const [actualizados] = await Promise.all([api.asignados(idModulo),
+                onPermisosActualizados ? onPermisosActualizados() : api.menuPropio()])
             setSeleccion(actual => ({ ...actual, [idModulo]: actualizados }))
             setPermisosGuardados(actual => ({ ...actual, [idModulo]: actualizados }))
             setAviso(`Permisos de ${idModulo} guardados.`)

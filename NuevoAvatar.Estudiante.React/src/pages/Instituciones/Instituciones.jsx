@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Modal } from '../../components/Modal'
 import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import { institucionesApi, validarNombre } from './instituciones-api'
@@ -18,18 +18,22 @@ export function Instituciones({ cliente }) {
     const [nombre, setNombre] = useState('')
     const [guardando, setGuardando] = useState(false)
     const [pendiente, setPendiente] = useState(null)
+    const consultaActual = useRef(0)
 
     const cargar = useCallback(async (nombreBuscado, idVisible) => {
+        const consulta = ++consultaActual.current
         setEstado('Cargando instituciones…')
         setError('')
         try {
             const datos = await api.listar(nombreBuscado)
+            if (consulta !== consultaActual.current) return false
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de instituciones.')
             setInstituciones(datos)
             setPagina(Math.floor(Math.max(0, datos.findIndex(item => item.id === idVisible)) / tamano))
             setEstado(datos.length ? '' : 'No hay instituciones para mostrar.')
             return true
         } catch (e) {
+            if (consulta !== consultaActual.current) return false
             setEstado('')
             setError(e.message)
             return false
@@ -38,13 +42,14 @@ export function Instituciones({ cliente }) {
 
     useEffect(() => {
         let vigente = true
+        const consulta = ++consultaActual.current
         api.listar('').then(datos => {
-            if (!vigente) return
+            if (!vigente || consulta !== consultaActual.current) return
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de instituciones.')
             setInstituciones(datos)
             setEstado(datos.length ? '' : 'No hay instituciones para mostrar.')
         }).catch(e => {
-            if (!vigente) return
+            if (!vigente || consulta !== consultaActual.current) return
             setEstado('')
             setError(e.message)
         })
