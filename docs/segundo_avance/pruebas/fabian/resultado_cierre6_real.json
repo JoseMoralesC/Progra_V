@@ -1,0 +1,154 @@
+{
+  "fecha": "2026-11-12T21:21:27.861Z",
+  "base": "47c27ce",
+  "respuestas_controladas": false,
+  "comprobaciones": [
+    {
+      "prueba": "Ingreso desde navegador ADMINISTRADOR",
+      "resultado": "aprobada",
+      "detalle": {
+        "ruta": "/inicio"
+      }
+    },
+    {
+      "prueba": "Perfil real ADMINISTRADOR",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200,
+        "rol": "ADMINISTRADOR"
+      }
+    },
+    {
+      "prueba": "Lectura administrativa usuario",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "Lectura administrativa rol",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "Lectura administrativa parametro",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "Lectura administrativa institucion",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "TAMPAG publicado por API",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200,
+        "valor": "15"
+      }
+    },
+    {
+      "prueba": "MAILPASS protegido en API",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200,
+        "enmascarado": true
+      }
+    },
+    {
+      "prueba": "MAILPASS protegido en tabla",
+      "resultado": "aprobada",
+      "detalle": {
+        "enmascarado": true
+      }
+    },
+    {
+      "prueba": "Orden de usuarios con datos reales",
+      "resultado": "aprobada",
+      "detalle": {
+        "columnas_ordenables": true
+      }
+    },
+    {
+      "prueba": "Ingreso desde navegador ESTUDIANTE",
+      "resultado": "aprobada",
+      "detalle": {
+        "ruta": "/estudiante"
+      }
+    },
+    {
+      "prueba": "Perfil real ESTUDIANTE",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200,
+        "rol": "ESTUDIANTE"
+      }
+    },
+    {
+      "prueba": "Expediente propio de la cuenta preparada",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "Estudiante sin acceso administrativo usuario",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 403
+      }
+    },
+    {
+      "prueba": "Estudiante sin acceso administrativo rol",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 403
+      }
+    },
+    {
+      "prueba": "Estudiante sin acceso administrativo parametro",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 403
+      }
+    },
+    {
+      "prueba": "Estudiante sin acceso administrativo institucion",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 403
+      }
+    },
+    {
+      "prueba": "Ruta administrativa restringida para estudiante",
+      "resultado": "aprobada",
+      "detalle": {}
+    },
+    {
+      "prueba": "Revocación real ADM8 y menú sin recargar",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 403
+      }
+    },
+    {
+      "prueba": "Restauración real ADM8 y menú sin recargar",
+      "resultado": "aprobada",
+      "detalle": {
+        "status": 200
+      }
+    },
+    {
+      "prueba": "Asignaciones originales conservadas",
+      "resultado": "aprobada",
+      "detalle": {}
+    }
+  ]
+}
