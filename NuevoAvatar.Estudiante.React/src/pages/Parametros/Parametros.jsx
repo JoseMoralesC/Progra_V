@@ -6,6 +6,7 @@ import { parametrosApi, validarParametro } from './parametros-api'
 import '../Instituciones/instituciones.css'
 
 export function Parametros({ cliente }) {
+    const esSecreto = id => id === 'MAILPASS'
     const api = useMemo(() => parametrosApi(cliente), [cliente])
     const [registros, setRegistros] = useState([])
     const [tamano, setTamano] = useState(15)
@@ -101,7 +102,7 @@ export function Parametros({ cliente }) {
             {estado && <p role="status">{estado}</p>}
             {!estado && <div className="instituciones-tabla"><table>
                 <thead><tr><th>ID</th><th>Valor</th><th>Acciones</th></tr></thead>
-                <tbody>{visibles.map(item => <tr key={item.idParametro}><td>{item.idParametro}</td><td>{item.valor}</td>
+                <tbody>{visibles.map(item => <tr key={item.idParametro}><td>{item.idParametro}</td><td>{esSecreto(item.idParametro) ? '••••••••' : item.valor}</td>
                     <td><RowActionsMenu rowLabel={item.idParametro} actions={[
                         { label: 'Editar', onSelect: () => abrir(item) },
                         { label: 'Eliminar', danger: true, onSelect: () => setPendiente(item) }
@@ -121,8 +122,11 @@ export function Parametros({ cliente }) {
                     <input id="parametro-id" required maxLength={10} disabled={formulario.existente} value={formulario.idParametro}
                         onChange={e => setFormulario({ ...formulario, idParametro: e.target.value.toUpperCase() })} /></div>
                 <div className="field"><label htmlFor="parametro-valor">Valor</label>
-                    <textarea id="parametro-valor" required maxLength={500} value={formulario.valor}
-                        onChange={e => setFormulario({ ...formulario, valor: e.target.value })} /></div>
+                    {esSecreto(formulario.idParametro)
+                        ? <input id="parametro-valor" type="password" required maxLength={500} autoComplete="new-password"
+                            value={formulario.valor} onChange={e => setFormulario({ ...formulario, valor: e.target.value })} />
+                        : <textarea id="parametro-valor" required maxLength={500} value={formulario.valor}
+                            onChange={e => setFormulario({ ...formulario, valor: e.target.value })} />}</div>
                 <button type="submit" className="btn btn-primary" disabled={guardando}>Guardar</button>
                 <button type="button" className="btn btn-soft" disabled={guardando} onClick={() => { setFormulario(null); setError('') }}>Cancelar</button>
             </form>

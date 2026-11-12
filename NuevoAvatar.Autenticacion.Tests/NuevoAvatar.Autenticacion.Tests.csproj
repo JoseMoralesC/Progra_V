@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\NuevoAvatar.Gateway.Seguridad\NuevoAvatar.Gateway.Seguridad.csproj" />
     <ProjectReference Include="..\NuevoAvatar.Autenticacion\NuevoAvatar.Autenticacion.csproj" />
+    <ProjectReference Include="..\NuevoAvatar.Parametro\NuevoAvatar.Parametro.csproj" />
   </ItemGroup>
 
 </Project>

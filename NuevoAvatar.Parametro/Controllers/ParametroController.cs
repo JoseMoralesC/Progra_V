@@ -11,6 +11,7 @@ namespace NuevoAvatarSeguridad.Controllers
     [TokenAuthorize]
     public class ParametroController : SeguridadControllerBase
     {
+        private const string ValorOculto = "********";
         private readonly IParametroService _service;
 
         public ParametroController(IParametroService service, IBitacoraService bitacora) : base(bitacora)
@@ -23,7 +24,7 @@ namespace NuevoAvatarSeguridad.Controllers
         {
             var lista = await _service.ObtenerTodos();
             await Registrar("El usuario consulta parametros");
-            return Ok(lista);
+            return Ok(lista.Select(OcultarSecreto));
         }
 
         [HttpGet("{idParametro}")]
@@ -32,7 +33,7 @@ namespace NuevoAvatarSeguridad.Controllers
             var p = await _service.ObtenerPorId(idParametro);
             if (p == null) return NotFound("El parámetro no existe");
             await Registrar("El usuario consulta parametro");
-            return Ok(p);
+            return Ok(OcultarSecreto(p));
         }
 
         [HttpPost]
@@ -45,8 +46,8 @@ namespace NuevoAvatarSeguridad.Controllers
                 return Conflict("Ya existe un parámetro con ese identificador");
 
             var creado = await _service.Crear(parametro);
-            await Registrar($"Creación de parametro: {ComoJson(creado)}");
-            return CreatedAtAction(nameof(ObtenerPorId), new { idParametro = creado.IdParametro }, creado);
+            await Registrar($"Creación de parametro: {creado.IdParametro}");
+            return CreatedAtAction(nameof(ObtenerPorId), new { idParametro = creado.IdParametro }, OcultarSecreto(creado));
         }
 
         [HttpPut("{idParametro}")]
@@ -59,12 +60,14 @@ namespace NuevoAvatarSeguridad.Controllers
             var existente = await _service.ObtenerPorId(idParametro);
             if (existente == null) return NotFound("El parámetro no existe");
 
-            var anterior = ComoJson(existente);
-            existente.Valor = parametro.Valor;
+            // La máscara que recibe la interfaz significa "conservar el secreto".
+            // Un valor nuevo sí reemplaza la clave, pero nunca se devuelve ni audita.
+            if (!EsSecreto(idParametro) || parametro.Valor != ValorOculto)
+                existente.Valor = parametro.Valor;
             var actual = await _service.Modificar(existente);
 
-            await Registrar($"Modificación de parametro. Anterior: {anterior} Actual: {ComoJson(actual)}");
-            return Ok(actual);
+            await Registrar($"Modificación de parametro: {idParametro}");
+            return Ok(OcultarSecreto(actual));
         }
 
         [HttpDelete("{idParametro}")]
@@ -74,8 +77,8 @@ namespace NuevoAvatarSeguridad.Controllers
             if (existente == null) return NotFound("El parámetro no existe");
 
             var eliminado = await _service.Eliminar(existente);
-            await Registrar($"Eliminación de parametro: {ComoJson(eliminado)}");
-            return Ok(eliminado);
+            await Registrar($"Eliminación de parametro: {idParametro}");
+            return Ok(OcultarSecreto(eliminado));
         }
 
         private static string? Validar(Parametro p)
@@ -91,6 +94,15 @@ namespace NuevoAvatarSeguridad.Controllers
 
             return null;
         }
+
+        private static bool EsSecreto(string idParametro) =>
+            idParametro.Equals("MAILPASS", StringComparison.OrdinalIgnoreCase);
+
+        private static Parametro OcultarSecreto(Parametro parametro) => new()
+        {
+            IdParametro = parametro.IdParametro,
+            Valor = EsSecreto(parametro.IdParametro) ? ValorOculto : parametro.Valor
+        };
     }
 }
 
