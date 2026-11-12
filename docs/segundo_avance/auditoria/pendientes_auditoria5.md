@@ -89,7 +89,7 @@ Dejo pendiente desarrollar la comprobación en creación y edición, excluyendo 
 
 **Prioridad alta de desarrollo.** Ya existe paginación, pero `SOLICITUDES_POR_PAGINA = 10` fija su tamaño. Preparé dieciséis solicitudes y TAMPAG=2; se mostraron diez. El componente no consulta ese parámetro.
 
-Ubicación: `NuevoAvatar.Estudiante.React/src/pages/Estudiante/Prematricula.jsx`. Evidencia: caso `A-WEB4-TAMPAG` de [recorrido-estudiante.json](evidencias5/recorrido-estudiante.json).
+Ubicación: `NuevoAvatar.Estudiante.React/src/pages/Estudiante/Prematricula.jsx`. Evidencia: caso `A-WEB4-TAMPAG` de [recorrido-estudiante](evidencias5/resultados-conservados.md#recorrido-estudiante).
 
 Dejo pendiente consumir el tamaño acordado y mantener el máximo de quince, contemplando valor inválido o servicio no disponible según el contrato común. La página debe conservar una posición válida después de crear, cambiar o cancelar solicitudes.
 
@@ -111,7 +111,7 @@ Dejo pendiente una presentación compacta o un acceso claro a esa identidad desd
 
 **Prioridad alta de verificación.** La política parametrizable ya está desarrollada en React y Usuario. Tres casos de `UsuarioPerfilPropioTest` fallan porque el doble de `DatosRemotos` no devuelve PASSMIN y los demás valores; el servicio rechaza con 503 antes de comprobar lo que la prueba espera. Además, el caso de complejidad conserva requisitos anteriores de minúscula y carácter especial, distintos del acuerdo vigente.
 
-Ubicación: `NuevoAvatar.Usuario/src/test/java/cr/ac/cuc/nuevoavatar/persona2/usuario/UsuarioPerfilPropioTest.java`. Evidencia: `java-red.log` y [resultados por caso](evidencias5/resultados.json).
+Ubicación: `NuevoAvatar.Usuario/src/test/java/cr/ac/cuc/nuevoavatar/persona2/usuario/UsuarioPerfilPropioTest.java`. Evidencia: `java-red.log` y [resultados por caso](evidencias5/resultados-conservados.md#resultados).
 
 Dejo pendiente actualizar esa preparación, agregar el contraste de parámetros ausentes/inválidos y confirmar con Fabian los valores del entorno. No propongo relajar el servicio para satisfacer una prueba anterior. El rechazo cuando falta configuración es coherente con la política documentada.
 
@@ -131,7 +131,7 @@ Dejo pendiente acordar con Jose la consulta autorizada que alimentará el indica
 
 **Prioridad alta de verificación.** En el portal principal fallan seis de sus diez casos: uno de dashboard, tres de Instituciones, uno de Parámetros y uno de Usuarios. En los seis aparece la ruta de auditoría de interfaz como no prevista por la preparación de la prueba.
 
-Ubicación: `NuevoAvatar.Estudiante.React/tests/ui/`. Evidencia: [principal-ui-final.json](evidencias5/principal-ui-final.json).
+Ubicación: `NuevoAvatar.Estudiante.React/tests/ui/`. Evidencia: [principal-ui-final](evidencias5/resultados-conservados.md#observaciones).
 
 Dejo pendiente incorporar el contrato de la llamada y repetir los casos, revisando después cualquier fallo de guardado, búsqueda, permisos o sincronización que permanezca. No vuelvo a afirmar que los controles por página estén ausentes: ya existen. Tampoco utilizo estas ejecuciones para afirmar que una edición falló en SQL, porque el navegador usa respuestas controladas.
 

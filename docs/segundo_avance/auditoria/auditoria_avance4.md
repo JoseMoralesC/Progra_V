@@ -149,7 +149,7 @@ La referencia SRV7 del PDF V2 no tiene una correspondencia inequívoca en el V1 
 
 ## Verificación ejecutada
 
-El [registro actual de ejecuciones](evidencias4/resultados_actuales.json) contiene el balance definitivo por caso e integrante. Conservo una ejecución final por caso; los resultados anteriores y las repeticiones no se suman.
+El [registro actual de ejecuciones](evidencias4/resultados-conservados.md#resultados-actuales) contiene el balance definitivo por caso e integrante. Conservo una ejecución final por caso; los resultados anteriores y las repeticiones no se suman.
 
 | Conjunto                            |                                     Resultado actual | Alcance y límite                                                                                  |
 | ----------------------------------- | ---------------------------------------------------: | -------------------------------------------------------------------------------------------------- |

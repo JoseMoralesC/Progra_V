@@ -150,7 +150,7 @@ La comprobación SQL/JPA examinó **22 servicios y 298 fuentes, sin infracciones
 
 ### Pruebas ejecutadas por integrante
 
-El [registro actualizado por caso](evidencias5/resultados_actualizados.json) sustituye los resultados anteriores de Notas/contratos y navegador de Jose por las nuevas ejecuciones. Conservo su resultado previo de .NET y Node y el último resultado de los demás integrantes; no presento estos casos conservados como nuevas ejecuciones. El [registro inicial](evidencias5/resultados.json) mantiene el antecedente.
+El [registro actualizado por caso](evidencias5/resultados-conservados.md#resultados-actualizados) sustituye los resultados anteriores de Notas/contratos y navegador de Jose por las nuevas ejecuciones. Conservo su resultado previo de .NET y Node y el último resultado de los demás integrantes; no presento estos casos conservados como nuevas ejecuciones. El [registro inicial](evidencias5/resultados-conservados.md#resultados) mantiene el antecedente.
 
 | Integrante | Pruebas disponibles en este corte | Estado |
 | --- | --- | --- |
