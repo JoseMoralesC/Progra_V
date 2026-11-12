@@ -53,3 +53,7 @@ node_modules/
 dist/
 playwright-report/
 test-results/
+
+# Incluir toda la documentacion y evidencias del segundo avance
+!/docs/segundo_avance/
+!/docs/segundo_avance/**

@@ -1,5 +1,7 @@
 # Evidencia local de la auditoría 4
 
+> Organización de la entrega: trasladé los resultados esenciales a [resultados conservados](resultados-conservados.md). Los nombres de logs, JSON, TRX y guiones que aparecen más abajo identifican archivos históricos retirados; sus comandos son antecedentes de ejecución. Conservamos únicamente Markdown y capturas PNG.
+
 Fecha: 10 de noviembre de 2026, America/Mexico_City. Versión: `4eeb3362dc1071fb4fb9bb046a9ea0e195724460` más el árbol local.
 
 Mantengo separado el corte actual de los antecedentes. El balance vigente es **550 casos: 548 aprobados y dos fallidos**. Ninguna ejecución de esta carpeta acredita por sí sola SQL Server, SMTP o aceptación integral del segundo avance.
@@ -8,7 +10,7 @@ Mantengo separado el corte actual de los antecedentes. El balance vigente es **5
 
 | Archivo | Contenido |
 | --- | --- |
-| [resultados_actuales.json](resultados_actuales.json) | Cada caso final, suite, responsable de HU, estado y detalle aplicable. Incluye análisis estático y artefactos verificados. |
+| [resultados_actuales](resultados-conservados.md#resultados-actuales) | Cada caso final, suite, responsable de HU, estado y detalle aplicable. Incluye análisis estático y artefactos verificados. |
 | [notas_actual.png](notas_actual.png) | Notas dentro del layout, con grupo y datos simulados. |
 | [instituciones-edicion.png](instituciones-edicion.png) | Resultado del caso de edición/búsqueda que no encontró el registro esperado. |
 | [instituciones-permisos.png](instituciones-permisos.png) | Resultado del caso que esperaba bloqueo de Instituciones sin permiso. |

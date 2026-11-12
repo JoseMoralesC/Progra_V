@@ -67,7 +67,32 @@ class NotasHttpTest {
         verifyNoInteractions(servicio);
     }
 
+    @Test void rubrosRepetidosDevuelven422ConMensajeSinEscrituras() throws Exception {
+        var grupos = mock(GrupoRepository.class);
+        var rubros = mock(DesgloseRubroRepository.class);
+        var notas = mock(NotaRubroRepository.class);
+        var auditoria = mock(AuditoriaNotas.class);
+        var bloqueo = mock(BloqueoGrupoNotas.class);
+        when(grupos.existsById(1)).thenReturn(true);
+        var real = new NotasService(rubros, notas, mock(MatriculaRepository.class), grupos, auditoria, bloqueo);
+
+        mvc("PROFESOR", 9, 9, real).perform(post("/cargardesglose")
+            .header("Authorization", "Bearer valido").contentType("application/json")
+            .content("""
+                {"grupoId":1,"rubros":[{"nombre":"Proyecto","porcentaje":50},
+                {"nombre":" proyecto ","porcentaje":50}]}
+                """))
+            .andExpect(status().isUnprocessableEntity())
+            .andExpect(jsonPath("$.message").value(
+                "Los nombres de los rubros no pueden repetirse en el mismo grupo"));
+        verifyNoInteractions(rubros, notas, auditoria, bloqueo);
+    }
+
     private MockMvc mvc(String rol, Integer profesor, int propietario) {
+        return mvc(rol, profesor, propietario, servicio);
+    }
+
+    private MockMvc mvc(String rol, Integer profesor, int propietario, NotasService servicioActual) {
         var seguridad = mock(SeguridadClient.class);
         when(seguridad.validar(anyString())).thenReturn(true);
         when(seguridad.obtenerSesion(anyString())).thenReturn(new SesionActual("real@cuc.ac.cr", "Real", rol,
@@ -86,7 +111,7 @@ class NotasHttpTest {
         Matricula matricula = new Matricula();
         matricula.setGrupoId(1); matricula.setCursoId(2); matricula.setPeriodoId(3);
         when(matriculas.findById(5)).thenReturn(Optional.of(matricula));
-        return MockMvcBuilders.standaloneSetup(new NotasController(servicio, new AccesoNotas(request, grupos, matriculas)))
+        return MockMvcBuilders.standaloneSetup(new NotasController(servicioActual, new AccesoNotas(request, grupos, matriculas)))
             .setControllerAdvice(new ApiExceptionHandler()).addInterceptors(new AutorizacionInterceptor(seguridad)).build();
     }
 }

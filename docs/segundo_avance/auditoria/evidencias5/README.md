@@ -1,18 +1,20 @@
 # Evidencias de la auditoría 5 - Segundo avance
 
+> Organización de la entrega: trasladé los resultados esenciales a [resultados conservados](resultados-conservados.md). Los nombres de logs, JSON, TRX y guiones que aparecen más abajo identifican archivos históricos retirados; sus comandos son antecedentes de ejecución. Conservamos únicamente Markdown y capturas PNG.
+
 Fecha de revisión: 12 de noviembre de 2026. Base: `ba576558f5d61c34cf1d0561b2a325b375605496`.
 
 Ejecuté estas comprobaciones para la [auditoría 5](../auditoria_avance5.md). Conservé los resultados, incluidos los fallos, del diagnóstico inicial; en ese primer corte no cambié el producto ni sus pruebas existentes. Las respuestas controladas del navegador son datos ficticios de prueba y no demuestran persistencia en servicios reales.
 
 ## Actualización posterior de Jose
 
-El contenido original de esta carpeta describe el diagnóstico inicial. Después corregí las pruebas y el bloqueo de Notas y ejecuté servicios/SQL reales. El [registro actualizado](resultados_actualizados.json) sustituye únicamente las ejecuciones repetidas de Jose, conserva .NET/Node y los resultados anteriores de los demás integrantes y reúne 553 casos aprobados y 12 fallidos de 565 incluidos. El [seguimiento de Jose](../../pruebas/jose-cierre-auditoria5/README.md) contiene las 82 pruebas locales repetidas y las 45 comprobaciones reales, con sus límites y capturas. Las catorce comprobaciones detalladas del navegador ya están incluidas en la confirmación del recorrido real y no se suman de nuevo.
+El contenido original de esta carpeta describe el diagnóstico inicial. Después corregí las pruebas y el bloqueo de Notas y ejecuté servicios/SQL reales. El [registro actualizado](resultados-conservados.md#resultados-actualizados) sustituye únicamente las ejecuciones repetidas de Jose, conserva .NET/Node y los resultados anteriores de los demás integrantes y reúne 553 casos aprobados y 12 fallidos de 565 incluidos. El [seguimiento de Jose](../../pruebas/jose-cierre-auditoria5/README.md) contiene las 82 pruebas locales repetidas y las 45 comprobaciones reales, con sus límites y capturas. Las catorce comprobaciones detalladas del navegador ya están incluidas en la confirmación del recorrido real y no se suman de nuevo.
 
 `resultados.json` conserva el primer corte y sus doce fallos de Jose; no es el resultado vigente de ese integrante. `resumir.py` corresponde al levantamiento inicial y no reconstruye por sí solo la consolidación posterior. Las afirmaciones de diagnóstico que siguen se leen con ese alcance temporal; las correcciones y pruebas nuevas se consultan en los enlaces anteriores.
 
 ## Resultado y atribución
 
-El [resumen por caso](resultados.json) conserva un responsable único, grupo, nombre y estado. `resumir.py` lo reconstruye desde los informes de esta ejecución y los resultados Java generados en `target/surefire-reports`.
+El [resumen por caso](resultados-conservados.md#resultados) conserva un responsable único, grupo, nombre y estado. El ejecutor temporal `resumir.py` lo reconstruyó desde los informes de esta ejecución y los resultados Java generados en `target/surefire-reports`.
 
 - Atribuí autenticación, gateway, contratos compartidos y notas a Jose.
 - Atribuí cursos/períodos, carreras, profesores, notificaciones y mantenimientos de Ramses a Ramses.
@@ -66,17 +68,15 @@ node node_modules/@playwright/test/cli.js test --reporter=json --timeout=8000 --
 
 Conservé el límite de ocho segundos por caso y tres minutos de ejecución total. El tiempo agotado del selector de notas requiere revisión con su escenario preparado; no se atribuye automáticamente al producto. Los informes finales incluyen los errores generales de apagado, aunque los casos aislados hayan pasado.
 
-Con Vite del portal principal disponible en `127.0.0.1:4175`, ejecuté:
+El recorrido propio utilizó Vite del portal principal en `127.0.0.1:4175`. Sus guiones temporales fueron retirados al organizar la entrega. Para los artefactos utilicé:
 
 ```powershell
-node docs/segundo_avance/auditoria/evidencias5/recorrido-estudiante.cjs
-python -X utf8 docs/segundo_avance/auditoria/evidencias5/resumir.py
 python tools/validar-artefactos.py
 ```
 
 Para la comprobación de límites utilicé la lógica de `tools/auditar-limites.py`, cambiando únicamente en memoria la ruta de salida a esta carpeta. Así no sobrescribí su evidencia histórica ni modifiqué el ejecutor original.
 
-Algunas salidas redirigidas por PowerShell tienen codificación UTF-16; `resumir.py` la detecta. `resultados.json`, los documentos nuevos y el recorrido propio se guardan en UTF-8. Los resultados Java por caso del resumen se copian como datos simples; no se incorporan los XML completos de Surefire con propiedades del entorno.
+Algunas salidas redirigidas por PowerShell tienen codificación UTF-16; el ejecutor temporal detectaba esa codificación. `resultados.json`, los documentos nuevos y el recorrido propio se guardan en UTF-8. Los resultados Java por caso del resumen se copian como datos simples; no se incorporan los XML completos de Surefire con propiedades del entorno.
 
 ## Límites de aceptación
 

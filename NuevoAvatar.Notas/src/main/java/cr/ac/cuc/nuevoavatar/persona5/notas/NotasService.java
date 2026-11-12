@@ -1,8 +1,12 @@
 package cr.ac.cuc.nuevoavatar.persona5.notas;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
+import java.text.Normalizer;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,6 +15,7 @@ import cr.ac.cuc.nuevoavatar.persona5.academico.GrupoRepository;
 import cr.ac.cuc.nuevoavatar.persona5.matricula.Matricula;
 import cr.ac.cuc.nuevoavatar.persona5.matricula.MatriculaRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class NotasService {
 
     private static final BigDecimal CIEN = new BigDecimal("100.00");
+    private static final String NOMBRES_REPETIDOS =
+        "Los nombres de los rubros no pueden repetirse en el mismo grupo";
 
     private final DesgloseRubroRepository rubros;
     private final NotaRubroRepository notas;
@@ -48,6 +55,7 @@ public class NotasService {
             throw invalido("El grupo no existe");
         }
         validarSuma(request);
+        validarNombres(request);
 
         bloqueo.adquirir(request.grupoId());
 
@@ -67,8 +75,18 @@ public class NotasService {
         List<DesgloseRubro> nuevos = request.rubros().stream()
             .map(rubro -> crearRubro(request.grupoId(), rubro))
             .toList();
-        var guardados = rubros.saveAll(nuevos);
-        rubros.flush();
+        List<DesgloseRubro> guardados;
+        try {
+            guardados = rubros.saveAll(nuevos);
+            rubros.flush();
+        } catch (DataIntegrityViolationException error) {
+            // SQL Server puede considerar equivalentes otros nombres según su
+            // intercalación. Conservo el rollback y traduzco solo esta restricción.
+            if (esNombreRepetidoEnSql(error)) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, NOMBRES_REPETIDOS, error);
+            }
+            throw error;
+        }
         var resultado = guardados.stream().map(RubroResponse::desde).toList();
         auditoria.registrarDesglose(request.grupoId(), anterior, resultado);
         return resultado;
@@ -153,6 +171,25 @@ public class NotasService {
             .filter(nota -> rubrosPorId.containsKey(nota.getRubroId()))
             .map(nota -> NotaResponse.desde(nota, rubrosPorId.get(nota.getRubroId())))
             .toList();
+    }
+
+    private void validarNombres(CargarDesgloseRequest request) {
+        var nombres = new HashSet<String>();
+        for (var rubro : request.rubros()) {
+            String nombre = Normalizer.normalize(rubro.nombre().trim(), Normalizer.Form.NFC)
+                .toLowerCase(Locale.ROOT);
+            if (!nombres.add(nombre)) throw invalido(NOMBRES_REPETIDOS);
+        }
+    }
+
+    private boolean esNombreRepetidoEnSql(Throwable error) {
+        for (Throwable causa = error; causa != null; causa = causa.getCause()) {
+            if (causa instanceof SQLException sql
+                    && (sql.getErrorCode() == 2601 || sql.getErrorCode() == 2627)
+                    && sql.getMessage() != null
+                    && sql.getMessage().contains("UQ_DesgloseRubro_Grupo_Nombre")) return true;
+        }
+        return false;
     }
 
     private void validarSuma(CargarDesgloseRequest request) {
