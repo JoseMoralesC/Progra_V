@@ -28,14 +28,6 @@ if ($Servicio -eq 'Modulo' -and $ModuloLocal) {
     $env:DB_HOST = ' '; $env:DB_USERNAME = ' '; $env:DB_PASSWORD = ' '
     $env:SERVICE_DB_USER_MODULO = ' '; $env:SERVICE_DB_PASSWORD_MODULO = ' '
     $env:ConnectionStrings__SeguridadDb = 'Server=.\SQLEXPRESS;Database=PrograV_Modulo;Trusted_Connection=True;TrustServerCertificate=True'
-} elseif ($Servicio -eq 'Notificacion') {
-    # La clave coincide con DB_PASSWORD del .env, pero nunca se imprime ni se copia al repositorio.
-    $claveLocal = $env:DB_PASSWORD
-    $env:DB_HOST = 'localhost'; $env:DB_PORT = '1433'
-    $env:DB_USERNAME = 'ramses_local'; $env:DB_USER = 'ramses_local'
-    $env:SPRING_DATASOURCE_URL = 'jdbc:sqlserver://localhost:1433;databaseName=PrograV_Notificacion;encrypt=true;trustServerCertificate=true'
-    $env:SPRING_DATASOURCE_USERNAME = 'ramses_local'
-    $env:SPRING_DATASOURCE_PASSWORD = $claveLocal
 } else {
     $usuarioServicio = [Environment]::GetEnvironmentVariable(('SERVICE_DB_USER_' + $Servicio.ToUpperInvariant()), 'Process')
     $claveServicio = [Environment]::GetEnvironmentVariable(('SERVICE_DB_PASSWORD_' + $Servicio.ToUpperInvariant()), 'Process')
