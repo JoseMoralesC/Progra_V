@@ -21,5 +21,14 @@
     "htmlSanitizado": true,
     "errorControlado": true,
     "correcto": true
+  },
+  "notificacionSmtpReal": {
+    "respuesta": 200,
+    "estadoRespuesta": "ENVIADA",
+    "historialEncontrado": true,
+    "estadoHistorial": "ENVIADA",
+    "htmlSanitizado": true,
+    "error": null,
+    "aceptadoPorSmtp": true
   }
 }

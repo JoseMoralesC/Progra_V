@@ -40,6 +40,20 @@ Ejecuté una notificación autorizada con HTML que contenía etiquetas y atribut
 
 No se inventaron ni publicaron credenciales SMTP. Queda pendiente únicamente preparar esos seis parámetros por un responsable autorizado y comprobar envío, recepción e historial `ENVIADA`.
 
+### Envío SMTP real
+
+Después confirmé que el `.env` local ya contenía los seis valores autorizados. Los trasladé a `PrograV_Parametro` mediante una transacción SQL parametrizada, sin mostrarlos y sin utilizar la API administrativa que registra valores en bitácora.
+
+Ejecuté un envío real a la cuenta de Ramsés con el asunto `Nuevo Avatar - Evidencia ADM22 2026-11-12`:
+
+- Respuesta HTTP: `200`.
+- Estado devuelto: `ENVIADA`.
+- Fila de historial: encontrada con estado `ENVIADA`.
+- Error registrado: ninguno.
+- HTML almacenado: sanitizado, sin `<script>`.
+
+El servidor SMTP aceptó el mensaje. La comprobación visual de la bandeja de entrada o correo no deseado corresponde al propietario de la cuenta destinataria.
+
 ## Ejecutor reproducible
 
 El recorrido CRUD está en `tools/recorrido-real-ramses.ps1`. Recibe usuario y contraseña como parámetros, no contiene credenciales y elimina sus datos en orden inverso dentro de un bloque `finally`.
