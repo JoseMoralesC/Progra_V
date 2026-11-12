@@ -52,7 +52,7 @@ Ejecuté un envío real a la cuenta de Ramsés con el asunto `Nuevo Avatar - Evi
 - Error registrado: ninguno.
 - HTML almacenado: sanitizado, sin `<script>`.
 
-El servidor SMTP aceptó el mensaje. La comprobación visual de la bandeja de entrada o correo no deseado corresponde al propietario de la cuenta destinataria.
+El servidor SMTP aceptó el mensaje y Ramsés confirmó visualmente su recepción. La captura `ADM22-correo-recibido-real.png` muestra el remitente del proyecto, el destinatario y el contenido recibido, sin revelar contraseñas ni tokens.
 
 ## Ejecutor reproducible
 

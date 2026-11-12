@@ -29,6 +29,8 @@
     "estadoHistorial": "ENVIADA",
     "htmlSanitizado": true,
     "error": null,
-    "aceptadoPorSmtp": true
+    "aceptadoPorSmtp": true,
+    "recepcionConfirmada": true,
+    "captura": "ADM22-correo-recibido-real.png"
   }
 }
