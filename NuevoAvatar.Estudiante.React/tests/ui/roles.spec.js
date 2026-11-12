@@ -17,6 +17,7 @@ test('ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo', asyn
         const method = request.method()
         let body, status = 200
         if (path === '/gateway/auth/sesion') body = { usuarioID: 'admin@cuc.ac.cr', nombre: 'Ana Mora', rol: 'ADMINISTRADOR' }
+        else if (path === '/gateway/auditoria/interfaz' && method === 'POST') status = 204
         else if (path === '/gateway/menu') body = [
             { idModulo: 'ADM5', nombreModulo: 'Roles', activo: true, orden: 5 },
             ...(guardados.length ? [{ idModulo: 'ADM8', nombreModulo: 'Instituciones', activo: true, orden: 8 }] : [])
