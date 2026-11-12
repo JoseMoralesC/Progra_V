@@ -22,12 +22,18 @@ public sealed record AccesoGateway(string[] Roles, string? Modulo = null, bool C
         HttpMethods.IsGet(context.Request.Method) && context.Request.Path == RutaResumen &&
         context.Request.Query["vista"] == "dashboard";
 
+    public bool EsIndicadorFacturas(HttpContext context) => Modulo == "ADM20" &&
+        HttpMethods.IsGet(context.Request.Method) && context.Request.Path == "/gateway/fin/factura" &&
+        context.Request.Query.Count == 2 && context.Request.Query["vista"] == "dashboard" &&
+        int.TryParse(context.Request.Query["periodoId"], out var periodoId) && periodoId > 0;
+
     public bool PermiteOperacionAuxiliar(HttpContext context, List<ModuloPermitido> menu)
     {
         var request = context.Request;
         bool Tiene(string id) => menu.Any(m => m.IdModulo == id);
         if (HttpMethods.IsGet(request.Method))
         {
+            if (EsIndicadorFacturas(context)) return Tiene("ADM3");
             if (Modulo == "ADM5" && request.Path == "/gateway/admin/rol") return Tiene("ADM4") || Tiene("ADM7");
             if (Modulo == "ADM7" && request.Path == "/gateway/admin/modulo") return Tiene("ADM5");
             if (Modulo == "ADM8" && request.Path == "/gateway/admin/institucion") return Tiene("ADM9");

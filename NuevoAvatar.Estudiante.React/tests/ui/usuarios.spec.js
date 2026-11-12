@@ -1,10 +1,14 @@
 import { test, expect } from '@playwright/test'
 
 test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) => {
-    const usuarios = [{
-        email: 'ana@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '101',
-        nombre: 'Ana Mora', idRol: 'ROL_ESTUDIANTE_01', fechaModificacion: '2026-11-05T12:00:00Z'
-    }]
+    const usuarios = [
+        { email: 'ana@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '101',
+            nombre: 'Ana Mora', idRol: 'ROL_ESTUDIANTE_01', fechaModificacion: '2026-11-05T12:00:00Z' },
+        { email: 'beto@cuc.ac.cr', tipoIdentificacion: 'Cédula', identificacion: '102',
+            nombre: 'Beto Rojas', idRol: 'ROL_DOCENTE_02', fechaModificacion: '2026-11-05T12:00:00Z' },
+        { email: 'carla@cuc.cr', tipoIdentificacion: 'Cédula', identificacion: '103',
+            nombre: 'Carla Ruiz', idRol: 'ROL_ESTUDIANTE_01', fechaModificacion: '2026-11-05T12:00:00Z' }
+    ]
     const operaciones = []
     await page.addInitScript(() => sessionStorage.setItem('nuevo-avatar.sesion', JSON.stringify({
         access_token: 'token-prueba', refresh_token: 'refresh-prueba',
@@ -16,6 +20,7 @@ test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) =>
         const method = request.method()
         let body, status = 200
         if (path === '/gateway/auth/sesion') body = { usuarioID: 'admin@cuc.ac.cr', nombre: 'Admin', rol: 'ADMINISTRADOR' }
+        else if (path === '/gateway/auditoria/interfaz' && method === 'POST') status = 204
         else if (path === '/gateway/menu') body = [{ idModulo: 'ADM4', nombreModulo: 'Usuarios', activo: true, orden: 4 }]
         else if (path === '/gateway/admin/rol') body = [
             { idRol: 'ROL_ESTUDIANTE_01', nombreRol: 'Estudiante' },
@@ -39,11 +44,26 @@ test('ADM4 crea y edita usuarios usando el ID real del rol', async ({ page }) =>
             body = usuarios.find(item => item.email === decodeURIComponent(path.split('/').at(-1)))
             Object.assign(body, datos)
         } else throw new Error(`Ruta no prevista: ${method} ${path}`)
-        await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
+        await route.fulfill({ status, contentType: 'application/json', body: status === 204 ? undefined : JSON.stringify(body) })
     })
 
     await page.goto('/usuarios')
     await expect(page.getByRole('row').filter({ hasText: 'ana@cuc.cr' })).toBeVisible()
+    await expect(page.getByText('Página 1 de 2')).toBeVisible()
+    await page.getByRole('button', { name: 'Siguiente' }).click()
+    await expect(page.getByRole('row').filter({ hasText: 'carla@cuc.cr' })).toBeVisible()
+    await page.getByRole('button', { name: 'Anterior' }).click()
+    await page.getByRole('button', { name: 'Email (ID)' }).click()
+    await expect(page.locator('tbody tr').first()).toContainText('carla@cuc.cr')
+    await page.getByRole('button', { name: 'Email (ID)' }).click()
+    await page.getByLabel('Dominio').selectOption('cuc.ac.cr')
+    await page.getByLabel('Rol', { exact: true }).first().selectOption('ROL_DOCENTE_02')
+    await page.getByRole('button', { name: 'Filtrar' }).click()
+    await expect(page.getByRole('row').filter({ hasText: 'beto@cuc.ac.cr' })).toBeVisible()
+    await expect(page.getByRole('row').filter({ hasText: 'ana@cuc.cr' })).toHaveCount(0)
+    await page.getByLabel('Dominio').selectOption('')
+    await page.getByLabel('Rol', { exact: true }).first().selectOption('')
+    await page.getByRole('button', { name: 'Filtrar' }).click()
     await page.getByRole('button', { name: 'Nuevo usuario' }).click()
     await expect(page.getByRole('dialog', { name: 'Nuevo usuario' })).toBeVisible()
     await page.getByLabel('Correo', { exact: true }).fill('profesor@cuc.ac.cr')

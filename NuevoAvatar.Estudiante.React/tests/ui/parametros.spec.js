@@ -17,6 +17,7 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
         const method = request.method()
         let body, status = 200
         if (path === '/gateway/auth/sesion') body = { usuarioID: 'admin@cuc.ac.cr', nombre: 'Ana Mora', rol: 'ADMINISTRADOR' }
+        else if (path === '/gateway/auditoria/interfaz' && method === 'POST') status = 204
         else if (path === '/gateway/menu') body = [{ idModulo: 'ADM6', nombreModulo: 'Parámetros', activo: true, orden: 6 }]
         else if (path === '/gateway/admin/parametro/TAMPAG' && method === 'GET') body = registros[0]
         else if (path === '/gateway/admin/parametro' && method === 'GET') body = registros
@@ -34,7 +35,7 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
             body = registros.splice(registros.findIndex(item => item.idParametro === id), 1)[0]
             operaciones.push({ method, body })
         } else throw new Error(`Ruta no prevista: ${method} ${path}`)
-        await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
+        await route.fulfill({ status, contentType: 'application/json', body: status === 204 ? undefined : JSON.stringify(body) })
     })
     page.on('dialog', dialog => dialog.accept())
     await page.goto('/parametros')

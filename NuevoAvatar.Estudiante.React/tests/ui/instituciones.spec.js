@@ -22,6 +22,7 @@ async function preparar(page, conPermiso = true) {
         let status = 200
         let body = null
         if (path === '/gateway/auth/sesion') body = { usuarioID: 'admin@cuc.ac.cr', nombre: 'Ana Mora', rol: 'ADMINISTRADOR' }
+        else if (path === '/gateway/auditoria/interfaz' && metodo === 'POST') status = 204
         else if (path === '/gateway/menu') body = conPermiso ? [{ idModulo: 'ADM8', nombreModulo: 'Instituciones', activo: true, orden: 8 }] : []
         else if (path === '/gateway/admin/parametro/TAMPAG') body = { valor: '2' }
         else if (path === '/gateway/admin/institucion' && metodo === 'GET') {
@@ -110,5 +111,6 @@ test('ADM8 mantiene el listado detrás del modal, valida y cancela sin guardar',
     await modal.getByLabel('Nombre', { exact: true }).fill('Sin guardar')
     await page.keyboard.press('Escape')
     await expect(modal).toHaveCount(0)
-    expect(llamadas.filter(item => item.metodo === 'POST' || item.metodo === 'PUT')).toEqual([])
+    expect(llamadas.filter(item => item.path.startsWith('/gateway/admin/institucion') &&
+        (item.metodo === 'POST' || item.metodo === 'PUT'))).toEqual([])
 })

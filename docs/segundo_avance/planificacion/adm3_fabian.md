@@ -1,6 +1,6 @@
 # ADM3: criterios e integración
 
-Responsable: Fabián Espinoza. Actualización: 8 de noviembre de 2026.
+Responsable: Fabián Espinoza. Actualización: 12 de noviembre de 2026.
 Requisitos: `Proyecto Nuevo Avatar V2 (1).pdf`, páginas 5 y 6, y `subhistorias.md`.
 
 ## Alcance
@@ -27,6 +27,7 @@ Estas decisiones concretan los aspectos que el PDF no define; no son citas liter
 | `GET /gateway/menu?vista=dashboard` | Registra la visita mediante el servicio de bitácora con el usuario de sesión y una descripción fija. Devuelve el menú si se confirma el registro. |
 | `GET /gateway/admin/bitacora?vista=dashboard` | Devuelve un arreglo con `idBitacora`, `usuario`, `descripcion` y `fechaHora`, limitado a los eventos autorizados. |
 | `GET /gateway/fin/notificar/historial?vista=dashboard` | Devuelve `{ items: [...] }` con `id`, `asunto`, `estado` y `fecha`, limitado a las notificaciones pertinentes. |
+| `GET /gateway/fin/factura?periodoId=N&vista=dashboard` | Con ADM3 devuelve `{ pendientes: N }` del período solicitado, sin datos de facturas. La consulta completa de Factura conserva el permiso ADM20. |
 
 No se crean ni eliminan endpoints. Sin `vista=dashboard`, estas rutas conservan su comportamiento anterior. La excepción para el profesor solo permite GET en las rutas exactas de los resúmenes; no permite escritura, consulta global ni detalle por identificador. Los permisos y la identidad se obtienen en el servidor. Los parámetros enviados por el navegador no amplían el alcance de las respuestas.
 
@@ -55,11 +56,20 @@ La consulta `/profesor/grupos` identifica los grupos autorizados del período vi
 - `NuevoAvatar.Estudiante.React/src/pages/Dashboard/Dashboard.jsx`: presentación y consumo de servicios.
 - `NuevoAvatar.Gateway/AuditoriaDashboard.cs`: registro de la visita.
 - `NuevoAvatar.Gateway/ResumenDashboard.cs`: selección de registros según sesión, permisos y grupos.
+- `NuevoAvatar.Gateway/FacturaDashboard.cs`: conteo acotado de facturas pendientes.
 - `NuevoAvatar.Gateway/ClasificacionBitacora.cs`: reconocimiento de formatos de los servicios.
 - `NuevoAvatar.Gateway/GatewayApplication.cs` y `NuevoAvatar.Gateway.Seguridad/SeguridadGateway.cs`: integración y autorización de las rutas existentes.
 
-## Verificación e integración pendiente
+## Verificación
 
-Las pruebas automatizadas utilizan servicios y datos simulados. Cubren métricas, grupos, resúmenes, errores, permisos retirados, grupos ajenos, destinatarios parcialmente coincidentes y límites posteriores a la selección. No certifican conexión a PrograV ni persistencia real de la visita.
+Las pruebas automatizadas con servicios simulados cubren métricas, grupos,
+resúmenes, errores, permisos retirados, grupos ajenos, destinatarios
+parcialmente coincidentes y límites posteriores a la selección. Las pruebas
+del gateway comprueban que ADM3 solo permite el conteo de facturas y que
+la consulta completa y las escrituras siguen protegidas por ADM20.
 
-La integración del proyecto debe conectar ADM24 en `/perfil` y comprobar los recorridos con los servicios reales. Este cambio no modifica los servicios propietarios de notas, notificación o bitácora ni ejecuta scripts en la base compartida.
+El recorrido con servicios y base reales se registra en
+`docs/segundo_avance/pruebas/fabian/resultado_pruebas_reales.md`. Ese recorrido
+no modifica permisos de facturación. Este cambio tampoco modifica los servicios
+propietarios de notas, notificación o bitácora ni ejecuta scripts en la base
+compartida.
