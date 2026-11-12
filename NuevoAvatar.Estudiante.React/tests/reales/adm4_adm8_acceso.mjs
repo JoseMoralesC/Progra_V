@@ -13,6 +13,8 @@ const rutaUsuario = `/gateway/admin/usuario/${encodeURIComponent(correo)}`
 const claveEstudiante = `${randomUUID()}Aa1!`
 let tokenAdmin
 let creado = false
+let errorPrincipal
+let errorLimpieza
 
 async function solicitar(ruta, { metodo = 'GET', token = tokenAdmin, datos } = {}) {
     const respuesta = await fetch(origen + ruta, {
@@ -90,8 +92,11 @@ try {
     } finally {
         await navegador.close()
     }
-} finally {
-    if (creado && tokenAdmin) {
+} catch (error) {
+    errorPrincipal = error
+}
+if (creado && tokenAdmin) {
+    try {
         const limpieza = spawnSync('pwsh', [
             '-NoProfile', '-File', fileURLToPath(new URL(
                 '../../../docs/segundo_avance/pruebas/fabian/limpieza_cuenta_acceso.ps1',
@@ -104,5 +109,13 @@ try {
         const baja = await solicitar(rutaUsuario, { metodo: 'DELETE' })
         console.log(`Limpieza de cuenta temporal: HTTP ${baja.status}`)
         if (baja.status !== 204) throw new Error('La cuenta temporal requiere limpieza manual.')
+    } catch (error) {
+        errorLimpieza = error
     }
 }
+
+if (errorPrincipal && errorLimpieza) {
+    throw new AggregateError([errorPrincipal, errorLimpieza], 'Falló la prueba y la limpieza de la cuenta temporal.')
+}
+if (errorPrincipal) throw errorPrincipal
+if (errorLimpieza) throw errorLimpieza

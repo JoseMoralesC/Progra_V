@@ -17,7 +17,7 @@ public static class GatewayApplication
             client.BaseAddress = new Uri(Destino(builder.Configuration, "Bitacora", 5159));
             client.Timeout = TimeSpan.FromSeconds(8);
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
-        foreach (var (servicio, puerto) in new[] { ("Notificacion", 8095), ("Notas", 8092) })
+        foreach (var (servicio, puerto) in new[] { ("Notificacion", 8095), ("Notas", 8092), ("Factura", 8093) })
             builder.Services.AddHttpClient("dashboard-" + servicio, client => {
                 client.BaseAddress = new Uri(Destino(builder.Configuration, servicio, puerto));
                 client.Timeout = TimeSpan.FromSeconds(8);
@@ -63,6 +63,12 @@ public static class GatewayApplication
                 {
                     var resumen = await ResumenDashboard.Obtener(context, clientes, ruta.Servicio);
                     await resumen.ExecuteAsync(context);
+                    return;
+                }
+                if (acceso.EsIndicadorFacturas(context))
+                {
+                    var indicador = await FacturaDashboard.Obtener(context, clientes);
+                    await indicador.ExecuteAsync(context);
                     return;
                 }
                 var error = await proxy.SendAsync(context, destino, cliente, config, transformer);

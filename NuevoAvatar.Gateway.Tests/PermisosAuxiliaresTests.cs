@@ -44,6 +44,12 @@ public class PermisosAuxiliaresTests : IAsyncLifetime
             asignados = await c.Request.ReadFromJsonAsync<List<string>>() ?? [];
             return Results.NoContent();
         });
+        backend.MapGet("/factura", (HttpContext c) => {
+            solicitudesNegocio++;
+            return c.Request.Query["periodoId"] == "20"
+                ? Results.Ok(new[] { new { estado = "PENDIENTE" }, new { estado = "PAGADA" } })
+                : Results.BadRequest();
+        });
         backend.Map("/{**path}", (HttpContext c) => {
             solicitudesNegocio++;
             return Results.Ok(new { path = c.Request.Path.Value });
@@ -106,6 +112,40 @@ public class PermisosAuxiliaresTests : IAsyncLifetime
         using var lectura = await Solicitar("GET", "/gateway/admin/modulo/ADM8/roles");
         Assert.Equal(HttpStatusCode.OK, lectura.StatusCode);
         Assert.Equal(nuevos, await lectura.Content.ReadFromJsonAsync<List<string>>());
+    }
+
+    [Fact]
+    public async Task Adm3ConsultaSoloElConteoDeFacturasDeUnPeriodo()
+    {
+        permiso = "ADM3";
+        using var respuesta = await Solicitar("GET", "/gateway/fin/factura?periodoId=20&vista=dashboard");
+        Assert.Equal(HttpStatusCode.OK, respuesta.StatusCode);
+        using var contenido = await System.Text.Json.JsonDocument.ParseAsync(await respuesta.Content.ReadAsStreamAsync());
+        Assert.Equal(1, contenido.RootElement.GetProperty("pendientes").GetInt32());
+        Assert.Equal(1, solicitudesNegocio);
+    }
+
+    [Theory]
+    [InlineData("GET", "/gateway/fin/factura?periodoId=20")]
+    [InlineData("GET", "/gateway/fin/factura?periodoId=0&vista=dashboard")]
+    [InlineData("GET", "/gateway/fin/factura?periodoId=20&vista=dashboard&otro=1")]
+    [InlineData("GET", "/gateway/fin/factura/1")]
+    [InlineData("POST", "/gateway/fin/factura?periodoId=20&vista=dashboard")]
+    public async Task Adm3NoConcedeOtrasConsultasNiEscriturasDeFacturas(string metodo, string ruta)
+    {
+        permiso = "ADM3";
+        using var respuesta = await Solicitar(metodo, ruta);
+        Assert.Equal(HttpStatusCode.Forbidden, respuesta.StatusCode);
+        Assert.Equal(0, solicitudesNegocio);
+    }
+
+    [Fact]
+    public async Task IndicadorDeFacturasExigePerfilAdministrador()
+    {
+        permiso = "ADM3";
+        using var respuesta = await Solicitar("GET", "/gateway/fin/factura?periodoId=20&vista=dashboard", "profesor");
+        Assert.Equal(HttpStatusCode.Forbidden, respuesta.StatusCode);
+        Assert.Equal(0, solicitudesNegocio);
     }
 
     [Theory]

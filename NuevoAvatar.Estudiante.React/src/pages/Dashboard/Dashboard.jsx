@@ -61,16 +61,17 @@ export function Dashboard({ cliente, usuario }) {
                 indicador.nombre,
                 resultados[indice].status === 'fulfilled' ? resultados[indice].value : null
             ]))
-            if (permitido('ADM20') && permitido('ADM12')) {
+            if (permitido('ADM3') && permitido('ADM12')) {
                 try {
                     const periodos = await cliente.request('/gateway/admin/periodo')
                     if (!Array.isArray(periodos)) throw new Error('No se pudieron leer los períodos.')
                     const facturas = await Promise.all(periodos.map(async periodo => {
-                        const datos = await cliente.request(`/gateway/fin/factura?periodoId=${periodo.periodoId}`)
-                        if (!Array.isArray(datos)) throw new Error('No se pudieron leer las facturas.')
-                        return datos
+                        const datos = await cliente.request(`/gateway/fin/factura?periodoId=${periodo.periodoId}&vista=dashboard`)
+                        if (!Number.isSafeInteger(datos?.pendientes) || datos.pendientes < 0)
+                            throw new Error('No se pudo leer el indicador de facturas.')
+                        return datos.pendientes
                     }))
-                    actuales['Facturas pendientes'] = facturas.flat().filter(factura => factura.estado === 'PENDIENTE').length
+                    actuales['Facturas pendientes'] = facturas.reduce((suma, cantidad) => suma + cantidad, 0)
                 } catch {
                     fallos.push('Facturas pendientes')
                     actuales['Facturas pendientes'] = null

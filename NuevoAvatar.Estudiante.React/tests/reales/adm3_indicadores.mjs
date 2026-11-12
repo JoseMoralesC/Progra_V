@@ -7,11 +7,7 @@ if (!process.env.TEST_USER || !process.env.TEST_PASSWORD) {
 }
 
 const origen = 'http://127.0.0.1:5080'
-const rutaRoles = `${origen}/gateway/admin/modulo/ADM20/roles`
 let token
-let rolesIniciales
-let asignacionNueva = false
-let aprobada = false
 
 async function solicitar(ruta, metodo = 'GET', datos) {
     return fetch(origen + ruta, {
@@ -33,7 +29,7 @@ async function lista(ruta) {
     return datos
 }
 
-try {
+{
     const ingreso = await fetch(`${origen}/gateway/auth/login`, {
         method: 'POST',
         headers: { usuario: process.env.TEST_USER, contrasena: process.env.TEST_PASSWORD }
@@ -42,20 +38,9 @@ try {
     token = (await ingreso.json()).access_token
     if (!token) throw new Error('No se recibió token de acceso.')
 
-    const asignaciones = await solicitar('/gateway/admin/modulo/ADM20/roles')
-    if (asignaciones.status !== 200) throw new Error(`Asignaciones ADM20 HTTP ${asignaciones.status}`)
-    rolesIniciales = await asignaciones.json()
-    if (!Array.isArray(rolesIniciales)) throw new Error('Asignaciones ADM20 inválidas.')
-    if (!rolesIniciales.includes('ADMIN')) {
-        const cambio = await solicitar('/gateway/admin/modulo/ADM20/roles', 'PUT', [...rolesIniciales, 'ADMIN'])
-        if (cambio.status !== 204) throw new Error(`Asignación ADM20 HTTP ${cambio.status}`)
-        asignacionNueva = true
-        console.log('ADM20 asignado al rol administrador; asignaciones anteriores conservadas')
-    }
-
     const menu = await lista('/gateway/menu')
-    if (!menu.some(modulo => modulo.idModulo === 'ADM20')) {
-        throw new Error('ADM20 no aparece en el menú autorizado después de asignarlo.')
+    if (!menu.some(modulo => modulo.idModulo === 'ADM3')) {
+        throw new Error('ADM3 no aparece en el menú autorizado.')
     }
 
     const [usuarios, carreras, cursos, activos, periodos] = await Promise.all([
@@ -63,13 +48,18 @@ try {
         lista('/gateway/admin/curso'), lista('/gateway/admin/periodo?estado=ACTIVO'),
         lista('/gateway/admin/periodo')
     ])
-    const facturas = (await Promise.all(periodos.map(periodo =>
-        lista(`/gateway/fin/factura?periodoId=${periodo.periodoId}`)
-    ))).flat()
+    const facturas = await Promise.all(periodos.map(async periodo => {
+        const respuesta = await solicitar(`/gateway/fin/factura?periodoId=${periodo.periodoId}&vista=dashboard`)
+        if (respuesta.status !== 200) throw new Error(`Indicador de facturas HTTP ${respuesta.status}`)
+        const datos = await respuesta.json()
+        if (!Number.isSafeInteger(datos?.pendientes) || datos.pendientes < 0)
+            throw new Error('Respuesta inválida del indicador de facturas.')
+        return datos.pendientes
+    }))
     const esperado = new Map([
         ['Usuarios', usuarios.length], ['Carreras', carreras.length],
         ['Cursos', cursos.length], ['Períodos activos', activos.length],
-        ['Facturas pendientes', facturas.filter(factura => factura.estado === 'PENDIENTE').length]
+        ['Facturas pendientes', facturas.reduce((suma, cantidad) => suma + cantidad, 0)]
     ])
 
     const navegador = await chromium.launch({
@@ -115,13 +105,5 @@ try {
         console.log('ADM3: resumen administrativo de notificaciones disponible y vacío')
     } finally {
         await navegador.close()
-    }
-    aprobada = true
-} finally {
-    if (asignacionNueva && !aprobada && token && rolesIniciales) {
-        const restauracion = await solicitar('/gateway/admin/modulo/ADM20/roles', 'PUT', rolesIniciales)
-        if (restauracion.status !== 204) {
-            throw new Error('No se pudo restaurar ADM20 después del fallo de prueba.')
-        }
     }
 }

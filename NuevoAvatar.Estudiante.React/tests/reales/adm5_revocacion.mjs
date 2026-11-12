@@ -15,6 +15,8 @@ const navegador = await chromium.launch({
 
 let token
 let originales
+let errorPrincipal
+let errorLimpieza
 
 async function consultar(ruta, metodo = 'GET', datos) {
     return fetch(ruta, {
@@ -66,7 +68,10 @@ try {
     const restaurada = await consultar(rutaInstituciones)
     if (restaurada.status !== 200) throw new Error(`ADM8 después de restaurar HTTP ${restaurada.status}`)
     console.log('ADM5: restauración mostró Instituciones sin recargar la página y devolvió HTTP 200')
-} finally {
+} catch (error) {
+    errorPrincipal = error
+}
+try {
     if (token && originales) {
         const respuesta = await consultar(rutaRoles)
         if (respuesta.status !== 200) throw new Error('No se pudo comprobar la asignación final de ADM8.')
@@ -77,5 +82,19 @@ try {
             console.log('Asignación original de ADM8 restaurada tras la prueba')
         }
     }
-    await navegador.close()
+} catch (error) {
+    errorLimpieza = error
 }
+try {
+    await navegador.close()
+} catch (error) {
+    errorLimpieza = errorLimpieza
+        ? new AggregateError([errorLimpieza, error], 'Falló la restauración y el cierre del navegador.')
+        : error
+}
+
+if (errorPrincipal && errorLimpieza) {
+    throw new AggregateError([errorPrincipal, errorLimpieza], 'Falló la prueba y la restauración de permisos.')
+}
+if (errorPrincipal) throw errorPrincipal
+if (errorLimpieza) throw errorLimpieza

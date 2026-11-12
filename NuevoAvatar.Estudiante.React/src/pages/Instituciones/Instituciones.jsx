@@ -41,20 +41,20 @@ export function Instituciones({ cliente }) {
     }, [api, tamano])
 
     useEffect(() => {
-        let vigente = true
+        const control = new AbortController()
         const consulta = ++consultaActual.current
         api.listar('').then(datos => {
-            if (!vigente || consulta !== consultaActual.current) return
+            if (control.signal.aborted || consulta !== consultaActual.current) return
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de instituciones.')
             setInstituciones(datos)
             setEstado(datos.length ? '' : 'No hay instituciones para mostrar.')
         }).catch(e => {
-            if (!vigente || consulta !== consultaActual.current) return
+            if (control.signal.aborted || consulta !== consultaActual.current) return
             setEstado('')
             setError(e.message)
         })
         api.tamanoPagina().then(setTamano)
-        return () => { vigente = false }
+        return () => control.abort()
     }, [api])
 
     const totalPaginas = Math.max(1, Math.ceil(instituciones.length / tamano))

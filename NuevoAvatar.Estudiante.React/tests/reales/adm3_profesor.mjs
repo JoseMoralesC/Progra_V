@@ -15,6 +15,8 @@ const clave = `${randomUUID()}Aa1!`
 const asignaciones = new Map()
 const creado = { rol: false, profesor: null, usuario: false, grupo: null }
 let tokenAdmin
+let errorPrincipal
+const fallosLimpieza = []
 
 async function solicitar(ruta, metodo = 'GET', datos, token = tokenAdmin, base = origen) {
     return fetch(base + ruta, {
@@ -150,36 +152,43 @@ try {
     } finally {
         await navegador.close()
     }
+} catch (error) {
+    errorPrincipal = error
 } finally {
-    const fallos = []
     if (creado.grupo) {
         const respuesta = await solicitar(`/grupo/${creado.grupo}`, 'DELETE', null,
             tokenAdmin, 'http://127.0.0.1:5256').catch(() => null)
-        if (respuesta?.status !== 204) fallos.push('grupo temporal')
+        if (respuesta?.status !== 204) fallosLimpieza.push('grupo temporal')
     }
     if (creado.usuario) {
         const limpieza = spawnSync('pwsh', ['-NoProfile', '-File', fileURLToPath(new URL(
             '../../../docs/segundo_avance/pruebas/fabian/limpieza_sesion_profesor.ps1', import.meta.url
         )), '-Correo', correo], { encoding: 'utf8' })
-        if (limpieza.status !== 0) fallos.push('tokens de sesión')
+        if (limpieza.status !== 0) fallosLimpieza.push('tokens de sesión')
         else {
             const respuesta = await solicitar(`/gateway/admin/usuario/${encodeURIComponent(correo)}`, 'DELETE')
                 .catch(() => null)
-            if (respuesta?.status !== 204) fallos.push('cuenta docente temporal')
+            if (respuesta?.status !== 204) fallosLimpieza.push('cuenta docente temporal')
         }
     }
     if (creado.profesor) {
         const respuesta = await solicitar(`/gateway/admin/profesor/${creado.profesor}`, 'DELETE').catch(() => null)
-        if (respuesta?.status !== 204) fallos.push('profesor temporal')
+        if (respuesta?.status !== 204) fallosLimpieza.push('profesor temporal')
     }
     for (const [modulo, previos] of asignaciones) {
         const respuesta = await solicitar(`/gateway/admin/modulo/${modulo}/roles`, 'PUT', previos).catch(() => null)
-        if (respuesta?.status !== 204) fallos.push(`roles de ${modulo}`)
+        if (respuesta?.status !== 204) fallosLimpieza.push(`roles de ${modulo}`)
     }
     if (creado.rol) {
         const respuesta = await solicitar('/gateway/admin/rol/PROFESOR', 'DELETE').catch(() => null)
-        if (respuesta?.status !== 200) fallos.push('rol profesor temporal')
+        if (respuesta?.status !== 200) fallosLimpieza.push('rol profesor temporal')
     }
-    if (fallos.length) throw new Error(`Limpieza pendiente: ${fallos.join(', ')}`)
-    console.log('Datos temporales del perfil docente eliminados.')
+    if (!fallosLimpieza.length) console.log('Datos temporales del perfil docente eliminados.')
 }
+
+if (errorPrincipal && fallosLimpieza.length) {
+    throw new AggregateError([errorPrincipal, new Error(`Limpieza pendiente: ${fallosLimpieza.join(', ')}`)],
+        'Falló la prueba y quedaron datos temporales pendientes de limpieza.')
+}
+if (errorPrincipal) throw errorPrincipal
+if (fallosLimpieza.length) throw new Error(`Limpieza pendiente: ${fallosLimpieza.join(', ')}`)

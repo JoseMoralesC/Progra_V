@@ -14,7 +14,7 @@ test('ADM3 incluye facturas pendientes de períodos cerrados en el indicador', a
         }
         const respuestas = {
             '/gateway/auth/sesion': { nombre: 'Ana', rol: 'ADMINISTRADOR' },
-            '/gateway/menu': ['ADM3', 'ADM4', 'ADM9', 'ADM10', 'ADM12', 'ADM20', 'ADM22'].map((idModulo, orden) =>
+            '/gateway/menu': ['ADM3', 'ADM4', 'ADM9', 'ADM10', 'ADM12', 'ADM22'].map((idModulo, orden) =>
                 ({ idModulo, nombreModulo: idModulo, activo: true, orden })),
             '/gateway/admin/bitacora': [{ idBitacora: 1, usuario: 'admin@cuc.ac.cr', descripcion: 'Consulta · Usuarios', fechaHora: '2026-11-08T12:00:00Z' }],
             '/gateway/admin/usuario': [{}, {}],
@@ -23,12 +23,16 @@ test('ADM3 incluye facturas pendientes de períodos cerrados en el indicador', a
             '/gateway/admin/periodo': url.searchParams.has('estado')
                 ? [{ periodoId: 20, estado: 'ACTIVO' }]
                 : [{ periodoId: 20, estado: 'ACTIVO' }, { periodoId: 19, estado: 'CERRADO' }],
-            '/gateway/fin/factura': [{ estado: 'PENDIENTE' }, { estado: 'PAGADA' }],
+            '/gateway/fin/factura': { pendientes: 1 },
             '/gateway/fin/notificar/historial': {
                 items: [{ id: 1, asunto: 'Aviso académico', estado: 'ENVIADA', fecha: '2026-11-05T10:00:00Z' }]
             }
         }
         if (!(url.pathname in respuestas)) throw new Error(`Ruta no prevista: ${url.pathname}`)
+        if (url.pathname === '/gateway/fin/factura') {
+            expect(url.searchParams.get('vista')).toBe('dashboard')
+            expect(['19', '20']).toContain(url.searchParams.get('periodoId'))
+        }
         await route.fulfill({ contentType: 'application/json', body: JSON.stringify(respuestas[url.pathname]) })
     })
     await page.goto('/inicio')
@@ -76,6 +80,10 @@ test('ADM3 informa el fallo de auditoría y de grupos sin ocultar soporte', asyn
     })))
     await page.route('**/gateway/**', async route => {
         const url = new URL(route.request().url())
+        if (url.pathname === '/gateway/auditoria/interfaz') {
+            await route.fulfill({ status: 204 })
+            return
+        }
         if (url.pathname === '/gateway/mat/profesor/grupos' || url.searchParams.get('vista') === 'dashboard') {
             await route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: 'Servicio no disponible' }) })
             return
