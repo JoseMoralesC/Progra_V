@@ -1,0 +1,3473 @@
+{
+  "fecha": "2026-11-12",
+  "resumen": {
+    "Alejandro": {
+      "aprobada": 225,
+      "fallida": 6,
+      "omitida": 0,
+      "total": 231,
+      "porcentaje_aprobado": 97.4
+    },
+    "Fabian": {
+      "aprobada": 14,
+      "fallida": 6,
+      "omitida": 0,
+      "total": 20,
+      "porcentaje_aprobado": 70.0
+    },
+    "Jose": {
+      "aprobada": 240,
+      "fallida": 12,
+      "omitida": 0,
+      "total": 252,
+      "porcentaje_aprobado": 95.24
+    },
+    "Ramses": {
+      "aprobada": 61,
+      "fallida": 0,
+      "omitida": 0,
+      "total": 61,
+      "porcentaje_aprobado": 100.0
+    }
+  },
+  "navegador": {
+    "principal-ui-final.json": {
+      "startTime": "2026-11-12T06:11:01.976Z",
+      "duration": 180001.956,
+      "expected": 29,
+      "skipped": 0,
+      "unexpected": 18,
+      "flaky": 0,
+      "errores_generales": [
+        {
+          "message": "\u001b[31mTimed out waiting 180s for the teardown for plugin setup to run\u001b[39m"
+        }
+      ]
+    },
+    "jose-ui-final.json": {
+      "startTime": "2026-11-12T06:11:02.044Z",
+      "duration": 180012.603,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "errores_generales": [
+        {
+          "message": "\u001b[31mTimed out waiting 180s for the teardown for plugin setup to run\u001b[39m"
+        }
+      ]
+    },
+    "ramses-ui-final.json": {
+      "startTime": "2026-11-12T06:11:01.988Z",
+      "duration": 180005.134,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "errores_generales": [
+        {
+          "message": "\u001b[31mTimed out waiting 180s for the teardown for plugin setup to run\u001b[39m"
+        }
+      ]
+    }
+  },
+  "casos": [
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.IntegracionCompartidaTest.cargaBibliotecaYContratoConSpringBootDelServicioSinBaseReal",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.NuevoAvatarPersona2ApplicationTests.contextLoads",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptorTest.aceptaBearerValidadoPorSeguridad",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptorTest.rechazaSolicitudSinBearer",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptorTest.obtieneElSujetoSoloDespuesDeValidarElBearer",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest.registraAmbosEstadosYNoConfirmaCambiosFallidos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest.ocultaLasTresCredencialesDelCambioDeContrasena",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest.ocultaSecretosConComillasEscapadasYCamposAnidados",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest.conservaJsonSinSecretos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilterTest.ocultaContrasenaYConservaDatosDelRegistro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.usuario.UsuarioPerfilPropioTest.actualizaSoloElNombreDeLaCuentaDerivadaDelSujeto",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.usuario.UsuarioPerfilPropioTest.cambiaContrasenaDelSujetoYGuardaSoloHashBcrypt",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.usuario.UsuarioPerfilPropioTest.validaLongitudMayusculaMinusculaNumeroYCaracterEspecialEnServidor",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Usuario",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.usuario.UsuarioPerfilPropioTest.rechazaContrasenaActualIncorrectaSinPersistir",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Profesor",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.profesor.ProfesorServiceTest.permiteCuandoTodosLosPeriodosEstanCerrados",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Profesor",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.profesor.ProfesorServiceTest.registraSnapshotsJsonEnBitacoraDeProfesor",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Profesor",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.profesor.ProfesorServiceTest.exigeFormatoLocalDeTelefonosYEvitaDuplicados",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Profesor",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.profesor.ProfesorServiceTest.bloqueaCuandoHoyEstaDentroDelPeriodoInclusivo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Carrera",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.carrera.CarreraServiceTest.bloqueaEliminarCuandoExistenCursos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Carrera",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.carrera.CarreraServiceTest.validaInstitucionYProfesorEnSusServiciosPropietarios",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Carrera",
+      "caso": "cr.ac.cuc.nuevoavatar.persona2.carrera.CarreraServiceTest.registraSnapshotsJsonEnModificacionYEliminacion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest.rechazaDistritoDeOtroCanton",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest.rechazaCantonDeOtraProvincia",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest.comunicaFallaDelServicioSinTratarlaComoDireccionInvalida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest.rechazaProvinciaInexistente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.DireccionClientTest.consumeRutasYCamelCaseDelServicioDeAlejandro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[7]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[8]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[9]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposRequeridosEnCrearYModificar(String)[10]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.metodoNoAdmitidoNoSeReportaComoErrorInterno",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.identidadEnQueryNoCambiaElExpedientePropio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.rechazaCualquierCampoProtegidoAunqueElRestoSeaValido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.identificacionDuplicadaAlModificarNoPierdeDatos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.rechazaRolIncorrectoVinculoAusenteYAmbiguo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.camposEditablesObligatoriosSeValidanAntesDePersistir",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.identificacionReferenciadaNoSeCambiaEntreServicios",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.errorTecnicoRegistraBitacoraYRevierteEscritura",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.noEliminaEstudianteReferenciadoNiSusTelefonos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.noPermiteMismoNumeroAunqueCambieElTipo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.estudiantesDiferentesSoloVenYActualizanSuPropioRegistro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.direccionInvalidaNoEscribeDatos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.conservaCerosInicialesYNoExigeCorreoOTelefonosUnicos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.falloGen1RevierteModificacionYEliminacion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.dependenciasDeAutenticacionNoDisponiblesDevuelven503",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.rechazaDireccionIncoherenteYTokenInvalido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.sqlNoInterpretaLaIdentificacionComoUnaInstruccion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.dominioCambiaMedianteParametro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.falloGen1RevierteCreacionYTelefonos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.cicloCompletoDeCincoOperacionesYBitacoras",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[7]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[8]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[9]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[10]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[11]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[12]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[13]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[14]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.protegeTodasLasOperaciones(String, String, String)[15]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.recursosInexistentesDevuelven404",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.nombreCorreoDominioYFechaInvalidosSeRechazanEnCrearYModificar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteApiTest.consultaYActualizaSoloSuExpedienteConPersistenciaYBitacoraMinima",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[7]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[8]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[9]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[10]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[11]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[12]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[13]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[14]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[15]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[16]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[17]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[18]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[19]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[20]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[21]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[22]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[23]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[24]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[25]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[26]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[27]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[28]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDatosAusentesAntesDeConsultarParametro(String, DatosExpediente)[29]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.noAgregaEdadMinimaNiFormatoDeTelefono",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.utilizaDominioConfiguradoYSinDiferenciarMayusculas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaExpedienteNulo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.propagaFalloDelParametro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaNombreConOtrosCaracteres(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaNombreConOtrosCaracteres(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaNombreConOtrosCaracteres(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaNombreConOtrosCaracteres(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaNombreConOtrosCaracteres(String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDominioDistinto(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDominioDistinto(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaDominioDistinto(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaFormatoCorreo(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaFormatoCorreo(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaFormatoCorreo(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.rechazaFormatoCorreo(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.aceptaLetrasAcentuadas(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.aceptaLetrasAcentuadas(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.expediente.ExpedienteValidadorTest.aceptaLetrasAcentuadas(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.conservaUsuarioYTokenValidados",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.responde503CuandoSeguridadNoResponde",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noConfiaEnSubSinValidacionExterna",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.rechazaHeaderAusenteOInvalido(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.rechazaHeaderAusenteOInvalido(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.rechazaHeaderAusenteOInvalido(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.rechazaHeaderAusenteOInvalido(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.rechazaHeaderAusenteOInvalido(String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noRegistraUsuarioInventadoSiPayloadInvalido(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noRegistraUsuarioInventadoSiPayloadInvalido(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noRegistraUsuarioInventadoSiPayloadInvalido(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noRegistraUsuarioInventadoSiPayloadInvalido(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.AutorizacionInterceptorTest.noRegistraUsuarioInventadoSiPayloadInvalido(String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.BitacoraServiceTest.consultaRespetaTextoDelDocumento",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.BitacoraServiceTest.conservaEstadoAnteriorAunqueElObjetoCambie",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.BitacoraServiceTest.registraTipoDeErrorSinCopiarMensajeConCredenciales",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.BitacoraServiceTest.creacionYEliminacionIncluyenRegistro",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.validaContratoUsr5",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.comunicaFalloDeConexion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.enviaBitacoraSinInventarFechaNiIdentificador",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.leeParametroConContratoUsr3",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.distingueFallaDeServicioDeTokenInvalido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.rechazaTokenCon401",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.informaParametroInexistente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.noAutorizaSinTrue(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.noAutorizaSinTrue(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.noAutorizaSinTrue(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.rechazaParametroSinValor(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.rechazaParametroSinValor(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.rechazaParametroSinValor(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.rechazaParametroSinValor(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.seguridad.SeguridadClientTest.noOcultaFalloAlGuardarBitacora",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.SeguridadRutasTest.rechazaRutasSinToken(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Expediente",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.SeguridadRutasTest.rechazaRutasSinToken(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.estudiantePuedeCrearConsultarModificarYCancelarSoloConIdentidadDeSesion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.errorDespuesDeEscribirRevierteYSeRegistraComoMat1",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.falloGen1RevierteCreacionYCursos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.noImponeUnicidadNoSolicitadaEntreEstudianteYPeriodo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.compruebaTodosLosNivelesDesdeLaBase",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.cincoOperacionesConDatosPersistidosYBitacoras",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[7]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[8]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[9]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[10]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[11]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[12]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[13]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[14]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.protegeLasCincoOperaciones(String, String, String)[15]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.modificarPermiteCambiarEstudianteYCarrera",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.reevaluaLaFechaParaCadaEscrituraYPermiteConsultarOEliminar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.observacionesOpcionalesEnCrearYModificar(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.observacionesOpcionalesEnCrearYModificar(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.observacionesOpcionalesEnCrearYModificar(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.observacionesOpcionalesEnCrearYModificar(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.referenciasInexistentesNoGuardanDatos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.endpointsAdministrativosNoPermitenQueUnEstudianteElijaIdentidadAjena",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.falloGen1RevierteModificacionYEliminacion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.listaVaciaOCursoNuloNoSeAceptan",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.servicioDePrematriculaNoExponeRutasDeExpediente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.solicitudPropiaNoAceptaIdentidadElegidaYNoExponeSolicitudesDeOtroEstudiante",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.observacionesPuedenOmitirseAlCrear",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.recursoAusenteIdInvalidoYMetodoNoAdmitidoTienenRespuestasRest",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.rechazaPeriodoQueIniciaHoyOPasadoAunqueSolicitanteEnvieOtraFecha(int)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.rechazaPeriodoQueIniciaHoyOPasadoAunqueSolicitanteEnvieOtraFecha(int)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.identificacionSinContenidoNoSeAcepta(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.identificacionSinContenidoNoSeAcepta(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.identificacionSinContenidoNoSeAcepta(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.datosRequeridosEnCrearYModificar(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.datosRequeridosEnCrearYModificar(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.datosRequeridosEnCrearYModificar(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.datosRequeridosEnCrearYModificar(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaApiTest.opcionesPropiasSoloIncluyenCursosDePrimerNivelYPeriodosFuturos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaPeriodoPasadoOQueIniciaHoy(int)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaPeriodoPasadoOQueIniciaHoy(int)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaPeriodoPasadoOQueIniciaHoy(int)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[7]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[8]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[9]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosAusentesDeCarreraCursosOPeriodo(String, DatosPrematricula)[10]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.necesitaFechaDelServidorParaEvaluarPeriodo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.rechazaDatosNulos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.todosLosCursosDebenSerDePrimerNivel(int)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.todosLosCursosDebenSerDePrimerNivel(int)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.todosLosCursosDebenSerDePrimerNivel(int)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.evaluaFechaDeCadaOperacionSinConservarUnHoyFijo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.comparaFechasAlCambiarDeAnio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.observacionesSonOpcionales(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.observacionesSonOpcionales(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.observacionesSonOpcionales(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.observacionesSonOpcionales(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.aceptaUnSoloCursoDePrimerNivel",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.identificacionEsRequerida(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.identificacionEsRequerida(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.identificacionEsRequerida(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.identificacionEsRequerida(String)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.aceptaPeriodoFuturoSinAgregarPlazoMaximo(int)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.aceptaPeriodoFuturoSinAgregarPlazoMaximo(int)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.prematricula.PrematriculaValidadorTest.aceptaPeriodoFuturoSinAgregarPlazoMaximo(int)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.SeguridadRutasTest.rechazaRutasSinToken(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Java Prematricula",
+      "caso": "cr.ac.cuc.nuevoavatar.persona4.SeguridadRutasTest.rechazaRutasSinToken(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.rollbackDeRubrosNoEnviaBitacoraDeExito",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.reemplazoDeRubrosAuditaAntesYDespuesTrasCommit",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.altaDeRubrosAuditaJsonNuevoTrasCommit",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.rollbackNoEnviaBitacoraDeExito",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest.enviaAntesYDespuesSoloTrasConfirmarTransaccion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.fueraDeTransaccionNoIntentaEscribir",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[4]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[5]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.exigeBloqueoExclusivoTransaccionalYRechazaResultadosNegativos(int)[6]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest.conexionEnAutocommitNoPuedeProtegerLaOperacion",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ConcurrenciaNotasTest.primeraNotaConfirmadaImpideReemplazarElDesgloseConcurrente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ConcurrenciaNotasTest.dosPostConcurrentesNoSobrescribenNiDuplicanLaPrimeraNota",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ConcurrenciaNotasTest.reemplazoConfirmadoRechazaLaNotaDelRubroQueYaNoExiste",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.notaFueraDeRangoNoEscribeNiBloqueaRubros(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.notaFueraDeRangoNoEscribeNiBloqueaRubros(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.notaFueraDeRangoNoEscribeNiBloqueaRubros(String)[3]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.putNoCreaUnaNotaInexistente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.falloAlGuardarNoPublicaExitoEnBitacora",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.modificacionConservaSnapshotAnterior",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.postNoSobrescribeNotaExistente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.creaEnLimitesYAuditaResultadoPersistido(String)[1]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest.creaEnLimitesYAuditaResultadoPersistido(String)[2]",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.sinTokenNoPuedeConsultarGrupo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.grupoInvalidoDevuelve400",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.profesorPropioUsaOperacionCorrecta",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.estudianteNoPuedeAsignarNotaPorHttp",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.profesorAjenoNoPuedeModificarNotaPorHttp",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest.notaInvalidaNoLlegaALaEscritura",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest.bloqueaCambioDeRubrosCuandoYaExistenNotas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest.rechazaDesgloseQueNoSumaCien",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest.reemplazoAuditaSnapshotPrevioYResultadoPersistido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest.resumenConsultaSoloProfesorPropioYPeriodoActivo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest.gruposDePeriodosCerradosNoAparecenEnResumenActual",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest.falloDeGrupoNoSePresentaComoResumenSinDatos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.dependenciaCaidaNoSeConvierteEnGrupoVacio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.interceptorUsaIdentidadValidadaYNoElPayloadDelNavegador",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.profesorPuedeAccederSoloAGrupoPropio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.tokenExpiradoNoResuelveIdentidad",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.matriculaConPeriodoDiferenteEsRechazada",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.estudianteNoPuedeEscribirNiConsultarNotasDelProfesor",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.profesorNoPuedeConsultarOtroGrupo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Java Notas",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest.headersDelClienteNoOtorganIdentidad",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Notificacion",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notificacion.NotificacionServiceTest.guardaHistorialEnErrorCuandoFallaTransporteSmtp",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Notificacion",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notificacion.NotificacionServiceTest.registraErrorEnHistorialCuandoFaltanParametrosSmtp",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Notificacion",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notificacion.NotificacionServiceTest.informaEnvioRealizadoAunqueFalleGuardadoDeHistorial",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Notificacion",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notificacion.NotificacionServiceTest.sanitizacionEliminaScriptsYAtributosPeligrosos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Java Notificacion",
+      "caso": "cr.ac.cuc.nuevoavatar.persona5.notificacion.NotificacionServiceTest.rechazaDestinatariosInvalidos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Contratos compartidos",
+      "caso": "permiteArchivoLocalVacio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Contratos compartidos",
+      "caso": "incluyeContratosEnClasspath",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Contratos compartidos",
+      "caso": "encuentraArchivoEnPadresYResuelveValoresEntreComillas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 13, nombre: \"Programación\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoServiceTest.ContratoActualPermiteFechasIguales",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "CursoAuditoriaTest.AltaConservaElRegistroPersistidoEnJson",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoReglasTest.EstadoSeDerivaDeFechas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 0, nombre: \"Programación\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 1, nivel: 13)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Academico.Tests.CursoFiltrosTest.CombinaCarreraYNivelEnRepositorio",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "CursoAuditoriaTest.EliminacionConservaElRegistroEliminado",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoReglasTest.DosAltasEnLaMismaInstanciaNoDuplicanElPeriodo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Apoyo heredado",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.GrupoExigeIdentificadoresHorarioYCupo",
+      "estado": "Passed"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 1)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoServiceTest.RechazaFechaFinalAnteriorAlInicioAntesDeGuardar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoReglasTest.EditarExcluyeElRegistroPropioYConservaOtrosNumeros",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.CursoAceptaLimitesDelNivel(nivel: 12)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Academico.Tests.CursoFiltrosTest.RechazaFiltrosFueraDeRango(carrera: 0, nivel: 1)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.PeriodoExigeDatos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "ValidacionesRequestTest.CursoRechazaNivelONombreInvalidos(nivel: 1, nombre: \"Programación 5\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoReglasTest.PermiteFechasSuperpuestasSiElNumeroEsDistinto",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "CursoAuditoriaTest.ModificacionConservaAnteriorYActual",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Apoyo heredado",
+      "grupo": ".NET",
+      "caso": "GrupoServiceTest.RechazaCursoInexistenteAntesDeGuardar",
+      "estado": "Passed"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": ".NET",
+      "caso": "PeriodoReglasTest.DuplicadoProduceConflicto",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Identidad_VinculaPorEmailTipoEIdentificacion(rol: \"ESTUDIANTE\", email: \"e@cuc.cr\", profesor: null, estudiante: \"123\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/mat/%69nterno/datos/NotaRubro\", verbo: \"GET\", status: 404, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/auth/refresh\", verbo: \"POST\", status: 200, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.AuthControllerTests.Validate_LeeBearerYDevuelveTrue",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/auth/login\", verbo: \"GET\", status: 401, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.TokenExpiradoYFirmaAjenaNoSonValidos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.AuthControllerTests.Login_RechazaDatosVacios",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.AuthControllerTests.Validate_RechazaTokenInvalido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/mat/interno/datos/NotaRubro\", verbo: \"GET\", status: 404, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_DependenciaCaidaNoPermiteLlegarAlDestino",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Sesion_NoConfiaEnHeadersDeIdentidad",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.AuthControllerTests.Login_Devuelve401ParaCredencialesInvalidas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.AuditoriaNoIncluyeCredenciales(ruta: \"/login\", metodo: \"POST\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/mat/obtenernotas\", verbo: \"GET\", status: 401, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ValidaTokenYRolAntesDelDestino(rol: \"PROFESOR\", permitido: null, valido: True, status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.AuthControllerTests.Login_Devuelve201ParaCredencialesValidas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.LogoutExigeTokenYConservaUsuarioParaAuditoria(header: \"\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.AuditoriaNoIncluyeCredenciales(ruta: \"/logout\", metodo: \"POST\", status: 204)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.AuditoriaNoIncluyeCredenciales(ruta: \"/refresh\", metodo: \"POST\", status: 201)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.AuditoriaNoIncluyeCredenciales(ruta: \"/login\", metodo: \"POST\", status: 201)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Identidad_VinculaPorEmailTipoEIdentificacion(rol: \"PROFESOR\", email: \"p@cuc.ac.cr\", profesor: 9, estudiante: null)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ValidaTokenYRolAntesDelDestino(rol: \"ESTUDIANTE\", permitido: \"PROFESOR\", valido: True, status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ValidaTokenYRolAntesDelDestino(rol: \"PROFESOR\", permitido: \"PROFESOR\", valido: False, status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ExcepcionesSonExplicitas(ruta: \"/gateway/auth/login\", verbo: \"POST\", status: 200, llamadas: 0)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Identidad_NoVinculaOtroExpedienteYNoAsumeRolPorId",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.LogoutExigeTokenYConservaUsuarioParaAuditoria(header: \"Bearer valido\", status: 204)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.Gateway_ValidaTokenYRolAntesDelDestino(rol: \"PROFESOR\", permitido: \"PROFESOR\", valido: True, status: 200)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.TokenYAuditoriaTests.AuditoriaNoIncluyeCredenciales(ruta: \"/sesion\", metodo: \"GET\", status: 200)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatarSeguridad.Tests.SesionYGatewayTests.LogoutExigeTokenYConservaUsuarioParaAuditoria(header: \"Bearer invalido\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"Consulta de grupos y periodos\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.MenuNormalNoRegistraVisitaAlDashboard",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: null, ruta: \"/gateway/mat/prematricula/propio\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"estudiante\", ruta: \"/gateway/fin/notificar/historial?vista=dashboard\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: null, ruta: \"/gateway/admin/bitacora?vista=dashboard\", esperado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"Registro sin formato. JSON: {\\\"ruta\\\":\\\"/usuario\\\"\"···)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ExpedientePropioRequiereEstudianteYReenviaVerboCuerpoYBearer(metodo: \"GET\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"estudiante\", ruta: \"/gateway/mat/obtenernotas?grupoId=1\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(metodo: \"PUT\", ruta: \"/gateway/mat/prematricula/propio/17\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta periodos\", modulo: \"ADM12\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.MatrizAdm5ConservaCuerpoYConsultaAsignaciones(vaciar: False)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"profesor\", ruta: \"/gateway/expediente/propio\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DashboardNoRegistraVisitasSinPerfilPermitido(token: null, esperado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.MatrizAdm5ConservaCuerpoYConsultaAsignaciones(vaciar: True)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta historial academico\", modulo: \"ADM18\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.FalloDeDependenciaDevuelveErrorSinExponerListaGlobal(servicio: \"bitacora\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.AsignacionDeModuloNoAmpliaElPerfilPermitido(token: \"estudiante\", path: \"/gateway/mat/obtenernotas?grupoId=1\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.ConservaPermisosPropiosDeCadaModulo(modulo: \"ADM5\", metodo: \"PUT\", ruta: \"/gateway/admin/rol/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DashboardRegistraIdentidadDeSesionSinAceptarUsuarioODescripcionDelCliente(token: \"profesor\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(metodo: \"POST\", ruta: \"/gateway/mat/prematricula/propio\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"admin\", ruta: \"/gateway/admin/usuario/interno/datos\", status: 404)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.FalloORespuestaInvalidaDePermisosNoPermiteLlegarAlNegocio(status: 200, invalido: True)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM10\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"Referencia a GET /usuario\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(metodo: \"GET\", ruta: \"/gateway/mat/prematricula/propio\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/modulo\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RoutingDeTodasLasFamiliasTieneDestinoYPolitica",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"profesorA\", ruta: \"/gateway/fin/notificar/historial\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"invalido\", ruta: \"/gateway/admin/usuario\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"POST\", ruta: \"/gateway/admin/modulo/ADM8/roles\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM22\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"profesor\", ruta: \"/gateway/admin/expediente/123\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.AdministradorRecibeDiezEventosDeModulosPermitidosOrdenadosDespuesDeFiltrar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta periodo 15\", modulo: \"ADM12\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM10\", metodo: \"GET\", ruta: \"/gateway/admin/carrera\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM11\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM17\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.ConservaPermisosPropiosDeCadaModulo(modulo: \"ADM7\", metodo: \"POST\", ruta: \"/gateway/admin/modulo\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ConservaVerboCuerpoQueryRespuestaYLocation(metodo: \"DELETE\", status: 204)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.AsignacionDeModuloNoAmpliaElPerfilPermitido(token: \"profesor\", path: \"/gateway/admin/usuario\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.PrematriculaPropiaReenviaOperacionAutenticadaDeEstudiante(metodo: \"DELETE\", ruta: \"/gateway/mat/prematricula/propio/17\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM8\", metodo: \"GET\", ruta: \"/gateway/admin/rol\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/modulo/ADM8/roles/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"DELETE\", ruta: \"/gateway/admin/modulo/ADM8\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM7\", metodo: \"GET\", ruta: \"/gateway/admin/rol\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ConservaVerboCuerpoQueryRespuestaYLocation(metodo: \"GET\", status: 200)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM8\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ModuloInactivoNiegaApiYSeRetiraDelMenu",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"profesor\", ruta: \"/gateway/mat/prematricula/propio\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"Consulta de todos los grupos.\", modulo: \"ADM13\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"El usuario consulta periodo 1 de otro módulo\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"profesorA\", ruta: \"/gateway/admin/bitacora?vista=dashboard&vista=glob\"···, esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"El usuario consulta periodo desconocido\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.SoloOperacionesPublicasAtraviesanSinToken(operacion: \"refresh\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"DELETE\", ruta: \"/gateway/admin/modulo/ADM8/roles\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.NotificacionesAdministrativasRequierenPermisoDelModulo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"admin\", ruta: \"/gateway/expediente/propio\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"admin\", ruta: \"/gateway/admin/usuario/%69nterno/datos\", status: 404)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"admin\", ruta: \"/gateway/mat/prematricula/propio\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM12\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.CambioContrasenaPerfilPropioReenviaPutYBearer(token: \"estudiante\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.FalloORespuestaInvalidaDePermisosNoPermiteLlegarAlNegocio(status: 403, invalido: False)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"estudiante\", ruta: \"/gateway/admin/bitacora?vista=dashboard\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ConservaVerboCuerpoQueryRespuestaYLocation(metodo: \"POST\", status: 201)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ProfesorNoPuedeEscribirAunqueIndiqueVistaDashboard(ruta: \"/gateway/admin/bitacora?vista=dashboard\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.FalloORespuestaInvalidaDePermisosNoPermiteLlegarAlNegocio(status: 503, invalido: False)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/modulo/ADM8\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM9\", metodo: \"POST\", ruta: \"/gateway/admin/institucion\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ProfesorNoPuedeEscribirAunqueIndiqueVistaDashboard(ruta: \"/gateway/fin/notificar/historial?vista=dashboard\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM8\", metodo: \"PUT\", ruta: \"/gateway/admin/modulo/ADM8/roles\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"GET\", ruta: \"/gateway/admin/rol/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DependenciaAuthCaidaDevuelve503",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.CambioContrasenaPerfilPropioReenviaPutYBearer(token: \"profesor\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.FalloDeDependenciaDevuelveErrorSinExponerListaGlobal(servicio: \"notas\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: null, ruta: \"/gateway/expediente/propio\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ServicioNuevoSinContratoDeModuloNoPuedeQuedarExentoAccidentalmente",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta /obtenernotasgrupo\", modulo: \"ADM17\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DashboardNoRegistraVisitasSinPerfilPermitido(token: \"estudiante\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/DOMESTUD\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DestinoCaidoDevuelve502SinConfundirConAuth",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"GET\", ruta: \"/gateway/admin/parametro\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"GET /usuario/ana\", modulo: \"ADM4\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.SoloOperacionesPublicasAtraviesanSinToken(operacion: \"login\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.FalloDeDependenciaDevuelveErrorSinExponerListaGlobal(servicio: \"notificacion\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"Consulta del grupo 12.\", modulo: \"ADM13\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ExpedientePropioRequiereEstudianteYReenviaVerboCuerpoYBearer(metodo: \"PUT\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.CambioContrasenaPerfilPropioReenviaPutYBearer(token: \"admin\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"profesorA\", ruta: \"/gateway/fin/notificar/1?vista=dashboard\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"{\\\"descripcion\\\":\\\"El usuario consulta /usuario\\\"}\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM9\", metodo: \"GET\", ruta: \"/gateway/admin/profesor/buscar\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"POST\", ruta: \"/gateway/admin/modulo\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"invalido\", ruta: \"/gateway/admin/bitacora?vista=dashboard\", esperado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: null, ruta: \"/gateway/admin/usuario\", status: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.DependenciasMantienenAutenticacionYRolAdministrador(token: \"invalido\", estado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.DependenciasMantienenAutenticacionYRolAdministrador(token: \"estudiante\", estado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.ConservaPermisosPropiosDeCadaModulo(modulo: \"ADM6\", metodo: \"PUT\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"profesorA\", ruta: \"/gateway/admin/bitacora/1?vista=dashboard\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DashboardRegistraIdentidadDeSesionSinAceptarUsuarioODescripcionDelCliente(token: \"admin\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/modulo/ADM8/roles\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM4\", metodo: \"GET\", ruta: \"/gateway/admin/rol\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ResumenNoAbreLaConsultaGlobalNiElDetalle(token: \"profesorA\", ruta: \"/gateway/admin/bitacora\", esperado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM7\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM9\", metodo: \"PUT\", ruta: \"/gateway/admin/profesor/1\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.DependenciasMantienenAutenticacionYRolAdministrador(token: \"profesor\", estado: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta historial académico\", modulo: \"ADM18\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM9\", metodo: \"GET\", ruta: \"/gateway/admin/profesor\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"PUT\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.MenuPropioTests.UsaElIdRealDelRolDeLaCuentaYNuncaElRolDeLaQuery",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.MenuPropioTests.SinIdentidadNoConsultaNingunRol",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.ModuloInactivoNoConcedeDependencias",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"GET\", ruta: \"/gateway/admin/modulo/menu/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM4\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM10\", metodo: \"DELETE\", ruta: \"/gateway/admin/carrera/1\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.OmiteTextosAmbiguosYReferenciasDentroDeDatos(descripcion: \"Consulta del grupo 12. JSON: {\\\"ruta\\\":\\\"/usuario\\\"···)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.FalloDeBitacoraNoConfirmaElRegistroDelDashboard",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"POST\", ruta: \"/gateway/admin/rol\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.MenuPropioNoAceptaRolDeQueryYNuncaRequierePermisoAdministrativo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"DELETE\", ruta: \"/gateway/admin/rol/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RechazaAntesDeLlegarAlNegocio(token: \"estudiante\", ruta: \"/gateway/admin/usuario\", status: 403)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.DependenciasMantienenAutenticacionYRolAdministrador(token: null, estado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.RetirarPermisoBloqueaLaSiguientePeticionInclusoParaAdministrador",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.DashboardNoRegistraVisitasSinPerfilPermitido(token: \"invalido\", esperado: 401)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM4\", metodo: \"PUT\", ruta: \"/gateway/admin/rol/ADMIN\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ProxyHttpTests.ConservaVerboCuerpoQueryRespuestaYLocation(metodo: \"PUT\", status: 200)",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ClasificacionBitacoraTests.ClasificaConsultasEmitidasPorLosServicios(descripcion: \"El usuario consulta listado de estudiantes\", modulo: \"ADM19\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM9\", metodo: \"GET\", ruta: \"/gateway/admin/parametro/TAMPAG\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.DatosVaciosDevuelvenListasVacias",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.PermiteDependenciasExactasDelMantenimiento(modulo: \"ADM9\", metodo: \"GET\", ruta: \"/gateway/admin/institucion\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.CorreosSeFiltranPorDestinatarioCompletoAntesDelLimite",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.ResumenDashboardTests.ProfesorVeAccionesPropiasYGruposAutorizadosSinDatosAdministrativos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": ".NET",
+      "caso": "NuevoAvatar.Gateway.Tests.PermisosAuxiliaresTests.NoConcedeOtrasOperaciones(modulo: \"ADM5\", metodo: \"PUT\", ruta: \"/gateway/admin/modulo/ADM8\")",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "login conserva contrato real y obtiene perfil del servidor, sin persistir password\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "solicitudes simultaneas con token vencido comparten una sola renovacion rotativa\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "refresh fallido limpia credenciales y notifica retorno a login\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "logout durante refresh no permite restaurar la sesion al finalizar la respuesta\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "401 de negocio renueva una vez; segundo 401 limpia sesion sin bucles\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "caida de negocio no elimina sesion ni devuelve datos inventados\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "no envia tokens fuera del gateway\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "credenciales incorrectas y respuesta incompleta no dejan una sesion nueva\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "login sin identidad autorizada o con dependencia caida no conserva tokens parciales\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "Node",
+      "caso": "logout con consulta inicial de identidad en vuelo impide completar el login tardio\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "exige nombre, institución y profesor\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "consume carrera, institución y profesor solo por gateway\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "valida carrera nivel y nombre\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "combina filtros usando gateway\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "normaliza el identificador y conserva el contrato del API\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "rechaza identificador, nombre y orden inválidos\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "solo utiliza rutas del gateway y serializa roles\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "lee tamaño de página desde parámetros con tope máximo de 15\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "valida destinatarios y contenido\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "usa gateway para historial\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "valida fechas\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "combina filtros\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "valida mayoría de edad, formato local y teléfonos únicos\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "Node",
+      "caso": "profesores usa únicamente el gateway con paginación\r",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM3 incluye facturas pendientes de períodos cerrados en el indicador",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM3 presenta los grupos activos del profesor",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM3 informa el fallo de auditoría y de grupos sin ocultar soporte",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM3 muestra al profesor los resúmenes del servidor sin controles de filtrado",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM8 permite buscar y mantener instituciones desde la sesión",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM8 muestra dependencia y no abre la pantalla sin permiso",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM8 mantiene el listado detrás del modal, valida y cancela sin guardar",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "profesor navega a notas con layout, ruta activa, breadcrumbs y regreso",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADMINISTRADOR no ve acceso ni ejecuta consultas de notas mediante URL directa",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "ESTUDIANTE no ve acceso ni ejecuta consultas de notas mediante URL directa",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "asignar y modificar nota desde el layout conserva verbos y bloqueo del desglose",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "carga de desglose usa el cliente compartido y refresca el resultado en el layout",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "fallo de consulta no habilita escritura y permite reintentar sin perder sesión",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "profesor sin grupos ve el estado vacío dentro del layout",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "sesión rechazada al consultar notas abandona el layout y limpia credenciales",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "salir desde notas retira el módulo; volver atrás no recupera acceso",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "profesor sin ADM17 por URL directa no consulta notas y no ve el acceso",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM6 usa el servicio para crear, editar y eliminar parámetros",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM7 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM9 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM10 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM11 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM12 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM22 abre su mantenimiento y formulario en la sesión compartida",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM7 respeta TAMPAG y permite navegar sin mostrar más de quince filas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "sin ADM7 la ruta directa no consulta ni ofrece escritura de módulos",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM7 conserva el foco al escribir y muestra validaciones dentro del diálogo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM7 muestra el registro guardado en su página y confirma su eliminación",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM5 guarda un cambio de permisos para un módulo y vuelve a leerlo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "login ADMINISTRADOR llega al layout con identidad real y restaura al recargar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "login PROFESOR llega al layout con identidad real y restaura al recargar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "login ESTUDIANTE llega al layout con identidad real y restaura al recargar",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "rutas directas sin sesión vuelven al login sin mostrar identidad de ejemplo",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "credenciales inválidas no abren el layout",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "identidad rechazada después del login no conserva tokens ni abre el layout",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "renovación programada mantiene el layout y rota los tokens sin volver al login",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "refresh rechazado retira la identidad y vuelve al login con aviso de expiración",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "token vencido guardado se renueva una sola vez al restaurar bajo StrictMode",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "caída al restaurar conserva tokens, oculta el layout y permite reintentar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "salir limpia la cuenta aunque Auth falle; volver atrás no recupera el layout",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "salir mientras se renueva impide que la respuesta tardía restaure la cuenta",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "perfil no reconocido en la identidad no accede al layout",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "el estudiante no abre una ruta administrativa de notas",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "login móvil conserva formulario visible sin desbordamiento horizontal",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "retiro de ADM17 se refleja en el menú al recargar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "principal-ui-final.json",
+      "caso": "caída de permisos durante restauración oculta el layout y permite recuperar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Fabian",
+      "grupo": "principal-ui-final.json",
+      "caso": "ADM4 crea y edita usuarios usando el ID real del rol",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "login invalido no entra y muestra mensaje requerido",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "profesor crea y modifica nota con verbos distintos y rubros quedan bloqueados",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "sin desglose permite carga confirmada y refresca resultado",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "dependencia caida no muestra vacio ni permite guardar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "estudiante no obtiene controles de notas y logout limpia almacenamiento",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Jose",
+      "grupo": "jose-ui-final.json",
+      "caso": "login utilizable en pantalla movil sin desbordamiento horizontal",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "el modal bloquea el fondo y restaura el foco al cerrar",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "abre el mantenimiento de profesores en un modal bloqueante",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "abre el mantenimiento de carreras con selectores reales",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "abre el mantenimiento de cursos con carrera y nivel",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "abre el mantenimiento de periodos con fechas",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Ramses",
+      "grupo": "ramses-ui-final.json",
+      "caso": "abre composición de notificaciones en modal",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-WEB1: Inicio con expediente y solicitudes propias",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ESTUDIANTE-390: Plantilla ESTUDIANTE sin desbordamiento a 390px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ESTUDIANTE-768: Plantilla ESTUDIANTE sin desbordamiento a 768px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ESTUDIANTE-1366: Plantilla ESTUDIANTE sin desbordamiento a 1366px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ADMINISTRADOR-390: Plantilla ADMINISTRADOR sin desbordamiento a 390px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ADMINISTRADOR-768: Plantilla ADMINISTRADOR sin desbordamiento a 768px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ADMINISTRADOR-1366: Plantilla ADMINISTRADOR sin desbordamiento a 1366px",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-WEB2-confirmacion: Expediente espera confirmación y permite volver sin PUT",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-ruta-activa: Solo una opción del menú estudiantil queda activa en expediente",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM1-identidad-movil: La barra de usuario muestra nombre y rol en móvil",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-WEB4-confirmacion: Cancelar solicitud requiere confirmar antes de DELETE",
+      "estado": "aprobada"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-WEB4-TAMPAG: Prematrícula respeta TAMPAG=2",
+      "estado": "fallida"
+    },
+    {
+      "responsable": "Alejandro",
+      "grupo": "Recorrido de auditoría",
+      "caso": "A-ADM24-salida: Salir limpia la sesión de las pestañas del mismo navegador",
+      "estado": "aprobada"
+    }
+  ],
+  "limite": "Casos locales ejecutados; no equivale a criterios completos, cobertura ni aceptación real. Apoyo heredado no suma a las barras."
+}
