@@ -1,0 +1,38 @@
+{
+  "responsable": "Jose",
+  "pruebas": [
+    {
+      "prueba": "Ingreso real ADMINISTRADOR",
+      "estado": "aprobada",
+      "observado": {
+        "http": 201
+      }
+    },
+    {
+      "prueba": "JWT con firma válida y expiración pasada se rechaza",
+      "estado": "aprobada",
+      "observado": {
+        "http": 401
+      }
+    },
+    {
+      "prueba": "Dependencia real inaccesible: Usuario",
+      "estado": "aprobada",
+      "observado": {
+        "http": 502,
+        "escenario": "Gateway temporal con las demás dependencias reales; no se detiene el principal"
+      }
+    },
+    {
+      "prueba": "Dependencia real inaccesible: Autenticacion",
+      "estado": "aprobada",
+      "observado": {
+        "http": 503,
+        "escenario": "Gateway temporal con las demás dependencias reales; no se detiene el principal"
+      }
+    }
+  ],
+  "error": null,
+  "gateways_temporales_cerrados": true,
+  "salidas_no_confirmadas": 0
+}

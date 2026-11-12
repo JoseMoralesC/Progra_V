@@ -3,7 +3,8 @@ import { test, expect } from '@playwright/test'
 async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
     let rubros = sinDesglose ? [] : [{ id: 9, grupoId: 1, nombre: 'Proyecto', porcentaje: 100 }]
     let notas = []
-    const estado = { caida: false, expirar: false, sinGrupos: false, permiso: true, consultas: [], escrituras: [] }
+    const estado = { caida: false, expirar: false, sinGrupos: false, permiso: true,
+        consultas: [], escrituras: [], auditorias: [], renovaciones: 0 }
     await page.route('**/gateway/**', async route => {
         const request = route.request(), path = new URL(request.url()).pathname
         let status = 200, body
@@ -14,6 +15,13 @@ async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
             body = { nombre: 'Docente de prueba', rol, profesorId: rol === 'PROFESOR' ? 1 : null }
         } else if (path === '/gateway/menu') {
             body = estado.permiso ? [{ idModulo: 'ADM17', nombreModulo: 'Notas', activo: true, orden: 1 }] : []
+        } else if (path === '/gateway/auditoria/interfaz') {
+            expect(request.method()).toBe('POST')
+            expect(request.headers().authorization).toBe('Bearer prueba-acceso')
+            const evento = request.postDataJSON()
+            expect(['navegacion', 'error-ui']).toContain(evento.tipo)
+            estado.auditorias.push(evento)
+            await route.fulfill({ status: 204 }); return
         } else if (path === '/gateway/expediente/propio') {
             status = 404; body = { error: 'No hay expediente vinculado' }
         } else if (path === '/gateway/mat/prematricula/propio') {
@@ -25,11 +33,14 @@ async function escenario(page, { rol = 'PROFESOR', sinDesglose = false } = {}) {
         } else if (path.endsWith('/logout')) {
             await route.fulfill({ status: 204 }); return
         } else if (path.endsWith('/refresh')) {
+            estado.renovaciones++
             status = 401; body = {}
         } else {
             expect(request.headers().authorization).toBe('Bearer prueba-acceso')
             estado.consultas.push(path)
-            if (estado.expirar && !path.endsWith('/profesor/grupos')) { status = 401; body = {} }
+            if (estado.expirar && (path.endsWith('/obtenerdesglose') || path.endsWith('/obtenernotasgrupo'))) {
+                status = 401; body = {}
+            }
             else if (estado.caida) { status = 503; body = {} }
             else if (path.endsWith('/profesor/grupos')) {
                 body = estado.sinGrupos ? [] : [{ grupoId: 1, numeroGrupo: 1, curso: 'Programación', horario: 'Lunes 18:00' }]
@@ -61,8 +72,10 @@ async function abrirNotas(page) {
 }
 
 test('profesor navega a notas con layout, ruta activa, breadcrumbs y regreso', async ({ page }, testInfo) => {
-    await escenario(page)
+    const estado = await escenario(page)
     await abrirNotas(page)
+    await expect.poll(() => estado.auditorias.some(evento =>
+        evento.tipo === 'navegacion' && evento.ruta === '/notas')).toBeTruthy()
     await expect(page.locator('.user-name')).toHaveText('Docente de prueba')
     await expect(page.getByRole('navigation', { name: 'Ruta de navegación' })).toContainText('Inicio / Notas')
     await expect(page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link', { name: 'Notas', exact: true })).toHaveAttribute('aria-current', 'page')
@@ -155,6 +168,9 @@ test('sesión rechazada al consultar notas abandona el layout y limpia credencia
     await expect(page.getByRole('alert')).toContainText('La sesión venció')
     await expect(page.getByRole('heading', { name: 'Desglose y notas' })).toHaveCount(0)
     expect(await page.evaluate(() => sessionStorage.getItem('nuevo-avatar.sesion'))).toBeNull()
+    expect(estado.renovaciones).toBe(1)
+    expect(estado.consultas.some(path => path.endsWith('/obtenerdesglose') || path.endsWith('/obtenernotasgrupo'))).toBeTruthy()
+    expect(estado.escrituras).toEqual([])
 })
 
 test('salir desde notas retira el módulo; volver atrás no recupera acceso', async ({ page }) => {

@@ -1,0 +1,98 @@
+{
+  "navegador": {
+    "sesion-notas": {
+      "estadisticas": {
+        "startTime": "2026-11-12T06:52:04.854Z",
+        "duration": 34966.208999999995,
+        "expected": 27,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errores_generales": []
+    },
+    "cliente-jose": {
+      "estadisticas": {
+        "startTime": "2026-11-12T06:52:15.247Z",
+        "duration": 7720.747,
+        "expected": 6,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "errores_generales": []
+    }
+  },
+  "java": [
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.integracion.ConfiguracionLocalTest",
+      "casos": 3,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.AuditoriaNotasTest",
+      "casos": 5,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasSqlServerTest",
+      "casos": 1,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.BloqueoGrupoNotasTest",
+      "casos": 8,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.ConcurrenciaNotasTest",
+      "casos": 3,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.EscrituraNotasTest",
+      "casos": 9,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasHttpTest",
+      "casos": 6,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.NotasServiceTest",
+      "casos": 3,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.ResumenProfesorTest",
+      "casos": 3,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    },
+    {
+      "suite": "cr.ac.cuc.nuevoavatar.persona5.notas.SeguridadNotasTest",
+      "casos": 8,
+      "fallos": 0,
+      "errores": 0,
+      "omitidas": 0
+    }
+  ]
+}

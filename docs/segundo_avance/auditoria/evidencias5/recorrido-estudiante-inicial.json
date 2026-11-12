@@ -1,0 +1,91 @@
+[
+  {
+    "id": "A-WEB1",
+    "responsable": "Alejandro",
+    "titulo": "Inicio con expediente y solicitudes propias",
+    "estado": "aprobada",
+    "observado": "Expediente y 16 solicitudes de respuestas controladas."
+  },
+  {
+    "id": "A-ADM1-ESTUDIANTE-390",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ESTUDIANTE sin desbordamiento a 390px",
+    "estado": "fallida",
+    "observado": "locator.waitFor: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.user-name') to be visible\u001b[22m\n\u001b[2m    14 × locator resolved to hidden <div class=\"user-name\">Ana Prueba</div>\u001b[22m\n"
+  },
+  {
+    "id": "A-ADM1-ESTUDIANTE-768",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ESTUDIANTE sin desbordamiento a 768px",
+    "estado": "aprobada",
+    "observado": {
+      "contenido": 768,
+      "ventana": 768
+    }
+  },
+  {
+    "id": "A-ADM1-ESTUDIANTE-1366",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ESTUDIANTE sin desbordamiento a 1366px",
+    "estado": "aprobada",
+    "observado": {
+      "contenido": 1366,
+      "ventana": 1366
+    }
+  },
+  {
+    "id": "A-ADM1-ADMINISTRADOR-390",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ADMINISTRADOR sin desbordamiento a 390px",
+    "estado": "fallida",
+    "observado": "locator.waitFor: Timeout 6000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.user-name') to be visible\u001b[22m\n\u001b[2m    14 × locator resolved to hidden <div class=\"user-name\">Ana Prueba</div>\u001b[22m\n"
+  },
+  {
+    "id": "A-ADM1-ADMINISTRADOR-768",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ADMINISTRADOR sin desbordamiento a 768px",
+    "estado": "aprobada",
+    "observado": {
+      "contenido": 768,
+      "ventana": 768
+    }
+  },
+  {
+    "id": "A-ADM1-ADMINISTRADOR-1366",
+    "responsable": "Alejandro",
+    "titulo": "Plantilla ADMINISTRADOR sin desbordamiento a 1366px",
+    "estado": "aprobada",
+    "observado": {
+      "contenido": 1366,
+      "ventana": 1366
+    }
+  },
+  {
+    "id": "A-WEB2-confirmacion",
+    "responsable": "Alejandro",
+    "titulo": "Expediente espera confirmación y permite volver sin PUT",
+    "estado": "aprobada",
+    "observado": "Confirmación y regreso sin enviar actualización."
+  },
+  {
+    "id": "A-WEB4-confirmacion",
+    "responsable": "Alejandro",
+    "titulo": "Cancelar solicitud requiere confirmar antes de DELETE",
+    "estado": "aprobada",
+    "observado": "Se ofrece confirmación sin eliminar todavía."
+  },
+  {
+    "id": "A-WEB4-TAMPAG",
+    "responsable": "Alejandro",
+    "titulo": "Prematrícula respeta TAMPAG=2",
+    "estado": "fallida",
+    "observado": "TAMPAG=2 preparado; se muestran 10 solicitudes. El componente usa una constante de 10.\n\n10 !== 2\n"
+  },
+  {
+    "id": "A-ADM24-salida",
+    "responsable": "Alejandro",
+    "titulo": "Salir limpia la sesión de las pestañas del mismo navegador",
+    "estado": "aprobada",
+    "observado": "La segunda pestaña solicita login y limpia tokens."
+  }
+]

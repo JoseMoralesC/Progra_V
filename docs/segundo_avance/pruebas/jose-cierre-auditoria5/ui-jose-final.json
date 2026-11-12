@@ -1,0 +1,310 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--reporter=json",
+      "--global-timeout=60000"
+    ],
+    "configFile": "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\playwright.config.js",
+    "rootDir": "C:/Users/Personal/Desktop/PrograV/web/jose/tests/ui",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\tests\\servidor-vite.mjs",
+    "globalTeardown": null,
+    "globalTimeout": 60000,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Personal/Desktop/PrograV/web/jose/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/Personal/Desktop/PrograV/web/jose/tests/ui",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\tests\\ui",
+        "snapshotDir": "C:\\Users\\Personal\\Desktop\\PrograV\\web\\jose\\tests\\ui",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:5173",
+          "headless": true,
+          "screenshot": "only-on-failure"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "jose.spec.js",
+      "file": "jose.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "login invalido no entra y muestra mensaje requerido",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 868,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:16.799Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-401e493fd3d105d2808c",
+          "file": "jose.spec.js",
+          "line": 34,
+          "column": 1
+        },
+        {
+          "title": "profesor crea y modifica nota con verbos distintos y rubros quedan bloqueados",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1699,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:17.827Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-e5d54f8a3882be6e757b",
+          "file": "jose.spec.js",
+          "line": 40,
+          "column": 1
+        },
+        {
+          "title": "sin desglose permite carga confirmada y refresca resultado",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1088,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:19.547Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-81842d1278a99a8f3e09",
+          "file": "jose.spec.js",
+          "line": 57,
+          "column": 1
+        },
+        {
+          "title": "dependencia caida no muestra vacio ni permite guardar",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 794,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:20.652Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-7c7efec4a9f952f1ac6e",
+          "file": "jose.spec.js",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "estudiante no obtiene controles de notas y logout limpia almacenamiento",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 721,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:21.463Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-2ccba3b2f3806568b498",
+          "file": "jose.spec.js",
+          "line": 75,
+          "column": 1
+        },
+        {
+          "title": "login utilizable en pantalla movil sin desbordamiento horizontal",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 595,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-12T06:52:22.198Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5ddb2af11f62f158c7fa-5d51da32f040a96e96c3",
+          "file": "jose.spec.js",
+          "line": 84,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-12T06:52:15.247Z",
+    "duration": 7720.747,
+    "expected": 6,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

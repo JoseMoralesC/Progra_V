@@ -22,6 +22,12 @@ public class BloqueoGrupoNotas {
         }
         Integer resultado = jdbc.execute((ConnectionCallback<Integer>) connection -> {
             if (connection.getAutoCommit()) throw new IllegalStateException("La conexión debe participar en la transacción");
+            // JDBC puede estar en modo manual sin haber iniciado aún una transacción
+            // en SQL Server. La lectura vacía materializa la transacción implícita
+            // sin leer rubros ni anidar BEGIN TRANSACTION; Spring conserva su cierre.
+            try (var inicio = connection.createStatement()) {
+                inicio.execute("SELECT TOP (0) RubroId FROM matricula.DesgloseRubro");
+            }
             try (var llamada = connection.prepareCall("{? = call sys.sp_getapplock(?, ?, ?, ?)}")) {
                 llamada.registerOutParameter(1, Types.INTEGER);
                 llamada.setString(2, "NuevoAvatar.Notas.grupo:" + grupoId);
