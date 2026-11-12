@@ -48,6 +48,38 @@ class ProfesorServiceTest {
     }
 
     @Test
+    void rechazaProfesorMenorDeEdad() {
+        ProfesorRequest request = new ProfesorRequest(
+            "Cédula", "101110111", "joven@cuc.ac.cr", "Persona Joven",
+            LocalDate.now().minusYears(18).plusDays(1), List.of("8888-1111")
+        );
+
+        ResponseStatusException error = assertThrows(
+            ResponseStatusException.class, () -> servicio.crear(request)
+        );
+
+        assertEquals(422, error.getStatusCode().value());
+        verifyNoInteractions(repositorio);
+    }
+
+    @Test
+    void rechazaCorreoFueraDelDominioConfigurado() {
+        when(datos.buscar("Parametro", "parametro", "id_parametro", "DOMPROF"))
+            .thenReturn(Optional.of(Map.of("valor", "cuc.ac.cr")));
+        ProfesorRequest request = new ProfesorRequest(
+            "Cédula", "101110111", "persona@externo.cr", "Persona Externa",
+            LocalDate.of(1990, 1, 1), List.of("8888-1111")
+        );
+
+        ResponseStatusException error = assertThrows(
+            ResponseStatusException.class, () -> servicio.crear(request)
+        );
+
+        assertEquals(422, error.getStatusCode().value());
+        verifyNoInteractions(repositorio);
+    }
+
+    @Test
     void registraSnapshotsJsonEnBitacoraDeProfesor() {
         MockHttpServletRequest http = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(http));

@@ -45,10 +45,20 @@ async function preparar(page, permisos = pantallas.map(x => x[0])) {
     return consultas
 }
 
+async function cerrarBienvenida(page) {
+    const bienvenida = page.getByRole('dialog', { name: 'Bienvenido a Nuevo Avatar' })
+    const aparecio = await bienvenida.waitFor({ state: 'visible', timeout: 5000 }).then(() => true).catch(() => false)
+    if (aparecio) {
+        await bienvenida.getByRole('button', { name: /Omitir/ }).click()
+        await expect(bienvenida).toHaveCount(0)
+    }
+}
+
 for (const [id, ruta, titulo, nuevo, modal] of pantallas) {
     test(`${id} abre su mantenimiento y formulario en la sesión compartida`, async ({ page }) => {
         await preparar(page)
         await page.goto(ruta)
+        await cerrarBienvenida(page)
         await expect(page.locator('.ramses-integradas').getByRole('heading', { name: titulo, exact: true })).toBeVisible()
         await expect(page.locator('.user-name')).toHaveText('Administración de prueba')
         await page.getByRole('button', { name: nuevo, exact: true }).click()
@@ -64,6 +74,7 @@ for (const [id, ruta, titulo, nuevo, modal] of pantallas) {
 test('ADM7 respeta TAMPAG y permite navegar sin mostrar más de quince filas', async ({ page }) => {
     await preparar(page, ['ADM7'])
     await page.goto('/modulos')
+    await cerrarBienvenida(page)
     await expect(page.locator('.ramses-integradas tbody tr')).toHaveCount(2)
     await expect(page.getByText('Página 1 · 16 registros')).toBeVisible()
     await page.getByRole('button', { name: 'Siguiente', exact: true }).click()
@@ -74,6 +85,7 @@ test('ADM7 respeta TAMPAG y permite navegar sin mostrar más de quince filas', a
 test('sin ADM7 la ruta directa no consulta ni ofrece escritura de módulos', async ({ page }) => {
     const consultas = await preparar(page, [])
     await page.goto('/modulos')
+    await cerrarBienvenida(page)
     await expect(page.getByRole('heading', { name: 'Acceso restringido' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Nuevo módulo' })).toHaveCount(0)
     expect(consultas).not.toContain('/gateway/admin/modulo')
@@ -82,6 +94,7 @@ test('sin ADM7 la ruta directa no consulta ni ofrece escritura de módulos', asy
 test('ADM7 conserva el foco al escribir y muestra validaciones dentro del diálogo', async ({ page }) => {
     await preparar(page, ['ADM7'])
     await page.goto('/modulos')
+    await cerrarBienvenida(page)
     await page.getByRole('button', { name: 'Nuevo módulo', exact: true }).click()
     const dialogo = page.getByRole('dialog', { name: 'Crear módulo' })
     const nombre = dialogo.getByLabel('Nombre', { exact: true })
@@ -98,6 +111,7 @@ test('ADM7 conserva el foco al escribir y muestra validaciones dentro del diálo
 test('ADM7 muestra el registro guardado en su página y confirma su eliminación', async ({ page }) => {
     await preparar(page, ['ADM7'])
     await page.goto('/modulos')
+    await cerrarBienvenida(page)
     await page.getByRole('button', { name: 'Nuevo módulo', exact: true }).click()
     const dialogo = page.getByRole('dialog', { name: 'Crear módulo' })
     await dialogo.getByLabel('Identificador').fill('ZZ')
@@ -106,17 +120,20 @@ test('ADM7 muestra el registro guardado en su página y confirma su eliminación
     const fila = page.locator('.ramses-integradas tbody tr').filter({ hasText: 'ZZ' })
     await expect(fila).toBeVisible()
     await expect(page.getByText('Página 9 · 17 registros')).toBeVisible()
-    await fila.getByRole('button', { name: 'Editar', exact: true }).click()
+    await fila.getByRole('button', { name: /Acciones para/ }).click()
+    await page.getByRole('menuitem', { name: 'Editar', exact: true }).click()
     const editar = page.getByRole('dialog', { name: 'Editar módulo' })
     await editar.getByLabel('Nombre', { exact: true }).fill('Módulo actualizado')
     await editar.getByRole('button', { name: 'Guardar', exact: true }).click()
     await expect(fila).toContainText('Módulo actualizado')
-    await fila.getByRole('button', { name: 'Eliminar', exact: true }).click()
+    await fila.getByRole('button', { name: /Acciones para/ }).click()
+    await page.getByRole('menuitem', { name: 'Eliminar', exact: true }).click()
     const confirmar = page.getByRole('dialog', { name: 'Confirmar eliminación' })
     await expect(confirmar).toContainText('¿Realmente desea eliminar el elemento seleccionado?')
     await confirmar.getByRole('button', { name: 'No, cancelar' }).click()
     await expect(fila).toBeVisible()
-    await fila.getByRole('button', { name: 'Eliminar', exact: true }).click()
+    await fila.getByRole('button', { name: /Acciones para/ }).click()
+    await page.getByRole('menuitem', { name: 'Eliminar', exact: true }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Sí, eliminar' }).click()
     await expect(fila).toHaveCount(0)
     await expect(page.getByText('Página 8 · 16 registros')).toBeVisible()
