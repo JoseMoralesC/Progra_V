@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { cerrarBienvenida, accionar } from './interacciones-administracion'
 
 test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ page }) => {
     const registros = [
@@ -39,6 +40,7 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
     })
     page.on('dialog', dialog => dialog.accept())
     await page.goto('/parametros')
+    await cerrarBienvenida(page)
     await expect(page.getByRole('row')).toHaveCount(3)
     await page.getByRole('button', { name: 'Siguiente' }).click()
     await expect(page.getByText('DOMPROF')).toBeVisible()
@@ -53,13 +55,13 @@ test('ADM6 usa el servicio para crear, editar y eliminar parámetros', async ({ 
     await expect(page.getByRole('row').filter({ hasText: 'PRUEBA' })).toBeVisible()
     await page.getByRole('button', { name: 'Anterior' }).click()
 
-    await page.getByRole('row').filter({ hasText: 'TAMPAG' }).getByRole('button', { name: 'Editar' }).click()
+    await accionar(page, page.getByRole('row').filter({ hasText: 'TAMPAG' }), 'Editar')
     await expect(page.getByRole('dialog', { name: 'Editar parámetro' })).toBeVisible()
     await page.getByLabel('Valor', { exact: true }).fill('3')
     await page.getByRole('button', { name: 'Guardar' }).click()
     expect(operaciones.some(item => item.method === 'PUT' && item.body.idParametro === 'TAMPAG' && item.body.valor === '3')).toBe(true)
 
-    await page.getByRole('row').filter({ hasText: 'DOMESTUD' }).getByRole('button', { name: 'Eliminar' }).click()
+    await accionar(page, page.getByRole('row').filter({ hasText: 'DOMESTUD' }), 'Eliminar')
     await page.getByRole('dialog').getByRole('button', { name: 'Sí', exact: true }).click()
     await expect(page.getByRole('status').filter({ hasText: 'Parámetro eliminado' })).toBeVisible()
     expect(operaciones.some(item => item.method === 'DELETE' && item.body.idParametro === 'DOMESTUD')).toBe(true)
