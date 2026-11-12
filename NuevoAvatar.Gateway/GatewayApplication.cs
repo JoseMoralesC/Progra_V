@@ -33,6 +33,8 @@ public static class GatewayApplication
         app.UseRouting();
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/gateway"), branch => branch.UseSeguridadGateway());
         app.MapGet("/health", () => Results.Ok(new { servicio = "Gateway", estado = "disponible" }));
+        app.MapPost("/gateway/auditoria/interfaz", AuditoriaInterfaz.Registrar)
+            .WithMetadata(new AccesoGateway(["ADMINISTRADOR", "PROFESOR", "ESTUDIANTE"]));
         app.MapGet("/gateway/menu", async (HttpContext context, IHttpClientFactory clientes) => {
             context.Response.Headers.CacheControl = "no-store";
             if (context.Request.Query["vista"] == "dashboard")

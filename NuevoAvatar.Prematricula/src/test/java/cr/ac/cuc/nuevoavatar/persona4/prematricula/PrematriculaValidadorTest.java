@@ -37,7 +37,7 @@ class PrematriculaValidadorTest {
     }
 
     private static List<Curso> cursosValidos() {
-        return List.of(new Curso(10, 1), new Curso(11, 1));
+        return List.of(new Curso(10, 3, 1), new Curso(11, 3, 1));
     }
 
     private static Periodo periodoFuturo() {
@@ -57,9 +57,10 @@ class PrematriculaValidadorTest {
                 Arguments.of("carreraId", datos("123", null, cursosValidos(), null, periodoFuturo())),
                 Arguments.of("cursos", datos("123", 3, null, null, periodoFuturo())),
                 Arguments.of("cursos", datos("123", 3, List.of(), null, periodoFuturo())),
-                Arguments.of("cursos", datos("123", 3, Arrays.asList(new Curso(10, 1), null), null, periodoFuturo())),
-                Arguments.of("cursos", datos("123", 3, List.of(new Curso(null, 1)), null, periodoFuturo())),
-                Arguments.of("cursos", datos("123", 3, List.of(new Curso(10, null)), null, periodoFuturo())),
+                Arguments.of("cursos", datos("123", 3, Arrays.asList(new Curso(10, 3, 1), null), null, periodoFuturo())),
+                Arguments.of("cursos", datos("123", 3, List.of(new Curso(null, 3, 1)), null, periodoFuturo())),
+                Arguments.of("cursos", datos("123", 3, List.of(new Curso(10, null, 1)), null, periodoFuturo())),
+                Arguments.of("cursos", datos("123", 3, List.of(new Curso(10, 3, null)), null, periodoFuturo())),
                 Arguments.of("periodo", datos("123", 3, cursosValidos(), null, null)),
                 Arguments.of("periodo", datos("123", 3, cursosValidos(), null, new Periodo(null, HOY.plusDays(1)))),
                 Arguments.of("periodo", datos("123", 3, cursosValidos(), null, new Periodo(20, null))));
@@ -84,14 +85,14 @@ class PrematriculaValidadorTest {
 
     @Test
     void aceptaUnSoloCursoDePrimerNivel() {
-        var datos = datos("123", 3, List.of(new Curso(10, 1)), null, periodoFuturo());
+        var datos = datos("123", 3, List.of(new Curso(10, 3, 1)), null, periodoFuturo());
         assertDoesNotThrow(() -> validador.validar(datos, HOY));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 2, 12})
     void todosLosCursosDebenSerDePrimerNivel(int nivel) {
-        var datos = datos("123", 3, List.of(new Curso(10, 1), new Curso(11, nivel)), null, periodoFuturo());
+        var datos = datos("123", 3, List.of(new Curso(10, 3, 1), new Curso(11, 3, nivel)), null, periodoFuturo());
         var ex = assertThrows(ResponseStatusException.class, () -> validador.validar(datos, HOY));
         assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
         assertEquals("Solo se pueden prematricular cursos de primer nivel", ex.getReason());

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationContext'
+import { ConfirmarEliminacion } from '../../components/ConfirmarEliminacion'
 import {
     actualizarPrematriculaPropia,
     cancelarPrematriculaPropia,
@@ -10,6 +11,7 @@ import {
 } from '../../services/api'
 
 const formularioVacio = { carreraId: '', cursos: [], observaciones: '', periodoId: '' }
+const SOLICITUDES_POR_PAGINA = 10
 
 function mensajeError(error, accion) {
     if (error?.status === 401) return 'Tu sesión expiró. Inicia sesión nuevamente.'
@@ -40,6 +42,8 @@ export default function Prematricula() {
     const [guardando, setGuardando] = useState(false)
     const [errorCarga, setErrorCarga] = useState('')
     const [errores, setErrores] = useState({})
+    const [pagina, setPagina] = useState(0)
+    const [pendienteCancelar, setPendienteCancelar] = useState(null)
 
     const cargar = useCallback(async () => {
         setCargando(true)
@@ -68,6 +72,16 @@ export default function Prematricula() {
 
     const cursosDisponibles = useMemo(() => opciones.cursos.filter(curso =>
         String(curso.carreraId) === formulario.carreraId), [formulario.carreraId, opciones.cursos])
+    const totalPaginas = Math.max(1, Math.ceil(solicitudes.length / SOLICITUDES_POR_PAGINA))
+    const paginaActual = Math.min(pagina, totalPaginas - 1)
+    const solicitudesVisibles = solicitudes.slice(
+        paginaActual * SOLICITUDES_POR_PAGINA,
+        (paginaActual + 1) * SOLICITUDES_POR_PAGINA
+    )
+
+    useEffect(() => {
+        setPagina(0)
+    }, [solicitudes])
 
     function iniciarEdicion(solicitud = null) {
         setEditando(solicitud?.id ?? 'nueva')
@@ -223,7 +237,7 @@ export default function Prematricula() {
             <section className="panel" aria-labelledby="prematriculas-lista-title">
                 <h3 id="prematriculas-lista-title">Solicitudes registradas</h3>
                 {!solicitudes.length && <p>Aún no tienes solicitudes de prematrícula.</p>}
-                {solicitudes.map(solicitud => {
+                {solicitudesVisibles.map(solicitud => {
                     const carrera = opciones.carreras.find(item => item.id === solicitud.carreraId)?.nombre || `Carrera ${solicitud.carreraId}`
                     const cursos = (solicitud.cursos || []).map(id =>
                         opciones.cursos.find(item => item.id === id)?.nombre || `Curso ${id}`).join(', ')
@@ -238,12 +252,40 @@ export default function Prematricula() {
                                 <button className="btn btn-soft" type="button" disabled={guardando || editando !== null}
                                     onClick={() => iniciarEdicion(solicitud)}>Editar</button>
                                 <button className="btn btn-soft" type="button" disabled={guardando || editando !== null}
-                                    onClick={() => cancelarSolicitud(solicitud.id)}>Cancelar solicitud</button>
+                                    onClick={() => setPendienteCancelar(solicitud)}>Cancelar solicitud</button>
                             </div>
                         </article>
                     )
                 })}
+                {solicitudes.length > SOLICITUDES_POR_PAGINA && (
+                    <div className="profile-actions" aria-label="Paginación de prematrículas">
+                        <button className="btn btn-soft" type="button" disabled={paginaActual === 0}
+                            onClick={() => setPagina(actual => Math.max(0, actual - 1))}>
+                            Anterior
+                        </button>
+                        <span aria-live="polite">Página {paginaActual + 1} de {totalPaginas}</span>
+                        <button className="btn btn-soft" type="button" disabled={paginaActual + 1 >= totalPaginas}
+                            onClick={() => setPagina(actual => Math.min(totalPaginas - 1, actual + 1))}>
+                            Siguiente
+                        </button>
+                    </div>
+                )}
             </section>
+            {pendienteCancelar && (
+                <ConfirmarEliminacion
+                    titulo="Cancelar prematrícula"
+                    mensaje="¿Deseas cancelar esta solicitud de prematrícula? Esta acción no se puede deshacer desde el portal."
+                    confirmar="Sí, cancelar"
+                    cancelar="Mantener solicitud"
+                    ocupado={guardando}
+                    onCancelar={() => setPendienteCancelar(null)}
+                    onConfirmar={() => {
+                        const id = pendienteCancelar.id
+                        setPendienteCancelar(null)
+                        cancelarSolicitud(id)
+                    }}
+                />
+            )}
         </>
     )
 }

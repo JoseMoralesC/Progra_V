@@ -1,25 +1,34 @@
-# Política inicial de contraseña para ADM24
+# Política de contraseña parametrizable para ADM24
 
-Esta política se define como regla inicial de ADM24 porque no hay parámetros de
-contraseña configurados en `PrograV_Parametro`. No agrega ni asume IDs de
-parámetros.
+La política institucional que ADM24 debe aplicar es:
 
-Una contraseña nueva debe cumplir todas estas condiciones:
+- Mínimo de 8 caracteres.
+- Máximo de 30 caracteres.
+- Al menos una letra mayúscula.
+- Al menos un número.
+- No se requiere minúscula ni carácter especial.
 
-- Tener al menos 8 caracteres Unicode.
-- Incluir al menos una letra mayúscula.
-- Incluir al menos una letra minúscula.
-- Incluir al menos un número.
-- Incluir al menos un carácter especial, entendido como un carácter que no sea
-  letra, número ni espacio en blanco; se considera puntuación o símbolo Unicode.
-- No superar 72 bytes al codificarse en UTF-8. Este máximo técnico evita que
-  BCrypt rechace la contraseña; por ello, los caracteres Unicode de varios bytes
-  reducen la cantidad máxima que puede escribirse.
+Los parámetros propuestos para administrar estas reglas mediante ADM6 son:
 
-La misma política se valida en React para dar respuesta inmediata y en Usuario
-para que no dependa del cliente. Usuario verifica la contraseña actual con
-`BCryptPasswordEncoder` y persiste únicamente el nuevo hash BCrypt. La
-confirmación de contraseña se valida en React y no se envía al servidor.
+| ID propuesto | Valor propuesto | Significado |
+|---|---:|---|
+| `PASSMIN` | `8` | Longitud mínima |
+| `PASSMAX` | `30` | Longitud máxima |
+| `PASSMAY` | `true` | Requiere mayúscula |
+| `PASSNUM` | `true` | Requiere número |
 
-La bitácora registra únicamente el evento de cambio de contraseña. No registra
-la contraseña actual, la nueva contraseña ni el hash.
+Los identificadores y valores requieren aprobación del responsable de ADM6 y
+deben registrarse allí antes de habilitar el cambio de contraseña. Usuario
+obtiene los parámetros mediante `DatosRemotos` y conserva la validación
+definitiva en el backend. React consulta la misma política mediante una
+operación autenticada del Gateway. Si falta un valor, es inválido o Parámetro
+no está disponible, no se aplican reglas alternativas y el cambio se rechaza.
+
+El máximo de 72 bytes UTF-8 es un límite técnico de BCrypt, independiente de la
+longitud institucional de 30 caracteres. Usuario mantiene la verificación de
+la contraseña actual con BCrypt y guarda únicamente el hash nuevo. La política
+no se aplica al login: las contraseñas existentes y sus hashes no se modifican
+ni se invalidan por esta funcionalidad.
+
+La confirmación de contraseña se valida en React y no se envía al servidor. La
+bitácora registra el evento de cambio sin contraseñas ni hashes.

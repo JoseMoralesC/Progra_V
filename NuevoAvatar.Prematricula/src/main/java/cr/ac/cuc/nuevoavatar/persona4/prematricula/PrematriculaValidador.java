@@ -28,6 +28,10 @@ public class PrematriculaValidador {
             throw new ConstraintViolationException(errores);
         }
 
+        if (datos.cursos().stream().anyMatch(curso -> !datos.carreraId().equals(curso.carreraId()))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Todos los cursos deben pertenecer a la carrera seleccionada");
+        }
         if (datos.cursos().stream().anyMatch(curso -> curso.nivel() != 1)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Solo se pueden prematricular cursos de primer nivel");

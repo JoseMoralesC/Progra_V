@@ -57,6 +57,13 @@ public class UsuarioController {
         return servicio.obtenerPerfilPropio(usuarioAutenticado);
     }
 
+    @GetMapping("/perfil-propio/politica-contrasena")
+    public PoliticaContrasenaResponse obtenerPoliticaContrasena(
+            @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.USER_ATTRIBUTE)
+            String usuarioAutenticado) {
+        return servicio.obtenerPoliticaContrasena(usuarioAutenticado);
+    }
+
     @PutMapping("/perfil-propio")
     public UsuarioResponse actualizarPerfilPropio(
             @RequestAttribute(cr.ac.cuc.nuevoavatar.persona2.seguridad.AutorizacionInterceptor.TOKEN_ATTRIBUTE)

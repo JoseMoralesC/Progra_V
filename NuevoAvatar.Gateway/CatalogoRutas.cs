@@ -38,6 +38,8 @@ public static class CatalogoRutas
             ["GET", "PUT"], Todos, ExigeModulo: false));
         rutas.Add(new("/gateway/perfil/contrasena", "/usuario/perfil-propio/contrasena", "Usuario", 8082,
             ["PUT"], Todos, ExigeModulo: false));
+        rutas.Add(new("/gateway/perfil/politica-contrasena", "/usuario/perfil-propio/politica-contrasena", "Usuario", 8082,
+            ["GET"], Todos, ExigeModulo: false));
 
         // WEB2: acceso acotado al expediente del estudiante autenticado.
         rutas.Add(new("/gateway/expediente/propio", "/expediente/propio", "Expediente", 8084,
