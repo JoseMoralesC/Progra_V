@@ -106,6 +106,13 @@ try {
             import.meta.url
         )) })
         console.log(`ADM3: ${eventos} bitácoras recientes visibles para el administrador`)
+        const notificaciones = pagina.getByRole('region', { name: 'Notificaciones recientes' })
+        await notificaciones.getByText('No hay notificaciones recientes.').waitFor({ timeout: 20000 })
+        await notificaciones.screenshot({ path: fileURLToPath(new URL(
+            '../../../docs/segundo_avance/pruebas/fabian/evidencias/adm3_notificaciones_admin.png',
+            import.meta.url
+        )) })
+        console.log('ADM3: resumen administrativo de notificaciones disponible y vacío')
     } finally {
         await navegador.close()
     }

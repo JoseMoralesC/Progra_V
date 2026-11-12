@@ -138,6 +138,15 @@ try {
         ))
         await mkdir(carpeta, { recursive: true })
         await panel.screenshot({ path: `${carpeta}/adm3_profesor.png` })
+        const actividad = pagina.getByRole('region', { name: 'Bitácoras recientes' })
+        await actividad.getByRole('list').waitFor({ timeout: 20000 })
+        const visibles = await actividad.locator('li').count()
+        if (visibles < 1 || visibles > 10) throw new Error(`Bitácoras docentes visibles: ${visibles}`)
+        await actividad.screenshot({ path: `${carpeta}/adm3_bitacoras_profesor.png` })
+        const notificaciones = pagina.getByRole('region', { name: 'Notificaciones recientes' })
+        await notificaciones.getByText('No hay notificaciones recientes.').waitFor({ timeout: 20000 })
+        await notificaciones.screenshot({ path: `${carpeta}/adm3_notificaciones_profesor.png` })
+        console.log('ADM3: resúmenes docentes disponibles y acotados en pantalla.')
     } finally {
         await navegador.close()
     }
