@@ -44,10 +44,10 @@ public class PermisosAuxiliaresTests : IAsyncLifetime
             asignados = await c.Request.ReadFromJsonAsync<List<string>>() ?? [];
             return Results.NoContent();
         });
-        backend.MapGet("/factura", (HttpContext c) => {
+        backend.MapGet("/factura/pendientes", (HttpContext c) => {
             solicitudesNegocio++;
             return c.Request.Query["periodoId"] == "20"
-                ? Results.Ok(new[] { new { estado = "PENDIENTE" }, new { estado = "PAGADA" } })
+                ? Results.Ok(new { pendientes = 1 })
                 : Results.BadRequest();
         });
         backend.Map("/{**path}", (HttpContext c) => {

@@ -103,6 +103,11 @@ public class FacturaService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
+    public long contarPendientes(Integer periodoId) {
+        return facturas.countByPeriodoIdAndEstado(periodoId, Factura.PENDIENTE);
+    }
+
     private Factura buscarO404(Integer id) {
         return facturas.findById(id).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND, "Factura no encontrada")
