@@ -6,7 +6,7 @@ namespace NuevoAvatar.Gateway;
 
 public static class FacturaDashboard
 {
-    private sealed record Factura(string Estado);
+    private sealed record ConteoFacturas(long Pendientes);
 
     public static async Task<IResult> Obtener(HttpContext context, IHttpClientFactory clientes)
     {
@@ -14,15 +14,14 @@ public static class FacturaDashboard
         try
         {
             using var cliente = clientes.CreateClient("dashboard-Factura");
-            using var solicitud = new HttpRequestMessage(HttpMethod.Get, $"/factura?periodoId={periodoId}");
+            using var solicitud = new HttpRequestMessage(HttpMethod.Get, $"/factura/pendientes?periodoId={periodoId}");
             solicitud.Headers.Authorization = AuthenticationHeaderValue.Parse(context.Request.Headers.Authorization.ToString());
             using var respuesta = await cliente.SendAsync(solicitud, context.RequestAborted);
             respuesta.EnsureSuccessStatusCode();
-            var facturas = await respuesta.Content.ReadFromJsonAsync<List<Factura>>(cancellationToken: context.RequestAborted);
-            if (facturas is null || facturas.Any(factura => factura is null || factura.Estado is null))
+            var conteo = await respuesta.Content.ReadFromJsonAsync<ConteoFacturas>(cancellationToken: context.RequestAborted);
+            if (conteo is null || conteo.Pendientes < 0)
                 throw new JsonException("Respuesta de facturas incompleta");
-            return Results.Ok(new { pendientes = facturas.Count(factura =>
-                factura.Estado.Equals("PENDIENTE", StringComparison.OrdinalIgnoreCase)) });
+            return Results.Ok(new { pendientes = conteo.Pendientes });
         }
         catch (Exception error) when (error is HttpRequestException or TaskCanceledException or JsonException)
         {

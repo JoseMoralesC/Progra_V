@@ -1,6 +1,6 @@
 # Nuevo Avatar
 
-Backend academico de Programacion V: 22 servicios REST en Java 21 y .NET 8, con una base SQL Server por servicio en la misma instancia accesible mediante Tailscale.
+Backend academico de Programacion V: 22 servicios REST en Java 25 y .NET 8, con una base SQL Server por servicio en la misma instancia accesible mediante Tailscale.
 
 ## Ejecutar
 

@@ -19,8 +19,38 @@ obj/
 # User-specific files
 *.userprefs
 
-# Test results
+# Test results and automated testing artifacts
 TestResults/
+[Tt]est[Rr]esults/
+*.trx
+*.coverage
+*.coveragexml
+coverage/
+.nyc_output/
+*.lcov
+
+# Playwright & Node test outputs
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+playwright/.cache/
+
+# Java / Maven test outputs
+surefire-reports/
+failsafe-reports/
+
+# Python test outputs
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Generic test output directories
+test-output/
+tests-output/
 
 # IDE files
 **/.vscode/
@@ -40,10 +70,19 @@ tmp/
 *.ndf
 *.ldf
 
-# OS files
+# OS and Office temp files
 .DS_Store
 Thumbs.db
 Desktop.ini
+~$*
+
+# Local outputs, legacy folders and external assignments
+outputs/
+services/
+tarea-corta-3-llms-agentes/
+
+# Scripts locales y archivos de lote (.bat)
+*.bat
 
 # Python tools
 __pycache__/
@@ -51,8 +90,6 @@ __pycache__/
 # Modulos web A2
 node_modules/
 dist/
-playwright-report/
-test-results/
 
 # Incluir toda la documentacion y evidencias del segundo avance
 !/docs/segundo_avance/

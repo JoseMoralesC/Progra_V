@@ -2,6 +2,7 @@ package cr.ac.cuc.nuevoavatar.persona5.factura;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -48,6 +49,12 @@ public class FacturaController {
     public List<FacturaResponse> listarPorPeriodo(
             @RequestParam @Positive Integer periodoId) {
         return servicio.listarPorPeriodo(periodoId);
+    }
+
+    @GetMapping("/pendientes")
+    public Map<String, Long> contarPendientes(
+            @RequestParam @Positive Integer periodoId) {
+        return Map.of("pendientes", servicio.contarPendientes(periodoId));
     }
 }
 

@@ -97,29 +97,76 @@ export function Dashboard({ cliente, usuario }) {
         return () => { vigente = false }
     }, [cliente, usuario])
 
-    if (usuario.rol === 'PROFESOR') return (
-        <div className="dashboard">
-            {errorAuditoria && <p role="alert">{errorAuditoria}</p>}
-            <section className="panel">
-                <h2>Bienvenido, {usuario.nombre}</h2>
-                <p>Perfil: Profesor</p>
-                <h3>Mis grupos y cursos</h3>
-                {error && <p role="alert">{error}</p>}
-                {!usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <p>Sin permiso para consultar grupos.</p>}
-                {grupos === null && !error && usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <p>Cargando grupos…</p>}
-                {grupos?.length === 0 && <p>No hay grupos activos asignados.</p>}
-                {grupos?.length > 0 && <ul>{grupos.map(grupo => <li key={grupo.grupoId}>
-                    Grupo {grupo.numeroGrupo}: {grupo.curso}
-                </li>)}</ul>}
-                {usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <Link to="/notas">Consultar y registrar notas</Link>}
-                <div className="dashboard-enlaces">
-                    <a className="btn btn-primary dashboard-quick-link" href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
-                    <Link className="btn btn-primary dashboard-quick-link" to="/perfil">Mi perfil</Link>
-                </div>
-            </section>
-            <ActividadReciente key={claveActividad} cliente={cliente} usuario={usuario} />
-        </div>
-    )
+    if (usuario.rol === 'PROFESOR') {
+        const cursosImpartidos = grupos ? Array.from(
+            grupos.reduce((mapa, g) => {
+                const clave = g.cursoId ?? g.curso
+                if (!mapa.has(clave)) {
+                    mapa.set(clave, {
+                        id: clave,
+                        nombre: g.curso,
+                        grupos: []
+                    })
+                }
+                if (g.numeroGrupo && !mapa.get(clave).grupos.includes(g.numeroGrupo)) {
+                    mapa.get(clave).grupos.push(g.numeroGrupo)
+                }
+                return mapa
+            }, new Map()).values()
+        ) : null
+
+        return (
+            <div className="dashboard">
+                {errorAuditoria && <p role="alert">{errorAuditoria}</p>}
+                <section className="panel">
+                    <h2>Bienvenido, {usuario.nombre}</h2>
+                    <p>Perfil: Profesor</p>
+                    {error && <p role="alert">{error}</p>}
+                    {!usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <p>Sin permiso para consultar grupos.</p>}
+                    {grupos === null && !error && usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && <p>Cargando grupos…</p>}
+                    {grupos?.length === 0 && <p>No hay grupos activos asignados.</p>}
+                    {grupos?.length > 0 && (
+                        <div className="dashboard-widgets-grid">
+                            <article className="dashboard-widget-card" aria-label="Mis grupos">
+                                <h3>Mis grupos</h3>
+                                <ul className="dashboard-widget-list">
+                                    {grupos.map(grupo => (
+                                        <li key={grupo.grupoId} className="dashboard-widget-item">
+                                            <span className="dashboard-item-titulo">Grupo {grupo.numeroGrupo}: {grupo.curso}</span>
+                                            {grupo.horario && <span className="dashboard-item-detalle">Horario: {grupo.horario}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </article>
+                            <article className="dashboard-widget-card" aria-label="Cursos que imparto">
+                                <h3>Cursos que imparto</h3>
+                                <ul className="dashboard-widget-list">
+                                    {cursosImpartidos?.map(curso => (
+                                        <li key={curso.id} className="dashboard-widget-item">
+                                            <span className="dashboard-item-titulo">{curso.nombre}</span>
+                                            <span className="dashboard-item-detalle">
+                                                {curso.grupos.length === 1
+                                                    ? `Grupo: ${curso.grupos[0]}`
+                                                    : `Grupos: ${curso.grupos.sort((a, b) => a - b).join(', ')}`}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </article>
+                        </div>
+                    )}
+                    <div className="dashboard-enlaces">
+                        {usuario.modulos.some(modulo => modulo.idModulo === 'ADM17') && (
+                            <Link className="btn btn-primary dashboard-quick-link" to="/notas">Consultar y registrar notas</Link>
+                        )}
+                        <a className="btn btn-primary dashboard-quick-link" href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
+                        <Link className="btn btn-primary dashboard-quick-link" to="/perfil">Mi perfil</Link>
+                    </div>
+                </section>
+                <ActividadReciente key={claveActividad} cliente={cliente} usuario={usuario} />
+            </div>
+        )
+    }
 
     if (usuario.rol !== 'ADMINISTRADOR') return null
     return (
@@ -131,16 +178,21 @@ export function Dashboard({ cliente, usuario }) {
                 <nav className="dashboard-enlaces" aria-label="Accesos rápidos">
                     {[
                         ['ADM4', 'Usuarios', '/usuarios'], ['ADM5', 'Roles y permisos', '/roles'],
-                        ['ADM6', 'Parámetros', '/parametros'], ['ADM8', 'Instituciones', '/instituciones']
+                        ['ADM6', 'Parámetros', '/parametros'], ['ADM8', 'Instituciones', '/instituciones'],
+                        ['ADM9', 'Carreras', '/carreras'], ['ADM10', 'Cursos', '/cursos'],
+                        ['ADM12', 'Períodos', '/periodos']
                     ].filter(([id]) => usuario.modulos.some(modulo => modulo.idModulo === id))
                         .map(([id, nombre, ruta]) => <Link className="btn btn-primary dashboard-quick-link" key={id} to={ruta}>{nombre}</Link>)}
+                    {usuario.modulos.some(modulo => modulo.idModulo === 'ADM3') &&
+                        <a className="btn btn-primary dashboard-quick-link" href="#facturas-pendientes">Facturas pendientes</a>}
                     <a className="btn btn-primary dashboard-quick-link" href="mailto:soportenuevoavatar@gmail.com">Ayuda/soporte</a>
                     <Link className="btn btn-primary dashboard-quick-link" to="/perfil">Mi perfil</Link>
                 </nav>
             </section>
             {errorMetricas && <p role="alert">{errorMetricas}</p>}
             <section className="dashboard-metricas" aria-label="Indicadores administrativos">
-                {[...indicadores.map(item => item.nombre), 'Facturas pendientes'].map(nombre => <article className="panel" key={nombre}>
+                {[...indicadores.map(item => item.nombre), 'Facturas pendientes'].map(nombre => <article className="panel"
+                    id={nombre === 'Facturas pendientes' ? 'facturas-pendientes' : undefined} key={nombre}>
                     <h3>{nombre}</h3><strong>{cargandoMetricas ? 'Cargando…' : metricas[nombre] ?? 'No disponible'}</strong>
                 </article>)}
             </section>

@@ -14,6 +14,7 @@ export function Modulos({ cliente }) {
   const abrirForm = item => { setError(''); setMensaje(''); setForm(item ? { ...item } : { ...vacio }); setModal(item ? 'editar' : 'crear'); };
   async function guardar() {
     const err = validarModulo(form); if (err) return setError(err);
+    setError('');
     try {
       modal === 'crear' ? await api.crear(form) : await api.modificar(form);
       setMensaje(modal === 'crear' ? 'Módulo creado correctamente.' : 'Módulo actualizado correctamente.');
@@ -23,8 +24,8 @@ export function Modulos({ cliente }) {
     } catch (e) { setError(e.message); }
   }
   async function abrirRoles(item) { try { setError(''); setMensaje(''); setForm(item); setSeleccion(await api.roles(item.idModulo)); setModal('roles'); } catch (e) { setError(e.message); } }
-  async function guardarRoles() { try { await api.guardarRoles(form.idModulo, seleccion); setMensaje('Roles del módulo actualizados correctamente.'); setModal(null); } catch (e) { setError(e.message); } }
-  async function eliminar() { try { await api.eliminar(form.idModulo); setMensaje('Módulo eliminado correctamente.'); setModal(null); await cargar(); } catch (e) { setError(e.message); } }
+  async function guardarRoles() { setError(''); try { await api.guardarRoles(form.idModulo, seleccion); setMensaje('Roles del módulo actualizados correctamente.'); setModal(null); } catch (e) { setError(e.message); } }
+  async function eliminar() { setError(''); try { await api.eliminar(form.idModulo); setMensaje('Módulo eliminado correctamente.'); setModal(null); await cargar(); } catch (e) { setError(e.message); } }
   return <section aria-labelledby="titulo-modulos">
     <div className="page-head"><div><p className="crumb">Administración / Seguridad</p><h1 id="titulo-modulos">Mantenimiento de módulos</h1><p>Define el orden, estado y acceso por rol del menú.</p></div><button className="btn btn-primary" onClick={() => abrirForm()}>Nuevo módulo</button></div>
     {error && <p className="aviso error" role="alert">{error}</p>}
