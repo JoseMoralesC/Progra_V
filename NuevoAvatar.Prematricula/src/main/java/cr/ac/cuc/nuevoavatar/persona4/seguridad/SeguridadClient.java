@@ -24,7 +24,7 @@ public class SeguridadClient {
     public SeguridadClient(RestClient.Builder builder,
             @Value("${seguridad.service.url}") String baseUrl,
             @Value("${bitacora.service.url}") String bitacoraUrl,
-            @Value("${parametro.service.url:http://localhost:5161}") String parametroUrl,
+            @Value("${parametro.service.url}") String parametroUrl,
             @Value("${seguridad.connect-timeout-ms}") int connectTimeout,
             @Value("${seguridad.read-timeout-ms}") int readTimeout) {
         var requestFactory = new SimpleClientHttpRequestFactory();

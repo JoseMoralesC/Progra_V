@@ -25,7 +25,7 @@ public sealed class DatosRemotos
     public HttpClient Cliente(string servicio)
     {
         var client=factory.CreateClient("integracion");
-        client.BaseAddress=new Uri(config[servicio.ToUpperInvariant()+"_BASE_URL"] ?? $"http://localhost:{Contratos.GetProperty(servicio).GetProperty("port").GetInt32()}");
+        client.BaseAddress=new Uri(ConfiguracionEntorno.Origen(config,servicio.ToUpperInvariant()+"_BASE_URL"));
         client.Timeout=TimeSpan.FromSeconds(8);
         var key=config["SERVICES_INTERNAL_KEY"];
         if(string.IsNullOrWhiteSpace(key) || key.Length<32) throw new InvalidOperationException("Configurar SERVICES_INTERNAL_KEY");

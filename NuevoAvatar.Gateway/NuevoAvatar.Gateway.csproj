@@ -8,4 +8,7 @@
     <PackageReference Include="Yarp.ReverseProxy" Version="2.3.0" />
     <ProjectReference Include="../NuevoAvatar.Gateway.Seguridad/NuevoAvatar.Gateway.Seguridad.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../NuevoAvatar.Integracion/ConfiguracionEntorno.cs" Link="ConfiguracionEntorno.cs" />
+  </ItemGroup>
 </Project>

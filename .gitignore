@@ -29,6 +29,7 @@ TestResults/
 !/.vscode/settings.json
 
 # Logs and temporary files
+/outputs/ejecucion/
 *.log
 logs/
 tmp/

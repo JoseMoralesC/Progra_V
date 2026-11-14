@@ -9,6 +9,7 @@ using NuevoAvatar.Seguridad.Models;
 Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls(ConfiguracionEntorno.Escucha(builder.Configuration, "BITACORA"));
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

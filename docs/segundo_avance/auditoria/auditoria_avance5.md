@@ -1,5 +1,11 @@
 # Auditoría de avance 5 - Proyecto Nuevo Avatar V2
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
+> Nota de mantenimiento (13 de noviembre de 2026): las pruebas automatizadas de `NuevoAvatar.Estudiante.React`, su configuración de Playwright y los ejecutores Python asociados se retiraron del proyecto. Las referencias a esos archivos y comandos en este informe corresponden a ejecuciones históricas y ya no son instrucciones vigentes. Se conservan los resultados y evidencias.
+
+
 Actualización del 12 de noviembre de 2026: incorporo las correcciones de Jose y sus pruebas con servicios y SQL Server reales. El detalle está en el [seguimiento de Jose](../pruebas/jose-cierre-auditoria5/README.md) y los faltantes vigentes en [pendientes de la auditoría 5](pendientes_auditoria5.md). Conservo el consecutivo y el alcance del segundo avance.
 
 
