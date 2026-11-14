@@ -10,6 +10,59 @@
 .dashboard-metricas .panel { margin: 0; }
 .dashboard-metricas strong { display: block; margin-top: 10px; font-size: 1.8rem; }
 
+.dashboard-widgets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+}
+
+.dashboard-widget-card {
+    background: var(--pill);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 16px 18px;
+}
+
+.dashboard-widget-card h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+.dashboard-widget-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-widget-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+}
+
+.dashboard-widget-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.dashboard-item-titulo {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.dashboard-item-detalle {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
 @media (max-width: 600px) {
     .dashboard-enlaces { gap: 9px; }
     .dashboard-quick-link { flex: 1 1 145px; white-space: normal; }

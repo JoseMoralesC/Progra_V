@@ -12,6 +12,8 @@ public interface FacturaRepository extends JpaRepository<Factura, Integer> {
 
     List<Factura> findByPeriodoId(Integer periodoId);
 
+    long countByPeriodoIdAndEstado(Integer periodoId, String estado);
+
     boolean existsByMatriculaIdAndEstadoNot(Integer matriculaId, String estado);
 }
 
