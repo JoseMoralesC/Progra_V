@@ -9,6 +9,7 @@ namespace NuevoAvatar.Seguridad.Models
     public class Bitacora
     {
         public long IdBitacora { get; set; }
+        public Guid? IdEvento { get; set; }
         public string Usuario { get; set; }=string.Empty;
         public string Descripcion { get; set; }=string.Empty;
         public DateTime FechaHora { get; set; }

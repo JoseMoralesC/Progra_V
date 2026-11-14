@@ -55,7 +55,7 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
 
     public async Task InvokeAsync(HttpContext context, IHttpClientFactory clientes)
     {
-        foreach (var header in new[] { "X-Servicio-Key", "X-Usuario", "X-Rol", "X-Profesor-Id", "X-Estudiante-Id" })
+        foreach (var header in new[] { "X-Servicio-Key", "X-Auditoria-Contexto", "X-Usuario", "X-Rol", "X-Profesor-Id", "X-Estudiante-Id" })
             context.Request.Headers.Remove(header);
 
         var path = Uri.UnescapeDataString(context.Request.Path.Value ?? "");
@@ -114,6 +114,7 @@ public sealed class SeguridadGatewayMiddleware(RequestDelegate next)
             var sesion = await response.Content.ReadFromJsonAsync<SesionActual>(cancellationToken: context.RequestAborted);
             if (sesion is null || string.IsNullOrWhiteSpace(sesion.UsuarioID) ||
                 string.IsNullOrWhiteSpace(sesion.Rol)) throw new JsonException("Sesion incompleta");
+            context.Items["sesion"] = sesion;
             var rolPermitido = acceso.EsResumen(context)
                 ? sesion.Rol is "ADMINISTRADOR" or "PROFESOR"
                 : acceso.Roles.Contains(sesion.Rol, StringComparer.Ordinal);

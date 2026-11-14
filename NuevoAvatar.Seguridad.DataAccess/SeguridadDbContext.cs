@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NuevoAvatar.Seguridad.Models;
+using NuevoAvatar.Integracion;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,9 +12,11 @@ namespace NuevoAvatar.Seguridad.DataAccess
 {
     public class SeguridadDbContext : DbContext
     {
-        public SeguridadDbContext(DbContextOptions<SeguridadDbContext> options)
+        private readonly AuditoriaTransaccion? auditoria;
+        public SeguridadDbContext(DbContextOptions<SeguridadDbContext> options, AuditoriaTransaccion? auditoria = null)
             : base(options)
         {
+            this.auditoria = auditoria;
         }
 
         public DbSet<Rol> Roles { get; set; }
@@ -22,6 +26,31 @@ namespace NuevoAvatar.Seguridad.DataAccess
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<SesionToken> SesionesToken { get; set; }
         public DbSet<Bitacora> Bitacoras { get; set; }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ChangeTracker.DetectChanges();
+            var cambios = ChangeTracker.Entries().Where(e => e.Entity is Rol or Parametro or Modulo or RolModulo &&
+                e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted).ToList();
+            if (auditoria is null || cambios.Count == 0) return await base.SaveChangesAsync(cancellationToken);
+            var eventos = cambios.Select(e => {
+                var secreto = e.Entity is Parametro p && p.IdParametro.Equals("MAILPASS", StringComparison.OrdinalIgnoreCase);
+                object? Estado(bool original) => (original && e.State == EntityState.Added || !original && e.State == EntityState.Deleted) ? null :
+                    e.Properties.ToDictionary(p => p.Metadata.Name, p => secreto && p.Metadata.Name == "Valor" ? "[OCULTO]" : original ? p.OriginalValue : p.CurrentValue);
+                var entidad = e.Entity is RolModulo ? "modulo" : e.Metadata.ClrType.Name.ToLowerInvariant();
+                var accion = e.State == EntityState.Added ? "Creación de " : e.State == EntityState.Deleted ? "Eliminación de " : "Modificación de ";
+                var mensaje = e.Entity is RolModulo rm ? "Asignación de roles al módulo " + rm.IdModulo : accion + entidad;
+                return (Accion: mensaje, Anterior: Estado(true), Actual: Estado(false));
+            }).ToList();
+            var propia = Database.CurrentTransaction is null ? await Database.BeginTransactionAsync(cancellationToken) : null;
+            try {
+                var resultado = await base.SaveChangesAsync(cancellationToken);
+                foreach (var evento in eventos)
+                    await auditoria.Registrar(Database.GetDbConnection(), Database.CurrentTransaction!.GetDbTransaction(), evento.Accion, evento.Anterior, evento.Actual);
+                if (propia is not null) await propia.CommitAsync(cancellationToken);
+                return resultado;
+            } finally { if (propia is not null) await propia.DisposeAsync(); }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +119,7 @@ namespace NuevoAvatar.Seguridad.DataAccess
                 entity.ToTable("bitacora", "general");
                 entity.HasKey(e => e.IdBitacora);
                 entity.Property(e => e.IdBitacora).HasColumnName("id_bitacora").ValueGeneratedOnAdd();
+                entity.Property(e => e.IdEvento).HasColumnName("id_evento");
                 entity.Property(e => e.Usuario).HasColumnName("usuario");
                 entity.Property(e => e.Descripcion).HasColumnName("descripcion");
                 entity.Property(e => e.FechaHora).HasColumnName("fecha_hora");

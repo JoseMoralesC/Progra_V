@@ -15,6 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Component
 public class SeguridadClient {
+    @org.springframework.beans.factory.annotation.Autowired
+    private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
+
     private final RestClient cliente;
     private final RestClient bitacora;
     private final RestClient parametros;
@@ -94,15 +97,7 @@ public class SeguridadClient {
     }
 
     public void registrarBitacora(String autorizacion, String usuario, String descripcion) {
-        try {
-            bitacora.post().uri("/bitacora")
-                    .header(HttpHeaders.AUTHORIZATION, autorizacion)
-                    .contentType(java.util.Objects.requireNonNull(MediaType.APPLICATION_JSON))
-                    .body(java.util.Objects.requireNonNull(Map.of("usuario", usuario, "descripcion", descripcion)))
-                    .retrieve().toBodilessEntity();
-        } catch (RestClientException ex) {
-            throw noDisponible("registrar la bitacora", ex);
-        }
+        auditoria.registrar(usuario, descripcion);
     }
 
     private ResponseStatusException noDisponible(String operacion, RestClientException causa) {

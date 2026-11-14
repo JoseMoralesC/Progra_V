@@ -31,6 +31,9 @@ public class IntegracionConfiguration implements WebMvcConfigurer {
     @org.springframework.beans.factory.annotation.Autowired
     private org.springframework.core.env.Environment environment;
     @Bean public DatosRemotos datosRemotos() { return new DatosRemotos(contracts,key,environment); }
+    @Bean(initMethod="iniciar", destroyMethod="close") public AuditoriaFiable auditoriaFiable(JdbcTemplate jdbc) {
+        return new AuditoriaFiable(jdbc, environment);
+    }
     @Bean public org.springframework.beans.factory.InitializingBean verificarBase(JdbcTemplate jdbc,
         @Value("${SERVICE_DB_NAME:}") String configuredDatabase) {
         return ()->{

@@ -9,6 +9,6 @@
     <ProjectReference Include="../NuevoAvatar.Gateway.Seguridad/NuevoAvatar.Gateway.Seguridad.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../NuevoAvatar.Integracion/ConfiguracionEntorno.cs" Link="ConfiguracionEntorno.cs" />
+    <ProjectReference Include="../NuevoAvatar.Integracion/NuevoAvatar.Integracion.csproj" />
   </ItemGroup>
 </Project>

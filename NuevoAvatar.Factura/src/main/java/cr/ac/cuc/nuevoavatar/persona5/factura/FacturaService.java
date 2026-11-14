@@ -70,15 +70,18 @@ public class FacturaService {
         detalle.setDescripcion(DETALLE);
         detalle.setMonto(COSTO_CURSO);
 
-        return FacturaResponse.desde(
+        var actual = FacturaResponse.desde(
             guardada,
             List.of(detalles.saveAndFlush(detalle))
         );
+        cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Creación de factura: " + actual);
+        return actual;
     }
 
     @Transactional
     public FacturaResponse reversar(Integer id) {
         Factura factura = facturas.bloquearPorId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Factura no encontrada"));
+        var anterior = respuesta(factura);
         if (Factura.PAGADA.equals(factura.getEstado())) {
             throw new ResponseStatusException(
                 HttpStatus.CONFLICT,
@@ -87,7 +90,9 @@ public class FacturaService {
         }
         factura.setEstado(Factura.ANULADA);
         Factura guardada = facturas.saveAndFlush(factura);
-        return respuesta(guardada);
+        var actual = respuesta(guardada);
+        cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Modificación de factura. Motivo: Reverso. Anterior: " + anterior + " Actual: " + actual);
+        return actual;
     }
 
     @Transactional(readOnly = true)

@@ -3,18 +3,11 @@ import { Link } from 'react-router-dom'
 import './dashboard.css'
 
 const indicadores = [
-    { id: 'ADM4', nombre: 'Usuarios', ruta: '/gateway/admin/usuario' },
-    { id: 'ADM9', nombre: 'Carreras', ruta: '/gateway/admin/carrera' },
-    { id: 'ADM10', nombre: 'Cursos', ruta: '/gateway/admin/curso' },
-    { id: 'ADM12', nombre: 'Períodos activos', ruta: '/gateway/admin/periodo?estado=ACTIVO' }
+    { id: 'ADM4', nombre: 'Usuarios', ruta: '/gateway/admin/usuario?vista=dashboard' },
+    { id: 'ADM9', nombre: 'Carreras', ruta: '/gateway/admin/carrera?vista=dashboard' },
+    { id: 'ADM10', nombre: 'Cursos', ruta: '/gateway/admin/curso?vista=dashboard' },
+    { id: 'ADM12', nombre: 'Períodos activos', ruta: '/gateway/admin/periodo?estado=ACTIVO&vista=dashboard' }
 ]
-
-function presentarBitacora(descripcion) {
-    const texto = String(descripcion || '')
-    const separador = texto.lastIndexOf(' · ')
-    if (separador < 0) return { accion: texto || '—', modulo: '—' }
-    return { accion: texto.slice(0, separador) || '—', modulo: texto.slice(separador + 3) || '—' }
-}
 
 export function Dashboard({ cliente, usuario }) {
     const [metricas, setMetricas] = useState({})
@@ -47,7 +40,7 @@ export function Dashboard({ cliente, usuario }) {
             if (usuario.rol === 'PROFESOR') {
                 if (!permitido('ADM17')) return
                 try {
-                    const resultado = await cliente.request('/gateway/mat/profesor/grupos')
+                    const resultado = await cliente.request('/gateway/mat/profesor/grupos?vista=dashboard')
                     if (!Array.isArray(resultado)) throw new Error('No se pudieron leer los grupos.')
                     if (vigente) setGrupos(resultado)
                 } catch (fallo) {
@@ -70,7 +63,7 @@ export function Dashboard({ cliente, usuario }) {
             ]))
             if (permitido('ADM3') && permitido('ADM12')) {
                 try {
-                    const periodos = await cliente.request('/gateway/admin/periodo')
+                    const periodos = await cliente.request('/gateway/admin/periodo?vista=dashboard')
                     if (!Array.isArray(periodos)) throw new Error('No se pudieron leer los períodos.')
                     const facturas = await Promise.all(periodos.map(async periodo => {
                         const datos = await cliente.request(`/gateway/fin/factura?periodoId=${periodo.periodoId}&vista=dashboard`)
@@ -204,6 +197,17 @@ export function Dashboard({ cliente, usuario }) {
 
 function ActividadReciente({ cliente, usuario }) {
     const [bitacoras, setBitacoras] = useState(null)
+    const administrador = usuario.rol === 'ADMINISTRADOR'
+    const [pagina, setPagina] = useState(0)
+    const [tamano, setTamano] = useState(25)
+    const [total, setTotal] = useState(0)
+    const [revision, setRevision] = useState(0)
+    const hastaId = useRef(null)
+    const [hayNuevos, setHayNuevos] = useState(false)
+    const [errorActualizacion, setErrorActualizacion] = useState('')
+    const cargandoBitacoras = useRef(false)
+    const [actualizando, setActualizando] = useState(true)
+    const paginas = Math.max(1, Math.ceil(total / tamano))
     const [notificaciones, setNotificaciones] = useState(null)
     const [errorBitacoras, setErrorBitacoras] = useState('')
     const [errorNotificaciones, setErrorNotificaciones] = useState('')
@@ -211,10 +215,6 @@ function ActividadReciente({ cliente, usuario }) {
 
     useEffect(() => {
         const control = new AbortController()
-        cliente.request('/gateway/admin/bitacora?vista=dashboard').then(datos => {
-            if (!Array.isArray(datos)) throw new Error('No se pudieron leer las bitácoras.')
-            if (!control.signal.aborted) setBitacoras(datos)
-        }).catch(error => { if (!control.signal.aborted) setErrorBitacoras(error.message) })
         if (permiteNotificaciones) {
             cliente.request('/gateway/fin/notificar/historial?vista=dashboard').then(datos => {
                 if (!Array.isArray(datos?.items)) throw new Error('No se pudieron leer las notificaciones.')
@@ -223,6 +223,63 @@ function ActividadReciente({ cliente, usuario }) {
         }
         return () => control.abort()
     }, [cliente, permiteNotificaciones])
+
+    useEffect(() => {
+        const control = new AbortController()
+        async function cargarBitacoras() {
+            cargandoBitacoras.current = true
+            setActualizando(true)
+            setErrorBitacoras('')
+            const ruta = '/gateway/admin/bitacora?vista=dashboard' +
+                (administrador ? `&page=${pagina}&size=${tamano}` + (hastaId.current === null ? '' : `&hastaId=${hastaId.current}`) : '')
+            try {
+                const datos = await cliente.request(ruta, { signal: control.signal })
+                if (control.signal.aborted) return
+                if (administrador) {
+                    if (!Array.isArray(datos?.items) || !Number.isSafeInteger(datos.total) || datos.total < 0 ||
+                        !Number.isSafeInteger(datos.hastaId) || datos.hastaId < 0)
+                        throw new Error('No se pudo leer el historial de bitácora.')
+                    const ultima = Math.max(0, Math.ceil(datos.total / tamano) - 1)
+                    setTotal(datos.total)
+                    hastaId.current = datos.hastaId
+                    if (pagina === 0) setHayNuevos(false)
+                    if (pagina > ultima) { setPagina(ultima); return }
+                    setBitacoras(datos.items)
+                } else {
+                    if (!Array.isArray(datos)) throw new Error('No se pudieron leer las bitácoras.')
+                    setBitacoras(datos)
+                }
+                setErrorActualizacion('')
+            } catch (error) { if (!control.signal.aborted) setErrorBitacoras(error.message) }
+            finally { if (!control.signal.aborted) { cargandoBitacoras.current = false; setActualizando(false) } }
+        }
+        cargarBitacoras()
+        return () => control.abort()
+    }, [cliente, administrador, pagina, tamano, revision])
+
+    useEffect(() => {
+        const control = new AbortController()
+        const consultando = { actual: false }
+        const reloj = setInterval(async () => {
+            if (document.hidden || cargandoBitacoras.current || consultando.actual) return
+            if (!administrador) {
+                hastaId.current = null
+                setRevision(valor => valor + 1)
+                return
+            }
+            consultando.actual = true
+            try {
+                const datos = await cliente.request('/gateway/admin/bitacora?vista=dashboard&page=0&size=1', { signal: control.signal })
+                if (!control.signal.aborted) {
+                    if (!Number.isSafeInteger(datos?.hastaId)) throw new Error('No se pudo comprobar si hay movimientos nuevos.')
+                    setHayNuevos(datos.hastaId > (hastaId.current ?? 0))
+                    setErrorActualizacion('')
+                }
+            } catch (error) { if (!control.signal.aborted) setErrorActualizacion(error.message) }
+            finally { consultando.actual = false }
+        }, 10000)
+        return () => { clearInterval(reloj); control.abort() }
+    }, [cliente, administrador, pagina])
 
     return <>
         <section className="panel" aria-label="Notificaciones recientes">
@@ -235,23 +292,50 @@ function ActividadReciente({ cliente, usuario }) {
                 {item.asunto} · {item.estado} · {new Date(item.fecha).toLocaleString('es-CR')}
             </li>)}</ul>}
         </section>
-        <section className="panel" aria-label="Bitácoras recientes">
-            <h3>Bitácoras recientes</h3>
+        <section className="panel" aria-label={administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}>
+            <h3>{administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}</h3>
+            {administrador && <div className="dashboard-bitacora-controles">
+                <label>Registros por página <select value={tamano} onChange={evento => {
+                    setTamano(Number(evento.target.value)); setPagina(0)
+                }}>
+                    {[10, 25, 50, 100].map(cantidad => <option key={cantidad} value={cantidad}>{cantidad}</option>)}
+                </select></label>
+                <button type="button" disabled={actualizando} onClick={() => {
+                    hastaId.current = null; setPagina(0); setRevision(valor => valor + 1)
+                }}>Actualizar historial</button>
+                <span>Se comprueban movimientos nuevos cada 10 segundos.</span>
+            </div>}
+            {administrador && <p role="status">{hayNuevos ? 'Hay movimientos nuevos. Pulsa “Actualizar historial” para verlos.' : 'El historial permanece estable mientras lo lees.'}</p>}
+            {errorActualizacion && <p role="alert">{errorActualizacion}</p>}
             {errorBitacoras && <p role="alert">{errorBitacoras}</p>}
             {bitacoras === null && !errorBitacoras && <p role="status">Cargando bitácoras…</p>}
-            {bitacoras?.length === 0 && <p>No hay bitácoras recientes.</p>}
+            {bitacoras?.length === 0 && <p>No hay registros de bitácora.</p>}
             {bitacoras?.length > 0 && <div className="dashboard-table-wrap">
                 <table className="dashboard-activity-table">
-                    <thead><tr><th>Módulo</th><th>Acción</th><th>Usuario</th><th>Fecha</th></tr></thead>
+                    <thead><tr><th>ID</th><th>Módulo</th><th>Resumen de la acción</th><th>Resultado</th><th>Realizado por</th><th>Fecha</th></tr></thead>
                     <tbody>{bitacoras.map(item => {
-                        const { accion, modulo } = presentarBitacora(item.descripcion)
                         return <tr key={item.idBitacora}>
-                            <td>{modulo}</td><td>{accion}</td><td>{item.usuario}</td>
+                            <td>{item.idBitacora}</td><td>{item.modulo}</td><td>{item.accion}</td><td>{item.resultado}</td><td>{item.usuario}</td>
                             <td>{item.fechaHora ? new Date(item.fechaHora).toLocaleString('es-CR') : '—'}</td>
                         </tr>
                     })}</tbody>
                 </table>
             </div>}
+            {administrador && <nav className="dashboard-bitacora-controles" aria-label="Paginación de bitácora">
+                <span role="status">{total.toLocaleString('es-CR')} registros · Página {pagina + 1} de {paginas}</span>
+                <button type="button" disabled={pagina === 0 || actualizando} onClick={() => setPagina(0)}>Primera</button>
+                <button type="button" disabled={pagina === 0 || actualizando} onClick={() => setPagina(valor => valor - 1)}>Anterior</button>
+                <button type="button" disabled={pagina + 1 >= paginas || actualizando} onClick={() => setPagina(valor => valor + 1)}>Siguiente</button>
+                <button type="button" disabled={pagina + 1 >= paginas || actualizando} onClick={() => setPagina(paginas - 1)}>Última</button>
+                <form onSubmit={evento => {
+                    evento.preventDefault()
+                    const destino = Number(new FormData(evento.currentTarget).get('pagina'))
+                    if (Number.isInteger(destino) && destino >= 1 && destino <= paginas) setPagina(destino - 1)
+                }}>
+                    <label>Ir a página <input key={pagina} name="pagina" type="number" min="1" max={paginas} defaultValue={pagina + 1} required /></label>
+                    <button type="submit" disabled={actualizando}>Ir</button>
+                </form>
+            </nav>}
         </section>
     </>
 }

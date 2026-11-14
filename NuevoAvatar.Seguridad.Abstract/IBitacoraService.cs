@@ -10,6 +10,7 @@ namespace NuevoAvatar.Seguridad.Abstract
     public interface IBitacoraService
     {
         Task<List<Bitacora>> ObtenerTodos();
+        Task<PaginaBitacora> ObtenerPagina(int page, int size, long? hastaId = null);
         Task<Bitacora?> ObtenerPorId(long idBitacora);
         Task<Bitacora>Crear(Bitacora bitacora);
         

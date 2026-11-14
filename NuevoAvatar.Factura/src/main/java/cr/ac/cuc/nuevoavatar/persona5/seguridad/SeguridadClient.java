@@ -12,6 +12,9 @@ import org.springframework.web.client.RestClientException;
 
 @Component
 public class SeguridadClient {
+    @org.springframework.beans.factory.annotation.Autowired
+    private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(SeguridadClient.class);
     private final RestClient cliente;
@@ -41,19 +44,7 @@ public class SeguridadClient {
             String bearerToken,
             String usuario,
             String descripcion) {
-        try {
-            bitacora.post()
-                .uri("/bitacora")
-                .header(HttpHeaders.AUTHORIZATION, bearerToken)
-                .body(Map.of(
-                    "usuario", usuario,
-                    "descripcion", descripcion
-                ))
-                .retrieve()
-                .toBodilessEntity();
-        } catch (RestClientException ex) {
-            LOG.error("No fue posible registrar la bitacora: {}", ex.getMessage());
-        }
+        auditoria.registrar(usuario, descripcion);
     }
 }
 
