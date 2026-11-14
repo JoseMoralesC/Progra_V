@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class OperacionPagoController {
     private final JdbcTemplate jdbc; private final DatosRemotos datos;
+    @org.springframework.beans.factory.annotation.Autowired private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
     public OperacionPagoController(JdbcTemplate jdbc,DatosRemotos datos){this.jdbc=jdbc;this.datos=datos;}
     @PostMapping("/interno/operaciones-pago/{id}")
     @Transactional
@@ -25,6 +26,7 @@ public class OperacionPagoController {
         if(estados.getFirst().equals(desired))return Map.of("estado",desired);
         if(!estados.getFirst().equals(expected))throw new ResponseStatusException(HttpStatus.CONFLICT,"Estado de factura incompatible");
         jdbc.update("UPDATE finanzas.Factura SET Estado=? WHERE FacturaId=?",desired,factura);
+        auditoria.registrar("servicio:Pago", "Modificación de factura. Conciliación de pago. Operación: " + id + "; FacturaId: " + factura + "; Estado anterior: " + estados.getFirst() + "; Estado actual: " + desired + ". Resultado: Exitoso");
         return Map.of("estado",desired);
     }
     @SuppressWarnings("unchecked")

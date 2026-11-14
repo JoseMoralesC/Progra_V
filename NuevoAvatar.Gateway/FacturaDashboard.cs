@@ -15,6 +15,7 @@ public static class FacturaDashboard
         {
             using var cliente = clientes.CreateClient("dashboard-Factura");
             using var solicitud = new HttpRequestMessage(HttpMethod.Get, $"/factura/pendientes?periodoId={periodoId}");
+            ConsultasDashboard.Marcar(context, solicitud);
             solicitud.Headers.Authorization = AuthenticationHeaderValue.Parse(context.Request.Headers.Authorization.ToString());
             using var respuesta = await cliente.SendAsync(solicitud, context.RequestAborted);
             respuesta.EnsureSuccessStatusCode();

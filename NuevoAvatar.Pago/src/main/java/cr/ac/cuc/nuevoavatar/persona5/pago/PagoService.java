@@ -25,6 +25,7 @@ public class PagoService {
             if(pagos.existsByFacturaIdAndEstado(request.facturaId(),Pago.APLICADO))throw conflicto("Ya existe un pago aplicado");
             var pago=new Pago();pago.setFacturaId(request.facturaId());pago.setPeriodoId(factura.getPeriodoId());pago.setMonto(factura.getTotal());pago.setEstado(Pago.APLICADO);pago.setFechaPago(LocalDateTime.now());
             pago=pagos.saveAndFlush(pago);
+            cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Creación de pago. Registro local confirmado; conciliación de factura pendiente: " + PagoResponse.desde(pago));
             return operaciones.crear(pago.getId(),pago.getFacturaId(),false);
         });
         operaciones.exigirCompletada(op);return obtener(op.pagoId());
@@ -40,7 +41,9 @@ public class PagoService {
             if(Pago.ANULADO.equals(pago.getEstado()))throw conflicto("El pago ya esta anulado");
             var factura=facturas.findById(pago.getFacturaId()).orElseThrow(()->invalido("La factura no existe"));
             if(!Factura.PAGADA.equals(factura.getEstado()))throw conflicto("La factura no esta pagada");
+            var anterior=PagoResponse.desde(pago);
             pago.setEstado(Pago.ANULADO);pagos.saveAndFlush(pago);
+            cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Modificación de pago. Reverso local confirmado; conciliación de factura pendiente. Anterior: " + anterior + " Actual: " + PagoResponse.desde(pago));
             return operaciones.crear(pago.getId(),pago.getFacturaId(),true);
         });
         operaciones.exigirCompletada(op);return obtener(id);

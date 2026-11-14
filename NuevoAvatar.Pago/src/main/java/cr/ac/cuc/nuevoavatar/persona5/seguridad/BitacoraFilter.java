@@ -40,16 +40,21 @@ public class BitacoraFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
         ContentCachingRequestWrapper envuelta =
             new ContentCachingRequestWrapper(request, 1_048_576);
+        boolean fallo = false;
         try {
             filterChain.doFilter(envuelta, response);
+        } catch (IOException | ServletException | RuntimeException ex) {
+            fallo = true;
+            throw ex;
         } finally {
-            registrar(envuelta, response);
+            registrar(envuelta, response, fallo);
         }
     }
 
     private void registrar(
             ContentCachingRequestWrapper request,
-            HttpServletResponse response) {
+            HttpServletResponse response, boolean fallo) {
+        if (!fallo && response.getStatus() < 400 && Boolean.TRUE.equals(request.getAttribute(cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.ENCOLADA))) return;
         Object token = request.getAttribute(AutorizacionInterceptor.TOKEN_ATTRIBUTE);
         Object usuario = request.getAttribute(AutorizacionInterceptor.USER_ATTRIBUTE);
         if (token == null || usuario == null) {
@@ -63,7 +68,7 @@ public class BitacoraFilter extends OncePerRequestFilter {
         seguridad.registrarBitacora(
             token.toString(),
             usuario.toString(),
-            descripcion(request, response, cuerpo)
+            descripcion(request, response, cuerpo) + ". Estado HTTP: " + (fallo ? 500 : response.getStatus())
         );
     }
 

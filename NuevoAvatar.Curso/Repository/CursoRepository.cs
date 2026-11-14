@@ -5,7 +5,7 @@ using CursoEntity = NuevoAvatar.Curso.Entities.Curso;
 
 namespace NuevoAvatar.Curso.Repository;
 
-public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : ICursoRepository
+public sealed class CursoRepository(IDbConnectionFactory connectionFactory, NuevoAvatar.Integracion.AuditoriaTransaccion auditoria) : ICursoRepository
 {
     private const string SelectColumns = "CursoId, CarreraId, Nivel, Nombre";
 
@@ -83,7 +83,12 @@ public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : IC
 
         try
         {
-            return await connection.ExecuteScalarAsync<int>(sql, curso);
+            connection.Open();
+            using var tx = connection.BeginTransaction();
+            var id = await connection.ExecuteScalarAsync<int>(sql, curso, tx);
+            await auditoria.Registrar(connection, tx, "Creación de curso", null, new { CursoId = id, curso.CarreraId, curso.Nivel, curso.Nombre });
+            tx.Commit();
+            return id;
         }
         catch (SqlException exception) when (IsForeignKeyViolation(exception))
         {
@@ -108,6 +113,9 @@ public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : IC
 
         try
         {
+            connection.Open();
+            using var tx = connection.BeginTransaction();
+            var anterior = await connection.QuerySingleOrDefaultAsync<CursoEntity>($"SELECT {SelectColumns} FROM academico.Curso WITH (UPDLOCK) WHERE CursoId=@id", new { id }, tx);
             var affectedRows = await connection.ExecuteAsync(
                 sql,
                 new
@@ -116,7 +124,10 @@ public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : IC
                     curso.CarreraId,
                     curso.Nivel,
                     curso.Nombre
-                });
+                }, tx);
+
+            if (affectedRows == 1) await auditoria.Registrar(connection, tx, "Modificación de curso", anterior, new { CursoId = id, curso.CarreraId, curso.Nivel, curso.Nombre });
+            tx.Commit();
 
             return affectedRows == 1;
         }
@@ -140,9 +151,15 @@ public sealed class CursoRepository(IDbConnectionFactory connectionFactory) : IC
 
         try
         {
+            connection.Open();
+            using var tx = connection.BeginTransaction();
+            var anterior = await connection.QuerySingleOrDefaultAsync<CursoEntity>($"SELECT {SelectColumns} FROM academico.Curso WITH (UPDLOCK) WHERE CursoId=@id", new { id }, tx);
             var affectedRows = await connection.ExecuteAsync(
                 sql,
-                new { Id = id });
+                new { Id = id }, tx);
+
+            if (affectedRows == 1) await auditoria.Registrar(connection, tx, "Eliminación de curso", anterior, null);
+            tx.Commit();
 
             return affectedRows == 1;
         }

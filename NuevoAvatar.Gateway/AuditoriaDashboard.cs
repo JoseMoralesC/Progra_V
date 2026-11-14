@@ -13,17 +13,10 @@ public static class AuditoriaDashboard
             return Results.StatusCode(StatusCodes.Status403Forbidden);
 
         // La identidad y el texto de auditoría se determinan en el servidor.
-        using var solicitud = new HttpRequestMessage(HttpMethod.Post, "/bitacora");
-        solicitud.Headers.Authorization = AuthenticationHeaderValue.Parse(context.Request.Headers.Authorization.ToString());
-        solicitud.Content = JsonContent.Create(new {
-            usuario = sesion.UsuarioID,
-            descripcion = "El usuario consulta el dashboard"
-        });
         try
         {
-            using var cliente = clientes.CreateClient("dashboard-bitacora");
-            using var respuesta = await cliente.SendAsync(solicitud, context.RequestAborted);
-            if (respuesta.IsSuccessStatusCode) return null;
+            await context.RequestServices.GetRequiredService<NuevoAvatar.Integracion.IAuditoriaLocal>().Registrar(sesion.UsuarioID, "El usuario consulta el dashboard. Resultado: Exitoso");
+            return null;
         }
         catch (Exception error) when (error is HttpRequestException or TaskCanceledException)
         {

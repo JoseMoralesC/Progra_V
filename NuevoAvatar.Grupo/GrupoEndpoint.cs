@@ -145,6 +145,7 @@ public static class GrupoEndpoint
         string descripcion)
 
     {
+        if (context.Items[NuevoAvatar.Integracion.AuditoriaTransaccion.EscrituraRegistrada] is true) return;
         var token = context.Items["token"]?.ToString();
         var usuario = context.Items["usuario"]?.ToString()
                       ?? "desconocido";
@@ -155,6 +156,6 @@ public static class GrupoEndpoint
         await seguridadService.RegistrarBitacoraAsync(
             token,
             usuario,
-            descripcion);
+            descripcion + ". Resultado: Exitoso");
     }
 }

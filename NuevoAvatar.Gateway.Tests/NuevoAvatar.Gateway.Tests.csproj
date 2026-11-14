@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../NuevoAvatar.Gateway/NuevoAvatar.Gateway.csproj" />
+    <ProjectReference Include="../NuevoAvatar.Seguridad.Abstract/NuevoAvatar.Seguridad.Abstract.csproj" />
+    <ProjectReference Include="../NuevoAvatar.Seguridad.DataAccess/NuevoAvatar.Seguridad.DataAccess.csproj" />
+    <Compile Include="../NuevoAvatar.Autenticacion/AuditoriaSesionMiddleware.cs" Link="AuditoriaSesionMiddleware.cs" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+</Project>

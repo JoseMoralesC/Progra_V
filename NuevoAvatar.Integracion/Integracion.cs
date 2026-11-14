@@ -81,12 +81,13 @@ public static class IntegracionExtensions
         if(resource!=null)await context.RequestServices.GetRequiredService<DatosRemotos>().SinReferencias(servicio,resource,Uri.UnescapeDataString(parts[1]));
     }
     public static IServiceCollection AddIntegracion(this IServiceCollection services)
-    { services.AddHttpClient(); services.AddScoped<DatosRemotos>();return services; }
+    { services.AddHttpClient(); services.AddHttpContextAccessor(); services.AddScoped<AuditoriaTransaccion>(); services.AddScoped<DatosRemotos>(); services.AddSingleton<AuditoriaLocal>(); services.AddSingleton<IAuditoriaLocal>(sp => sp.GetRequiredService<AuditoriaLocal>()); services.AddHostedService<EntregaAuditoriaWorker>(); return services; }
     public static void MapIntegracion(this WebApplication app,string servicio,string connectionString)
     {
         string database=new SqlConnectionStringBuilder(connectionString).InitialCatalog;
         if(database.Equals(app.Configuration["DB_NAME"]??"PrograV",StringComparison.OrdinalIgnoreCase))throw new InvalidOperationException("Un servicio no puede conectarse a la base de origen");
         if(database!=(app.Configuration["SERVICE_DB_NAME"]??"PrograV_"+servicio))throw new InvalidOperationException("La conexion no apunta a la base propia");
+        app.Services.GetRequiredService<AuditoriaLocal>().Configurar(connectionString, servicio == "Bitacora");
         var key=app.Configuration["SERVICES_INTERNAL_KEY"];
         if(string.IsNullOrWhiteSpace(key) || key.Length<32) throw new InvalidOperationException("Configurar SERVICES_INTERNAL_KEY");
         app.Use(async(context,next)=>{

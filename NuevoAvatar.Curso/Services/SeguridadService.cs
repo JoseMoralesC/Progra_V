@@ -3,7 +3,7 @@ using System.Net.Http.Json;
 
 namespace NuevoAvatar.Curso.Services;
 
-public sealed class SeguridadService(HttpClient httpClient)
+public sealed class SeguridadService(HttpClient httpClient, NuevoAvatar.Integracion.AuditoriaLocal auditoria)
     : ISeguridadService
 {
     public async Task<bool> ValidarTokenAsync(string token)
@@ -28,22 +28,6 @@ public sealed class SeguridadService(HttpClient httpClient)
         string usuario,
         string descripcion)
     {
-        using var request = new HttpRequestMessage(
-            HttpMethod.Post,
-            NuevoAvatar.Integracion.ConfiguracionEntorno.Origen("BITACORA_BASE_URL") + "/bitacora");
-
-        request.Headers.Authorization =
-            new AuthenticationHeaderValue(
-                "Bearer",
-                token);
-
-        request.Content = JsonContent.Create(new
-        {
-            Usuario = usuario,
-            Descripcion = descripcion
-        });
-
-        using var bitacoraResponse = await httpClient.SendAsync(request);
-        bitacoraResponse.EnsureSuccessStatusCode();
+        await auditoria.Registrar(usuario, descripcion);
     }
 }

@@ -43,6 +43,7 @@ public sealed class CursoAuthorizationFilter(
             return Results.Unauthorized();
         }
 
+        context.HttpContext.Items["usuario"] = usuario;
         await NuevoAvatar.Integracion.IntegracionExtensions.ValidarEliminacion(context.HttpContext,"Curso");
         object? resultado = null;
         Exception? excepcion = null;
@@ -59,6 +60,13 @@ public sealed class CursoAuthorizationFilter(
         }
         finally
         {
+            var codigo = (resultado as IStatusCodeHttpResult)?.StatusCode ?? context.HttpContext.Response.StatusCode;
+            if (excepcion is null && (NuevoAvatar.Integracion.ConsultaAutomatica.EsCargaDashboard(context.HttpContext, codigo) ||
+                codigo < 400 && context.HttpContext.Items[NuevoAvatar.Integracion.AuditoriaTransaccion.EscrituraRegistrada] is true))
+            {
+                // La escritura y su auditoría ya se confirmaron juntas en el repositorio.
+            }
+            else {
             var descripcion = ConstruirDescripcion(
                 context,
                 resultado,
@@ -69,11 +77,13 @@ public sealed class CursoAuthorizationFilter(
                 await seguridadService.RegistrarBitacoraAsync(
                     token,
                     usuario,
-                    descripcion);
+                    descripcion + (excepcion is not null ? ". Estado HTTP: 500" :
+                        $". Estado HTTP: {(resultado as IStatusCodeHttpResult)?.StatusCode ?? context.HttpContext.Response.StatusCode}"));
             }
             catch
             {
-               
+                throw new InvalidOperationException("No se pudo persistir el movimiento en la cola de auditoría.");
+            }
             }
         }
     }

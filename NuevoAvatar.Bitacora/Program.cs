@@ -124,7 +124,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapPost("/interno/bitacora", async (Bitacora entrada, IBitacoraService servicio) => {
     if (string.IsNullOrWhiteSpace(entrada.Usuario) || string.IsNullOrWhiteSpace(entrada.Descripcion)) return Results.BadRequest();
-    return Results.Ok(await servicio.Crear(new Bitacora { Usuario=entrada.Usuario, Descripcion=entrada.Descripcion }));
+    return Results.Ok(await servicio.Crear(new Bitacora { IdEvento=entrada.IdEvento, Usuario=entrada.Usuario, Descripcion=entrada.Descripcion, FechaHora=entrada.FechaHora }));
 });
 app.Run();
 

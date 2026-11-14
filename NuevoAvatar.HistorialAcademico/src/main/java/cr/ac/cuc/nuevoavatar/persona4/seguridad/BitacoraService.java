@@ -24,21 +24,21 @@ public class BitacoraService {
     }
 
     public void creacion(String token, String usuario, String elemento, String nuevoJson) {
-        seguridad.registrarBitacora(token, usuario, "Creacion de " + elemento + ": " + nuevoJson);
+        seguridad.registrarBitacora(token, usuario, "Creacion de " + elemento + ": " + nuevoJson + ". Resultado: Exitoso");
     }
 
     public void modificacion(String token, String usuario, String elemento,
             String anteriorJson, String actualJson) {
         seguridad.registrarBitacora(token, usuario, "Modificacion de " + elemento
-                + ". Anterior: " + anteriorJson + " Actual: " + actualJson);
+                + ". Anterior: " + anteriorJson + " Actual: " + actualJson + ". Resultado: Exitoso");
     }
 
     public void eliminacion(String token, String usuario, String elemento, String eliminadoJson) {
-        seguridad.registrarBitacora(token, usuario, "Eliminacion de " + elemento + ": " + eliminadoJson);
+        seguridad.registrarBitacora(token, usuario, "Eliminacion de " + elemento + ": " + eliminadoJson + ". Resultado: Exitoso");
     }
 
     public void consulta(String token, String usuario, String elemento) {
-        seguridad.registrarBitacora(token, usuario, "El usuario consulta " + elemento);
+        seguridad.registrarBitacora(token, usuario, "El usuario consulta " + elemento + ". Resultado: Exitoso");
     }
 
     public void errorTecnico(String token, String usuario, String operacion, Exception error) {

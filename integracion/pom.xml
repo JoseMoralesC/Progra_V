@@ -20,7 +20,7 @@
     </dependencies>
     <build>
         <resources>
-            <resource><directory>${project.basedir}</directory><includes><include>contratos.json</include></includes></resource>
+            <resource><directory>${project.basedir}</directory><includes><include>contratos.json</include><include>auditoria-pendiente.sql</include></includes></resource>
         </resources>
     </build>
 </project>

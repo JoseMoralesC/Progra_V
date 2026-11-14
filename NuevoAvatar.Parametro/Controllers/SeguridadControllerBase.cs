@@ -18,10 +18,11 @@ namespace NuevoAvatarSeguridad.Controllers
 
         protected async Task Registrar(string descripcion)
         {
+            if (HttpContext.Items[NuevoAvatar.Integracion.AuditoriaTransaccion.EscrituraRegistrada] is true) return;
             await _bitacora.Crear(new Bitacora
             {
                 Usuario = HttpContext.Items["usuario"]?.ToString() ?? "desconocido",
-                Descripcion = descripcion
+                Descripcion = descripcion + ". Resultado: Exitoso"
             });
         }
     }

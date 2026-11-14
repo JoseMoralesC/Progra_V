@@ -2,6 +2,14 @@
 .dashboard-enlaces { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; }
 .dashboard-quick-link { min-height: 40px; padding: 9px 15px; font-size: 13px; }
 .dashboard-table-wrap { width: 100%; overflow-x: auto; }
+.dashboard-bitacora-controles { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 14px 0; }
+.dashboard-bitacora-controles form { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.dashboard-bitacora-controles input { width: 90px; }
+.dashboard-bitacora-controles button, .dashboard-bitacora-controles select, .dashboard-bitacora-controles input {
+    color: var(--text); background: var(--pill); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+}
+.dashboard-bitacora-controles button:disabled { opacity: .5; cursor: default; }
+.dashboard-bitacora-detalle { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 600px; min-width: 240px; }
 .dashboard-activity-table { width: 100%; min-width: 560px; border-collapse: collapse; }
 .dashboard-activity-table th, .dashboard-activity-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; }
 .dashboard-activity-table tbody tr:hover { background: var(--pill); }

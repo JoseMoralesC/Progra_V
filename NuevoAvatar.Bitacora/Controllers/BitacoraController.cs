@@ -23,6 +23,14 @@ namespace NuevoAvatarSeguridad.Controllers
             return Ok(await _service.ObtenerTodos());
         }
 
+        [HttpGet("pagina")]
+        public async Task<IActionResult> ObtenerPagina([FromQuery] int page = 0, [FromQuery] int size = 25, [FromQuery] long? hastaId = null)
+        {
+            if (page < 0 || size is < 1 or > 100 || (long)page * size > int.MaxValue || hastaId < 0)
+                return BadRequest("Página o tamaño de página inválidos.");
+            return Ok(await _service.ObtenerPagina(page, size, hastaId));
+        }
+
         [HttpGet("{id:long}")]
         public async Task<IActionResult> ObtenerPorId(long id)
         {

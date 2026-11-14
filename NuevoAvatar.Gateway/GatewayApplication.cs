@@ -11,12 +11,13 @@ public static class GatewayApplication
     {
         var builder = WebApplication.CreateBuilder(args);
         configurar?.Invoke(builder);
+        builder.Services.AddIntegracion();
         var auth = Destino(builder.Configuration, "Autenticacion");
         builder.Services.AddSeguridadGateway(new Uri(auth));
         builder.Services.AddPermisosGateway(new Uri(Destino(builder.Configuration, "Modulo")));
         builder.Services.AddHttpClient("dashboard-bitacora", client => {
             client.BaseAddress = new Uri(Destino(builder.Configuration, "Bitacora"));
-            client.Timeout = TimeSpan.FromSeconds(8);
+            client.Timeout = TimeSpan.FromSeconds(30);
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         foreach (var servicio in new[] { "Notificacion", "Notas", "Factura" })
             builder.Services.AddHttpClient("dashboard-" + servicio, client => {
@@ -31,7 +32,19 @@ public static class GatewayApplication
             ConnectTimeout = TimeSpan.FromSeconds(5)
         }));
         var app = builder.Build();
+        if (!string.IsNullOrWhiteSpace(builder.Configuration["DB_HOST"])) {
+            // Gateway no tiene base de negocio propia: comparte la cola de Autenticación.
+            var cadenaAuditoria = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder {
+                DataSource = builder.Configuration["DB_HOST"] + "," + (builder.Configuration["DB_PORT"] ?? "1433"),
+                InitialCatalog = "PrograV_Autenticacion",
+                UserID = builder.Configuration["SERVICE_DB_USER_AUTENTICACION"] ?? builder.Configuration["DB_USERNAME"],
+                Password = builder.Configuration["SERVICE_DB_PASSWORD_AUTENTICACION"] ?? builder.Configuration["DB_PASSWORD"],
+                TrustServerCertificate = true
+            };
+            app.Services.GetRequiredService<AuditoriaLocal>().Configurar(cadenaAuditoria.ConnectionString, false);
+        }
         app.UseRouting();
+        app.UseMiddleware<AuditoriaFallosGateway>();
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/gateway"), branch => branch.UseSeguridadGateway());
         app.MapGet("/health", () => Results.Ok(new { servicio = "Gateway", estado = "disponible" }));
         app.MapPost("/gateway/auditoria/interfaz", AuditoriaInterfaz.Registrar)
@@ -72,6 +85,7 @@ public static class GatewayApplication
                     await indicador.ExecuteAsync(context);
                     return;
                 }
+                context.Items[AuditoriaFallosGateway.ServicioEnviado] = ruta.Servicio;
                 var error = await proxy.SendAsync(context, destino, cliente, config, transformer);
                 if (error != ForwarderError.None && !context.Response.HasStarted && !context.RequestAborted.IsCancellationRequested)
                 {
