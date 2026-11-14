@@ -1538,6 +1538,51 @@ body.dark .status-danger {
     font: inherit;
 }
 
+.login-password-field {
+    position: relative;
+    width: 100%;
+}
+
+.login-form .login-password-field input {
+    padding-right: 44px;
+}
+
+.login-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    transform: translateY(-50%);
+}
+
+.login-password-toggle:hover:not(:disabled) {
+    background: var(--pill);
+    color: var(--text);
+}
+
+.login-password-toggle:disabled {
+    cursor: not-allowed;
+    opacity: .55;
+}
+
+.login-password-toggle svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .login-form input:focus-visible {
     outline: 3px solid rgba(52, 101, 180, 0.25);
     border-color: #3465b4;
