@@ -30,7 +30,7 @@ public sealed class SeguridadService(HttpClient httpClient)
     {
         using var request = new HttpRequestMessage(
             HttpMethod.Post,
-            (Environment.GetEnvironmentVariable("BITACORA_BASE_URL") ?? Environment.GetEnvironmentVariable("BITACORA_URL") ?? "http://localhost:5159") + "/bitacora");
+            NuevoAvatar.Integracion.ConfiguracionEntorno.Origen("BITACORA_BASE_URL") + "/bitacora");
 
         request.Headers.Authorization =
             new AuthenticationHeaderValue(

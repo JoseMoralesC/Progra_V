@@ -12,7 +12,15 @@ Plantilla frontend reutilizable desarrollada con React y Vite para el sistema Nu
 
 ## Requisitos e instalación
 
-Se requiere Node.js y npm.
+Se requiere Node.js 22.15 o posterior y npm.
+Configura `FRONTEND_BASE_URL` en el `.env` de la raiz del repositorio con el origen
+HTTP(S) del frontend, sin rutas ni credenciales. El archivo esta excluido de Git.
+Tambien puedes inyectar la variable desde el entorno de ejecucion.
+No uses el prefijo `VITE_`: esta configuracion se consume solo desde Node.
+Configura también `GATEWAY_BASE_URL` en ese mismo `.env` con el origen del Gateway.
+Los proxies de Vite y el arranque del Gateway comparten ese valor.
+En JavaScript se obtiene desde `tools/gateway-env.cjs` como `gatewayBaseURL`;
+en PowerShell, desde `tools/gateway-env.ps1`.
 
 ```bash
 npm ci
@@ -26,8 +34,9 @@ npm run lint
 npm run build
 ```
 
-Vite sirve la aplicación en `http://127.0.0.1:4175`. El puerto queda fijo para
-que coincida con la configuración del proyecto.
+Vite usa `FRONTEND_BASE_URL` del `.env` raíz. El servidor
+obtiene su host y puerto de esa variable y exige que el puerto esté disponible.
+La dirección de acceso sigue siendo visible para quien navega por la aplicación.
 
 ## Estructura principal
 
@@ -60,7 +69,7 @@ El login de `src/pages/Login` consume el gateway mediante
 - `POST /gateway/auth/refresh`, enviando `refresh_token` en el body JSON.
 - `POST /gateway/auth/logout`, conservando la salida local aunque falle el registro remoto.
 
-En desarrollo, `vite.config.js` reenvía `/gateway` al puerto 5080. El despliegue
+En desarrollo, `vite.config.js` reenvía `/gateway` al origen `GATEWAY_BASE_URL`. El despliegue
 debe resolver ese mismo prefijo hacia el gateway; el navegador no necesita
 direcciones de los microservicios ni claves internas.
 
@@ -73,7 +82,7 @@ cada servicio conservan la autorización efectiva de los datos.
 
 ## Proxy compartido de gateway
 
-Se conserva el proxy `/gateway` hacia `http://localhost:5080` y el permiso de
+Se conserva el proxy `/gateway` hacia `GATEWAY_BASE_URL` del `.env` raiz y el permiso de
 Vite para importar módulos dentro del repositorio. `resolve.dedupe` mantiene una
 sola instancia de React al consumir código compartido. Estos ajustes permiten
 que otras integraciones del repositorio usen el gateway desde este servidor;

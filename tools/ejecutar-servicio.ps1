@@ -5,19 +5,9 @@ $taskManifest = Get-Content (Join-Path $PSScriptRoot 'servicios.json') -Raw | Co
 $taskEntry = $taskManifest | Where-Object { $_.name -eq $Servicio }
 if (!$taskEntry) { throw 'Servicio desconocido.' }
 $taskDirectory = Join-Path $taskRoot "NuevoAvatar.$Servicio"
-# Leo las variables locales como datos, sin ejecutar el contenido del .env.
-foreach ($taskLine in Get-Content (Join-Path $taskRoot '.env')) {
-    if ($taskLine -match '^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$') {
-        $taskKey = $matches[1]
-        $taskValue = $matches[2]
-        if ($taskValue.Length -ge 2 -and (($taskValue.StartsWith('"') -and $taskValue.EndsWith('"')) -or ($taskValue.StartsWith("'") -and $taskValue.EndsWith("'")))) {
-            $taskValue = $taskValue.Substring(1, $taskValue.Length - 2)
-        }
-        if (![Environment]::GetEnvironmentVariable($taskKey, 'Process')) {
-            [Environment]::SetEnvironmentVariable($taskKey, $taskValue, 'Process')
-        }
-    }
-}
+. (Join-Path $PSScriptRoot 'urls-entorno.ps1')
+Cargar-EntornoLocal
+$taskOrigin = Obtener-OrigenServicio $Servicio
 if (!$env:DB_HOST -or !$env:DB_NAME -or !$env:DB_USERNAME -or !$env:DB_PASSWORD) {
     throw 'Falta configurar DB_HOST, DB_NAME, DB_USERNAME o DB_PASSWORD en el .env local.'
 }
@@ -41,15 +31,10 @@ $env:DB_USER = $env:DB_USERNAME
 $env:SPRING_DATASOURCE_URL = $env:DB_URL
 $env:SPRING_DATASOURCE_USERNAME = $env:DB_USER
 $env:SPRING_DATASOURCE_PASSWORD = $env:DB_PASSWORD
-# Mantengo destinos separados para autenticacion, bitacora, matricula y notas.
-$env:SEGURIDAD_URL = 'http://localhost:5158'
-$env:SEGURIDAD_BASE_URL = $env:SEGURIDAD_URL
-$env:BITACORA_URL = 'http://localhost:5159'
-$env:MATRICULA_BASE_URL = 'http://localhost:8085'
-$env:NOTAS_BASE_URL = 'http://localhost:8092'
-$env:SERVER_PORT = [string]$taskEntry.port
-if ($Verificar) { Write-Host "$Servicio : base $($taskEntry.database), puerto $($taskEntry.port), configuracion verificada. No inicio procesos."; exit 0 }
-& (Join-Path $PSScriptRoot 'comprobar-puerto.ps1') -Puerto $taskEntry.port
+# Los destinos se conservan tal como se configuraron en el entorno o .env.
+$env:SERVER_PORT = [string]$taskOrigin.Port
+if ($Verificar) { Write-Host "$Servicio : base $($taskEntry.database), puerto $($taskOrigin.Port), configuracion verificada. No inicio procesos."; exit 0 }
+& (Join-Path $PSScriptRoot 'comprobar-puerto.ps1') -Puerto $taskOrigin.Port -HostServicio $taskOrigin.Host
 if ($LASTEXITCODE -ne 0) { exit 1 }
 Push-Location $taskDirectory
 try {

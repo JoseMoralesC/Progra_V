@@ -2,7 +2,6 @@ package cr.ac.cuc.nuevoavatar.persona2.profesor;
 
 import cr.ac.cuc.nuevoavatar.persona2.seguridad.BitacoraFilter;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;

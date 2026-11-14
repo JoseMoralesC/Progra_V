@@ -1,5 +1,8 @@
 # Renovación de datos universitarios
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 La carga sustituye los registros identificados como ensayos en las bases de los servicios y en la base histórica `PrograV`. Conserva el esquema, los logins SQL, los parámetros técnicos y los permisos ya asignados. Los registros generados son sintéticos; sus nombres, cédulas y contactos no constituyen identidades verificadas. Los datos personales plausibles de dos integrantes se conservan al reemplazar sus cuentas anteriores por las solicitadas.
 
 ## Resultado y evidencias

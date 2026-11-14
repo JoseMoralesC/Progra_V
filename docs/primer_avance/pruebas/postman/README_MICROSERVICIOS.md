@@ -1,5 +1,8 @@
 # Postman con bases por servicio
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Las colecciones usan ahora una variable de URL para cada servicio. Las rutas,
 metodos, cuerpos, identificadores de prueba y aserciones existentes se conservan.
 La coleccion de Fabian tiene una unica copia en

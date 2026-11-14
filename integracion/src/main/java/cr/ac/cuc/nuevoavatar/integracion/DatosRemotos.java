@@ -16,7 +16,10 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 public class DatosRemotos {
     private final Map<String, Object> contratos;
     private final String key;
-    public DatosRemotos(Map<String,Object> contratos, String key) { this.contratos=contratos; this.key=key; }
+    private final org.springframework.core.env.Environment environment;
+    public DatosRemotos(Map<String,Object> contratos, String key, org.springframework.core.env.Environment environment) {
+        this.contratos=contratos; this.key=key; this.environment=environment;
+    }
     @SuppressWarnings("unchecked")
     public Map<String,Object> contrato(String service) {
         var result=(Map<String,Object>)contratos.get(service);
@@ -24,11 +27,11 @@ public class DatosRemotos {
         return result;
     }
     public RestClient cliente(String service) {
-        var config=contrato(service);
-        String base=System.getenv(service.toUpperCase(Locale.ROOT)+"_BASE_URL");
-        if(base==null || base.isBlank()) base="http://localhost:"+config.get("port");
+        contrato(service);
+        String variable=service.toUpperCase(Locale.ROOT)+"_BASE_URL";
+        String base=UrlsEntorno.origen(environment.getProperty(variable),variable).toString();
         var factory=new SimpleClientHttpRequestFactory(); factory.setConnectTimeout(3000); factory.setReadTimeout(8000);
-        return RestClient.builder().baseUrl(base).requestFactory(factory).defaultHeader("X-Servicio-Key",key).build();
+        return RestClient.builder().baseUrl(Objects.requireNonNull(base)).requestFactory(factory).defaultHeader("X-Servicio-Key",key).build();
     }
     public List<Map<String,Object>> listar(String service,String recurso,Map<String,?> filtros) {
         try {

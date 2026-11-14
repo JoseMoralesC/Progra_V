@@ -1,5 +1,11 @@
 # Pruebas reales de ADM3, ADM4, ADM5, ADM6 y ADM8
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
+> Nota de mantenimiento (13 de noviembre de 2026): las pruebas automatizadas de `NuevoAvatar.Estudiante.React`, su configuración de Playwright y los ejecutores Python asociados se retiraron del proyecto. Las referencias a esos archivos y comandos en este informe corresponden a ejecuciones históricas y ya no son instrucciones vigentes. Se conservan los resultados y evidencias.
+
+
 Fecha: 11 de noviembre de 2026. Rama de trabajo: `fabian`.
 
 Las pruebas utilizaron la aplicación local, el gateway y SQL Server compartido por

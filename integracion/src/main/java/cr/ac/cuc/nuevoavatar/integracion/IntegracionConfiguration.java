@@ -28,7 +28,9 @@ public class IntegracionConfiguration implements WebMvcConfigurer {
             this.contracts=new com.fasterxml.jackson.databind.ObjectMapper().readValue(input,Map.class);
         }
     }
-    @Bean public DatosRemotos datosRemotos() { return new DatosRemotos(contracts,key); }
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.core.env.Environment environment;
+    @Bean public DatosRemotos datosRemotos() { return new DatosRemotos(contracts,key,environment); }
     @Bean public org.springframework.beans.factory.InitializingBean verificarBase(JdbcTemplate jdbc,
         @Value("${SERVICE_DB_NAME:}") String configuredDatabase) {
         return ()->{
