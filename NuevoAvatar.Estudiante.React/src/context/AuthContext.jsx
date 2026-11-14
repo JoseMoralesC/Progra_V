@@ -201,7 +201,7 @@ export function AuthProvider({ children }) {
     const login = useCallback(async (usuario, contrasena) => {
         usuario = usuario.trim().toLowerCase()
         if (!/^[^\s@]+@(?:cuc\.cr|cuc\.ac\.cr)$/.test(usuario) || !contrasena.trim()) {
-            throw new Error('Ingresa un correo institucional válido y tu contraseña.')
+            throw new Error('Usuario y/o contraseña incorrectos')
         }
         clearSession()
         setMensaje('')

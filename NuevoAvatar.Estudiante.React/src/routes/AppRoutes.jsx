@@ -124,6 +124,21 @@ function AuditoriaInterfaz() {
         revisarNodo(document.body)
         return () => observer.disconnect()
     }, [location.pathname, registrarErrorUi, session?.user])
+    useEffect(() => {
+        const ruta = location.pathname
+        if (!session?.user || !rutasCriticas.has(ruta)) return undefined
+
+        const registrarExcepcionGlobal = () => registrarErrorUi(ruta)
+        const registrarPromesaNoControlada = () => registrarErrorUi(ruta)
+
+        window.addEventListener('error', registrarExcepcionGlobal)
+        window.addEventListener('unhandledrejection', registrarPromesaNoControlada)
+
+        return () => {
+            window.removeEventListener('error', registrarExcepcionGlobal)
+            window.removeEventListener('unhandledrejection', registrarPromesaNoControlada)
+        }
+    }, [location.pathname, registrarErrorUi, session?.user])
 
     return null
 }
