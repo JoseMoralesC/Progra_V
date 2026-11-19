@@ -19,12 +19,16 @@ function MainLayout({
     onLogout
 }) {
     const [collapsed, setCollapsed] = useState(false)
+    const [mobileExpanded, setMobileExpanded] = useState(false)
     const [mobile, setMobile] = useState(() =>
-        typeof window !== 'undefined' && window.matchMedia('(max-width: 600px)').matches)
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 800px)').matches)
 
     useEffect(() => {
-        const media = window.matchMedia('(max-width: 600px)')
-        const actualizar = evento => setMobile(evento.matches)
+        const media = window.matchMedia('(max-width: 800px)')
+        const actualizar = evento => {
+            setMobile(evento.matches)
+            setMobileExpanded(false)
+        }
         setMobile(media.matches)
         media.addEventListener('change', actualizar)
         return () => media.removeEventListener('change', actualizar)
@@ -48,11 +52,17 @@ function MainLayout({
         }
     }, [dark])
 
+    const menuCollapsed = mobile ? !mobileExpanded : collapsed
+
     return (
-        <div className={`stage ${mobile || collapsed ? 'sidebar-collapsed' : ''}`}>
+        <div className={`stage ${menuCollapsed ? 'sidebar-collapsed' : ''}`}>
             <Sidebar
-                collapsed={mobile || collapsed}
-                onToggle={() => { if (!mobile) setCollapsed(current => !current) }}
+                collapsed={menuCollapsed}
+                onToggle={() => {
+                    if (mobile) setMobileExpanded(current => !current)
+                    else setCollapsed(current => !current)
+                }}
+                onNavigate={() => { if (mobile) setMobileExpanded(false) }}
                 permissions={permissions}
                 menuItems={menuItems}
                 systemName={systemName}

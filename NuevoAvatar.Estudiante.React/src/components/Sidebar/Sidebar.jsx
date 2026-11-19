@@ -1,5 +1,6 @@
 ﻿
 import { NavLink } from 'react-router-dom'
+import logo from '../../assets/nuevo-avatar-logo.png'
 
 const defaultMenuItems = [
     { label: 'Inicio', path: '/inicio', icon: '⌂' },
@@ -11,6 +12,7 @@ const defaultMenuItems = [
 function Sidebar({
     collapsed,
     onToggle,
+    onNavigate,
     permissions = null,
     menuItems = defaultMenuItems,
     systemName = 'Nuevo Avatar',
@@ -25,7 +27,10 @@ function Sidebar({
     return (
         <aside className="menu glass" aria-label="Menú principal">
             <div className="menu-head">
-                <span className="head-title">{systemName}</span>
+                <div className="head-brand">
+                    <img className="brand-logo" src={logo} alt="" aria-hidden="true" />
+                    <span className="head-title">{systemName}</span>
+                </div>
 
                 <button
                     className="head-toggle"
@@ -46,6 +51,7 @@ function Sidebar({
                     <NavLink
                         key={item.path}
                         to={item.path}
+                        onClick={onNavigate}
                         end={item.path === '/inicio'}
                         title={collapsed ? item.label : undefined}
                         aria-label={item.label}
