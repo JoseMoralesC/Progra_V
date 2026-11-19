@@ -17,6 +17,7 @@ function mensajeError(error, accion) {
     if (error?.status === 401) return 'Tu sesión expiró. Inicia sesión nuevamente.'
     if (error?.status === 403) return 'Tu sesión no tiene permiso para esta operación.'
     if (error?.status === 404) return 'No encontramos esa solicitud dentro de tus prematrículas.'
+    if (error?.status === 409) return error.message || 'Ya existe una prematrícula para esa carrera y período.'
     if (error?.status === 400) return error.message || 'Revisa que los cursos sean de primer nivel y el período inicie en una fecha futura.'
     if (error?.status === 503) return 'Un servicio requerido no está disponible. Inténtalo más tarde.'
     return `No fue posible ${accion}. Inténtalo nuevamente.`
