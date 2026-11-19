@@ -6,14 +6,18 @@ const vacio = { tipoIdentificacion: 'Cédula', identificacion: '', email: '', no
 export function Profesores({ cliente }) {
   const api = useMemo(() => profesoresApi(cliente), [cliente]);
   const [size, setSize] = useState(MAX_PAGINA);
+  const [dominioProfesor, setDominioProfesor] = useState('');
   const [data, setData] = useState({ items: [], page: 0, size: MAX_PAGINA, total: 0 }), [texto, setTexto] = useState(''), [sort, setSort] = useState('nombreCompleto'), [direction, setDirection] = useState('asc');
   const [modal, setModal] = useState(null), [form, setForm] = useState(vacio), [error, setError] = useState(''), [mensaje, setMensaje] = useState(''), [estado, setEstado] = useState('Cargando profesores…');
-  useEffect(() => { api.tamanoPagina().then(setSize); }, [api]);
+  useEffect(() => {
+    api.tamanoPagina().then(setSize);
+    api.dominio().then(setDominioProfesor).catch(() => setDominioProfesor(''));
+  }, [api]);
   const cargar = useCallback(async (page = 0) => { setEstado('Cargando profesores…'); try { const result = await api.buscar({ texto, page, size, sort, direction }); setData(result); setEstado(result.items.length ? '' : 'No hay profesores para mostrar.'); } catch (e) { setError(e.message); setEstado(''); } }, [api, texto, size, sort, direction]);
   useEffect(() => { cargar(); }, [cargar]);
   const abrir = item => { setError(''); setMensaje(''); setForm(item ? { ...item, telefonos: [...item.telefonos] } : { ...vacio, telefonos: [''] }); setModal(item ? 'editar' : 'crear'); };
   async function guardar() {
-    const err = validarProfesor(form); if (err) return setError(err);
+    const err = validarProfesor(form, dominioProfesor); if (err) return setError(err);
     try {
       modal === 'crear' ? await api.crear(form) : await api.modificar(form);
       setMensaje(modal === 'crear' ? 'Profesor creado correctamente.' : 'Profesor actualizado correctamente.');
