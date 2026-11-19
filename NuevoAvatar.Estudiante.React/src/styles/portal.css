@@ -134,6 +134,22 @@ body.dark .glass {
     position: relative;
 }
 
+.head-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding-right: 40px;
+}
+
+.brand-logo {
+    display: block;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    object-fit: contain;
+}
+
 .head-title {
     display: inline-block;
     color: var(--text);
@@ -281,13 +297,26 @@ body.dark .glass {
 
 .stage.sidebar-collapsed .menu-head {
     justify-content: center;
-    padding-left: 0;
+    min-height: 80px;
+    padding: 0 0 40px;
+}
+
+.stage.sidebar-collapsed .head-brand {
+    justify-content: center;
     padding-right: 0;
+}
+
+.stage.sidebar-collapsed .brand-logo {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
 }
 
 .stage.sidebar-collapsed .head-toggle {
     left: 50%;
     right: auto;
+    top: auto;
+    bottom: 0;
     transform: translateX(-50%);
     background: var(--glass-strong);
     box-shadow: 0 3px 12px #00000012;

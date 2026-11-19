@@ -1,5 +1,6 @@
 ﻿
 import { NavLink } from 'react-router-dom'
+import logo from '../../assets/nuevo-avatar-logo.png'
 
 const defaultMenuItems = [
     { label: 'Inicio', path: '/inicio', icon: '⌂' },
@@ -25,7 +26,10 @@ function Sidebar({
     return (
         <aside className="menu glass" aria-label="Menú principal">
             <div className="menu-head">
-                <span className="head-title">{systemName}</span>
+                <div className="head-brand">
+                    <img className="brand-logo" src={logo} alt="" aria-hidden="true" />
+                    <span className="head-title">{systemName}</span>
+                </div>
 
                 <button
                     className="head-toggle"
