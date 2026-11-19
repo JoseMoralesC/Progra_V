@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProfesorService {
 
     private static final Pattern TELEFONO_LOCAL =
-        Pattern.compile("^(?:\\+?506[\\s-]?)?[2-8]\\d{3}-?\\d{4}$");
+        Pattern.compile("^[2-8]\\d{7}$");
 
     private final ProfesorRepository repositorio;
     private final cr.ac.cuc.nuevoavatar.integracion.DatosRemotos datos;
@@ -203,7 +203,7 @@ public class ProfesorService {
         if (!TELEFONO_LOCAL.matcher(limpio).matches()) {
             throw new ResponseStatusException(
                 HttpStatus.UNPROCESSABLE_CONTENT,
-                "El teléfono debe tener formato local válido (8 dígitos)"
+                "El teléfono debe contener solo 8 dígitos, sin espacios, comas ni guiones"
             );
         }
         numeros.add(limpio);

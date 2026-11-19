@@ -25,8 +25,8 @@ public record ProfesorRequest(
 
     @NotEmpty(message = "Debe indicar al menos un teléfono")
     List<@NotBlank @Pattern(
-        regexp = "^(?:\\+?506[\\s-]?)?[2-8]\\d{3}-?\\d{4}$",
-        message = "El teléfono debe tener formato local válido (8 dígitos)"
+        regexp = "^[2-8]\\d{7}$",
+        message = "El teléfono debe contener solo 8 dígitos"
     ) String> telefonos
 ) {
 }

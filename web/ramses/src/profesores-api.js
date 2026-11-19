@@ -26,8 +26,8 @@ export function validarProfesor(value, dominio = '') {
   const edad = new Date(); edad.setFullYear(edad.getFullYear() - 18);
   if (!value.fechaNacimiento || new Date(`${value.fechaNacimiento}T00:00:00`) > edad) return 'El profesor debe ser mayor de edad.';
   const telefonos = value.telefonos?.map(x => x.trim()).filter(Boolean) || [];
-  const canonicos = telefonos.map(t => t.replace(/[\s+-]/g, '').replace(/^506(?=\d{8}$)/, ''));
+  const canonicos = telefonos;
   if (!telefonos.length || new Set(canonicos).size !== telefonos.length) return 'Indicá teléfonos sin repetir.';
-  if (telefonos.some(t => !/^(?:\+?506[\s-]?)?[2-8]\d{3}-?\d{4}$/.test(t))) return 'Indicá teléfonos con formato local válido (8 dígitos).';
+  if (telefonos.some(t => !/^[2-8]\d{7}$/.test(t))) return 'Indicá teléfonos con solo 8 dígitos, sin espacios, comas ni guiones.';
   return '';
 }
