@@ -12,6 +12,7 @@ const defaultMenuItems = [
 function Sidebar({
     collapsed,
     onToggle,
+    onNavigate,
     permissions = null,
     menuItems = defaultMenuItems,
     systemName = 'Nuevo Avatar',
@@ -50,6 +51,7 @@ function Sidebar({
                     <NavLink
                         key={item.path}
                         to={item.path}
+                        onClick={onNavigate}
                         end={item.path === '/inicio'}
                         title={collapsed ? item.label : undefined}
                         aria-label={item.label}

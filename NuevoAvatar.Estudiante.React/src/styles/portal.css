@@ -135,6 +135,7 @@ body.dark .glass {
 }
 
 .head-brand {
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 9px;
@@ -151,6 +152,9 @@ body.dark .glass {
 }
 
 .head-title {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
     display: inline-block;
     color: var(--text);
     transition: opacity .18s ease, color .18s ease;
@@ -837,7 +841,7 @@ body.dark .status-danger {
     }
 
     .head-toggle {
-        display: none;
+        display: grid;
     }
 
     .header-heading,
@@ -1584,5 +1588,28 @@ body.dark .status-danger {
 
     .login-panel {
         padding: 24px 20px;
+    }
+}
+
+/* El menú compacto puede expandirse para consultar los nombres de las opciones. */
+@media (max-width: 800px) {
+    .stage:not(.sidebar-collapsed) {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .stage:not(.sidebar-collapsed) > .menu {
+        position: relative;
+        top: 0;
+        height: auto;
+        min-height: 0;
+        max-height: 70dvh;
+    }
+
+    .menu-head {
+        flex-shrink: 0;
+    }
+
+    .menu nav {
+        min-height: 0;
     }
 }
