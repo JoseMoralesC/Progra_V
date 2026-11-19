@@ -7,6 +7,7 @@ using NuevoAvatar.Periodo.Nuevo.Services;
 Env.NoClobber().TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls(ConfiguracionEntorno.Escucha(builder.Configuration, "PERIODO"));
 
 var dbHost = builder.Configuration["DB_HOST"];
 var dbPort = builder.Configuration["DB_PORT"] ?? "1433";
@@ -40,9 +41,7 @@ builder.Services.AddScoped<IPeriodoService, PeriodoService>();
 
 builder.Services.AddHttpClient<ISeguridadService, SeguridadService>(client =>
 {
-    var baseUrl = builder.Configuration["Seguridad:BaseUrl"]
-        ?? throw new InvalidOperationException(
-            "Falta la configuración 'Seguridad:BaseUrl'.");
+    var baseUrl = ConfiguracionEntorno.Origen(builder.Configuration, "AUTENTICACION_BASE_URL");
 
     client.BaseAddress = new Uri(baseUrl);
 });

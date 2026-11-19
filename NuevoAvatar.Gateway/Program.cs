@@ -1,3 +1,7 @@
 using NuevoAvatar.Gateway;
+using NuevoAvatar.Integracion;
 
-await GatewayApplication.Create(args).RunAsync();
+ConfiguracionEntorno.Cargar();
+var app = GatewayApplication.Create(args, builder =>
+    builder.WebHost.UseUrls(ConfiguracionEntorno.Escucha(builder.Configuration, "GATEWAY")));
+await app.RunAsync();

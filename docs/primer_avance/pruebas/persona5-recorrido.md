@@ -1,5 +1,8 @@
 # Persona 5 (Jose): recorrido Postman y evidencia
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Nota de archivo: `services/` fue retirada el 23 de octubre de 2026. Las rutas
 y comandos de esa estructura se conservan aqui como registro historico, no como
 instrucciones de arranque. Consultar la [guia actual](postman/README_MICROSERVICIOS.md).

@@ -4,5 +4,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0" />
     <EmbeddedResource Include="../integracion/contratos.json" LogicalName="Contratos.json" />
+    <EmbeddedResource Include="../integracion/auditoria-pendiente.sql" LogicalName="AuditoriaPendiente.sql" />
+    <EmbeddedResource Include="../db/migraciones/bitacora-entrega-fiable.sql" LogicalName="AuditoriaReceptor.sql" />
   </ItemGroup>
 </Project>

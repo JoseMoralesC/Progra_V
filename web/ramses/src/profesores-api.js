@@ -9,16 +9,25 @@ export const profesoresApi = cliente => ({
   crear: value => cliente.request(ruta, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
   modificar: value => cliente.request(`${ruta}/${value.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
   eliminar: id => cliente.request(`${ruta}/${id}`, { method: 'DELETE' }),
-  tamanoPagina: () => leerTamanoPagina(cliente)
+  tamanoPagina: () => leerTamanoPagina(cliente),
+  dominio: async () => {
+    const parametro = await cliente.request('/gateway/admin/parametro/DOMPROF');
+    return String(parametro?.valor ?? parametro ?? '').trim().replace(/^@/, '');
+  }
 });
-export function validarProfesor(value) {
+export function validarProfesor(value, dominio = '') {
   if (!value.nombreCompleto?.trim() || !value.identificacion?.trim() || !value.tipoIdentificacion?.trim()) return 'Nombre e identificación son requeridos.';
-  if (!/^\S+@\S+\.\S+$/.test(value.email || '')) return 'Ingresá un correo válido.';
+  const email = value.email?.trim() || '';
+  if (!/^\S+@\S+\.\S+$/.test(email)) return 'Ingresá un correo válido.';
+  const dominioNormalizado = dominio.trim().replace(/^@/, '').toLowerCase();
+  if (dominioNormalizado && email.toLowerCase().split('@')[1] !== dominioNormalizado) {
+    return `El correo debe pertenecer al dominio ${dominioNormalizado}.`;
+  }
   const edad = new Date(); edad.setFullYear(edad.getFullYear() - 18);
   if (!value.fechaNacimiento || new Date(`${value.fechaNacimiento}T00:00:00`) > edad) return 'El profesor debe ser mayor de edad.';
   const telefonos = value.telefonos?.map(x => x.trim()).filter(Boolean) || [];
-  const canonicos = telefonos.map(t => t.replace(/[\s+-]/g, '').replace(/^506(?=\d{8}$)/, ''));
+  const canonicos = telefonos;
   if (!telefonos.length || new Set(canonicos).size !== telefonos.length) return 'Indicá teléfonos sin repetir.';
-  if (telefonos.some(t => !/^(?:\+?506[\s-]?)?[2-8]\d{3}-?\d{4}$/.test(t))) return 'Indicá teléfonos con formato local válido (8 dígitos).';
+  if (telefonos.some(t => !/^[2-8]\d{7}$/.test(t))) return 'Indicá teléfonos con solo 8 dígitos, sin espacios, comas ni guiones.';
   return '';
 }

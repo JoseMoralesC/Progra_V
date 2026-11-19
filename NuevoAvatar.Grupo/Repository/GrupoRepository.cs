@@ -7,10 +7,12 @@ namespace NuevoAvatar.Grupo.Nuevo.Repository;
 public class GrupoRepository : IGrupoRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
+    private readonly NuevoAvatar.Integracion.AuditoriaTransaccion auditoria;
 
-    public GrupoRepository(IDbConnectionFactory connectionFactory)
+    public GrupoRepository(IDbConnectionFactory connectionFactory, NuevoAvatar.Integracion.AuditoriaTransaccion auditoria)
     {
         _connectionFactory = connectionFactory;
+        this.auditoria = auditoria;
     }
 
     public async Task<int> CrearAsync(GrupoRequest grupo)
@@ -25,7 +27,12 @@ public class GrupoRepository : IGrupoRepository
 
         using var connection = _connectionFactory.CreateConnection();
 
-        return await connection.ExecuteScalarAsync<int>(sql, grupo);
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        var id = await connection.ExecuteScalarAsync<int>(sql, grupo, tx);
+        await auditoria.Registrar(connection, tx, "Creación de grupo", null, new { GrupoId = id, grupo });
+        tx.Commit();
+        return id;
     }
 
     public async Task<bool> ModificarAsync(
@@ -57,9 +64,15 @@ public class GrupoRepository : IGrupoRepository
             grupo.PeriodoId
         };
 
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        var anterior = await connection.QuerySingleOrDefaultAsync<GrupoEntity>("SELECT * FROM academico.Grupo WITH (UPDLOCK) WHERE GrupoId=@grupoId", new { grupoId }, tx);
         var filasAfectadas = await connection.ExecuteAsync(
             sql,
-            parametros);
+            parametros, tx);
+
+        if (filasAfectadas > 0) await auditoria.Registrar(connection, tx, "Modificación de grupo", anterior, parametros);
+        tx.Commit();
 
         return filasAfectadas > 0;
     }
@@ -73,9 +86,15 @@ public class GrupoRepository : IGrupoRepository
 
         using var connection = _connectionFactory.CreateConnection();
 
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        var anterior = await connection.QuerySingleOrDefaultAsync<GrupoEntity>("SELECT * FROM academico.Grupo WITH (UPDLOCK) WHERE GrupoId=@grupoId", new { grupoId }, tx);
         var filasAfectadas = await connection.ExecuteAsync(
             sql,
-            new { GrupoId = grupoId });
+            new { GrupoId = grupoId }, tx);
+
+        if (filasAfectadas > 0) await auditoria.Registrar(connection, tx, "Eliminación de grupo", anterior, null);
+        tx.Commit();
 
         return filasAfectadas > 0;
     }

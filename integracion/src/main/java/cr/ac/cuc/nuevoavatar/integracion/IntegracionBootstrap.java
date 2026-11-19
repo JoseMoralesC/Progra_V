@@ -35,7 +35,13 @@ public final class IntegracionBootstrap {
         String password=config.getOrDefault("SERVICE_DB_PASSWORD_"+service.toUpperCase(Locale.ROOT),config.getOrDefault("DB_PASSWORD",""));
         if(user.isBlank() || password.isBlank())throw new IllegalStateException("Faltan credenciales SQL de "+service);
         var own=new HashMap<String,Object>();
-        own.put("spring.datasource.url","jdbc:sqlserver://"+config.getOrDefault("DB_HOST","localhost")+":"+config.getOrDefault("DB_PORT","1433")+";databaseName="+database+";encrypt=true;trustServerCertificate=true");
+        String variable=service.toUpperCase(Locale.ROOT)+"_BASE_URL";
+        var origen=UrlsEntorno.origen(config.get(variable),variable);
+        own.put("server.address",origen.getHost());
+        own.put("server.port",origen.getPort() == -1 ? ("https".equals(origen.getScheme()) ? 443 : 80) : origen.getPort());
+        if(config.getOrDefault("DB_HOST","").isBlank() || config.getOrDefault("DB_PORT","").isBlank())
+            throw new IllegalStateException("Configura DB_HOST y DB_PORT en el .env raiz");
+        own.put("spring.datasource.url","jdbc:sqlserver://"+config.get("DB_HOST")+":"+config.get("DB_PORT")+";databaseName="+database+";encrypt=true;trustServerCertificate=true");
         own.put("spring.datasource.username",user);own.put("spring.datasource.password",password);
         own.put("integration.service",service);own.put("SERVICE_DB_NAME",database);
         own.put("SERVICES_INTERNAL_KEY",config.getOrDefault("SERVICES_INTERNAL_KEY",""));

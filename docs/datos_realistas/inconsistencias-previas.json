@@ -1,0 +1,7 @@
+[
+  {
+    "mode": "distributed",
+    "relationship": "FK_Carrera_Director",
+    "orphan_rows": 2
+  }
+]

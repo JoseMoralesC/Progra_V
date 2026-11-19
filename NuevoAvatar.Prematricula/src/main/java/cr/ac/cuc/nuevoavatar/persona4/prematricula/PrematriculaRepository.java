@@ -104,6 +104,15 @@ public class PrematriculaRepository {
         return datos.buscar("Periodo","Periodo","PeriodoId",id).map(r -> new DatosPrematricula.Periodo(id,cr.ac.cuc.nuevoavatar.integracion.DatosRemotos.fecha(r,"FechaInicio")));
     }
 
+    public boolean existePrematricula(String identificacion, Integer carreraId, Integer periodoId, Integer excluirId) {
+        String sql = "SELECT COUNT(*) FROM matricula.Prematricula WHERE IdentificacionEstudiante = ? AND CarreraId = ? AND PeriodoId = ?"
+                + (excluirId == null ? "" : " AND PrematriculaId <> ?");
+        Integer cantidad = excluirId == null
+                ? jdbc.queryForObject(sql, Integer.class, identificacion.trim(), carreraId, periodoId)
+                : jdbc.queryForObject(sql, Integer.class, identificacion.trim(), carreraId, periodoId, excluirId);
+        return cantidad != null && cantidad > 0;
+    }
+
     public Integer crear(PrematriculaRequest datos) {
         var llave = new GeneratedKeyHolder();
         jdbc.update(conexion -> {

@@ -1,5 +1,8 @@
 # Integracion de servicios con bases independientes
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Los 22 proyectos `NuevoAvatar.*` de la raiz son las aplicaciones activas. Cada servicio conecta a `PrograV_<Servicio>` con su cuenta `svc_avatar_<servicio>`. Las carpetas agrupadas bajo `services/` fueron retiradas; la estructura anterior puede consultarse en el historial de Git.
 
 La base `PrograV` permanece como origen de la migracion. Los servicios adaptados no la consultan. La distribucion de las 26 tablas de negocio se mantiene en `db/por_servicio/distribucion.json`.

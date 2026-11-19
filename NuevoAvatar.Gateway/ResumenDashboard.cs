@@ -8,7 +8,9 @@ namespace NuevoAvatar.Gateway;
 public static class ResumenDashboard
 {
     private const int Limite = 10;
-    public sealed record Evento(long IdBitacora, string Usuario, string Descripcion, DateTime FechaHora);
+    public sealed record Evento(long IdBitacora, string Usuario, string Accion, string Modulo,
+        string Resultado, DateTime FechaHora, string Descripcion, Guid? IdEvento);
+    public sealed record HistorialBitacora(List<Evento> Items, int Total, int Page, int Size, long HastaId);
     public sealed record Envio(long Id, string Asunto, string Estado, DateTimeOffset Fecha);
 
     public static async Task<IResult> Obtener(HttpContext context, IHttpClientFactory clientes, string servicio)
@@ -20,6 +22,9 @@ public static class ResumenDashboard
         if (servicio == "Notificacion" && sesion.Rol == "ADMINISTRADOR" && !menu.Any(m => m.IdModulo == "ADM22"))
             return Results.StatusCode(403);
         try {
+            // El administrador consulta el historial completo; su menú no recorta eventos de otros módulos.
+            if (servicio == "Bitacora" && sesion.Rol == "ADMINISTRADOR")
+                return await HistorialAdministrador(context, clientes, menu);
             return servicio == "Bitacora"
                 ? Results.Ok(await Bitacoras(context, clientes, sesion, menu))
                 : Results.Ok(new { items = await Notificaciones(context, clientes, sesion) });
@@ -27,6 +32,38 @@ public static class ResumenDashboard
             context.RequestAborted.ThrowIfCancellationRequested();
             return Results.Json(new { error = "No se pudo consultar el resumen del dashboard." }, statusCode: 503);
         }
+    }
+
+    private static async Task<IResult> HistorialAdministrador(HttpContext context, IHttpClientFactory clientes,
+        List<ModuloPermitido> menu)
+    {
+        var page = 0;
+        var size = 25;
+        long hastaId = 0;
+        if (context.Request.Query.ContainsKey("page") && !int.TryParse(context.Request.Query["page"], out page) ||
+            context.Request.Query.ContainsKey("size") && !int.TryParse(context.Request.Query["size"], out size) ||
+            context.Request.Query.ContainsKey("hastaId") && !long.TryParse(context.Request.Query["hastaId"], out hastaId) ||
+            page < 0 || size is < 1 or > 100 || (long)page * size > int.MaxValue || hastaId < 0)
+            return Results.BadRequest(new { error = "Página o tamaño de página inválidos." });
+        var corte = context.Request.Query.ContainsKey("hastaId") ? $"&hastaId={hastaId}" : "";
+        var datos = await Consultar<PaginaBitacora>(context, clientes, "dashboard-bitacora", $"/bitacora/pagina?page={page}&size={size}{corte}");
+        if (datos.Items is null || datos.Total < 0 || datos.Page != page || datos.Size != size ||
+            datos.HastaId < 0 || corte.Length > 0 && datos.HastaId != hastaId ||
+            datos.Items.Count > size || datos.Items.Any(b => b is null || b.IdBitacora <= 0 || b.IdBitacora > datos.HastaId))
+            throw new JsonException("Historial de bitácora inválido");
+        var nombres = menu.ToDictionary(m => m.IdModulo, m => m.NombreModulo);
+        var items = datos.Items.Select(b => {
+            var modulo = ClasificacionBitacora.Modulo(b.Descripcion ?? "");
+            var nombre = modulo switch {
+                "SESION" => "Autenticación", "ADM3" => "Dashboard", null => "Sin clasificar",
+                _ => nombres.GetValueOrDefault(modulo) ?? CatalogoRutas.Todas.FirstOrDefault(r => r.Modulo == modulo)?.Servicio ?? "Sistema"
+            };
+            return new Evento(b.IdBitacora, b.Usuario,
+                ClasificacionBitacora.Mensaje(b.Descripcion ?? "", modulo ?? ""), nombre,
+                ClasificacionBitacora.Resultado(b.Descripcion ?? ""), b.FechaHora,
+                NuevoAvatar.Integracion.ProteccionAuditoria.Limpiar(b.Descripcion ?? ""), b.IdEvento);
+        }).ToList();
+        return Results.Ok(new HistorialBitacora(items, datos.Total, page, size, datos.HastaId));
     }
 
     private static async Task<List<Evento>> Bitacoras(HttpContext context, IHttpClientFactory clientes,
@@ -37,7 +74,10 @@ public static class ResumenDashboard
             throw new JsonException("Bitácora incompleta");
         var permisos = menu.ToDictionary(m => m.IdModulo, m => m.NombreModulo);
         var candidatos = datos.Select(b => (Registro: b, Modulo: ClasificacionBitacora.Modulo(b.Descripcion)))
-            .Where(b => b.Modulo is not null && (permisos.ContainsKey(b.Modulo) ||
+            .Where(b => b.Modulo is not null && (b.Modulo == "SESION"
+                ? EsPropio(b.Registro, sesion) || sesion.Rol == "ADMINISTRADOR" && permisos.ContainsKey("ADM23")
+                : permisos.ContainsKey(b.Modulo) ||
+                ClasificacionBitacora.Resultado(b.Registro.Descripcion) == "Denegado" && EsPropio(b.Registro, sesion) ||
                 b.Modulo == "ADM3" && EsPropio(b.Registro, sesion)))
             .OrderByDescending(b => b.Registro.FechaHora).ThenByDescending(b => b.Registro.IdBitacora).ToList();
         var grupos = new HashSet<int>();
@@ -65,12 +105,17 @@ public static class ResumenDashboard
             }
         }
         return candidatos.Where(b => sesion.Rol == "ADMINISTRADOR" ||
+                ClasificacionBitacora.Resultado(b.Registro.Descripcion) == "Denegado" && EsPropio(b.Registro, sesion) ||
+                b.Modulo == "SESION" && EsPropio(b.Registro, sesion) ||
                 b.Modulo == "ADM3" && EsPropio(b.Registro, sesion) ||
                 b.Modulo == "ADM17" && (EsPropio(b.Registro, sesion) ||
                     ClasificacionBitacora.PerteneceAGrupos(b.Registro.Descripcion, grupos, matriculas, rubros)))
             .Take(Limite).Select(b => new Evento(b.Registro.IdBitacora, b.Registro.Usuario,
-                ClasificacionBitacora.Accion(b.Registro.Descripcion) + " · " +
-                (b.Modulo == "ADM3" ? "Dashboard" : permisos[b.Modulo!]), b.Registro.FechaHora)).ToList();
+                ClasificacionBitacora.Mensaje(b.Registro.Descripcion, b.Modulo!),
+                b.Modulo == "SESION" ? "Autenticación" : b.Modulo == "ADM3" ? "Dashboard" :
+                    permisos.GetValueOrDefault(b.Modulo!, "Acceso restringido"),
+                ClasificacionBitacora.Resultado(b.Registro.Descripcion), b.Registro.FechaHora,
+                NuevoAvatar.Integracion.ProteccionAuditoria.Limpiar(b.Registro.Descripcion), b.Registro.IdEvento)).ToList();
     }
 
     private static async Task<List<Envio>> Notificaciones(HttpContext context, IHttpClientFactory clientes, SesionActual sesion)
@@ -105,6 +150,7 @@ public static class ResumenDashboard
     {
         using var cliente = clientes.CreateClient(nombre);
         using var solicitud = new HttpRequestMessage(HttpMethod.Get, ruta);
+        ConsultasDashboard.Marcar(context, solicitud);
         solicitud.Headers.Authorization = AuthenticationHeaderValue.Parse(context.Request.Headers.Authorization.ToString());
         using var respuesta = await cliente.SendAsync(solicitud, context.RequestAborted);
         respuesta.EnsureSuccessStatusCode();

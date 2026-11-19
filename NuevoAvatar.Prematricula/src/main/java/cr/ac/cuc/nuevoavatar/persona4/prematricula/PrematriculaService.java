@@ -41,6 +41,7 @@ public class PrematriculaService {
     public PrematriculaResponse crear(PrematriculaRequest datos, String token, String usuario) {
         validarAdministrador(token, usuario);
         validar(datos);
+        validarDuplicado(datos, null);
         Integer id = repositorio.crear(datos);
         var creada = buscar(id);
         bitacora.creacion(token, usuario, "prematricula", bitacora.comoJson(creada));
@@ -52,6 +53,7 @@ public class PrematriculaService {
         validarAdministrador(token, usuario);
         var anterior = buscar(id);
         validar(datos);
+        validarDuplicado(datos, id);
         String anteriorJson = bitacora.comoJson(anterior);
         if (repositorio.modificar(id, datos) == 0) throw noEncontrada();
         var actual = buscar(id);
@@ -113,6 +115,7 @@ public class PrematriculaService {
         String identificacion = identidadEstudiante(token, usuario);
         var solicitud = convertir(datos, identificacion);
         validar(solicitud);
+        validarDuplicado(solicitud, null);
         Integer id = repositorio.crear(solicitud);
         var creada = repositorio.obtenerPropio(id, identificacion).orElseThrow(this::noEncontrada);
         bitacora.creacion(token, usuario, "prematricula propia", bitacora.comoJson(creada));
@@ -126,6 +129,7 @@ public class PrematriculaService {
         var anterior = repositorio.obtenerPropio(id, identificacion).orElseThrow(this::noEncontrada);
         var solicitud = convertir(cambios, identificacion);
         validar(solicitud);
+        validarDuplicado(solicitud, id);
         String anteriorJson = bitacora.comoJson(anterior);
         if (repositorio.modificarPropio(id, identificacion, cambios) == 0) throw noEncontrada();
         var actual = repositorio.obtenerPropio(id, identificacion).orElseThrow(this::noEncontrada);
@@ -199,6 +203,13 @@ public class PrematriculaService {
                 .orElseThrow(() -> invalido("El periodo no existe"));
         validador.validar(new DatosPrematricula(datos.identificacionEstudiante(), datos.carreraId(),
                 cursos, datos.observaciones(), periodo), LocalDate.now(reloj));
+    }
+
+    private void validarDuplicado(PrematriculaRequest datos, Integer excluirId) {
+        if (repositorio.existePrematricula(datos.identificacionEstudiante(), datos.carreraId(), datos.periodoId(), excluirId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El estudiante ya tiene una prematrícula para esa carrera y período");
+        }
     }
 
     private PrematriculaResponse buscar(Integer id) {

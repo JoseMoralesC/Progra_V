@@ -1,5 +1,8 @@
 # Auditoria de avance 4 - Proyecto Nuevo Avatar V1
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Nota de archivo: la carpeta `services/` fue retirada el 23 de octubre de 2026.
 Las rutas y comandos siguientes corresponden a la revision original; sus fuentes
 pueden consultarse en el commit `92d38f64bd376468ca5032ae0c6b053d9b46c8e0`.

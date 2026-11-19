@@ -14,7 +14,7 @@ public class BitacoraCompatibilidadController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Enviar()
     {
-        var destino = Environment.GetEnvironmentVariable("BITACORA_URL") ?? "http://localhost:5159";
+        var destino = NuevoAvatar.Integracion.ConfiguracionEntorno.Origen("BITACORA_BASE_URL");
         using var mensaje = new HttpRequestMessage(new HttpMethod(Request.Method), destino + Request.Path + Request.QueryString);
         if (Request.Headers.TryGetValue("Authorization", out var token))
             mensaje.Headers.TryAddWithoutValidation("Authorization", token.ToString());

@@ -1,3 +1,4 @@
+using NuevoAvatar.Integracion;
 using System.Net;
 using NuevoAvatar.Gateway.Seguridad;
 using Yarp.ReverseProxy.Forwarder;
@@ -10,16 +11,17 @@ public static class GatewayApplication
     {
         var builder = WebApplication.CreateBuilder(args);
         configurar?.Invoke(builder);
-        var auth = Destino(builder.Configuration, "Autenticacion", 5158);
+        builder.Services.AddIntegracion();
+        var auth = Destino(builder.Configuration, "Autenticacion");
         builder.Services.AddSeguridadGateway(new Uri(auth));
-        builder.Services.AddPermisosGateway(new Uri(Destino(builder.Configuration, "Modulo", 5162)));
+        builder.Services.AddPermisosGateway(new Uri(Destino(builder.Configuration, "Modulo")));
         builder.Services.AddHttpClient("dashboard-bitacora", client => {
-            client.BaseAddress = new Uri(Destino(builder.Configuration, "Bitacora", 5159));
-            client.Timeout = TimeSpan.FromSeconds(8);
+            client.BaseAddress = new Uri(Destino(builder.Configuration, "Bitacora"));
+            client.Timeout = TimeSpan.FromSeconds(30);
         }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
-        foreach (var (servicio, puerto) in new[] { ("Notificacion", 8095), ("Notas", 8092), ("Factura", 8093) })
+        foreach (var servicio in new[] { "Notificacion", "Notas", "Factura" })
             builder.Services.AddHttpClient("dashboard-" + servicio, client => {
-                client.BaseAddress = new Uri(Destino(builder.Configuration, servicio, puerto));
+                client.BaseAddress = new Uri(Destino(builder.Configuration, servicio));
                 client.Timeout = TimeSpan.FromSeconds(8);
             }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
         builder.Services.AddHttpForwarder();
@@ -30,7 +32,19 @@ public static class GatewayApplication
             ConnectTimeout = TimeSpan.FromSeconds(5)
         }));
         var app = builder.Build();
+        if (!string.IsNullOrWhiteSpace(builder.Configuration["DB_HOST"])) {
+            // Gateway no tiene base de negocio propia: comparte la cola de Autenticación.
+            var cadenaAuditoria = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder {
+                DataSource = builder.Configuration["DB_HOST"] + "," + (builder.Configuration["DB_PORT"] ?? "1433"),
+                InitialCatalog = "PrograV_Autenticacion",
+                UserID = builder.Configuration["SERVICE_DB_USER_AUTENTICACION"] ?? builder.Configuration["DB_USERNAME"],
+                Password = builder.Configuration["SERVICE_DB_PASSWORD_AUTENTICACION"] ?? builder.Configuration["DB_PASSWORD"],
+                TrustServerCertificate = true
+            };
+            app.Services.GetRequiredService<AuditoriaLocal>().Configurar(cadenaAuditoria.ConnectionString, false);
+        }
         app.UseRouting();
+        app.UseMiddleware<AuditoriaFallosGateway>();
         app.UseWhen(c => c.Request.Path.StartsWithSegments("/gateway"), branch => branch.UseSeguridadGateway());
         app.MapGet("/health", () => Results.Ok(new { servicio = "Gateway", estado = "disponible" }));
         app.MapPost("/gateway/auditoria/interfaz", AuditoriaInterfaz.Registrar)
@@ -46,7 +60,7 @@ public static class GatewayApplication
         }).WithMetadata(new AccesoGateway(["ADMINISTRADOR", "PROFESOR", "ESTUDIANTE"], ConsultarMenu: true));
         foreach (var ruta in CatalogoRutas.Todas)
         {
-            var destino = Destino(builder.Configuration, ruta.Servicio, ruta.Puerto);
+            var destino = Destino(builder.Configuration, ruta.Servicio);
             var transformer = new TransformacionRuta(ruta.Externa, ruta.Interna);
             var config = new ForwarderRequestConfig { ActivityTimeout = TimeSpan.FromSeconds(30) };
             var rutaResumen = ruta.Servicio switch {
@@ -71,6 +85,7 @@ public static class GatewayApplication
                     await indicador.ExecuteAsync(context);
                     return;
                 }
+                context.Items[AuditoriaFallosGateway.ServicioEnviado] = ruta.Servicio;
                 var error = await proxy.SendAsync(context, destino, cliente, config, transformer);
                 if (error != ForwarderError.None && !context.Response.HasStarted && !context.RequestAborted.IsCancellationRequested)
                 {
@@ -84,13 +99,6 @@ public static class GatewayApplication
         return app;
     }
 
-    private static string Destino(IConfiguration config, string servicio, int puerto)
-    {
-        var valor = config[$"Destinos:{servicio}"] ?? $"http://localhost:{puerto}";
-        if (!Uri.TryCreate(valor, UriKind.Absolute, out var uri) ||
-            (uri.Scheme != "http" && uri.Scheme != "https") || !string.IsNullOrEmpty(uri.UserInfo) ||
-            uri.AbsolutePath != "/" || !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment))
-            throw new InvalidOperationException($"Destino invalido para {servicio}; indicar un origen HTTP(S).");
-        return valor.TrimEnd('/');
-    }
+    private static string Destino(IConfiguration config, string servicio)
+        => ConfiguracionEntorno.Origen(config, servicio.ToUpperInvariant() + "_BASE_URL");
 }

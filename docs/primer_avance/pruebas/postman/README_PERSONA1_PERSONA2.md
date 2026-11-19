@@ -1,5 +1,8 @@
 # Postman: Persona 1 y Persona 2 con bases separadas
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Estas colecciones consumen las APIs de Autenticacion, Bitacora, Rol, Parametro,
 Modulo, Usuario, Institucion, Profesor y Carrera. Cada servicio usa su propia
 base SQL Server; Postman solo se conecta a las APIs HTTP.

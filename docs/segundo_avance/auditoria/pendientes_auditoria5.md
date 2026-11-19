@@ -1,5 +1,11 @@
 # Pendientes de la auditoría 5 - Segundo avance
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
+> Nota de mantenimiento (13 de noviembre de 2026): las pruebas automatizadas de `NuevoAvatar.Estudiante.React`, su configuración de Playwright y los ejecutores Python asociados se retiraron del proyecto. Las referencias a esos archivos y comandos en este informe corresponden a ejecuciones históricas y ya no son instrucciones vigentes. Se conservan los resultados y evidencias.
+
+
 Fecha: 12 de noviembre de 2026. Versión revisada: `ba576558f5d61c34cf1d0561b2a325b375605496`.
 Informe: [auditoría 5](auditoria_avance5.md). Ejecuciones: [evidencias5](evidencias5/README.md).
 

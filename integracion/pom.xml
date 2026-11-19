@@ -16,11 +16,11 @@
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId><scope>provided</scope></dependency>
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-jdbc</artifactId><scope>provided</scope></dependency>
         <dependency><groupId>com.fasterxml.jackson.core</groupId><artifactId>jackson-databind</artifactId><version>2.21.5</version><scope>provided</scope></dependency>
-        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
+
     </dependencies>
     <build>
         <resources>
-            <resource><directory>${project.basedir}</directory><includes><include>contratos.json</include></includes></resource>
+            <resource><directory>${project.basedir}</directory><includes><include>contratos.json</include><include>auditoria-pendiente.sql</include></includes></resource>
         </resources>
     </build>
 </project>

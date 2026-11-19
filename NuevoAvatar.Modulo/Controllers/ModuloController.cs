@@ -95,7 +95,7 @@ namespace NuevoAvatarSeguridad.Controllers
             var rol = DatosRemotos.Valor(cuentas[0], "id_rol").ToString().Trim().ToUpperInvariant();
             if (string.IsNullOrWhiteSpace(rol)) return StatusCode(403, new { error = "Cuenta sin rol autorizado" });
             var menu = await _service.ObtenerMenu(rol);
-            await Registrar("El usuario consulta su menu de modulos");
+            // El Gateway consulta este menú para autorizar cada petición; no es una acción del usuario.
             return Ok(menu);
         }
 

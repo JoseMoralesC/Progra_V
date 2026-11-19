@@ -9,23 +9,21 @@ npm ci
 npm run dev
 ```
 
-Abrir `http://127.0.0.1:5173`. El gateway debe estar disponible en el puerto 5080
+Abrir el origen `JOSE_FRONTEND_BASE_URL` del `.env` raiz. El Gateway usa `GATEWAY_BASE_URL`
 y los servicios deben estar configurados/iniciados. La web no crea datos de
 demostracion ni conoce credenciales de SQL o claves internas.
 
 ```powershell
-npm test
 npm run build
-npx playwright install chromium
-npm run test:ui
 ```
 
-Playwright usa respuestas HTTP simuladas; las pruebas no escriben SQL Server.
 El envoltorio local permite ejecutar los componentes propios. El dashboard
 por perfil se integra mediante `onAuthenticated`, sin implementarlo aqui.
 
+Las pruebas automatizadas y la configuracion de Playwright se retiraron el 13 de noviembre de 2026. Los informes enlazados se conservan como evidencia historica.
+
 La integración con la plantilla React se abre desde `NuevoAvatar.Estudiante.React`
-en `http://127.0.0.1:4175`. Este cliente de 5173 conserva la entrada aislada para
+en el origen definido por `FRONTEND_BASE_URL` del `.env` raiz. Este cliente de 5173 conserva la entrada aislada para
 trabajar notas. El componente también está integrado en `/notas` de la plantilla
 para el profesor; el dashboard completo sigue pendiente de ADM3.
 

@@ -1,5 +1,8 @@
 # Auditoría de avance 3 - Proyecto Nuevo Avatar V2
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 
 Revisión: tercera auditoría general del segundo avance; `avance3` identifica la revisión del informe, no la entrega A3.
 Actualización del corte: 4 de noviembre de 2026 (America/Mexico_City), después del desarrollo de esta sesión.

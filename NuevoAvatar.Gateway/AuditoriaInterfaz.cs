@@ -30,15 +30,10 @@ public static class AuditoriaInterfaz
         var descripcion = evento.Tipo == "navegacion"
             ? $"ADM1: navegación a ruta crítica {evento.Ruta}"
             : $"ADM1: error de interfaz en ruta crítica {evento.Ruta}";
-        using var solicitud = new HttpRequestMessage(HttpMethod.Post, "/bitacora");
-        solicitud.Headers.Authorization = bearer;
-        solicitud.Content = JsonContent.Create(new { usuario = sesion.UsuarioID, descripcion });
-
         try
         {
-            using var cliente = clientes.CreateClient("dashboard-bitacora");
-            using var respuesta = await cliente.SendAsync(solicitud, context.RequestAborted);
-            if (respuesta.IsSuccessStatusCode) return Results.NoContent();
+            await context.RequestServices.GetRequiredService<NuevoAvatar.Integracion.IAuditoriaLocal>().Registrar(sesion.UsuarioID, descripcion);
+            return Results.NoContent();
         }
         catch (Exception error) when (error is HttpRequestException or TaskCanceledException)
         {

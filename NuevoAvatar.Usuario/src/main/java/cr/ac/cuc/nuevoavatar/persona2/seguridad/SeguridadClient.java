@@ -14,6 +14,9 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 public class SeguridadClient {
+    @org.springframework.beans.factory.annotation.Autowired
+    private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(SeguridadClient.class);
     private final RestClient cliente;
@@ -52,47 +55,18 @@ public class SeguridadClient {
             String bearerToken,
             String usuario,
             String descripcion) {
-        try {
-            bitacora.post()
-                .uri("/bitacora")
-                .header(HttpHeaders.AUTHORIZATION, bearerToken)
-                .body(Map.of(
-                    "usuario", usuario,
-                    "descripcion", descripcion
-                ))
-                .retrieve()
-                .toBodilessEntity();
-        } catch (RestClientException ex) {
-            LOG.error("No fue posible registrar la bitácora: {}", ex.getMessage());
-        }
+        auditoria.registrar(usuario, descripcion);
     }
 
     /**
-     * ADM24 requiere que una mutación no se confirme al cliente sin que Bitácora
-     * haya aceptado la creación del evento (201 Created).
+     * La mutación y el evento pendiente se persisten en la misma transacción local.
+     * La entrega al receptor se confirma y reintenta por ID sin duplicar el movimiento.
      */
     public void registrarBitacoraConfirmada(
             String bearerToken,
             String usuario,
             String descripcion) {
-        try {
-            var respuesta = bitacora.post()
-                .uri("/bitacora")
-                .header(HttpHeaders.AUTHORIZATION, bearerToken)
-                .body(Map.of("usuario", usuario, "descripcion", descripcion))
-                .retrieve()
-                .toBodilessEntity();
-            if (respuesta.getStatusCode().value() != HttpStatus.CREATED.value()) {
-                throw new org.springframework.web.server.ResponseStatusException(
-                    HttpStatus.SERVICE_UNAVAILABLE,
-                    "Bitácora no confirmó la persistencia del evento");
-            }
-        } catch (RestClientException ex) {
-            LOG.error("Bitácora no confirmó el evento ADM24");
-            throw new org.springframework.web.server.ResponseStatusException(
-                HttpStatus.SERVICE_UNAVAILABLE,
-                "No fue posible confirmar el registro en Bitácora");
-        }
+        auditoria.registrar(usuario, descripcion + ". Resultado: Exitoso");
     }
 
     public enum ResultadoValidacionToken {

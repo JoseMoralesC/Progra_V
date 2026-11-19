@@ -1,5 +1,8 @@
 # Persona 1 y Persona 2: pruebas en PrograV
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Verificación del 5 de octubre de 2026 sobre SQL Server del equipo, conectado por Tailscale. Seguridad usa el puerto 5158 y Persona 2 el 8082. La configuración de conexión y las credenciales se mantienen localmente.
 
 | Comprobación | Resultado |

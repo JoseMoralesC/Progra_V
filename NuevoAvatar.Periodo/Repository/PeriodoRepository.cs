@@ -6,10 +6,12 @@ namespace NuevoAvatar.Periodo.Nuevo.Repository;
 public class PeriodoRepository : IPeriodoRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
+    private readonly NuevoAvatar.Integracion.AuditoriaTransaccion auditoria;
 
-    public PeriodoRepository(IDbConnectionFactory connectionFactory)
+    public PeriodoRepository(IDbConnectionFactory connectionFactory, NuevoAvatar.Integracion.AuditoriaTransaccion auditoria)
     {
         _connectionFactory = connectionFactory;
+        this.auditoria = auditoria;
     }
 
     public async Task<IEnumerable<PeriodoRequest>> ObtenerTodosAsync()
@@ -87,6 +89,7 @@ public class PeriodoRepository : IPeriodoRepository
             sql,
             request,
             tx);
+        await auditoria.Registrar(connection, tx, "Creación de periodo", null, new { PeriodoId = id, request });
         tx.Commit();
         return id;
     }
@@ -128,10 +131,12 @@ public class PeriodoRepository : IPeriodoRepository
             WHERE PeriodoId = @PeriodoId;
             """;
 
+        var anterior = await connection.QuerySingleOrDefaultAsync<PeriodoRequest>("SELECT * FROM academico.Periodo WITH (UPDLOCK) WHERE PeriodoId=@periodoId", new { periodoId }, tx);
         var filasAfectadas = await connection.ExecuteAsync(
             sql,
             parametros,
             tx);
+        if (filasAfectadas > 0) await auditoria.Registrar(connection, tx, "Modificación de periodo", anterior, parametros);
         tx.Commit();
 
         return filasAfectadas > 0;
@@ -140,6 +145,9 @@ public class PeriodoRepository : IPeriodoRepository
     public async Task<bool> EliminarAsync(int periodoId)
     {
         using var connection = _connectionFactory.CreateConnection();
+        connection.Open();
+        using var tx = connection.BeginTransaction();
+        var anterior = await connection.QuerySingleOrDefaultAsync<PeriodoRequest>("SELECT * FROM academico.Periodo WITH (UPDLOCK) WHERE PeriodoId=@periodoId", new { periodoId }, tx);
 
         const string sql = """
             DELETE FROM academico.Periodo
@@ -148,7 +156,10 @@ public class PeriodoRepository : IPeriodoRepository
 
         var filasAfectadas = await connection.ExecuteAsync(
             sql,
-            new { PeriodoId = periodoId });
+            new { PeriodoId = periodoId }, tx);
+
+        if (filasAfectadas > 0) await auditoria.Registrar(connection, tx, "Eliminación de periodo", anterior, null);
+        tx.Commit();
 
         return filasAfectadas > 0;
     }

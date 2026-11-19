@@ -41,22 +41,29 @@ public class MatriculaService {
         Matricula matricula = new Matricula();
         matricula.setFechaMatricula(LocalDateTime.now());
         asignar(matricula, request);
-        return MatriculaResponse.desde(matriculas.saveAndFlush(matricula));
+        var actual = MatriculaResponse.desde(matriculas.saveAndFlush(matricula));
+        cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Creación de matricula: " + actual);
+        return actual;
     }
 
     @Transactional
     public MatriculaResponse modificar(Integer id, MatriculaRequest request) {
         Matricula matricula = buscarO404(id);
+        var anterior = MatriculaResponse.desde(matricula);
         validar(request, id);
         asignar(matricula, request);
-        return MatriculaResponse.desde(matriculas.saveAndFlush(matricula));
+        var actual = MatriculaResponse.desde(matriculas.saveAndFlush(matricula));
+        cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Modificación de matricula. Anterior: " + anterior + " Actual: " + actual);
+        return actual;
     }
 
     @Transactional
     public void eliminar(Integer id) {
         Matricula matricula = buscarO404(id);
+        var anterior = MatriculaResponse.desde(matricula);
         matricula.setEstado(Matricula.ANULADA);
         matriculas.saveAndFlush(matricula);
+        cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.registrarMovimientoHttp("Modificación de matricula. Motivo: Anulación. Anterior: " + anterior + " Actual: " + MatriculaResponse.desde(matricula));
     }
 
     @Transactional(readOnly = true)

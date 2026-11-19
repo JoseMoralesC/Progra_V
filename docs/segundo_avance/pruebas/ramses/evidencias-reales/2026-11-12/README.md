@@ -1,5 +1,8 @@
 # Evidencia real de Ramsés — 12 de noviembre de 2026
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Versión ejecutada: `fb76dbe`. Entorno: gateway local y servicios conectados a las bases compartidas por Tailscale; Notificación conserva su historial en la base local acordada mientras la tabla remota no esté disponible.
 
 ## ADM7, ADM9, ADM10, ADM11 y ADM12

@@ -457,7 +457,7 @@ def main():
               "business_table_count": len(verified),
               "source_references_checked": len(model["foreign_keys"]),
               "application_cutover": False,
-              "note": "Verifica las 26 tablas migradas. La tabla tecnica OperacionPago se comprueba en la suite de integracion."}
+              "note": "Verifica las 26 tablas migradas. La tabla tecnica OperacionPago requiere revision operativa por separado."}
     report_path = OUTPUT / ("resultado-migracion.json" if args.aplicar else "resultado-verificacion.json")
     report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Verificacion binaria correcta: {len(verified)} tablas, {report['total_rows']} filas. Origen conservado.")

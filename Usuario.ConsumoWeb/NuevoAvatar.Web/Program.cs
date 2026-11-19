@@ -1,4 +1,8 @@
+using NuevoAvatar.Integracion;
+
+ConfiguracionEntorno.Cargar();
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseUrls(ConfiguracionEntorno.Escucha(builder.Configuration, "USUARIO_WEB"));
 
 // Add services to the container.
 builder.Services.AddRazorPages();

@@ -49,10 +49,10 @@ public class AuditoriaNotas {
         }
     }
 
-    // Un rollback no debe dejar una bitacora que afirme una escritura exitosa.
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    // El evento pendiente forma parte de la misma transacción: un rollback revierte ambos.
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void confirmar(NotaConfirmada evento) {
-        seguridad.registrarBitacora(evento.token(), evento.usuario(), evento.descripcion());
+        seguridad.registrarBitacora(evento.token(), evento.usuario(), evento.descripcion() + ". Resultado: Exitoso");
     }
 
     public record NotaConfirmada(String token, String usuario, String descripcion) { }

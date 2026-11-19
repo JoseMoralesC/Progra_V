@@ -1,5 +1,8 @@
 # Evidencias de la auditoría 5 - Segundo avance
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 > Organización de la entrega: trasladé los resultados esenciales a [resultados conservados](resultados-conservados.md). Los nombres de logs, JSON, TRX y guiones que aparecen más abajo identifican archivos históricos retirados; sus comandos son antecedentes de ejecución. Conservamos únicamente Markdown y capturas PNG.
 
 Fecha de revisión: 12 de noviembre de 2026. Base: `ba576558f5d61c34cf1d0561b2a325b375605496`.

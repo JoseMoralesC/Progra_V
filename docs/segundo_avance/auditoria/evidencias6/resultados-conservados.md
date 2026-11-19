@@ -1,5 +1,8 @@
 # Resultados conservados en Markdown
 
+> Estado al 13 de noviembre de 2026: las pruebas automatizadas y sus ejecutores fueron retirados. Las referencias a archivos de pruebas y comandos de ejecucion de este documento son historicas; los resultados y capturas se conservan como evidencia. El detalle de los retiros esta en `docs/mapeo-pruebas/limpieza-realizada.csv`.
+
+
 Fecha de organización: 12 de noviembre de 2026.
 
 Como equipo decidimos conservar los informes y las capturas para presentar la auditoría. Trasladé aquí los casos y sus estados antes de retirar los archivos auxiliares. Esta organización no representa una nueva ejecución ni cambia el avance de los aportes. Los antecedentes y las repeticiones siguen separados; no deben sumarse entre sí.

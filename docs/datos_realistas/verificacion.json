@@ -1,0 +1,741 @@
+{
+  "verified_at_utc": "2026-11-12T20:09:49.198194+00:00",
+  "sql_checks": [
+    {
+      "check": "distributed/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "distributed/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "distributed/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/cupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/rubros",
+      "violations": 0
+    },
+    {
+      "check": "distributed/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/pagos",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.OperacionPago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "distributed/count/seguridad.usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_ProfesorTelefono_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_FacturaDetalle_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Canton_Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Distrito_Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_EstudianteTelefono_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Rubro",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Director",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Carrera_Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Curso_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Grupo_Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Factura_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Pago_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_DesgloseRubro_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Estudiante_Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Matricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_NotaRubro_Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_Prematricula_Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_PrematriculaCurso_Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_refresh_token_usuario",
+      "violations": 0
+    },
+    {
+      "check": "source/FK_usuario_rol",
+      "violations": 0
+    },
+    {
+      "check": "source/grupo_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/cupo",
+      "violations": 0
+    },
+    {
+      "check": "source/rubros",
+      "violations": 0
+    },
+    {
+      "check": "source/notas_grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/factura_matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/prematricula_carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/pagos",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.NotaRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Pago",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.FacturaDetalle",
+      "violations": 0
+    },
+    {
+      "check": "source/count/finanzas.Factura",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.DesgloseRubro",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Matricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.PrematriculaCurso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Prematricula",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Grupo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Curso",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Carrera",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.ProfesorTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Profesor",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.EstudianteTelefono",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Estudiante",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Periodo",
+      "violations": 0
+    },
+    {
+      "check": "source/count/academico.Institucion",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Distrito",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Canton",
+      "violations": 0
+    },
+    {
+      "check": "source/count/matricula.Provincia",
+      "violations": 0
+    },
+    {
+      "check": "source/count/seguridad.usuario",
+      "violations": 0
+    }
+  ],
+  "remaining_test_rows": {
+    "PrograV/academico.Carrera": 0,
+    "PrograV/academico.Curso": 0,
+    "PrograV/academico.Grupo": 0,
+    "PrograV/academico.Institucion": 0,
+    "PrograV/academico.Periodo": 0,
+    "PrograV/academico.Profesor": 0,
+    "PrograV/academico.ProfesorTelefono": 0,
+    "PrograV/finanzas.Factura": 0,
+    "PrograV/finanzas.FacturaDetalle": 0,
+    "PrograV/finanzas.Pago": 0,
+    "PrograV/general.bitacora": 0,
+    "PrograV/matricula.Canton": 0,
+    "PrograV/matricula.DesgloseRubro": 0,
+    "PrograV/matricula.Distrito": 0,
+    "PrograV/matricula.Estudiante": 0,
+    "PrograV/matricula.EstudianteTelefono": 0,
+    "PrograV/matricula.Matricula": 0,
+    "PrograV/matricula.NotaRubro": 0,
+    "PrograV/matricula.Prematricula": 0,
+    "PrograV/matricula.PrematriculaCurso": 0,
+    "PrograV/matricula.Provincia": 0,
+    "PrograV/seguridad.modulo": 0,
+    "PrograV/seguridad.refresh_token": 0,
+    "PrograV/seguridad.rol": 0,
+    "PrograV/seguridad.usuario": 0,
+    "PrograV_Autenticacion/seguridad.refresh_token": 0,
+    "PrograV_Bitacora/general.bitacora": 0,
+    "PrograV_Carrera/academico.Carrera": 0,
+    "PrograV_Curso/academico.Curso": 0,
+    "PrograV_Direccion/matricula.Canton": 0,
+    "PrograV_Direccion/matricula.Distrito": 0,
+    "PrograV_Direccion/matricula.Provincia": 0,
+    "PrograV_Expediente/matricula.Estudiante": 0,
+    "PrograV_Expediente/matricula.EstudianteTelefono": 0,
+    "PrograV_Factura/finanzas.Factura": 0,
+    "PrograV_Factura/finanzas.FacturaDetalle": 0,
+    "PrograV_Grupo/academico.Grupo": 0,
+    "PrograV_Institucion/academico.Institucion": 0,
+    "PrograV_Matricula/matricula.Matricula": 0,
+    "PrograV_Modulo/seguridad.modulo": 0,
+    "PrograV_Modulo/seguridad.rol_modulo": 0,
+    "PrograV_Notas/matricula.DesgloseRubro": 0,
+    "PrograV_Notas/matricula.NotaRubro": 0,
+    "PrograV_Notificacion/general.Notificacion": 0,
+    "PrograV_Pago/finanzas.OperacionPago": 0,
+    "PrograV_Pago/finanzas.Pago": 0,
+    "PrograV_Periodo/academico.Periodo": 0,
+    "PrograV_Prematricula/matricula.Prematricula": 0,
+    "PrograV_Prematricula/matricula.PrematriculaCurso": 0,
+    "PrograV_Profesor/academico.Profesor": 0,
+    "PrograV_Profesor/academico.ProfesorTelefono": 0,
+    "PrograV_Rol/seguridad.rol": 0,
+    "PrograV_Usuario/seguridad.usuario": 0
+  },
+  "accounts": [
+    {
+      "integrante": "José",
+      "usuario": "jose",
+      "role": "ESTUDIANTE",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 403,
+      "own_record_http": 200,
+      "prematricula_http": 200,
+      "modules": [
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "José",
+      "usuario": "joseadm",
+      "role": "ADMINISTRADOR",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 200,
+      "own_record_http": null,
+      "prematricula_http": null,
+      "modules": [
+        "ADM3",
+        "ADM4",
+        "ADM5",
+        "ADM6",
+        "ADM7",
+        "ADM8",
+        "ADM9",
+        "ADM10",
+        "ADM11",
+        "ADM12",
+        "ADM16",
+        "ADM20",
+        "ADM22",
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Ramsés",
+      "usuario": "ramses",
+      "role": "ESTUDIANTE",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 403,
+      "own_record_http": 200,
+      "prematricula_http": 200,
+      "modules": [
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Ramsés",
+      "usuario": "ramsesadm",
+      "role": "ADMINISTRADOR",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 200,
+      "own_record_http": null,
+      "prematricula_http": null,
+      "modules": [
+        "ADM3",
+        "ADM4",
+        "ADM5",
+        "ADM6",
+        "ADM7",
+        "ADM8",
+        "ADM9",
+        "ADM10",
+        "ADM11",
+        "ADM12",
+        "ADM16",
+        "ADM20",
+        "ADM22",
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Alejandro",
+      "usuario": "alejandro",
+      "role": "ESTUDIANTE",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 403,
+      "own_record_http": 200,
+      "prematricula_http": 200,
+      "modules": [
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Alejandro",
+      "usuario": "alejandroadm",
+      "role": "ADMINISTRADOR",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 200,
+      "own_record_http": null,
+      "prematricula_http": null,
+      "modules": [
+        "ADM3",
+        "ADM4",
+        "ADM5",
+        "ADM6",
+        "ADM7",
+        "ADM8",
+        "ADM9",
+        "ADM10",
+        "ADM11",
+        "ADM12",
+        "ADM16",
+        "ADM20",
+        "ADM22",
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Fabián",
+      "usuario": "fabian",
+      "role": "ESTUDIANTE",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 403,
+      "own_record_http": 200,
+      "prematricula_http": 200,
+      "modules": [
+        "ADM24"
+      ]
+    },
+    {
+      "integrante": "Fabián",
+      "usuario": "fabianadm",
+      "role": "ADMINISTRADOR",
+      "login_http": 201,
+      "session_http": 200,
+      "users_http": 200,
+      "own_record_http": null,
+      "prematricula_http": null,
+      "modules": [
+        "ADM3",
+        "ADM4",
+        "ADM5",
+        "ADM6",
+        "ADM7",
+        "ADM8",
+        "ADM9",
+        "ADM10",
+        "ADM11",
+        "ADM12",
+        "ADM16",
+        "ADM20",
+        "ADM22",
+        "ADM24"
+      ]
+    }
+  ],
+  "geography": [
+    {
+      "province_id": 1,
+      "cantons": 20,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 2,
+      "cantons": 16,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 3,
+      "cantons": 8,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 4,
+      "cantons": 10,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 5,
+      "cantons": 11,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 6,
+      "cantons": 13,
+      "http": 200,
+      "matches_official_catalog": true
+    },
+    {
+      "province_id": 7,
+      "cantons": 6,
+      "http": 200,
+      "matches_official_catalog": true
+    }
+  ],
+  "passwords_and_tokens_recorded": false,
+  "incorrect_password_http": 401,
+  "passed": true
+}
