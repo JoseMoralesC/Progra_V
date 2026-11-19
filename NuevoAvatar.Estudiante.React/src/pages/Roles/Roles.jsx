@@ -12,7 +12,7 @@ export function Roles({ cliente, onPermisosActualizados }) {
     const [seleccion, setSeleccion] = useState({})
     const [permisosGuardados, setPermisosGuardados] = useState({})
     const [permisosAbiertos, setPermisosAbiertos] = useState(false)
-    const [estado, setEstado] = useState('Cargando roles y permisos…')
+    const [estado, setEstado] = useState('Cargando roles…')
     const [error, setError] = useState('')
     const [aviso, setAviso] = useState('')
     const [formulario, setFormulario] = useState(null)
@@ -27,16 +27,10 @@ export function Roles({ cliente, onPermisosActualizados }) {
     const cargar = useCallback(async idVisible => {
         setError('')
         try {
-            const [listaRoles, listaModulos] = await Promise.all([api.listar(), api.modulos()])
-            if (!Array.isArray(listaRoles) || !Array.isArray(listaModulos)) throw new Error('No se pudieron leer roles y módulos.')
-            const asignaciones = await Promise.all(listaModulos.map(item => api.asignados(item.idModulo)))
-            if (asignaciones.some(item => !Array.isArray(item))) throw new Error('No se pudieron leer los permisos.')
+            const listaRoles = await api.listar()
+            if (!Array.isArray(listaRoles)) throw new Error('No se pudieron leer los roles.')
             setRoles(listaRoles)
             setPagina(Math.floor(Math.max(0, listaRoles.findIndex(item => item.idRol === idVisible)) / tamano))
-            setModulos(listaModulos)
-            const permisos = Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]]))
-            setSeleccion(permisos)
-            setPermisosGuardados(permisos)
             setEstado('')
             return true
         } catch (e) {
@@ -49,16 +43,10 @@ export function Roles({ cliente, onPermisosActualizados }) {
     useEffect(() => {
         let vigente = true
         api.tamanoPagina().then(valor => { if (vigente) setTamano(valor) })
-        Promise.all([api.listar(), api.modulos()]).then(async ([listaRoles, listaModulos]) => {
-            if (!Array.isArray(listaRoles) || !Array.isArray(listaModulos)) throw new Error('No se pudieron leer roles y módulos.')
-            const asignaciones = await Promise.all(listaModulos.map(item => api.asignados(item.idModulo)))
+        api.listar().then(listaRoles => {
             if (!vigente) return
-            if (asignaciones.some(item => !Array.isArray(item))) throw new Error('No se pudieron leer los permisos.')
+            if (!Array.isArray(listaRoles)) throw new Error('No se pudieron leer los roles.')
             setRoles(listaRoles)
-            setModulos(listaModulos)
-            const permisos = Object.fromEntries(listaModulos.map((item, indice) => [item.idModulo, asignaciones[indice]]))
-            setSeleccion(permisos)
-            setPermisosGuardados(permisos)
             setEstado('')
         }).catch(e => { if (vigente) { setEstado(''); setError(e.message) } })
         return () => { vigente = false }
@@ -95,11 +83,21 @@ export function Roles({ cliente, onPermisosActualizados }) {
         } catch (e) { setError(e.message) }
     }
 
-    function abrirPermisos() {
-        setSeleccion(permisosGuardados)
+    async function abrirPermisos() {
         setError('')
         setAviso('')
-        setPermisosAbiertos(true)
+        setGuardando(true)
+        try {
+            const datos = await api.permisos()
+            if (!Array.isArray(datos?.modulos) || !datos.permisos ||
+                datos.modulos.some(item => !Array.isArray(datos.permisos[item.idModulo])))
+                throw new Error('No se pudieron leer los permisos.')
+            setModulos(datos.modulos)
+            setSeleccion(datos.permisos)
+            setPermisosGuardados(datos.permisos)
+            setPermisosAbiertos(true)
+        } catch (e) { setError(e.message) }
+        finally { setGuardando(false) }
     }
 
     function cerrarPermisos() {
@@ -123,10 +121,7 @@ export function Roles({ cliente, onPermisosActualizados }) {
         try {
             await api.guardarAsignados(idModulo, seleccion[idModulo])
             setPermisosGuardados(actual => ({ ...actual, [idModulo]: seleccion[idModulo] }))
-            const [actualizados] = await Promise.all([api.asignados(idModulo),
-                onPermisosActualizados ? onPermisosActualizados() : api.menuPropio()])
-            setSeleccion(actual => ({ ...actual, [idModulo]: actualizados }))
-            setPermisosGuardados(actual => ({ ...actual, [idModulo]: actualizados }))
+            await (onPermisosActualizados ? onPermisosActualizados() : api.menuPropio())
             setAviso(`Permisos de ${idModulo} guardados.`)
         } catch (e) { setError(e.message) }
         finally { setGuardando(false) }
@@ -137,7 +132,7 @@ export function Roles({ cliente, onPermisosActualizados }) {
             onConfirmar={() => { setPendiente(null); eliminarRol(pendiente) }} />}
         <div className="page-head"><div><h1>Roles y permisos</h1><p className="subtitle">Mantenimiento de roles y acceso a módulos</p></div>
             <div className="instituciones-acciones">
-                <button type="button" className="btn btn-soft" disabled={Boolean(estado)} onClick={abrirPermisos}>Permisos de menú</button>
+                <button type="button" className="btn btn-soft" disabled={Boolean(estado) || guardando} onClick={abrirPermisos}>Permisos de menú</button>
                 <button type="button" className="btn btn-primary" onClick={() => abrir()}>Nuevo rol</button>
             </div></div>
         {error && !formulario && !permisosAbiertos && <p role="alert" className="aviso error">{error}</p>}

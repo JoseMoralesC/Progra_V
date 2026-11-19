@@ -78,8 +78,9 @@ function AuditoriaInterfaz() {
 
     useEffect(() => {
         const ruta = location.pathname
-        if (!session?.user || !rutasCriticas.has(ruta) || ruta === '/inicio' || ultimaRuta.current === ruta) return
+        if (!session?.user || !rutasCriticas.has(ruta) || ultimaRuta.current === ruta) return
         ultimaRuta.current = ruta
+        if (ruta === '/inicio') return
         authorizedFetch(token => registrarEventoInterfaz('navegacion', ruta, token)).catch(() => {
             // La falta de Bitácora no debe generar bucles ni alterar la navegación original.
         })

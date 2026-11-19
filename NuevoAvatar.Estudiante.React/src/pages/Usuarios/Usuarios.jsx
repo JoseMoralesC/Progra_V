@@ -27,11 +27,11 @@ export function Usuarios({ cliente }) {
     const [guardando, setGuardando] = useState(false)
     const [pendiente, setPendiente] = useState(null)
 
-    const cargar = useCallback(async filtro => {
+    const cargar = useCallback(async (filtro, carga = false) => {
         setEstado('Cargando usuarios…')
         setError('')
         try {
-            const datos = await api.listar(filtro)
+            const datos = await api.listar(filtro, carga)
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de usuarios.')
             setUsuarios(datos)
             setPagina(0)
@@ -42,7 +42,7 @@ export function Usuarios({ cliente }) {
 
     useEffect(() => {
         let vigente = true
-        Promise.all([api.listar(filtrosVacios), api.roles(), api.tamanoPagina()]).then(([datos, listaRoles, tam]) => {
+        Promise.all([api.listar(filtrosVacios, true), api.roles(), api.tamanoPagina()]).then(([datos, listaRoles, tam]) => {
             if (!vigente) return
             if (!Array.isArray(datos) || !Array.isArray(listaRoles)) throw new Error('No se pudieron leer usuarios y roles.')
             setUsuarios(datos)
@@ -129,7 +129,7 @@ export function Usuarios({ cliente }) {
             setDetalle(null)
             setFiltros(filtrosVacios)
             setAplicados(filtrosVacios)
-            const lista = await cargar(filtrosVacios)
+            const lista = await cargar(filtrosVacios, true)
             if (lista) {
                 const posicion = [...lista].sort(comparar).findIndex(item => item.email === datos.email)
                 setPagina(Math.floor(Math.max(0, posicion) / tamano))
@@ -144,7 +144,7 @@ export function Usuarios({ cliente }) {
         setAviso('')
         try {
             await api.eliminar(usuario.email)
-            if (await cargar(aplicados)) setAviso('Usuario eliminado correctamente.')
+            if (await cargar(aplicados, true)) setAviso('Usuario eliminado correctamente.')
         } catch (e) { setError(e.message) }
     }
 

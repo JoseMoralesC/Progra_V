@@ -18,6 +18,16 @@ public static class ClasificacionBitacora
     public static string? Modulo(string descripcion)
     {
         var texto = TextoBase(descripcion);
+        var navegacion = Regex.Match(texto, @"^adm1: (?:navegacion a ruta critica|error de interfaz en ruta critica) (/[a-z0-9/_-]+)$");
+        if (navegacion.Success) return navegacion.Groups[1].Value switch {
+            "/roles" => "ADM5", "/parametros" => "ADM6", "/modulos" => "ADM7",
+            "/usuarios" => "ADM4", "/instituciones" => "ADM8", "/carreras" => "ADM9",
+            "/cursos" => "ADM10", "/profesores" => "ADM11", "/periodos" => "ADM12",
+            "/expedientes" or "/estudiante/expediente" => "ADM16", "/notificaciones" => "ADM22",
+            "/notas" => "ADM17", "/estudiante/prematricula" => "ADM14",
+            "/perfil" or "/estudiante/perfil" => "ADM4", "/estudiante" or "/inicio" => "ADM3", _ => null
+        };
+        if (texto == "el usuario consulta permisos") return "ADM7";
         if (EsSesion(texto)) return "SESION";
         if (texto.StartsWith("actualizacion del perfil propio") || texto.StartsWith("cambio de contrasena del perfil propio")) return "ADM4";
         if (texto == "el usuario consulta el dashboard") return "ADM3";
@@ -55,6 +65,9 @@ public static class ClasificacionBitacora
     public static string Accion(string descripcion)
     {
         var texto = Normalizar(descripcion);
+        if (texto.StartsWith("adm1: navegacion ")) return "Acceso";
+        if (texto.StartsWith("adm1: error ") || texto.StartsWith("error tecnico ")) return "Error";
+        if (EsSesion(texto)) return "Sesión";
         if (texto.StartsWith("el usuario consulta ") || texto.StartsWith("consulta ") || texto.StartsWith("get ")) return "Consulta";
         if (texto.StartsWith("alta ") || texto.StartsWith("creacion ") || texto.StartsWith("post ")) return "Registro";
         if (texto.StartsWith("modificacion ") || texto.StartsWith("put ") || texto.StartsWith("asignacion ")) return "Actualización";
@@ -75,7 +88,7 @@ public static class ClasificacionBitacora
             return codigo == 403 ? "Denegado" : codigo >= 400 ? "Fallido" :
                 codigo >= 200 && codigo < 300 ? "Exitoso" : "Sin especificar";
         }
-        if (texto.StartsWith("error tecnico en ") || texto.StartsWith("inicio de sesion fallido")) return "Fallido";
+        if (texto.StartsWith("error tecnico en ") || texto.StartsWith("adm1: error de interfaz ") || texto.StartsWith("inicio de sesion fallido")) return "Fallido";
         if (texto.StartsWith("inicio de sesion exitoso")) return "Exitoso";
         return "Sin especificar";
     }
@@ -84,6 +97,10 @@ public static class ClasificacionBitacora
     {
         var texto = TextoBase(descripcion);
         var resultado = Resultado(descripcion);
+        if (texto.StartsWith("adm1: navegacion a ruta critica ", StringComparison.Ordinal))
+            return "Acceso a " + descripcion[(descripcion.LastIndexOf('/') + 1)..];
+        if (texto.StartsWith("adm1: error de interfaz en ruta critica ", StringComparison.Ordinal)) return "Error de interfaz";
+        if (texto == "el usuario consulta permisos") return "Permisos consultados";
         if (modulo == "SESION") {
             var accionSesion = texto.StartsWith("intento de login") || texto.StartsWith("inicio de sesion")
                 ? "Inicio de sesión" : texto.StartsWith("renovacion de sesion")

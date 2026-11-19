@@ -18,11 +18,13 @@ namespace NuevoAvatarSeguridad.Controllers
 
         protected async Task Registrar(string descripcion)
         {
+            if (NuevoAvatar.Integracion.ConsultaAutomatica.EsCargaDashboard(HttpContext, 200)) return;
             if (HttpContext.Items[NuevoAvatar.Integracion.AuditoriaTransaccion.EscrituraRegistrada] is true) return;
             await _bitacora.Crear(new Bitacora
             {
                 Usuario = HttpContext.Items["usuario"]?.ToString() ?? "desconocido",
-                Descripcion = descripcion + ". Resultado: Exitoso"
+                Descripcion = descripcion.StartsWith("El usuario consulta ", StringComparison.Ordinal)
+                    ? descripcion : descripcion + ". Resultado: Exitoso"
             });
         }
     }

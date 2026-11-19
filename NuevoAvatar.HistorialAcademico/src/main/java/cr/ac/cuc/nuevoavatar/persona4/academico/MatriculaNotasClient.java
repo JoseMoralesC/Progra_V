@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 public class MatriculaNotasClient {
     private final RestClient cliente;
     private final RestClient notas;
+    @Value("${SERVICES_INTERNAL_KEY}")
+    private String claveInterna;
 
     @Autowired
     public MatriculaNotasClient(RestClient.Builder builder, @Value("${matricula.service.url}") String baseUrl,
@@ -38,7 +40,8 @@ public class MatriculaNotasClient {
         try {
             List<Matricula> respuesta = cliente.get().uri(uri -> uri.path("/matricula")
                     .queryParam("cursoId", cursoId).queryParam("grupoId", grupoId).build())
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (respuesta == null) throw respuestaIncompleta();
             return respuesta;
@@ -52,7 +55,8 @@ public class MatriculaNotasClient {
             List<Nota> respuesta = notas.get().uri(uri -> uri.path("/obtenernotas")
                     .queryParam("identificacionEstudiante", "{identificacion}")
                     .queryParam("cursoId", cursoId).queryParam("grupoId", grupoId).build(identificacion))
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (respuesta == null) throw respuestaIncompleta();
             return respuesta;
@@ -65,7 +69,8 @@ public class MatriculaNotasClient {
         try {
             List<Rubro> respuesta = notas.get().uri(uri -> uri.path("/obtenerdesglose")
                     .queryParam("grupoId", grupoId).build())
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (respuesta == null) throw respuestaIncompleta();
             return respuesta;

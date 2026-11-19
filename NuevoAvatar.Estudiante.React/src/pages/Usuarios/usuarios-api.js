@@ -1,18 +1,19 @@
 const ruta = '/gateway/admin/usuario'
 
 export const usuariosApi = cliente => ({
-    listar: filtros => {
+    listar: (filtros, carga = false) => {
         const params = new URLSearchParams()
         for (const campo of ['identificacion', 'nombre', 'tipo']) {
             if (filtros[campo]?.trim()) params.set(campo, filtros[campo].trim())
         }
-        return cliente.request(params.size ? `${ruta}?${params}` : ruta)
+        const destino = carga ? '/gateway/admin/carga/usuarios' : ruta
+        return cliente.request(params.size ? `${destino}?${params}` : destino)
     },
-    roles: () => cliente.request('/gateway/admin/rol'),
+    roles: () => cliente.request('/gateway/admin/carga/roles'),
     obtener: email => cliente.request(`${ruta}/${encodeURIComponent(email)}`),
     tamanoPagina: async () => {
         try {
-            const parametro = await cliente.request('/gateway/admin/parametro/TAMPAG')
+            const parametro = await cliente.request('/gateway/admin/configuracion/paginacion')
             const valor = Number(parametro?.valor)
             if (Number.isInteger(valor) && valor > 0) return Math.min(valor, 15)
         } catch { return 15 }

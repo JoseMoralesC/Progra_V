@@ -13,7 +13,7 @@ public static class ConsultaAutomatica
     public static bool EsCargaDashboard(HttpContext contexto, int estado)
     {
         if (!HttpMethods.IsGet(contexto.Request.Method) || estado < 200 || estado >= 300 ||
-            contexto.Request.Headers[Cabecera] != "dashboard") return false;
+            (contexto.Request.Headers[Cabecera] != "dashboard" && contexto.Request.Headers[Cabecera] != "servicio")) return false;
         var clave = contexto.RequestServices.GetRequiredService<IConfiguration>()["SERVICES_INTERNAL_KEY"];
         var recibida = contexto.Request.Headers["X-Servicio-Key"].ToString();
         return !string.IsNullOrEmpty(clave) && CryptographicOperations.FixedTimeEquals(

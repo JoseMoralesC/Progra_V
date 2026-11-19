@@ -44,6 +44,12 @@ public static class CatalogoRutas
         // WEB2: acceso acotado al expediente del estudiante autenticado.
         rutas.Add(new("/gateway/expediente/propio", "/expediente/propio", "Expediente", 8084,
             ["GET", "PUT"], ["ESTUDIANTE"], ExigeModulo: false));
+        rutas.Add(new("/gateway/carga/expediente-propio", "/expediente/propio", "Expediente", 8084,
+            ["GET"], ["ESTUDIANTE"], ExigeModulo: false));
+        rutas.Add(new("/gateway/carga/prematriculas-propias", "/prematricula/propio", "Prematricula", 8089,
+            ["GET"], ["ESTUDIANTE"], ExigeModulo: false));
+        rutas.Add(new("/gateway/carga/opciones-prematricula", "/prematricula/propio/opciones", "Prematricula", 8089,
+            ["GET"], ["ESTUDIANTE"], ExigeModulo: false));
 
         // WEB4: el backend deriva la identidad del bearer y valida la propiedad.
         rutas.Add(new("/gateway/mat/prematricula/propio", "/prematricula/propio", "Prematricula", 8089,
@@ -51,6 +57,19 @@ public static class CatalogoRutas
         rutas.Add(new("/gateway/mat/prematricula/propio", "/prematricula/propio", "Prematricula", 8089,
             ["GET", "PUT", "DELETE"], ["ESTUDIANTE"], Subrutas: true, ExigeModulo: false));
 
+        // Lectura de configuración usada por las pantallas para paginar.
+        rutas.Add(new("/gateway/admin/configuracion/paginacion", "/parametro/TAMPAG", "Parametro", 5161, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/roles", "/rol", "Rol", 5160, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/parametros", "/parametro", "Parametro", 5161, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/modulos", "/modulo", "Modulo", 5162, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/usuarios", "/usuario", "Usuario", 8082, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/instituciones", "/institucion", "Institucion", 8086, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/expedientes", "/expediente", "Expediente", 8084, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/carreras", "/carrera", "Carrera", 8088, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/cursos", "/curso", "Curso", 5255, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/profesores", "/profesor/buscar", "Profesor", 8087, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/periodos", "/periodo", "Periodo", 5262, ["GET"], Admin));
+        rutas.Add(new("/gateway/admin/carga/notificaciones", "/notificar/historial", "Notificacion", 8095, ["GET"], Admin));
         foreach (var (recurso, servicio, puerto) in new[] {
             ("usuario", "Usuario", 8082), ("rol", "Rol", 5160), ("parametro", "Parametro", 5161),
             ("modulo", "Modulo", 5162), ("institucion", "Institucion", 8086), ("carrera", "Carrera", 8088),
@@ -70,7 +89,10 @@ public static class CatalogoRutas
             rutas.Add(new($"/gateway/fin/{recurso}", $"/{recurso}", servicio, puerto, Crud, Admin, true));
         rutas.Add(new("/gateway/admin/bitacora", "/bitacora", "Bitacora", 5159, ["GET", "POST"], Admin, true));
         foreach (var path in new[] { "provincias", "cantones", "distritos" })
+        {
             rutas.Add(new($"/gateway/mat/{path}", $"/{path}", "Direccion", 5227, ["GET"], Todos, true));
+            rutas.Add(new($"/gateway/carga/direccion/{path}", $"/{path}", "Direccion", 5227, ["GET"], Todos, true));
+        }
         foreach (var (path, verbos) in new (string, string[])[] {
             ("cargardesglose", ["POST"]), ("asignarnotarubro", ["POST", "PUT"]),
             ("obtenerdesglose", ["GET"]), ("obtenernotas", ["GET"]), ("obtenernotasgrupo", ["GET"]),

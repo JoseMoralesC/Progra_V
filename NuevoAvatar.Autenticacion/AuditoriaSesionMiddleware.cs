@@ -17,7 +17,8 @@ public sealed class AuditoriaSesionMiddleware(RequestDelegate next, ILogger<Audi
             bool refresh = HttpMethods.IsPost(context.Request.Method) && ruta == "/refresh";
             bool logout = HttpMethods.IsPost(context.Request.Method) && ruta == "/logout";
             // /sesion es una comprobación interna del Gateway por cada petición, no un movimiento del usuario.
-            if (login || refresh || logout)
+            // La renovación exitosa es automática; conservar los fallos para investigación.
+            if (login || logout || (refresh && (fallo || context.Response.StatusCode >= 400)))
             {
                 // No guardar password, Authorization, refresh_token ni cuerpos de respuesta.
                 // En un login fallido la identidad es la cuenta declarada, no una identidad autenticada.

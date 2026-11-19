@@ -2,9 +2,9 @@ import { leerTamanoPagina, MAX_PAGINA } from './modulos-api.js';
 const ruta = '/gateway/admin/profesor';
 export { MAX_PAGINA };
 export const profesoresApi = cliente => ({
-  buscar: ({ texto = '', page = 0, size = MAX_PAGINA, sort = 'nombreCompleto', direction = 'asc' } = {}) => {
+  buscar: ({ texto = '', page = 0, size = MAX_PAGINA, sort = 'nombreCompleto', direction = 'asc', carga = false } = {}) => {
     const lim = Math.min(MAX_PAGINA, Math.max(1, Number(size) || MAX_PAGINA));
-    return cliente.request(`${ruta}/buscar?texto=${encodeURIComponent(texto)}&page=${page}&size=${lim}&sort=${sort}&direction=${direction}`);
+    return cliente.request(`${carga ? '/gateway/admin/carga/profesores' : `${ruta}/buscar`}?texto=${encodeURIComponent(texto)}&page=${page}&size=${lim}&sort=${sort}&direction=${direction}`);
   },
   crear: value => cliente.request(ruta, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
   modificar: value => cliente.request(`${ruta}/${value.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),

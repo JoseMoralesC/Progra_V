@@ -2,16 +2,17 @@ const rol = '/gateway/admin/rol'
 const modulo = '/gateway/admin/modulo'
 
 export const rolesApi = cliente => ({
-    listar: () => cliente.request(rol),
+    listar: () => cliente.request('/gateway/admin/carga/roles'),
     tamanoPagina: async () => {
         try {
-            const parametro = await cliente.request('/gateway/admin/parametro/TAMPAG')
+            const parametro = await cliente.request('/gateway/admin/configuracion/paginacion')
             const valor = Number(parametro?.valor)
             if (Number.isInteger(valor) && valor > 0) return Math.min(valor, 15)
         } catch { return 15 }
         return 15
     },
     modulos: () => cliente.request(modulo),
+    permisos: () => cliente.request(`${modulo}/permisos`),
     asignados: idModulo => cliente.request(`${modulo}/${encodeURIComponent(idModulo)}/roles`),
     guardarAsignados: (idModulo, ids) => cliente.request(`${modulo}/${encodeURIComponent(idModulo)}/roles`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ids)

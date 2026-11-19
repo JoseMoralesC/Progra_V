@@ -202,6 +202,12 @@ function ActividadReciente({ cliente, usuario }) {
     const [tamano, setTamano] = useState(25)
     const [total, setTotal] = useState(0)
     const [revision, setRevision] = useState(0)
+    const [filtros, setFiltros] = useState({ desde: '', hasta: '', usuario: '', accion: '', modulo: '', orden: 'desc' })
+    const [filtrosAplicados, setFiltrosAplicados] = useState({})
+    const [usuariosFiltro, setUsuariosFiltro] = useState([])
+    const [modulosFiltro, setModulosFiltro] = useState([])
+    const [errorCatalogos, setErrorCatalogos] = useState('')
+    const [cargandoCatalogos, setCargandoCatalogos] = useState(false)
     const hastaId = useRef(null)
     const [hayNuevos, setHayNuevos] = useState(false)
     const [errorActualizacion, setErrorActualizacion] = useState('')
@@ -212,6 +218,26 @@ function ActividadReciente({ cliente, usuario }) {
     const [errorBitacoras, setErrorBitacoras] = useState('')
     const [errorNotificaciones, setErrorNotificaciones] = useState('')
     const permiteNotificaciones = usuario.rol === 'PROFESOR' || usuario.modulos.some(m => m.idModulo === 'ADM22')
+
+    useEffect(() => {
+        if (!administrador) return undefined
+        const control = new AbortController()
+        setCargandoCatalogos(true)
+        setErrorCatalogos('')
+        Promise.allSettled([
+            cliente.request('/gateway/admin/carga/usuarios', { signal: control.signal }),
+            cliente.request('/gateway/admin/carga/modulos', { signal: control.signal })
+        ]).then(([usuarios, modulos]) => {
+            if (control.signal.aborted) return
+            const usuariosValidos = usuarios.status === 'fulfilled' && Array.isArray(usuarios.value)
+            const modulosValidos = modulos.status === 'fulfilled' && Array.isArray(modulos.value)
+            if (usuariosValidos) setUsuariosFiltro(usuarios.value.filter(item => item?.email).sort((a, b) => a.email.localeCompare(b.email, 'es')))
+            if (modulosValidos) setModulosFiltro(modulos.value.filter(item => item?.idModulo && item?.nombreModulo).sort((a, b) => a.nombreModulo.localeCompare(b.nombreModulo, 'es')))
+            if (!usuariosValidos || !modulosValidos) setErrorCatalogos('No se pudieron cargar todas las opciones de usuario y módulo. Revisa los permisos o intenta de nuevo.')
+            setCargandoCatalogos(false)
+        })
+        return () => control.abort()
+    }, [cliente, administrador])
 
     useEffect(() => {
         const control = new AbortController()
@@ -231,7 +257,8 @@ function ActividadReciente({ cliente, usuario }) {
             setActualizando(true)
             setErrorBitacoras('')
             const ruta = '/gateway/admin/bitacora?vista=dashboard' +
-                (administrador ? `&page=${pagina}&size=${tamano}` + (hastaId.current === null ? '' : `&hastaId=${hastaId.current}`) : '')
+                (administrador ? `&page=${pagina}&size=${tamano}` + (hastaId.current === null ? '' : `&hastaId=${hastaId.current}`) +
+                    '&' + new URLSearchParams(Object.entries(filtrosAplicados).filter(([, valor]) => valor.trim())).toString() : '')
             try {
                 const datos = await cliente.request(ruta, { signal: control.signal })
                 if (control.signal.aborted) return
@@ -255,7 +282,7 @@ function ActividadReciente({ cliente, usuario }) {
         }
         cargarBitacoras()
         return () => control.abort()
-    }, [cliente, administrador, pagina, tamano, revision])
+    }, [cliente, administrador, pagina, tamano, revision, filtrosAplicados])
 
     useEffect(() => {
         const control = new AbortController()
@@ -292,9 +319,25 @@ function ActividadReciente({ cliente, usuario }) {
                 {item.asunto} · {item.estado} · {new Date(item.fecha).toLocaleString('es-CR')}
             </li>)}</ul>}
         </section>
-        <section className="panel" aria-label={administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}>
-            <h3>{administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}</h3>
-            {administrador && <div className="dashboard-bitacora-controles">
+        <section className="panel dashboard-bitacora" aria-label={administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}>
+            <div className="dashboard-bitacora-encabezado"><div><h3>{administrador ? 'Historial de bitácora' : 'Bitácoras recientes'}</h3>
+                {administrador && <p>Consulta la actividad registrada en el sistema.</p>}</div></div>
+            {administrador && <form className="dashboard-bitacora-filtros" onSubmit={evento => {
+                evento.preventDefault(); hastaId.current = null; setPagina(0); setFiltrosAplicados({ ...filtros })
+            }}>
+                <div className="dashboard-bitacora-campos">
+                    <label>Desde <input type="date" value={filtros.desde} max={filtros.hasta || undefined} onChange={e => setFiltros({ ...filtros, desde: e.target.value })} /></label>
+                    <label>Hasta <input type="date" value={filtros.hasta} min={filtros.desde || undefined} onChange={e => setFiltros({ ...filtros, hasta: e.target.value })} /></label>
+                    <label>Usuario <select value={filtros.usuario} disabled={cargandoCatalogos} onChange={e => setFiltros({ ...filtros, usuario: e.target.value })}><option value="">Todos los usuarios</option>{usuariosFiltro.map(item => <option key={item.email} value={item.email}>{item.nombre ? `${item.nombre} · ${item.email}` : item.email}</option>)}</select></label>
+                    <label>Acción <select value={filtros.accion} onChange={e => setFiltros({ ...filtros, accion: e.target.value })}><option value="">Todas las acciones</option>{['Acceso', 'Consulta', 'Registro', 'Actualización', 'Eliminación', 'Envío', 'Sesión', 'Error', 'Evento'].map(accion => <option key={accion} value={accion}>{accion}</option>)}</select></label>
+                    <label>Módulo <select value={filtros.modulo} disabled={cargandoCatalogos} onChange={e => setFiltros({ ...filtros, modulo: e.target.value })}><option value="">Todos los módulos</option><option value="SESION">Autenticación</option><option value="ADM3">Dashboard</option>{modulosFiltro.filter(item => item.idModulo !== 'ADM3').map(item => <option key={item.idModulo} value={item.idModulo}>{item.nombreModulo}</option>)}<option value="SIN_CLASIFICAR">Sin clasificar</option></select></label>
+                    <label>Orden <select value={filtros.orden} onChange={e => setFiltros({ ...filtros, orden: e.target.value })}><option value="desc">Más recientes</option><option value="asc">Más antiguos</option></select></label>
+                </div>
+                <div className="dashboard-bitacora-acciones"><button className="btn btn-primary" type="submit" disabled={actualizando}>Aplicar filtros</button>
+                    <button className="btn btn-soft" type="button" onClick={() => { const vacios = { desde: '', hasta: '', usuario: '', accion: '', modulo: '', orden: 'desc' }; setFiltros(vacios); hastaId.current = null; setPagina(0); setFiltrosAplicados({}) }}>Limpiar</button></div>
+                {errorCatalogos && <p className="dashboard-bitacora-error" role="status">{errorCatalogos}</p>}
+            </form>}
+            {administrador && <div className="dashboard-bitacora-herramientas dashboard-bitacora-controles">
                 <label>Registros por página <select value={tamano} onChange={evento => {
                     setTamano(Number(evento.target.value)); setPagina(0)
                 }}>
@@ -303,9 +346,9 @@ function ActividadReciente({ cliente, usuario }) {
                 <button type="button" disabled={actualizando} onClick={() => {
                     hastaId.current = null; setPagina(0); setRevision(valor => valor + 1)
                 }}>Actualizar historial</button>
-                <span>Se comprueban movimientos nuevos cada 10 segundos.</span>
+                <span>Actualización disponible cada 10 segundos</span>
             </div>}
-            {administrador && <p role="status">{hayNuevos ? 'Hay movimientos nuevos. Pulsa “Actualizar historial” para verlos.' : 'El historial permanece estable mientras lo lees.'}</p>}
+            {administrador && hayNuevos && <p className="dashboard-bitacora-nuevos" role="status">Hay movimientos nuevos. Pulsa “Actualizar historial” para verlos.</p>}
             {errorActualizacion && <p role="alert">{errorActualizacion}</p>}
             {errorBitacoras && <p role="alert">{errorBitacoras}</p>}
             {bitacoras === null && !errorBitacoras && <p role="status">Cargando bitácoras…</p>}
@@ -315,7 +358,7 @@ function ActividadReciente({ cliente, usuario }) {
                     <thead><tr><th>ID</th><th>Módulo</th><th>Resumen de la acción</th><th>Resultado</th><th>Realizado por</th><th>Fecha</th></tr></thead>
                     <tbody>{bitacoras.map(item => {
                         return <tr key={item.idBitacora}>
-                            <td>{item.idBitacora}</td><td>{item.modulo}</td><td>{item.accion}</td><td>{item.resultado}</td><td>{item.usuario}</td>
+                            <td>{item.idBitacora}</td><td>{item.modulo}</td><td>{item.accion}{administrador && <details><summary>Ver detalle</summary><pre style={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{formatearDetalle(item.descripcion)}</pre></details>}</td><td>{item.resultado}</td><td>{item.usuario}</td>
                             <td>{item.fechaHora ? new Date(item.fechaHora).toLocaleString('es-CR') : '—'}</td>
                         </tr>
                     })}</tbody>
@@ -338,4 +381,15 @@ function ActividadReciente({ cliente, usuario }) {
             </nav>}
         </section>
     </>
+}
+
+function formatearDetalle(descripcion) {
+    const texto = String(descripcion || '')
+    const inicio = texto.indexOf('{')
+    const fin = texto.lastIndexOf('}')
+    if (inicio >= 0 && fin > inicio) {
+        try { return texto.slice(0, inicio) + JSON.stringify(JSON.parse(texto.slice(inicio, fin + 1)), null, 2) + texto.slice(fin + 1) }
+        catch { /* Conserva descripciones históricas con varios fragmentos JSON. */ }
+    }
+    return texto
 }

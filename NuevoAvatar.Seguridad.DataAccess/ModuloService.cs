@@ -56,9 +56,11 @@ namespace NuevoAvatar.Seguridad.DataAccess
         public async Task ReemplazarRoles(string idModulo, IReadOnlyCollection<string> roles)
         {
             var anteriores = await _context.RolesModulo.Where(x => x.IdModulo == idModulo).ToListAsync();
-            _context.RolesModulo.RemoveRange(anteriores);
-            await _context.RolesModulo.AddRangeAsync(roles.Distinct(StringComparer.OrdinalIgnoreCase)
-                .Select(r => new RolModulo { IdModulo = idModulo, IdRol = r.ToUpperInvariant() }));
+            var nuevos = roles.Select(r => r.ToUpperInvariant()).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            _context.RolesModulo.RemoveRange(anteriores.Where(r => !nuevos.Contains(r.IdRol)));
+            var existentes = anteriores.Select(r => r.IdRol).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            await _context.RolesModulo.AddRangeAsync(nuevos.Where(r => !existentes.Contains(r))
+                .Select(r => new RolModulo { IdModulo = idModulo, IdRol = r }));
             await _context.SaveChangesAsync();
         }
 

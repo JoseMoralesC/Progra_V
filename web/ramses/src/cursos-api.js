@@ -2,8 +2,8 @@ import { leerTamanoPagina, MAX_PAGINA, paginar } from './modulos-api.js';
 const ruta = '/gateway/admin/curso';
 export { MAX_PAGINA, paginar };
 export const cursosApi = cliente => ({
-  listar: ({ carreraId = '', nivel = '' } = {}) => { const p = new URLSearchParams(); if (carreraId) p.set('carreraId', carreraId); if (nivel) p.set('nivel', nivel); return cliente.request(ruta + (p.size ? `?${p}` : '')); },
-  carreras: () => cliente.request('/gateway/admin/carrera'),
+  listar: ({ carreraId = '', nivel = '' } = {}, carga = false) => { const p = new URLSearchParams(); if (carreraId) p.set('carreraId', carreraId); if (nivel) p.set('nivel', nivel); return cliente.request((carga ? '/gateway/admin/carga/cursos' : ruta) + (p.size ? `?${p}` : '')); },
+  carreras: () => cliente.request('/gateway/admin/carga/carreras'),
   crear: value => cliente.request(ruta, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
   modificar: value => cliente.request(`${ruta}/${value.cursoId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
   eliminar: id => cliente.request(`${ruta}/${id}`, { method: 'DELETE' }),
