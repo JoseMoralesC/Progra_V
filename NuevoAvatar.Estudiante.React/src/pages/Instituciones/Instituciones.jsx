@@ -21,12 +21,12 @@ export function Instituciones({ cliente }) {
     const [pendiente, setPendiente] = useState(null)
     const consultaActual = useRef(0)
 
-    const cargar = useCallback(async (nombreBuscado, idVisible) => {
+    const cargar = useCallback(async (nombreBuscado, idVisible, carga = false) => {
         const consulta = ++consultaActual.current
         setEstado('Cargando instituciones…')
         setError('')
         try {
-            const datos = await api.listar(nombreBuscado)
+            const datos = await api.listar(nombreBuscado, carga)
             if (consulta !== consultaActual.current) return false
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de instituciones.')
             setInstituciones(datos)
@@ -44,7 +44,7 @@ export function Instituciones({ cliente }) {
     useEffect(() => {
         const control = new AbortController()
         const consulta = ++consultaActual.current
-        api.listar('').then(datos => {
+        api.listar('', true).then(datos => {
             if (control.signal.aborted || consulta !== consultaActual.current) return
             if (!Array.isArray(datos)) throw new Error('No se pudo leer la lista de instituciones.')
             setInstituciones(datos)
@@ -88,7 +88,7 @@ export function Instituciones({ cliente }) {
             setEdicion(null)
             setBusqueda('')
             setFiltro('')
-            if (await cargar('', actual.id)) setAviso('Institución guardada correctamente.')
+            if (await cargar('', actual.id, true)) setAviso('Institución guardada correctamente.')
         } catch (e) {
             setError(e.message)
         } finally {
@@ -101,7 +101,7 @@ export function Instituciones({ cliente }) {
         setAviso('')
         try {
             await api.eliminar(institucion.id)
-            if (await cargar(filtro)) setAviso('Institución eliminada correctamente.')
+            if (await cargar(filtro, undefined, true)) setAviso('Institución eliminada correctamente.')
         } catch (e) {
             setError(e.message)
         }

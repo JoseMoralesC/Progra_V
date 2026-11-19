@@ -11,6 +11,26 @@
 }
 .dashboard-bitacora-controles button:disabled { opacity: .5; cursor: default; }
 .dashboard-bitacora-detalle { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 600px; min-width: 240px; }
+.dashboard-bitacora { min-width: 0; }
+.dashboard-bitacora-encabezado { margin-bottom: 20px; }
+.dashboard-bitacora-encabezado h3 { margin: 0; }
+.dashboard-bitacora-encabezado p { color: var(--muted); margin: 6px 0 0; font-size: .9rem; }
+.dashboard-bitacora-filtros { display: grid; gap: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--pill); }
+.dashboard-bitacora-campos { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+.dashboard-bitacora-campos label { display: grid; gap: 7px; min-width: 0; color: var(--muted); font-size: .875rem; font-weight: 600; }
+.dashboard-bitacora-campos input, .dashboard-bitacora-campos select { width: 100%; min-width: 0; height: 42px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; background-color: var(--surface, var(--pill)); color: var(--text); font: inherit; font-weight: 400; }
+.dashboard-bitacora-campos select { appearance: none; padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+.dashboard-bitacora select option { background-color: #fff; color: #202124; }
+body.dark .dashboard-bitacora select, body.dark .dashboard-bitacora input[type="date"] { color-scheme: dark; }
+body.dark .dashboard-bitacora select option { background-color: #26292b; color: #f5f5f3; }
+.dashboard-bitacora-campos input:focus-visible, .dashboard-bitacora-campos select:focus-visible { outline: 2px solid var(--accent, #7693ff); outline-offset: 2px; }
+.dashboard-bitacora-acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+.dashboard-bitacora-acciones .btn { min-height: 40px; }
+.dashboard-bitacora-error { margin: 0; color: var(--muted); font-size: .875rem; }
+.dashboard-bitacora-herramientas { justify-content: flex-start; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.dashboard-bitacora-herramientas label { display: flex; align-items: center; gap: 9px; }
+.dashboard-bitacora-herramientas span { color: var(--muted); font-size: .875rem; margin-left: auto; }
+.dashboard-bitacora-nuevos { margin: 12px 0; color: var(--text); font-size: .9rem; }
 .dashboard-activity-table { width: 100%; min-width: 560px; border-collapse: collapse; }
 .dashboard-activity-table th, .dashboard-activity-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; }
 .dashboard-activity-table tbody tr:hover { background: var(--pill); }
@@ -23,4 +43,16 @@
 @media (max-width: 600px) {
     .dashboard-enlaces { gap: 9px; }
     .dashboard-quick-link { flex: 1 1 145px; white-space: normal; }
+}
+
+@media (max-width: 1100px) {
+    .dashboard-bitacora-campos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+    .dashboard-bitacora-filtros { padding: 14px; }
+    .dashboard-bitacora-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dashboard-bitacora-herramientas span { flex-basis: 100%; margin-left: 0; }
+}
+@media (max-width: 380px) {
+    .dashboard-bitacora-campos { grid-template-columns: 1fr; }
 }

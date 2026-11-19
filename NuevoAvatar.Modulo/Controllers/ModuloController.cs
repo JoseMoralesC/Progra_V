@@ -103,8 +103,20 @@ namespace NuevoAvatarSeguridad.Controllers
         public async Task<IActionResult> ObtenerRoles(string idModulo)
         {
             if (await _service.ObtenerPorId(idModulo) is null) return NotFound("El módulo no existe");
+            var roles = await _service.ObtenerRoles(idModulo);
             await Registrar("El usuario consulta roles de modulo");
-            return Ok(await _service.ObtenerRoles(idModulo));
+            return Ok(roles);
+        }
+
+        [HttpGet("permisos")]
+        public async Task<IActionResult> ObtenerPermisos()
+        {
+            var modulos = await _service.ObtenerTodos();
+            var permisos = new Dictionary<string, List<string>>();
+            foreach (var modulo in modulos)
+                permisos[modulo.IdModulo] = await _service.ObtenerRoles(modulo.IdModulo);
+            await Registrar("El usuario consulta permisos");
+            return Ok(new { modulos, permisos });
         }
 
         [HttpPut("{idModulo}/roles")]

@@ -1,11 +1,9 @@
 package cr.ac.cuc.nuevoavatar.persona4.seguridad;
 
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -20,13 +18,13 @@ public class SeguridadClient {
     private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
 
     private final RestClient cliente;
-    private final RestClient bitacora;
     private final RestClient parametros;
+    @Value("${SERVICES_INTERNAL_KEY}")
+    private String claveInterna;
 
     @Autowired
     public SeguridadClient(RestClient.Builder builder,
             @Value("${seguridad.service.url}") String baseUrl,
-            @Value("${bitacora.service.url}") String bitacoraUrl,
             @Value("${parametro.service.url}") String parametroUrl,
             @Value("${seguridad.connect-timeout-ms}") int connectTimeout,
             @Value("${seguridad.read-timeout-ms}") int readTimeout) {
@@ -34,13 +32,11 @@ public class SeguridadClient {
         requestFactory.setConnectTimeout(connectTimeout);
         requestFactory.setReadTimeout(readTimeout);
         this.cliente = builder.baseUrl(java.util.Objects.requireNonNull(baseUrl)).requestFactory(requestFactory).build();
-        this.bitacora = builder.clone().baseUrl(java.util.Objects.requireNonNull(bitacoraUrl)).requestFactory(requestFactory).build();
         this.parametros = builder.clone().baseUrl(java.util.Objects.requireNonNull(parametroUrl)).requestFactory(requestFactory).build();
     }
 
     SeguridadClient(RestClient cliente) {
         this.cliente = cliente;
-        this.bitacora = cliente;
         this.parametros = cliente;
     }
 
@@ -83,6 +79,7 @@ public class SeguridadClient {
         try {
             Parametro parametro = parametros.get().uri("/parametro/{id}", idParametro)
                     .header(HttpHeaders.AUTHORIZATION, autorizacion)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna))
                     .retrieve().body(Parametro.class);
             if (parametro == null || parametro.valor() == null || parametro.valor().isBlank()) {
                 throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,

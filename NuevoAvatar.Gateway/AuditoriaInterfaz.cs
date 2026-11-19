@@ -10,7 +10,7 @@ public static class AuditoriaInterfaz
 {
     private static readonly HashSet<string> RutasCriticas = new(StringComparer.Ordinal)
     {
-        "/inicio", "/instituciones", "/parametros", "/roles", "/usuarios", "/modulos",
+        "/inicio", "/instituciones", "/parametros", "/roles", "/usuarios", "/modulos", "/expedientes",
         "/carreras", "/cursos", "/profesores", "/periodos", "/notificaciones", "/notas",
         "/estudiante", "/estudiante/expediente", "/estudiante/prematricula", "/estudiante/perfil",
         "/perfil"

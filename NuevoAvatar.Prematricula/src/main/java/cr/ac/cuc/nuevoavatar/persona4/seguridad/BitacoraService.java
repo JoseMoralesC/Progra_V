@@ -38,7 +38,10 @@ public class BitacoraService {
     }
 
     public void consulta(String token, String usuario, String elemento) {
-        seguridad.registrarBitacora(token, usuario, "El usuario consulta " + elemento + ". Resultado: Exitoso");
+        var atributos = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+        if (atributos instanceof org.springframework.web.context.request.ServletRequestAttributes solicitud &&
+            cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.esCargaDashboard(solicitud.getRequest(), 200)) return;
+        seguridad.registrarBitacora(token, usuario, "El usuario consulta " + elemento);
     }
 
     public void errorTecnico(String token, String usuario, String operacion, Exception error) {

@@ -1,7 +1,7 @@
 const ruta = '/gateway/admin/parametro'
 
 export const parametrosApi = cliente => ({
-    listar: () => cliente.request(ruta),
+    listar: () => cliente.request('/gateway/admin/carga/parametros'),
     crear: parametro => cliente.request(ruta, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(parametro)
     }),
@@ -11,7 +11,7 @@ export const parametrosApi = cliente => ({
     eliminar: id => cliente.request(`${ruta}/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     tamanoPagina: async () => {
         try {
-            const parametro = await cliente.request(`${ruta}/TAMPAG`)
+            const parametro = await cliente.request('/gateway/admin/configuracion/paginacion')
             const valor = Number(parametro?.valor)
             if (Number.isInteger(valor) && valor > 0) return Math.min(valor, 15)
         } catch {

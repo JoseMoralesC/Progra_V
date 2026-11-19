@@ -45,6 +45,37 @@ public static class ResumenDashboard
             context.Request.Query.ContainsKey("hastaId") && !long.TryParse(context.Request.Query["hastaId"], out hastaId) ||
             page < 0 || size is < 1 or > 100 || (long)page * size > int.MaxValue || hastaId < 0)
             return Results.BadRequest(new { error = "Página o tamaño de página inválidos." });
+        var usuario = context.Request.Query["usuario"].ToString().Trim();
+        var accion = context.Request.Query["accion"].ToString().Trim();
+        var moduloFiltro = context.Request.Query["modulo"].ToString().Trim();
+        var inicioTexto = context.Request.Query["desde"].ToString();
+        var finTexto = context.Request.Query["hasta"].ToString();
+        var orden = context.Request.Query["orden"].ToString();
+        DateTime inicio = default, fin = default;
+        if (usuario.Length > 200 || accion.Length > 100 || moduloFiltro.Length > 100 || (orden.Length > 0 && orden is not ("asc" or "desc")) ||
+            (inicioTexto.Length > 0 && !DateTime.TryParseExact(inicioTexto, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out inicio)) ||
+            (finTexto.Length > 0 && !DateTime.TryParseExact(finTexto, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out fin)) ||
+            (inicioTexto.Length > 0 && finTexto.Length > 0 && inicio > fin))
+            return Results.BadRequest(new { error = "Filtros inválidos." });
+        if (usuario.Length + accion.Length + moduloFiltro.Length + inicioTexto.Length + finTexto.Length > 0 || orden == "asc") {
+            var todos = await Consultar<List<Bitacora>>(context, clientes, "dashboard-bitacora", "/bitacora");
+            var limite = context.Request.Query.ContainsKey("hastaId") ? hastaId : todos.Select(b => b.IdBitacora).DefaultIfEmpty(0).Max();
+            var nombresFiltro = menu.ToDictionary(m => m.IdModulo, m => m.NombreModulo);
+            var coincidencias = todos.Where(b => b.IdBitacora <= limite).Select(b => {
+                var id = ClasificacionBitacora.Modulo(b.Descripcion ?? "");
+                var nombre = id switch { "SESION" => "Autenticación", "ADM3" => "Dashboard", null => "Sin clasificar",
+                    _ => nombresFiltro.GetValueOrDefault(id) ?? CatalogoRutas.Todas.FirstOrDefault(r => r.Modulo == id)?.Servicio ?? "Sistema" };
+                return new Evento(b.IdBitacora, b.Usuario, ClasificacionBitacora.Mensaje(b.Descripcion ?? "", id ?? ""), nombre,
+                    ClasificacionBitacora.Resultado(b.Descripcion ?? ""), b.FechaHora,
+                    NuevoAvatar.Integracion.ProteccionAuditoria.Limpiar(b.Descripcion ?? ""), b.IdEvento);
+            }).Where(b => (usuario.Length == 0 || b.Usuario.Equals(usuario, StringComparison.OrdinalIgnoreCase)) &&
+                (accion.Length == 0 || ClasificacionBitacora.Accion(b.Descripcion).Equals(accion, StringComparison.OrdinalIgnoreCase)) &&
+                (moduloFiltro.Length == 0 || (ClasificacionBitacora.Modulo(b.Descripcion) ?? "SIN_CLASIFICAR").Equals(moduloFiltro, StringComparison.OrdinalIgnoreCase)) &&
+                (inicioTexto.Length == 0 || b.FechaHora.Date >= inicio) && (finTexto.Length == 0 || b.FechaHora.Date <= fin));
+            var filtrados = (orden == "asc" ? coincidencias.OrderBy(b => b.FechaHora).ThenBy(b => b.IdBitacora) :
+                coincidencias.OrderByDescending(b => b.FechaHora).ThenByDescending(b => b.IdBitacora)).ToList();
+            return Results.Ok(new HistorialBitacora(filtrados.Skip(page * size).Take(size).ToList(), filtrados.Count, page, size, limite));
+        }
         var corte = context.Request.Query.ContainsKey("hastaId") ? $"&hastaId={hastaId}" : "";
         var datos = await Consultar<PaginaBitacora>(context, clientes, "dashboard-bitacora", $"/bitacora/pagina?page={page}&size={size}{corte}");
         if (datos.Items is null || datos.Total < 0 || datos.Page != page || datos.Size != size ||

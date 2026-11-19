@@ -13,7 +13,11 @@ public sealed class TransformacionRuta(string externa, string interna) : HttpTra
         proxy.Headers.Host = null;
         proxy.Headers.Remove(NuevoAvatar.Integracion.ConsultaAutomatica.Cabecera);
         proxy.Headers.Remove("X-Servicio-Key");
-        if (ConsultasDashboard.EsIndicador(context)) ConsultasDashboard.Marcar(context, proxy);
+        if (ConsultasDashboard.EsIndicador(context) ||
+            (HttpMethods.IsGet(context.Request.Method) &&
+             (externa == "/gateway/admin/configuracion/paginacion" || externa.StartsWith("/gateway/admin/carga/", StringComparison.Ordinal) ||
+              externa.StartsWith("/gateway/carga/", StringComparison.Ordinal))))
+            ConsultasDashboard.Marcar(context, proxy);
         // Credenciales de login solo viajan al endpoint de login. No aceptar identidad reenviada.
         if (!externa.Equals("/gateway/auth/login", StringComparison.OrdinalIgnoreCase))
         {

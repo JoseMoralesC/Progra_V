@@ -76,13 +76,20 @@ export function obtenerSesion(accessToken) {
 // Adapta el cliente esperado por las páginas administrativas al flujo de
 // renovación y autorización ya administrado por AuthContext.
 export function crearClienteAutenticado(authorizedFetch) {
+    const consultasPendientes = new Map()
     return {
         request(path, options = {}) {
             if (!path.startsWith('/gateway/')) throw new ApiError('Ruta de servicio no permitida.')
-            return authorizedFetch(accessToken => request('', path, {
+            const compartir = Object.keys(options).length === 0 && !path.includes('vista=dashboard')
+            if (compartir && consultasPendientes.has(path)) return consultasPendientes.get(path)
+            const resultado = authorizedFetch(accessToken => request('', path, {
                 ...options,
                 headers: { ...options.headers, Authorization: `Bearer ${accessToken}` }
             }))
+            if (!compartir) return resultado
+            const pendiente = resultado.finally(() => consultasPendientes.delete(path))
+            consultasPendientes.set(path, pendiente)
+            return pendiente
         }
     }
 }
@@ -133,7 +140,7 @@ export function registrarEventoInterfaz(tipo, ruta, accessToken) {
 }
 
 export function obtenerExpedientePropio(accessToken) {
-    return request('/gateway', '/expediente/propio', {
+    return request('/gateway', '/carga/expediente-propio', {
         headers: { Authorization: `Bearer ${accessToken}` },
         cache: 'no-store'
     })
@@ -155,19 +162,19 @@ export function actualizarExpedientePropio(cambios, accessToken) {
 }
 
 export function obtenerProvincias(accessToken) {
-    return request('/gateway/mat', '/provincias', {
+    return request('/gateway/carga/direccion', '/provincias', {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }
 
 export function obtenerCantones(provinciaId, accessToken) {
-    return request('/gateway/mat', `/cantones/${encodeURIComponent(provinciaId)}`, {
+    return request('/gateway/carga/direccion', `/cantones/${encodeURIComponent(provinciaId)}`, {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }
 
 export function obtenerDistritos(provinciaId, cantonId, accessToken) {
-    return request('/gateway/mat', `/distritos/${encodeURIComponent(provinciaId)}/${encodeURIComponent(cantonId)}`, {
+    return request('/gateway/carga/direccion', `/distritos/${encodeURIComponent(provinciaId)}/${encodeURIComponent(cantonId)}`, {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }
@@ -175,13 +182,13 @@ export function obtenerDistritos(provinciaId, cantonId, accessToken) {
 const PREMATRICULA_PROPIA = '/prematricula/propio'
 
 export function obtenerPrematriculasPropias(accessToken) {
-    return request('/gateway/mat', PREMATRICULA_PROPIA, {
+    return request('/gateway', '/carga/prematriculas-propias', {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }
 
 export function obtenerOpcionesPrematricula(accessToken) {
-    return request('/gateway/mat', `${PREMATRICULA_PROPIA}/opciones`, {
+    return request('/gateway', '/carga/opciones-prematricula', {
         headers: { Authorization: `Bearer ${accessToken}` }, cache: 'no-store'
     })
 }

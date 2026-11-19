@@ -59,7 +59,8 @@ public final class AuditoriaFiable implements AutoCloseable {
     public static void registrarCambioHttp(jakarta.servlet.http.HttpServletRequest solicitud, String descripcion) {
         Object usuario = solicitud.getAttribute("seguridad.usuario");
         if (usuario == null) throw new IllegalStateException("Falta identidad para auditar el movimiento");
-        var contexto = org.springframework.web.context.support.WebApplicationContextUtils.getRequiredWebApplicationContext(solicitud.getServletContext());
+        var servletContext = Objects.requireNonNull(solicitud.getServletContext(), "Falta el contexto de servlet");
+        var contexto = org.springframework.web.context.support.WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         contexto.getBean(AuditoriaFiable.class).registrar(usuario.toString(), descripcion + ". Resultado: Exitoso");
         solicitud.setAttribute(ENCOLADA, Boolean.TRUE);
     }
@@ -79,7 +80,8 @@ public final class AuditoriaFiable implements AutoCloseable {
             for (var evento : filas) {
                 try {
                     var recibo = receptor.post().uri("/interno/bitacora").header("X-Servicio-Key", clave)
-                        .contentType(MediaType.APPLICATION_JSON).body(evento).retrieve().body(Map.class);
+                        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON))
+                        .body(Objects.requireNonNull(evento)).retrieve().body(Map.class);
                     if (recibo == null || !evento.get("idEvento").toString().equalsIgnoreCase(Objects.toString(recibo.get("idEvento"))) ||
                         !(recibo.get("idBitacora") instanceof Number id) || id.longValue() <= 0)
                         throw new IllegalStateException("Confirmación de auditoría inválida");

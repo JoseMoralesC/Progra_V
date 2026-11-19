@@ -1,7 +1,5 @@
 package cr.ac.cuc.nuevoavatar.persona2.seguridad;
 
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,15 +13,11 @@ public class SeguridadClient {
     @org.springframework.beans.factory.annotation.Autowired
     private cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable auditoria;
 
-
     private static final Logger LOG = LoggerFactory.getLogger(SeguridadClient.class);
     private final RestClient cliente;
-    private final RestClient bitacora;
 
-    public SeguridadClient(@Value("${seguridad.service.url}") String baseUrl,
-            @Value("${bitacora.service.url}") String bitacoraUrl) {
+    public SeguridadClient(@Value("${seguridad.service.url}") String baseUrl) {
         this.cliente = RestClient.builder().baseUrl(baseUrl).build();
-        this.bitacora = RestClient.builder().baseUrl(bitacoraUrl).build();
     }
 
     public boolean validar(String bearerToken) {

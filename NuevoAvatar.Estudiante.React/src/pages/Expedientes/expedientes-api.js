@@ -1,7 +1,7 @@
 const ruta = '/gateway/admin/expediente'
 
 export const expedientesApi = cliente => ({
-    listar: () => cliente.request(ruta),
+    listar: (carga = true) => cliente.request(carga ? '/gateway/admin/carga/expedientes' : ruta),
     obtener: identificacion => cliente.request(`${ruta}/${encodeURIComponent(identificacion)}`),
     crear: datos => cliente.request(ruta, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
@@ -10,12 +10,12 @@ export const expedientesApi = cliente => ({
         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos)
     }),
     eliminar: identificacion => cliente.request(`${ruta}/${encodeURIComponent(identificacion)}`, { method: 'DELETE' }),
-    estudiantes: () => cliente.request('/gateway/admin/usuario'),
-    roles: () => cliente.request('/gateway/admin/rol'),
-    provincias: () => cliente.request('/gateway/mat/provincias'),
-    cantones: provinciaId => cliente.request(`/gateway/mat/cantones/${encodeURIComponent(provinciaId)}`),
+    estudiantes: () => cliente.request('/gateway/admin/carga/usuarios'),
+    roles: () => cliente.request('/gateway/admin/carga/roles'),
+    provincias: () => cliente.request('/gateway/carga/direccion/provincias'),
+    cantones: provinciaId => cliente.request(`/gateway/carga/direccion/cantones/${encodeURIComponent(provinciaId)}`),
     distritos: (provinciaId, cantonId) => cliente.request(
-        `/gateway/mat/distritos/${encodeURIComponent(provinciaId)}/${encodeURIComponent(cantonId)}`)
+        `/gateway/carga/direccion/distritos/${encodeURIComponent(provinciaId)}/${encodeURIComponent(cantonId)}`)
 })
 
 export function validarExpediente(datos, estudiantes, usuarioSeleccionado) {

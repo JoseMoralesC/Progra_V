@@ -78,6 +78,7 @@ public class BitacoraFilter extends OncePerRequestFilter {
     private void registrar(
             ContentCachingRequestWrapper request,
             HttpServletResponse response, boolean fallo) {
+        if (!fallo && cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.esCargaDashboard(request, response.getStatus())) return;
         if (!fallo && response.getStatus() < 400 && Boolean.TRUE.equals(request.getAttribute(cr.ac.cuc.nuevoavatar.integracion.AuditoriaFiable.ENCOLADA))) return;
         Object token = request.getAttribute(AutorizacionInterceptor.TOKEN_ATTRIBUTE);
         Object usuario = request.getAttribute(AutorizacionInterceptor.USER_ATTRIBUTE);

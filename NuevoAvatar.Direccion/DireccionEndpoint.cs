@@ -89,6 +89,7 @@ public static class DireccionEndpoint
         HttpContext context,
         string descripcion)
     {
+        if (NuevoAvatar.Integracion.ConsultaAutomatica.EsCargaDashboard(context, 200)) return;
         var token = context.Items["token"]?.ToString();
 
         var usuario = context.Items["usuario"]?.ToString()

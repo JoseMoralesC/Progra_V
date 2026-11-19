@@ -33,7 +33,7 @@ namespace NuevoAvatar.Seguridad.DataAccess
             var cambios = ChangeTracker.Entries().Where(e => e.Entity is Rol or Parametro or Modulo or RolModulo &&
                 e.State is EntityState.Added or EntityState.Modified or EntityState.Deleted).ToList();
             if (auditoria is null || cambios.Count == 0) return await base.SaveChangesAsync(cancellationToken);
-            var eventos = cambios.Select(e => {
+            var eventos = cambios.Where(e => e.Entity is not RolModulo).Select(e => {
                 var secreto = e.Entity is Parametro p && p.IdParametro.Equals("MAILPASS", StringComparison.OrdinalIgnoreCase);
                 object? Estado(bool original) => (original && e.State == EntityState.Added || !original && e.State == EntityState.Deleted) ? null :
                     e.Properties.ToDictionary(p => p.Metadata.Name, p => secreto && p.Metadata.Name == "Valor" ? "[OCULTO]" : original ? p.OriginalValue : p.CurrentValue);
@@ -44,6 +44,18 @@ namespace NuevoAvatar.Seguridad.DataAccess
             }).ToList();
             var propia = Database.CurrentTransaction is null ? await Database.BeginTransactionAsync(cancellationToken) : null;
             try {
+                foreach (var grupo in cambios.Where(e => e.Entity is RolModulo).GroupBy(e => ((RolModulo)e.Entity).IdModulo)) {
+                    var anterior = await RolesModulo.AsNoTracking().Where(r => r.IdModulo == grupo.Key)
+                        .Select(r => r.IdRol).ToListAsync(cancellationToken);
+                    var actual = anterior.ToHashSet(StringComparer.OrdinalIgnoreCase);
+                    foreach (var entrada in grupo) {
+                        var rol = ((RolModulo)entrada.Entity).IdRol;
+                        if (entrada.State == EntityState.Deleted) actual.Remove(rol);
+                        else if (entrada.State == EntityState.Added) actual.Add(rol);
+                    }
+                    eventos.Add(("Asignación de roles al módulo " + grupo.Key,
+                        anterior.OrderBy(r => r).ToArray(), actual.OrderBy(r => r).ToArray()));
+                }
                 var resultado = await base.SaveChangesAsync(cancellationToken);
                 foreach (var evento in eventos)
                     await auditoria.Registrar(Database.GetDbConnection(), Database.CurrentTransaction!.GetDbTransaction(), evento.Accion, evento.Anterior, evento.Actual);

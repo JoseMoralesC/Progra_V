@@ -15,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 public class DireccionClient {
     private final RestClient cliente;
+    @Value("${SERVICES_INTERNAL_KEY}")
+    private String claveInterna;
 
     @Autowired
     public DireccionClient(RestClient.Builder builder, @Value("${direccion.service.url}") String baseUrl) {
@@ -31,21 +33,24 @@ public class DireccionClient {
     public void validar(String token, Integer provinciaId, Integer cantonId, Integer distritoId) {
         try {
             List<Provincia> provincias = cliente.get().uri("/provincias")
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (provincias == null) throw respuestaIncompleta();
             if (provincias.stream().noneMatch(p -> provinciaId.equals(p.provinciaId()))) {
                 throw direccionInvalida();
             }
             List<Canton> cantones = cliente.get().uri("/cantones/{provincia}", provinciaId)
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (cantones == null) throw respuestaIncompleta();
             if (cantones.stream().noneMatch(c -> cantonId.equals(c.cantonId()) && provinciaId.equals(c.provinciaId()))) {
                 throw direccionInvalida();
             }
             List<Distrito> distritos = cliente.get().uri("/distritos/{provincia}/{canton}", provinciaId, cantonId)
-                    .header(HttpHeaders.AUTHORIZATION, token).retrieve()
+                    .header(HttpHeaders.AUTHORIZATION, token)
+                    .headers(h -> cr.ac.cuc.nuevoavatar.integracion.ConsultaAutomatica.marcarInterna(h, claveInterna)).retrieve()
                     .body(new ParameterizedTypeReference<>() {});
             if (distritos == null) throw respuestaIncompleta();
             if (distritos.stream().noneMatch(d -> distritoId.equals(d.distritoId()) && cantonId.equals(d.cantonId()))) {

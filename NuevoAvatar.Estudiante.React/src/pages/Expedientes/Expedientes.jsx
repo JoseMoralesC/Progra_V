@@ -35,17 +35,18 @@ export function Expedientes({ cliente }) {
     const [pendiente, setPendiente] = useState(null)
     const [guardando, setGuardando] = useState(false)
     const [busqueda, setBusqueda] = useState('')
+    const [busquedaAplicada, setBusquedaAplicada] = useState('')
     const [pagina, setPagina] = useState(0)
     const [intentoCantones, setIntentoCantones] = useState(0)
     const [intentoDistritos, setIntentoDistritos] = useState(0)
     const secuenciaCantones = useRef(0)
     const secuenciaDistritos = useRef(0)
 
-    const cargarExpedientes = useCallback(async () => {
+    const cargarExpedientes = useCallback(async (carga = true) => {
         setCargando(true)
         setError('')
         try {
-            const datos = await api.listar()
+            const datos = await api.listar(carga)
             if (!Array.isArray(datos)) throw new Error('El servicio devolvió una lista de expedientes inválida.')
             setExpedientes(datos)
             setPagina(0)
@@ -107,7 +108,7 @@ export function Expedientes({ cliente }) {
     }, [api, formulario?.provinciaId, formulario?.cantonId, intentoDistritos])
 
     const filtrados = expedientes.filter(item => {
-        const termino = busqueda.trim().toLocaleLowerCase()
+        const termino = busquedaAplicada.trim().toLocaleLowerCase()
         return !termino || [item.nombreCompleto, item.email, item.identificacion]
             .some(valor => String(valor || '').toLocaleLowerCase().includes(termino))
     })
@@ -200,9 +201,10 @@ export function Expedientes({ cliente }) {
             <button type="button" className="btn btn-primary" disabled={cargandoDependencias || !!errorDependencias || estudiantes.length === 0}
                 onClick={() => abrir()}>Nuevo expediente</button></div>
         <section className="panel" aria-label="Listado de expedientes">
-            <div className="expedientes-filtros"><label className="field" htmlFor="expedientes-busqueda">Buscar por nombre, correo o identificación</label>
+            <form className="expedientes-filtros" onSubmit={evento => { evento.preventDefault(); setBusquedaAplicada(busqueda); setPagina(0); cargarExpedientes(false) }}><label className="field" htmlFor="expedientes-busqueda">Buscar por nombre, correo o identificación</label>
                 <input id="expedientes-busqueda" value={busqueda} onChange={evento => { setBusqueda(evento.target.value); setPagina(0) }} />
-                <button type="button" className="btn btn-soft" onClick={cargarExpedientes}>Actualizar</button></div>
+                <button type="submit" className="btn btn-soft">Buscar</button>
+                <button type="button" className="btn btn-soft" onClick={() => cargarExpedientes(false)}>Actualizar</button></form>
             {error && !formulario && <p role="alert" className="aviso error">{error}</p>}
             {aviso && <p role="status" className="aviso">{aviso}</p>}
             {errorDependencias && <div className="aviso error" role="alert"><p>No se pudieron cargar las cuentas de estudiante o el catálogo de provincias. {errorDependencias}</p>

@@ -2,7 +2,7 @@ const ruta = '/gateway/admin/modulo';
 export const MAX_PAGINA = 15;
 export async function leerTamanoPagina(cliente) {
   try {
-    const p = await cliente.request('/gateway/admin/parametro/TAMPAG');
+    const p = await cliente.request('/gateway/admin/configuracion/paginacion');
     const n = Number(p?.valor ?? p);
     if (Number.isInteger(n) && n >= 1) return Math.min(MAX_PAGINA, n);
   } catch { /* Usa el máximo permitido si el parámetro no está definido. */ }
@@ -27,12 +27,12 @@ export function validarModulo(value) {
   return '';
 }
 export const moduloApi = cliente => ({
-  listar: () => cliente.request(ruta),
+  listar: () => cliente.request('/gateway/admin/carga/modulos'),
   crear: modulo => cliente.request(ruta, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(normalizarModulo(modulo)) }),
   modificar: modulo => cliente.request(`${ruta}/${encodeURIComponent(modulo.idModulo)}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(normalizarModulo(modulo)) }),
   eliminar: id => cliente.request(`${ruta}/${encodeURIComponent(id)}`, { method: 'DELETE' }),
   roles: id => cliente.request(`${ruta}/${encodeURIComponent(id)}/roles`),
   guardarRoles: (id, roles) => cliente.request(`${ruta}/${encodeURIComponent(id)}/roles`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(roles) }),
-  listarRoles: () => cliente.request('/gateway/admin/rol'),
+  listarRoles: () => cliente.request('/gateway/admin/carga/roles'),
   tamanoPagina: () => leerTamanoPagina(cliente)
 });

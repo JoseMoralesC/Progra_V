@@ -1,14 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Modal } from './Modal.jsx';
 import { RowActionsMenu } from '../../../NuevoAvatar.Estudiante.React/src/components/RowActionsMenu.jsx';
 import { carrerasApi, MAX_PAGINA, paginar, validarCarrera } from './carreras-api.js';
 const vacio = { nombre: '', institucionId: '', directorProfesorId: '' };
 export function Carreras({ cliente }) {
   const api = useMemo(() => carrerasApi(cliente), [cliente]);
+  const filtroUsado = useRef(false);
   const [items, setItems] = useState([]), [instituciones, setInstituciones] = useState([]), [profesores, setProfesores] = useState([]), [filtro, setFiltro] = useState('');
   const [page, setPage] = useState(0), [size, setSize] = useState(MAX_PAGINA);
   const [buscarProfesor, setBuscarProfesor] = useState(''), [modal, setModal] = useState(null), [form, setForm] = useState(vacio), [error, setError] = useState(''), [mensaje, setMensaje] = useState(''), [estado, setEstado] = useState('Cargando carreras…');
-  const cargar = useCallback(async () => { setEstado('Cargando carreras…'); try { const data = await api.listar(filtro); setItems(data); setEstado(data.length ? '' : 'No hay carreras para mostrar.'); } catch (e) { setError(e.message); setEstado(''); } }, [api, filtro]);
+  const cargar = useCallback(async (carga = !filtroUsado.current) => { setEstado('Cargando carreras…'); try { const data = await api.listar(filtro, carga); setItems(data); setEstado(data.length ? '' : 'No hay carreras para mostrar.'); } catch (e) { setError(e.message); setEstado(''); } }, [api, filtro]);
   useEffect(() => { cargar(); }, [cargar]);
   useEffect(() => { api.instituciones().then(setInstituciones).catch(e => setError(e.message)); api.tamanoPagina().then(setSize); }, [api]);
   useEffect(() => { const timer = setTimeout(() => api.profesores(buscarProfesor).then(x => setProfesores(x.items)).catch(e => setError(e.message)), 250); return () => clearTimeout(timer); }, [api, buscarProfesor]);
@@ -20,16 +21,16 @@ export function Carreras({ cliente }) {
     try {
       const guardado = modal === 'crear' ? await api.crear(value) : await api.modificar(value);
       setMensaje(modal === 'crear' ? 'Carrera creada correctamente.' : 'Carrera actualizada correctamente.');
-      setModal(null); setFiltro('');
-      const lista = await api.listar(); setItems(lista); setEstado('');
+      setModal(null); filtroUsado.current = false; setFiltro('');
+      const lista = await api.listar(undefined, true); setItems(lista); setEstado('');
       setPage(Math.floor(Math.max(0, lista.findIndex(x => x.id === (guardado?.id ?? form.id))) / size));
     } catch (e) { setError(e.message); }
   }
-  async function eliminar() { try { await api.eliminar(form.id); setMensaje('Carrera eliminada correctamente.'); setModal(null); await cargar(); } catch (e) { setError(e.message); } }
+  async function eliminar() { try { await api.eliminar(form.id); setMensaje('Carrera eliminada correctamente.'); setModal(null); await cargar(true); } catch (e) { setError(e.message); } }
   const institucion = id => instituciones.find(x => (x.id ?? x.institucionId) === id)?.nombre ?? id;
   const profesor = id => profesores.find(x => x.id === id)?.nombreCompleto ?? id;
   return <section><div className="page-head"><div><p className="crumb">Administración / Académico</p><h1>Mantenimiento de carreras</h1><p>Relaciona cada carrera con su institución y profesor director.</p></div><button className="btn btn-primary" onClick={() => abrir()}>Nueva carrera</button></div>
-    <div className="filters"><label className="field">Institución<select value={filtro} onChange={e => { setPage(0); setFiltro(e.target.value); }}><option value="">Todas</option>{instituciones.map(x => <option key={x.id ?? x.institucionId} value={x.id ?? x.institucionId}>{x.nombre}</option>)}</select></label></div>{error && <p className="aviso error" role="alert">{error}</p>}{mensaje && <p className="aviso" role="status">{mensaje}</p>}
+    <div className="filters"><label className="field">Institución<select value={filtro} onChange={e => { setPage(0); filtroUsado.current = true; setFiltro(e.target.value); }}><option value="">Todas</option>{instituciones.map(x => <option key={x.id ?? x.institucionId} value={x.id ?? x.institucionId}>{x.nombre}</option>)}</select></label></div>{error && <p className="aviso error" role="alert">{error}</p>}{mensaje && <p className="aviso" role="status">{mensaje}</p>}
     <div className="panel"><table><thead><tr><th>Carrera</th><th>Institución</th><th>Director</th><th>Acciones</th></tr></thead><tbody>{pagina.items.map(item => <tr key={item.id}><td>{item.nombre}</td><td>{institucion(item.institucionId)}</td><td>{profesor(item.directorProfesorId)}</td><td><RowActionsMenu rowLabel={item.nombre} actions={[{ label: 'Editar', onSelect: () => abrir(item) }, { label: 'Eliminar', danger: true, onSelect: () => { setError(''); setMensaje(''); setForm(item); setModal('eliminar'); } }]} /></td></tr>)}</tbody></table>{estado && <p className="empty" role="status">{estado}</p>}<div className="acciones"><button className="btn btn-soft" disabled={pagina.page === 0} onClick={() => setPage(pagina.page - 1)}>Anterior</button><span>Página {pagina.page + 1} · {pagina.total} registros</span><button className="btn btn-soft" disabled={(pagina.page + 1) * pagina.size >= pagina.total} onClick={() => setPage(pagina.page + 1)}>Siguiente</button></div></div>
     {(modal === 'crear' || modal === 'editar') && <Modal error={error} titulo={modal === 'crear' ? 'Crear carrera' : 'Editar carrera'} onClose={() => setModal(null)} actions={<><button className="btn btn-soft" onClick={() => setModal(null)}>Cancelar</button><button className="btn btn-primary" onClick={guardar}>Guardar</button></>}><div className="form-grid"><label className="field">Nombre<input value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })}/></label><label className="field">Institución<select value={form.institucionId} onChange={e => setForm({ ...form, institucionId: e.target.value })}><option value="">Seleccionar</option>{instituciones.map(x => <option key={x.id ?? x.institucionId} value={x.id ?? x.institucionId}>{x.nombre}</option>)}</select></label><label className="field">Buscar profesor<input value={buscarProfesor} onChange={e => setBuscarProfesor(e.target.value)} placeholder="Nombre, identificación o correo"/></label><label className="field">Profesor director<select value={form.directorProfesorId} onChange={e => setForm({ ...form, directorProfesorId: e.target.value })}><option value="">Seleccionar</option>{profesores.map(x => <option key={x.id} value={x.id}>{x.nombreCompleto}</option>)}</select></label></div></Modal>}
     {modal === 'eliminar' && <Modal error={error} titulo="Confirmar eliminación" onClose={() => setModal(null)} actions={<><button className="btn btn-soft" onClick={() => setModal(null)}>No, cancelar</button><button className="btn btn-danger" onClick={eliminar}>Sí, eliminar</button></>}><p>¿Realmente desea eliminar el elemento seleccionado? Se eliminará <strong>{form.nombre}</strong>. La operación se bloqueará si existen cursos relacionados.</p></Modal>}
